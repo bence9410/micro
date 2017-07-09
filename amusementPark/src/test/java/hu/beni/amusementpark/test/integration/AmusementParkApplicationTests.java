@@ -38,32 +38,40 @@ public class AmusementParkApplicationTests {
 
     @Test
     public void test() {
+        //create AmusementPark
         Resource<AmusementPark> amusementParkResource = postAmusementParkWithAddress();
         String amusementParkUrl = amusementParkResource.getId().getHref();
+        AmusementPark amusementPark = amusementParkResource.getContent();
 
+        //add Machine
         Resource<Machine> machineResource = postMachine(amusementParkResource.getLink("machine").getHref());
+        Machine machine = machineResource.getContent();
+        amusementPark = checkIfAmusementParkCapitalReducedByMachinePrice(amusementParkUrl, amusementPark, machine.getPrice());
 
-        amusementParkResource = checkIfAmusementParkCapitalReducedByMachinePrice(amusementParkUrl, amusementParkResource.getContent(), machineResource.getContent().getPrice());
+        //visitor enterPark
+        Resource<Visitor> visitorResource = postVisitorAndCheckIfSpendingMoneyDecraisedByEntranceFee(amusementParkResource.getLink("visitor").getHref(), amusementPark.getEntranceFee());
+        Visitor visitor = visitorResource.getContent();
+        amusementPark = checkIfAmusementParkCapitalIncreasedByAmmount(amusementParkUrl, amusementPark, amusementPark.getEntranceFee());
+        
+        //visitor getOnMachine
+        Resource<Visitor> visitorOnMachineResource = restTemplate.exchange(machineResource.getLink("getOnMachine").getHref(), HttpMethod.PUT, HttpEntity.EMPTY, visitorType(), visitor.getId()).getBody();
+        Visitor visitorOnMachine = visitorOnMachineResource.getContent();
+        assertEquals(VisitorState.ON_MACHINE, visitorOnMachine.getState());
+        assertEquals(visitor.getSpendingMoney() - machine.getTicketPrice(), visitorOnMachine.getSpendingMoney().longValue());
+        amusementPark = checkIfAmusementParkCapitalIncreasedByAmmount(amusementParkUrl, amusementPark, machine.getTicketPrice());
 
-        Resource<Visitor> visitor = postVisitorAndCheckIfSpendingMoneyDecraisedByEntranceFee(amusementParkResource.getLink("visitor").getHref(), amusementParkResource.getContent().getEntranceFee());
+        //visitor getOffMachine
+        visitorResource = restTemplate.exchange(visitorOnMachineResource.getLink("getOffMachine").getHref(), HttpMethod.PUT, HttpEntity.EMPTY, visitorType()).getBody();
+        assertEquals(VisitorState.REST, visitor.getState());
 
-        amusementParkResource = checkIfAmusementParkCapitalIncreasedByAmmount(amusementParkUrl, amusementParkResource.getContent(), amusementParkResource.getContent().getEntranceFee());
+        //visitor leavePark
+        restTemplate.exchange(visitorResource.getId().getHref(), HttpMethod.DELETE, HttpEntity.EMPTY, Void.class);
 
-        Resource<Visitor> visitorOnMachine = restTemplate.exchange(machineResource.getLink("getOnMachine").getHref(), HttpMethod.PUT, HttpEntity.EMPTY, visitorType(), visitor.getContent().getId()).getBody();
-        assertEquals(VisitorState.ON_MACHINE, visitorOnMachine.getContent().getState());
-        assertEquals(visitor.getContent().getSpendingMoney() - machineResource.getContent().getTicketPrice(), visitorOnMachine.getContent().getSpendingMoney().longValue());
-
-        amusementParkResource = checkIfAmusementParkCapitalIncreasedByAmmount(amusementParkUrl, amusementParkResource.getContent(), machineResource.getContent().getTicketPrice());
-
-        visitor = restTemplate.exchange(visitorOnMachine.getLink("getOffMachine").getHref(), HttpMethod.PUT, HttpEntity.EMPTY, visitorType()).getBody();
-        assertEquals(VisitorState.REST, visitor.getContent().getState());
-
-        restTemplate.exchange(visitor.getId().getHref(), HttpMethod.DELETE, HttpEntity.EMPTY, Void.class);
-
+        //sell Machine
         restTemplate.exchange(machineResource.getId().getHref(), HttpMethod.DELETE, HttpEntity.EMPTY, Void.class);
+        checkIfAmusementParkCapitalIncreasedByAmmount(amusementParkUrl, amusementPark, machine.getPrice());
 
-        checkIfAmusementParkCapitalIncreasedByAmmount(amusementParkUrl, amusementParkResource.getContent(), machineResource.getContent().getPrice());
-
+        //delete Park
         restTemplate.exchange(amusementParkUrl, HttpMethod.DELETE, HttpEntity.EMPTY, Void.class);
     }
 
@@ -129,26 +137,26 @@ public class AmusementParkApplicationTests {
         return visitorResource;
     }
 
-    private Resource<AmusementPark> checkIfAmusementParkCapitalReducedByMachinePrice(String amusementParkUrl, AmusementPark amusementPark, Integer machinePrice) {
+    private AmusementPark checkIfAmusementParkCapitalReducedByMachinePrice(String amusementParkUrl, AmusementPark amusementPark, Integer machinePrice) {
         Resource<AmusementPark> freshAmusementParkResource = restTemplate.exchange(amusementParkUrl, HttpMethod.GET, HttpEntity.EMPTY, amusementParkType()).getBody();
         AmusementPark freshAmusementPark = freshAmusementParkResource.getContent();
 
         assertNotNull(freshAmusementPark);
         assertEquals(amusementPark.getCapital() - machinePrice, freshAmusementPark.getCapital().longValue());
 
-        return freshAmusementParkResource;
+        return freshAmusementPark;
     }
 
-    private Resource<AmusementPark> checkIfAmusementParkCapitalIncreasedByAmmount(String amusementParkUrl, AmusementPark amusementPark, Integer ammount) {
+    private AmusementPark checkIfAmusementParkCapitalIncreasedByAmmount(String amusementParkUrl, AmusementPark amusementPark, Integer ammount) {
         Resource<AmusementPark> freshAmusementParkResource = restTemplate.exchange(amusementParkUrl, HttpMethod.GET, HttpEntity.EMPTY, amusementParkType()).getBody();
         AmusementPark freshAmusementPark = freshAmusementParkResource.getContent();
 
         assertNotNull(freshAmusementPark);
         assertEquals(amusementPark.getCapital() + ammount, freshAmusementPark.getCapital().longValue());
 
-        return freshAmusementParkResource;
+        return freshAmusementPark;
     }
-
+        
     private AmusementPark createAmusementPark() {
         return AmusementPark.builder()
                 .name("Park")
