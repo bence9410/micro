@@ -11,11 +11,9 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import hu.beni.amusementpark.service.AmusementParkService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.Resource;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
-@Slf4j
 @RestController
 @RequestMapping(path = "/amusementPark")
 @RequiredArgsConstructor
