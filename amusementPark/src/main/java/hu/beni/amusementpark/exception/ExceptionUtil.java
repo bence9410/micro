@@ -14,4 +14,10 @@ public class ExceptionUtil {
         }
     }
 
+    public static <T> void exceptionIfEqualsWithMessage(T t1, T t2, String message) {
+        if (t1.equals(t2)) {
+            throw new AmusementParkException(message);
+        }
+    }
+
 }

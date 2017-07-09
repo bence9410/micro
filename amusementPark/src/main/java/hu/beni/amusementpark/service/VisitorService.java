@@ -47,16 +47,20 @@ public class VisitorService {
                 .orElseThrow(() -> new AmusementParkException("No machine in the park with the given id!"));
         Visitor visitor = Optional.ofNullable(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId))
                 .orElseThrow(() -> new AmusementParkException("No visitor in the park with the given id!"));
-        if (VisitorState.ON_MACHINE.equals(visitor.getState())) {
-            throw new AmusementParkException("Visitor is on machine");
-        }
+        checkIfVisitorAbleToGetOnMachine(visitor, machine);
+        return incrementCapitalAndDecraiseSpendingMoneyAndSave(amusementParkId, machine, visitor);
+    }
+
+    private void checkIfVisitorAbleToGetOnMachine(Visitor visitor, Machine machine) {
+        ExceptionUtil.exceptionIfEqualsWithMessage(VisitorState.ON_MACHINE, visitor.getState(), "Visitor is on a machine");
         ExceptionUtil.exceptionIfFirstLessThanSecondWithMessage(visitor.getSpendingMoney(), machine.getTicketPrice(), "Not enough money!");
         ExceptionUtil.exceptionIfFirstLessThanSecondWithMessage(visitor.getAge(), machine.getMinimumRequiredAge(), "Visitor is too young!");
-        if (visitorRepository.countByMachineId(machineId) >= machine.getNumberOfSeats()) {
-            throw new AmusementParkException("No free seat on machine");
-        }
+        ExceptionUtil.exceptionIfEqualsWithMessage(visitorRepository.countByMachineId(machine.getId()), machine.getNumberOfSeats(), "No free seat on machine");
+    }
+
+    private Visitor incrementCapitalAndDecraiseSpendingMoneyAndSave(Long amusementParkId, Machine machine, Visitor visitor) {
         amusementParkRepository.incrementCapitalById(machine.getTicketPrice(), amusementParkId);
-        visitor.setSpendingMoney(machine.getTicketPrice());
+        visitor.setSpendingMoney(visitor.getSpendingMoney() - machine.getTicketPrice());
         visitor.setMachine(machine);
         visitor.setState(VisitorState.ON_MACHINE);
         return visitorRepository.save(visitor);
@@ -65,6 +69,7 @@ public class VisitorService {
     public Visitor getOffMachine(Long machineId, Long visitorId) {
         Visitor visitor = Optional.ofNullable(visitorRepository.findByMachineIdAndVisitorId(machineId, visitorId))
                 .orElseThrow(() -> new AmusementParkException("No visitor on machine with the given id!"));
+        visitor.setMachine(null);
         visitor.setState(VisitorState.REST);
         return visitorRepository.save(visitor);
     }
