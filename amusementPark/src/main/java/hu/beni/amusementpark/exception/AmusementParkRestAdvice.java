@@ -28,7 +28,7 @@ public class AmusementParkRestAdvice {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public String handleConstraintViolationException(MethodArgumentNotValidException methodArgumentNotValidException) {
+    public String handleMethodArgumentNotValidException(MethodArgumentNotValidException methodArgumentNotValidException) {
         log.error(ERROR, methodArgumentNotValidException);
         return methodArgumentNotValidException.getBindingResult().getFieldErrors().stream()
                 .map(fe -> "Validation error: " + fe.getField() + " " + fe.getDefaultMessage() + ".").reduce(String::concat).get();
