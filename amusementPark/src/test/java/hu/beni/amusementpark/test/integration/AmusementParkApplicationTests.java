@@ -21,6 +21,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 
 import static org.junit.Assert.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -37,7 +39,7 @@ public class AmusementParkApplicationTests {
     }
 
     @Test
-    public void test() {
+    public void positiveTest() {
         //create AmusementPark
         Resource<AmusementPark> amusementParkResource = postAmusementParkWithAddress();
         String amusementParkUrl = amusementParkResource.getId().getHref();
@@ -52,7 +54,7 @@ public class AmusementParkApplicationTests {
         Resource<Visitor> visitorResource = postVisitorAndCheckIfSpendingMoneyDecraisedByEntranceFee(amusementParkResource.getLink("visitor").getHref(), amusementPark.getEntranceFee());
         Visitor visitor = visitorResource.getContent();
         amusementPark = checkIfAmusementParkCapitalIncreasedByAmmount(amusementParkUrl, amusementPark, amusementPark.getEntranceFee());
-        
+
         //visitor getOnMachine
         Resource<Visitor> visitorOnMachineResource = restTemplate.exchange(machineResource.getLink("getOnMachine").getHref(), HttpMethod.PUT, HttpEntity.EMPTY, visitorType(), visitor.getId()).getBody();
         Visitor visitorOnMachine = visitorOnMachineResource.getContent();
@@ -73,6 +75,28 @@ public class AmusementParkApplicationTests {
 
         //delete Park
         restTemplate.exchange(amusementParkUrl, HttpMethod.DELETE, HttpEntity.EMPTY, Void.class);
+    }
+
+    @Test
+    public void negativeTest() {
+        Resource<AmusementPark> amusementParkResource = postAmusementParkWithAddress();
+
+        Machine machine = createMachine();
+        machine.setPrice(4000);
+
+        ResponseEntity<String> errorResponse = restTemplate.exchange(amusementParkResource.getLink("machine").getHref(), HttpMethod.POST, new HttpEntity(machine), String.class);
+
+        assertEquals(HttpStatus.I_AM_A_TEAPOT, errorResponse.getStatusCode());
+        assertEquals("Machine is too expensive!", errorResponse.getBody());
+
+        machine.setPrice(400);
+        machine.setSize(1100);
+
+        errorResponse = restTemplate.exchange(amusementParkResource.getLink("machine").getHref(), HttpMethod.POST, new HttpEntity(machine), String.class);
+
+        assertEquals(HttpStatus.I_AM_A_TEAPOT, errorResponse.getStatusCode());
+        assertEquals("Machine is too big!", errorResponse.getBody());
+
     }
 
     private Resource<AmusementPark> postAmusementParkWithAddress() {
@@ -156,11 +180,11 @@ public class AmusementParkApplicationTests {
 
         return freshAmusementPark;
     }
-        
+
     private AmusementPark createAmusementPark() {
         return AmusementPark.builder()
                 .name("Park")
-                .capital(30000)
+                .capital(3000)
                 .totalArea(1000)
                 .entranceFee(50).build();
     }

@@ -30,9 +30,9 @@ public class MachineService {
     }
 
     private void checkForMoneyAndFreeArea(AmusementPark amusementPark, Machine machine) {
-        ExceptionUtil.exceptionIfFirstLessThanSecondWithMessage(amusementPark.getCapital(), machine.getPrice(), "No money!");
+        ExceptionUtil.exceptionIfFirstLessThanSecondWithMessage(amusementPark.getCapital(), machine.getPrice(), "Machine is too expensive!");
         ExceptionUtil.exceptionIfFirstLessThanSecondWithMessage(amusementPark.getTotalArea(),
-                Optional.ofNullable(machineRepository.sumAreaByAmusementParkId(amusementPark.getId())).orElse(0L).intValue() + machine.getSize(), "Too big!");
+                Optional.ofNullable(machineRepository.sumAreaByAmusementParkId(amusementPark.getId())).orElse(0L).intValue() + machine.getSize(), "Machine is too big!");
     }
 
     private Machine buyMachine(AmusementPark amusementPark, Machine machine) {
