@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import hu.beni.amusementpark.service.AmusementParkService;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.Resource;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +23,7 @@ public class AmusementParkController {
     private final AmusementParkService amusementParkService;
 
     @PostMapping
-    public Resource<AmusementPark> create(@RequestBody AmusementPark amusementPark) {
+    public Resource<AmusementPark> create(@Valid @RequestBody AmusementPark amusementPark) {
         return createResource(amusementParkService.create(amusementPark));
     }
 

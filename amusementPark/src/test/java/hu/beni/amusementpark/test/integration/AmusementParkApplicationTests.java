@@ -79,12 +79,17 @@ public class AmusementParkApplicationTests {
 
     @Test
     public void negativeTest() {
+        ResponseEntity<String> errorResponse = restTemplate.exchange(getAmusementParkUrl(), HttpMethod.POST, new HttpEntity(createAmusementPark()), String.class);
+        
+        assertEquals(HttpStatus.I_AM_A_TEAPOT, errorResponse.getStatusCode());
+        assertEquals("Validation error: address nem lehet null-érték.", errorResponse.getBody());
+        
         Resource<AmusementPark> amusementParkResource = postAmusementParkWithAddress();
 
         Machine machine = createMachine();
         machine.setPrice(4000);
 
-        ResponseEntity<String> errorResponse = restTemplate.exchange(amusementParkResource.getLink("machine").getHref(), HttpMethod.POST, new HttpEntity(machine), String.class);
+        errorResponse = restTemplate.exchange(amusementParkResource.getLink("machine").getHref(), HttpMethod.POST, new HttpEntity(machine), String.class);
 
         assertEquals(HttpStatus.I_AM_A_TEAPOT, errorResponse.getStatusCode());
         assertEquals("Machine is too expensive!", errorResponse.getBody());

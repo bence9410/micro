@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @Slf4j
 @RestControllerAdvice
@@ -24,5 +25,12 @@ public class AmusementParkRestAdvice {
     public String handleAmusementParkException(AmusementParkException amusementParkException) {
         log.error(ERROR, amusementParkException);
         return amusementParkException.getMessage();
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public String handleConstraintViolationException(MethodArgumentNotValidException methodArgumentNotValidException) {
+        log.error(ERROR, methodArgumentNotValidException);
+        return methodArgumentNotValidException.getBindingResult().getFieldErrors().stream()
+                .map(fe -> "Validation error: " + fe.getField() + " " + fe.getDefaultMessage() + ".").reduce(String::concat).get();
     }
 }
