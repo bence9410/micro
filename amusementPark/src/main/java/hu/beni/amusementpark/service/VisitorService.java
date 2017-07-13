@@ -33,11 +33,12 @@ public class VisitorService {
 
     @Transactional(rollbackFor = Exception.class)
     public Visitor enterPark(Long amusementParkId, Visitor visitor) {
-        Integer entranceFee = amusementParkRepository.findEntranceFeeById(amusementParkId);
-        ExceptionUtil.exceptionIfFirstLessThanSecondWithMessage(visitor.getSpendingMoney(), entranceFee, "Not enogh money!");
-        visitor.setSpendingMoney(visitor.getSpendingMoney() - entranceFee);
-        amusementParkRepository.incrementCapitalById(entranceFee, amusementParkId);
-        visitor.setAmusementPark(AmusementPark.builder().id(amusementParkId).build());
+        AmusementPark amusementPark = Optional.ofNullable(amusementParkRepository.findAmusementParkByIdReadOnlyIdAndEntranceFee(amusementParkId))
+                .orElseThrow(() -> new AmusementParkException("No AmusementPark with the given id!"));
+        ExceptionUtil.exceptionIfFirstLessThanSecondWithMessage(visitor.getSpendingMoney(), amusementPark.getEntranceFee(), "Not enogh money!");
+        visitor.setSpendingMoney(visitor.getSpendingMoney() - amusementPark.getEntranceFee());
+        amusementParkRepository.incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
+        visitor.setAmusementPark(amusementPark);
         return visitorRepository.save(visitor);
     }
 

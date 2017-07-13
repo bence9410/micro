@@ -7,7 +7,6 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
@@ -58,5 +57,18 @@ public class AmusementPark implements Serializable {
     @Tolerate
     protected AmusementPark() {
         super();
+    }
+
+    @Tolerate
+    public AmusementPark(Long id, Integer entranceFee) {
+        this.id = id;
+        this.entranceFee = entranceFee;
+    }
+
+    @Tolerate
+    public AmusementPark(Long id, Integer capital, Integer totalArea) {
+        this.id = id;
+        this.capital = capital;
+        this.totalArea = totalArea;
     }
 }

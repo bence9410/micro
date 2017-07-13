@@ -24,7 +24,8 @@ public class MachineService {
 
     @Transactional(rollbackFor = Exception.class)
     public Machine addMachine(Long amusementParkId, Machine machine) {
-        AmusementPark amusementPark = amusementParkRepository.findOne(amusementParkId);
+        AmusementPark amusementPark = Optional.ofNullable(amusementParkRepository.findAmusementParkByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId))
+                .orElseThrow(() -> new AmusementParkException("No AmusementPark with the given id!"));
         checkForMoneyAndFreeArea(amusementPark, machine);
         return buyMachine(amusementPark, machine);
     }

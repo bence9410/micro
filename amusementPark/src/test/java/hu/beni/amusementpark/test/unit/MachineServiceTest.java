@@ -41,11 +41,11 @@ public class MachineServiceTest {
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().price(200).build();
 
-        when(amusementParkRepository.findOne(amusementParkId)).thenReturn(amusementPark);
+        when(amusementParkRepository.findAmusementParkByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId)).thenReturn(amusementPark);
 
         assertThrows(() -> machineService.addMachine(amusementParkId, machine), AmusementParkException.class, "Machine is too expensive!");
         
-        verify(amusementParkRepository).findOne(amusementParkId);
+        verify(amusementParkRepository).findAmusementParkByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
     }
 
     @Test
@@ -54,12 +54,12 @@ public class MachineServiceTest {
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().price(200).size(30).build();
 
-        when(amusementParkRepository.findOne(amusementParkId)).thenReturn(amusementPark);
+        when(amusementParkRepository.findAmusementParkByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId)).thenReturn(amusementPark);
         when(machineRepository.sumAreaByAmusementParkId(amusementParkId)).thenReturn(80L);
 
         assertThrows(() -> machineService.addMachine(amusementParkId, machine), AmusementParkException.class, "Machine is too big!");
         
-        verify(amusementParkRepository).findOne(amusementParkId);
+        verify(amusementParkRepository).findAmusementParkByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
         verify(machineRepository).sumAreaByAmusementParkId(amusementParkId);
     }
 
@@ -69,12 +69,12 @@ public class MachineServiceTest {
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().price(200).size(30).build();
 
-        when(amusementParkRepository.findOne(amusementParkId)).thenReturn(amusementPark);
+        when(amusementParkRepository.findAmusementParkByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId)).thenReturn(amusementPark);
         when(machineRepository.sumAreaByAmusementParkId(amusementParkId)).thenReturn(20L);
 
         machineService.addMachine(amusementPark.getId(), machine);
 
-        verify(amusementParkRepository).findOne(amusementParkId);
+        verify(amusementParkRepository).findAmusementParkByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
         verify(machineRepository).sumAreaByAmusementParkId(amusementParkId);
         verify(amusementParkRepository).decreaseCapitalById(machine.getPrice(), amusementParkId);
         assertEquals(amusementPark, machine.getAmusementPark());
