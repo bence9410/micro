@@ -40,7 +40,7 @@ public class AmusementPark implements Serializable {
 
     @NotNull
     @Fetch(FetchMode.SELECT)
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
     @JsonIgnore
