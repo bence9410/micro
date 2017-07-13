@@ -23,7 +23,14 @@ public class RestTemplateConfig {
     public RestTemplate restTemplate() {
         RestTemplate restTemplate = new RestTemplate(new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()));
         restTemplate.getInterceptors().add(getLoggingInterceptor());
-        restTemplate.setErrorHandler(new MyResponseErrorHandler());
+        restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
+
+            @Override
+            protected boolean hasError(HttpStatus statusCode) {
+                return !HttpStatus.Series.SUCCESSFUL.equals(statusCode.series()) && !HttpStatus.I_AM_A_TEAPOT.equals(statusCode);
+            }
+
+        });
         return restTemplate;
     }
 
@@ -39,24 +46,11 @@ public class RestTemplateConfig {
     private String getResponseBodyAsString(InputStream inputStream) {
         byte[] body = null;
         try {
-            int shouldBeAll = inputStream.available();
-            //inputStream.mark(shouldBeAll);
-            body = new byte[shouldBeAll];
+            body = new byte[inputStream.available()];
             inputStream.read(body);
-            //inputStream.reset();
         } catch (IOException e) {
             log.info("Could not log response!", e);
         }
         return new String(body);
     }
-
-    private static class MyResponseErrorHandler extends DefaultResponseErrorHandler {
-
-        @Override
-        protected boolean hasError(HttpStatus statusCode) {
-            return statusCode.series() != HttpStatus.Series.SUCCESSFUL && !statusCode.equals(HttpStatus.I_AM_A_TEAPOT);
-        }
-
-    }
-
 }
