@@ -8,6 +8,7 @@ import hu.beni.amusementpark.repository.MachineRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.MachineService;
 import static hu.beni.amusementpark.test.MyAssert.assertThrows;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,10 +30,20 @@ public class MachineServiceTest {
         visitorRepository = mock(VisitorRepository.class);
         machineService = new MachineService(amusementParkRepository, machineRepository, visitorRepository);
     }
-    
+
     @After
-    public void verifyNoMoreInteractionsOnMocks(){
+    public void verifyNoMoreInteractionsOnMocks() {
         verifyNoMoreInteractions(amusementParkRepository, machineRepository, visitorRepository);
+    }
+
+    @Test
+    public void addMachineNegativeNoPark() {
+        Long amusementParkId = 0L;
+        Machine machine = Machine.builder().build();
+
+        assertThrows(() -> machineService.addMachine(amusementParkId, machine), AmusementParkException.class, NO_AMUSEMENT_PARK_WITH_ID);
+
+        verify(amusementParkRepository).findAmusementParkByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
     }
 
     @Test
@@ -43,8 +54,8 @@ public class MachineServiceTest {
 
         when(amusementParkRepository.findAmusementParkByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId)).thenReturn(amusementPark);
 
-        assertThrows(() -> machineService.addMachine(amusementParkId, machine), AmusementParkException.class, "Machine is too expensive!");
-        
+        assertThrows(() -> machineService.addMachine(amusementParkId, machine), AmusementParkException.class, MACHINE_IS_TOO_EXPENSIVE);
+
         verify(amusementParkRepository).findAmusementParkByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
     }
 
@@ -57,8 +68,8 @@ public class MachineServiceTest {
         when(amusementParkRepository.findAmusementParkByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId)).thenReturn(amusementPark);
         when(machineRepository.sumAreaByAmusementParkId(amusementParkId)).thenReturn(80L);
 
-        assertThrows(() -> machineService.addMachine(amusementParkId, machine), AmusementParkException.class, "Machine is too big!");
-        
+        assertThrows(() -> machineService.addMachine(amusementParkId, machine), AmusementParkException.class, MACHINE_IS_TOO_BIG);
+
         verify(amusementParkRepository).findAmusementParkByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
         verify(machineRepository).sumAreaByAmusementParkId(amusementParkId);
     }
@@ -71,13 +82,15 @@ public class MachineServiceTest {
 
         when(amusementParkRepository.findAmusementParkByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId)).thenReturn(amusementPark);
         when(machineRepository.sumAreaByAmusementParkId(amusementParkId)).thenReturn(20L);
+        when(machineRepository.save(machine)).thenReturn(machine);
 
-        machineService.addMachine(amusementPark.getId(), machine);
+        assertEquals(machine, machineService.addMachine(amusementPark.getId(), machine));
+
+        assertEquals(amusementPark, machine.getAmusementPark());
 
         verify(amusementParkRepository).findAmusementParkByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
         verify(machineRepository).sumAreaByAmusementParkId(amusementParkId);
         verify(amusementParkRepository).decreaseCapitalById(machine.getPrice(), amusementParkId);
-        assertEquals(amusementPark, machine.getAmusementPark());
         verify(machineRepository).save(machine);
     }
 
@@ -86,8 +99,8 @@ public class MachineServiceTest {
         Long amusementParkId = 0L;
         Long machineId = 1L;
 
-        assertThrows(() -> machineService.removeMachine(amusementParkId, machineId), AmusementParkException.class, "No machine in the park with the given id!");
-        
+        assertThrows(() -> machineService.removeMachine(amusementParkId, machineId), AmusementParkException.class, NO_MACHINE_IN_PARK_WITH_ID);
+
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
     }
 
@@ -101,8 +114,8 @@ public class MachineServiceTest {
         when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(machine);
         when(visitorRepository.countByMachineId(machineId)).thenReturn(numberOfVisitorsOnMachine);
 
-        assertThrows(() -> machineService.removeMachine(amusementParkId, machineId), AmusementParkException.class, "Visitors on machine!");
-        
+        assertThrows(() -> machineService.removeMachine(amusementParkId, machineId), AmusementParkException.class, VISITORS_ON_MACHINE);
+
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
         verify(visitorRepository).countByMachineId(machineId);
     }
@@ -132,9 +145,8 @@ public class MachineServiceTest {
 
         when(machineRepository.findOne(machineId)).thenReturn(machine);
 
-        Machine readMachine = machineService.read(machineId);
+        assertEquals(machine, machineService.read(machineId));
 
-        assertEquals(machine, readMachine);
         verify(machineRepository).findOne(machineId);
     }
 

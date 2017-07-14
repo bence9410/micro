@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import static hu.beni.amusementpark.constants.MappingConstants.*;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import hu.beni.amusementpark.service.AmusementParkService;
@@ -28,12 +29,12 @@ public class AmusementParkController {
     }
 
     @GetMapping("/{amusementParkId}")
-    public Resource<AmusementPark> read(@PathVariable(name = "amusementParkId") Long amusementParkId) {
+    public Resource<AmusementPark> read(@PathVariable(name = AMUSEMENT_PARK_ID) Long amusementParkId) {
         return createResource(amusementParkService.read(amusementParkId));
     }
 
     @DeleteMapping("/{amusementParkId}")
-    public void delete(@PathVariable(name = "amusementParkId") Long amusementParkId) {
+    public void delete(@PathVariable(name = AMUSEMENT_PARK_ID) Long amusementParkId) {
         amusementParkService.delete(amusementParkId);
     }
 

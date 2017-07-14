@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import static hu.beni.amusementpark.constants.MappingConstants.*;
 import hu.beni.amusementpark.service.MachineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.Resource;
@@ -23,17 +23,17 @@ public class MachineController {
     private final MachineService machineService;
 
     @PostMapping
-    public Resource<Machine> addMachine(@PathVariable(name = "amusementParkId") Long amusementParkId, @RequestBody Machine machine) {
+    public Resource<Machine> addMachine(@PathVariable(name = AMUSEMENT_PARK_ID) Long amusementParkId, @RequestBody Machine machine) {
         return createResource(amusementParkId, machineService.addMachine(amusementParkId, machine));
     }
 
     @GetMapping("/{machineId}")
-    public Resource<Machine> read(@PathVariable(name = "amusementParkId") Long amusementParkId, @PathVariable(name = "machineId") Long machineId) {
+    public Resource<Machine> read(@PathVariable(name = AMUSEMENT_PARK_ID) Long amusementParkId, @PathVariable(name = MACHINE_ID) Long machineId) {
         return createResource(amusementParkId, machineService.read(machineId));
     }
 
     @DeleteMapping("/{machineId}")
-    public void delete(@PathVariable(name = "amusementParkId") Long amusementParkId, @PathVariable(name = "machineId") Long machineId) {
+    public void delete(@PathVariable(name = AMUSEMENT_PARK_ID) Long amusementParkId, @PathVariable(name = MACHINE_ID) Long machineId) {
         machineService.removeMachine(amusementParkId, machineId);
     }
 
