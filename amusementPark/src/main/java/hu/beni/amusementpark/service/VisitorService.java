@@ -35,7 +35,7 @@ public class VisitorService {
     public Visitor enterPark(Long amusementParkId, Visitor visitor) {
         AmusementPark amusementPark = Optional.ofNullable(amusementParkRepository.findAmusementParkByIdReadOnlyIdAndEntranceFee(amusementParkId))
                 .orElseThrow(() -> new AmusementParkException("No AmusementPark with the given id!"));
-        ExceptionUtil.exceptionIfFirstLessThanSecondWithMessage(visitor.getSpendingMoney(), amusementPark.getEntranceFee(), "Not enogh money!");
+        ExceptionUtil.exceptionIfFirstLessThanSecondWithMessage(visitor.getSpendingMoney(), amusementPark.getEntranceFee(), "Not enough money!");
         visitor.setSpendingMoney(visitor.getSpendingMoney() - amusementPark.getEntranceFee());
         amusementParkRepository.incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
         visitor.setAmusementPark(amusementPark);
@@ -56,7 +56,7 @@ public class VisitorService {
         ExceptionUtil.exceptionIfEqualsWithMessage(VisitorState.ON_MACHINE, visitor.getState(), "Visitor is on a machine");
         ExceptionUtil.exceptionIfFirstLessThanSecondWithMessage(visitor.getSpendingMoney(), machine.getTicketPrice(), "Not enough money!");
         ExceptionUtil.exceptionIfFirstLessThanSecondWithMessage(visitor.getAge(), machine.getMinimumRequiredAge(), "Visitor is too young!");
-        ExceptionUtil.exceptionIfEqualsWithMessage(visitorRepository.countByMachineId(machine.getId()), machine.getNumberOfSeats(), "No free seat on machine");
+        ExceptionUtil.exceptionIfValueEqualsWithMessage(visitorRepository.countByMachineId(machine.getId()), machine.getNumberOfSeats(), "No free seat on machine");
     }
 
     private Visitor incrementCapitalAndDecraiseSpendingMoneyAndSave(Long amusementParkId, Machine machine, Visitor visitor) {

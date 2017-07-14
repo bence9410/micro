@@ -20,4 +20,10 @@ public class ExceptionUtil {
         }
     }
 
+    public static void exceptionIfValueEqualsWithMessage(long l1, long l2, String message) {
+        if (l1 == l2) {
+            throw new AmusementParkException(message);
+        }
+    }
+
 }

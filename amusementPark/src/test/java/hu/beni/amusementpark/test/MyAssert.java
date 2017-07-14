@@ -8,6 +8,8 @@ public class MyAssert {
         try {
             exceptionThrower.run();
             fail("No exception was thrown!");
+        }catch(AssertionError assertionError){
+            throw assertionError;
         } catch (Throwable throwable) {
             if (exceptionType.isInstance(throwable)) {
                 if (!exceptionMessage.equals(throwable.getMessage())) {
