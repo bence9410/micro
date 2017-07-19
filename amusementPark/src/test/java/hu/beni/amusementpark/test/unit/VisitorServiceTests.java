@@ -17,7 +17,7 @@ import org.junit.Test;
 import static hu.beni.amusementpark.test.MyAssert.assertThrows;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 
-public class VisitorServiceTest {
+public class VisitorServiceTests {
 
     private AmusementParkRepository amusementParkRepository;
     private MachineRepository machineRepository;

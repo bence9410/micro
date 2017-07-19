@@ -9,7 +9,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-public class AmusementParkServiceTest {
+public class AmusementParkServiceTests {
 
     private AmusementParkRepository amusementParkRepository;
 
