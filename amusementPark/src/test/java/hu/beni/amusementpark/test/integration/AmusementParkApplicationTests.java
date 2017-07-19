@@ -1,5 +1,6 @@
 package hu.beni.amusementpark.test.integration;
 
+import hu.beni.amusementpark.constants.ErrorMessageConstants;
 import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
@@ -92,7 +93,7 @@ public class AmusementParkApplicationTests {
         errorResponse = restTemplate.exchange(amusementParkResource.getLink("machine").getHref(), HttpMethod.POST, new HttpEntity(machine), String.class);
 
         assertEquals(HttpStatus.I_AM_A_TEAPOT, errorResponse.getStatusCode());
-        assertEquals("Machine is too expensive!", errorResponse.getBody());
+        assertEquals(ErrorMessageConstants.MACHINE_IS_TOO_EXPENSIVE, errorResponse.getBody());
 
         machine.setPrice(400);
         machine.setSize(1100);
@@ -100,7 +101,7 @@ public class AmusementParkApplicationTests {
         errorResponse = restTemplate.exchange(amusementParkResource.getLink("machine").getHref(), HttpMethod.POST, new HttpEntity(machine), String.class);
 
         assertEquals(HttpStatus.I_AM_A_TEAPOT, errorResponse.getStatusCode());
-        assertEquals("Machine is too big!", errorResponse.getBody());
+        assertEquals(ErrorMessageConstants.MACHINE_IS_TOO_BIG, errorResponse.getBody());
 
     }
 
