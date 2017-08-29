@@ -18,13 +18,18 @@ import javax.persistence.ManyToOne;
 import hu.beni.amusementpark.enums.VisitorState;
 import java.util.List;
 import javax.persistence.OneToMany;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Tolerate;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
+@EqualsAndHashCode(of = {"id", "spendingMoney", "age", "dateOfEntry", "state"})
 public class Visitor implements Serializable {
 
     @Id
@@ -36,13 +41,11 @@ public class Visitor implements Serializable {
 
     private Integer age;
 
-    @Builder.Default
-    private Timestamp dateOfEntry = Timestamp.from(Calendar.getInstance().toInstant());
+    private Timestamp dateOfEntry;
 
-    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "Visitor_State")
-    private VisitorState state = VisitorState.REST;
+    private VisitorState state;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

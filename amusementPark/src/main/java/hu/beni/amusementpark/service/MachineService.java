@@ -15,13 +15,13 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MachineService {
 
     private final AmusementParkRepository amusementParkRepository;
     private final MachineRepository machineRepository;
     private final VisitorRepository visitorRepository;
 
-    @Transactional(rollbackFor = Exception.class)
     public Machine addMachine(Long amusementParkId, Machine machine) {
         AmusementPark amusementPark = amusementParkRepository.findAmusementParkByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
         exceptionIfNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
@@ -45,7 +45,6 @@ public class MachineService {
         return machineRepository.findOne(id);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     public void removeMachine(Long amusementParkId, Long machineId) {
         Machine machine = machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId);
         exceptionIfNull(machine, NO_MACHINE_IN_PARK_WITH_ID);

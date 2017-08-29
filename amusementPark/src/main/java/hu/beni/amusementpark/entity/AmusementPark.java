@@ -14,14 +14,18 @@ import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Tolerate;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
+@EqualsAndHashCode(of = {"id", "name", "capital", "totalArea", "entranceFee", "address"})
 public class AmusementPark implements Serializable {
 
     @Id

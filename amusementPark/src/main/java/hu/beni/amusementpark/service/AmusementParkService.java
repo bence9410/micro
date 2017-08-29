@@ -5,9 +5,11 @@ import org.springframework.stereotype.Service;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AmusementParkService {
 
     private final AmusementParkRepository amusementParkRepository;

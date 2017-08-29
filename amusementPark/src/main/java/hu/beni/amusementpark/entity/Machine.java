@@ -17,12 +17,16 @@ import hu.beni.amusementpark.enums.MachineType;
 import java.util.List;
 import javax.persistence.OneToMany;
 import lombok.Builder;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Tolerate;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
+@EqualsAndHashCode(of = {"id", "fantasyName", "size", "price", "numberOfSeats", "minimumRequiredAge", "ticketPrice", "type"})
 public class Machine implements Serializable {
 
     @Id

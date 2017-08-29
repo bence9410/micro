@@ -10,11 +10,14 @@ import hu.beni.amusementpark.enums.VisitorState;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
+import java.sql.Timestamp;
+import java.util.Calendar;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class VisitorService {
 
     private final AmusementParkRepository amusementParkRepository;
@@ -29,18 +32,18 @@ public class VisitorService {
         visitorRepository.delete(id);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     public Visitor enterPark(Long amusementParkId, Visitor visitor) {
         AmusementPark amusementPark = amusementParkRepository.findAmusementParkByIdReadOnlyIdAndEntranceFee(amusementParkId);
         exceptionIfNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
         exceptionIfFirstLessThanSecond(visitor.getSpendingMoney(), amusementPark.getEntranceFee(), NOT_ENOUGH_MONEY);
         visitor.setSpendingMoney(visitor.getSpendingMoney() - amusementPark.getEntranceFee());
+        visitor.setDateOfEntry(Timestamp.from(Calendar.getInstance().toInstant()));
+        visitor.setState(VisitorState.REST);
         amusementParkRepository.incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
         visitor.setAmusementPark(amusementPark);
         return visitorRepository.save(visitor);
     }
-
-    @Transactional(rollbackFor = Exception.class)
+    
     public Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId) {
         Machine machine = machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId);
         exceptionIfNull(machine, NO_MACHINE_IN_PARK_WITH_ID);
