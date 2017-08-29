@@ -1,6 +1,5 @@
 package hu.beni.amusementpark.test.integration;
 
-import hu.beni.amusementpark.constants.ErrorMessageConstants;
 import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
