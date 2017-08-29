@@ -1,6 +1,8 @@
 package hu.beni.amusementpark.constants;
 
 public class ErrorMessageConstants {
+    
+    public static final String ERROR = "Error:";
 
     public static final String NO_AMUSEMENT_PARK_WITH_ID = "No AmusementPark with the given id!";
     public static final String NO_MACHINE_IN_PARK_WITH_ID = "No machine in the park with the given id!";

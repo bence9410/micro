@@ -14,13 +14,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
+import static hu.beni.amusementpark.constants.MappingConstants.*;
 import static org.junit.Assert.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,24 +47,24 @@ public class AmusementParkApplicationTests {
         AmusementPark amusementPark = amusementParkResource.getContent();
 
         //add Machine
-        Resource<Machine> machineResource = postMachine(amusementParkResource.getLink("machine").getHref());
+        Resource<Machine> machineResource = postMachine(amusementParkResource.getLink(MACHINE).getHref());
         Machine machine = machineResource.getContent();
         amusementPark = checkIfAmusementParkCapitalReducedByMachinePrice(amusementParkUrl, amusementPark, machine.getPrice());
 
         //visitor enterPark
-        Resource<Visitor> visitorResource = postVisitorAndCheckIfSpendingMoneyDecraisedByEntranceFee(amusementParkResource.getLink("visitor").getHref(), amusementPark.getEntranceFee());
+        Resource<Visitor> visitorResource = postVisitorAndCheckIfSpendingMoneyDecraisedByEntranceFee(amusementParkResource.getLink(VISITOR).getHref(), amusementPark.getEntranceFee());
         Visitor visitor = visitorResource.getContent();
         amusementPark = checkIfAmusementParkCapitalIncreasedByAmmount(amusementParkUrl, amusementPark, amusementPark.getEntranceFee());
 
         //visitor getOnMachine
-        Resource<Visitor> visitorOnMachineResource = restTemplate.exchange(machineResource.getLink("getOnMachine").getHref(), HttpMethod.PUT, HttpEntity.EMPTY, visitorType(), visitor.getId()).getBody();
+        Resource<Visitor> visitorOnMachineResource = restTemplate.exchange(machineResource.getLink(GET_ON_MACHINE).getHref(), HttpMethod.PUT, HttpEntity.EMPTY, visitorType(), visitor.getId()).getBody();
         Visitor visitorOnMachine = visitorOnMachineResource.getContent();
         assertEquals(VisitorState.ON_MACHINE, visitorOnMachine.getState());
         assertEquals(visitor.getSpendingMoney() - machine.getTicketPrice(), visitorOnMachine.getSpendingMoney().longValue());
         amusementPark = checkIfAmusementParkCapitalIncreasedByAmmount(amusementParkUrl, amusementPark, machine.getTicketPrice());
 
         //visitor getOffMachine
-        visitorResource = restTemplate.exchange(visitorOnMachineResource.getLink("getOffMachine").getHref(), HttpMethod.PUT, HttpEntity.EMPTY, visitorType()).getBody();
+        visitorResource = restTemplate.exchange(visitorOnMachineResource.getLink(GET_OFF_MACHINE).getHref(), HttpMethod.PUT, HttpEntity.EMPTY, visitorType()).getBody();
         assertEquals(VisitorState.REST, visitor.getState());
 
         //visitor leavePark
@@ -90,18 +90,18 @@ public class AmusementParkApplicationTests {
         Machine machine = createMachine();
         machine.setPrice(4000);
 
-        errorResponse = restTemplate.exchange(amusementParkResource.getLink("machine").getHref(), HttpMethod.POST, new HttpEntity(machine), String.class);
+        errorResponse = restTemplate.exchange(amusementParkResource.getLink(MACHINE).getHref(), HttpMethod.POST, new HttpEntity(machine), String.class);
 
         assertEquals(HttpStatus.I_AM_A_TEAPOT, errorResponse.getStatusCode());
-        assertEquals(ErrorMessageConstants.MACHINE_IS_TOO_EXPENSIVE, errorResponse.getBody());
+        assertEquals(MACHINE_IS_TOO_EXPENSIVE, errorResponse.getBody());
 
         machine.setPrice(400);
         machine.setSize(1100);
 
-        errorResponse = restTemplate.exchange(amusementParkResource.getLink("machine").getHref(), HttpMethod.POST, new HttpEntity(machine), String.class);
+        errorResponse = restTemplate.exchange(amusementParkResource.getLink(MACHINE).getHref(), HttpMethod.POST, new HttpEntity(machine), String.class);
 
         assertEquals(HttpStatus.I_AM_A_TEAPOT, errorResponse.getStatusCode());
-        assertEquals(ErrorMessageConstants.MACHINE_IS_TOO_BIG, errorResponse.getBody());
+        assertEquals(MACHINE_IS_TOO_BIG, errorResponse.getBody());
 
     }
 
@@ -124,8 +124,8 @@ public class AmusementParkApplicationTests {
         assertNotNull(amusementParkResource.getId().getHref());
         assertNotNull(responseAmusementPark.getId());
         assertTrue(amusementParkResource.getId().getHref().endsWith(responseAmusementPark.getId().toString()));
-        assertNotNull(amusementParkResource.getLink("machine"));
-        assertNotNull(amusementParkResource.getLink("visitor"));
+        assertNotNull(amusementParkResource.getLink(MACHINE));
+        assertNotNull(amusementParkResource.getLink(VISITOR));
 
         return amusementParkResource;
     }
@@ -144,7 +144,7 @@ public class AmusementParkApplicationTests {
 
         assertEquals(2, machineResource.getLinks().size());
         assertTrue(machineResource.getId().getHref().endsWith(responseMachine.getId().toString()));
-        assertNotNull(machineResource.getLink("getOnMachine"));
+        assertNotNull(machineResource.getLink(GET_ON_MACHINE));
 
         return machineResource;
     }

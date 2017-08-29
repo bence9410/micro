@@ -1,6 +1,5 @@
 package hu.beni.amusementpark.controller;
 
-import hu.beni.amusementpark.constants.MappingConstants;
 import hu.beni.amusementpark.entity.Visitor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,7 +42,7 @@ public class VisitorController {
     public Resource<Visitor> getOnMachine(@PathVariable(name = AMUSEMENT_PARK_ID) Long amusementParkId,
             @PathVariable(name = MACHINE_ID) Long machineId, @PathVariable(name = VISITOR_ID) Long visitorId) {
         Resource<Visitor> visitorResource = createResource(amusementParkId, visitorService.getOnMachine(amusementParkId, machineId, visitorId));
-        visitorResource.add(linkTo(methodOn(VisitorController.class).getOffMachine(amusementParkId, machineId, visitorId)).withRel("getOffMachine"));
+        visitorResource.add(linkTo(methodOn(VisitorController.class).getOffMachine(amusementParkId, machineId, visitorId)).withRel(GET_OFF_MACHINE));
         return visitorResource;
     }
 

@@ -36,12 +36,16 @@ public class VisitorService {
         AmusementPark amusementPark = amusementParkRepository.findAmusementParkByIdReadOnlyIdAndEntranceFee(amusementParkId);
         exceptionIfNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
         exceptionIfFirstLessThanSecond(visitor.getSpendingMoney(), amusementPark.getEntranceFee(), NOT_ENOUGH_MONEY);
-        visitor.setSpendingMoney(visitor.getSpendingMoney() - amusementPark.getEntranceFee());
-        visitor.setDateOfEntry(Timestamp.from(Calendar.getInstance().toInstant()));
-        visitor.setState(VisitorState.REST);
+        modifyVisitorForEnter(visitor, amusementPark.getEntranceFee());
         amusementParkRepository.incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
         visitor.setAmusementPark(amusementPark);
         return visitorRepository.save(visitor);
+    }
+    
+    private void modifyVisitorForEnter(Visitor visitor, Integer entranceFee){
+        visitor.setSpendingMoney(visitor.getSpendingMoney() - entranceFee);
+        visitor.setDateOfEntry(Timestamp.from(Calendar.getInstance().toInstant()));
+        visitor.setState(VisitorState.REST);
     }
     
     public Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId) {

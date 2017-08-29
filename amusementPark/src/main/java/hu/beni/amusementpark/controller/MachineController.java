@@ -39,7 +39,7 @@ public class MachineController {
 
     private Resource<Machine> createResource(Long amusementParkId, Machine machine) {
         return new Resource<>(machine, linkTo(methodOn(MachineController.class).read(amusementParkId, machine.getId())).withSelfRel(),
-                linkTo(methodOn(VisitorController.class).getOnMachine(amusementParkId, machine.getId(), null)).withRel("getOnMachine"));
+                linkTo(methodOn(VisitorController.class).getOnMachine(amusementParkId, machine.getId(), null)).withRel(GET_ON_MACHINE));
     }
 
 }

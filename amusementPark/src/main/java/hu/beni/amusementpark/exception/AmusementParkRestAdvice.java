@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.ERROR;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
@@ -12,8 +12,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 @RestControllerAdvice
 @ResponseStatus(HttpStatus.I_AM_A_TEAPOT)
 public class AmusementParkRestAdvice {
-
-    private static final String ERROR = "Error: ";
 
     @ExceptionHandler(Throwable.class)
     public String handleException(Throwable throwable) {
