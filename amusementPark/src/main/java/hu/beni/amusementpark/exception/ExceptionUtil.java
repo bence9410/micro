@@ -9,7 +9,7 @@ public class ExceptionUtil {
     }
     
     public static <T> void exceptionIfEquals(T t1, T t2, String message) {
-        Optional.ofNullable(t1).filter(t -> t.equals(t2)).orElseThrow(() -> new AmusementParkException(message));
+        Optional.ofNullable(t1).filter(t -> !t.equals(t2)).orElseThrow(() -> new AmusementParkException(message));
     }
 
     public static void exceptionIfFirstLessThanSecond(long first, long second, String message) {
