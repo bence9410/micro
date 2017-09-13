@@ -82,7 +82,10 @@ public class AmusementParkApplicationTests {
         ResponseEntity<String> errorResponse = restTemplate.exchange(getAmusementParkUrl(), HttpMethod.POST, new HttpEntity(createAmusementPark()), String.class);
         
         assertEquals(HttpStatus.I_AM_A_TEAPOT, errorResponse.getStatusCode());
-        assertEquals("Validation error: address nem lehet null-érték.", errorResponse.getBody());
+        String errorMessage = errorResponse.getBody();
+        assertTrue(errorMessage.contains("Validation error: "));
+        assertTrue(errorMessage.contains("address"));
+        assertTrue(errorMessage.contains("null"));
         
         Resource<AmusementPark> amusementParkResource = postAmusementParkWithAddress();
 
