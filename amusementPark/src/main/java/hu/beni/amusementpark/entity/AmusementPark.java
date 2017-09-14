@@ -17,6 +17,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.Tolerate;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -26,6 +27,7 @@ import org.hibernate.annotations.FetchMode;
 @Setter
 @Builder
 @EqualsAndHashCode(of = {"id", "name", "capital", "totalArea", "entranceFee", "address"})
+@ToString(of = {"id", "name", "capital", "totalArea", "entranceFee", "address"})
 public class AmusementPark implements Serializable {
 
     @Id

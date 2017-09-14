@@ -1,5 +1,10 @@
 package hu.beni.amusementpark.service;
 
+import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import hu.beni.amusementpark.entity.AmusementPark;
@@ -16,7 +21,7 @@ public class AmusementParkService {
 
     public AmusementPark create(AmusementPark amusementPark) {
         return amusementParkRepository.save(amusementPark);
-    }
+    }	
 
     public AmusementPark read(Long id) {
         return amusementParkRepository.findOne(id);
@@ -25,4 +30,12 @@ public class AmusementParkService {
     public void delete(Long id) {
         amusementParkRepository.delete(id);
     }
+    
+    public Page<AmusementPark> findAll(Pageable pageable){
+    	return amusementParkRepository.findAll(pageable);
+    }
+    
+    public List<AmusementPark> findAll(Specification<AmusementPark> specification) {
+    	return amusementParkRepository.findAll(specification);
+    }    
 }
