@@ -29,12 +29,12 @@ public class AmusementParkController {
     }
 
     @GetMapping("/{amusementParkId}")
-    public Resource<AmusementPark> read(@PathVariable(name = AMUSEMENT_PARK_ID) Long amusementParkId) {
+    public Resource<AmusementPark> read(@PathVariable Long amusementParkId) {
         return createResource(amusementParkService.read(amusementParkId));
     }
 
     @DeleteMapping("/{amusementParkId}")
-    public void delete(@PathVariable(name = AMUSEMENT_PARK_ID) Long amusementParkId) {
+    public void delete(@PathVariable Long amusementParkId) {
         amusementParkService.delete(amusementParkId);
     }
 

@@ -24,29 +24,29 @@ public class VisitorController {
     private final VisitorService visitorService;
 
     @PostMapping("/visitor")
-    public Resource<Visitor> enterPark(@PathVariable(name = AMUSEMENT_PARK_ID) Long amusementParkId, @RequestBody Visitor visitor) {
+    public Resource<Visitor> enterPark(@PathVariable Long amusementParkId, @RequestBody Visitor visitor) {
         return createResourceForRestVisitor(amusementParkId, visitorService.enterPark(amusementParkId, visitor));
     }
 
     @GetMapping("/visitor/{visitorId}")
-    public Resource<Visitor> read(@PathVariable(name = AMUSEMENT_PARK_ID) Long amusementParkId, @PathVariable(name = VISITOR_ID) Long visitorId) {
+    public Resource<Visitor> read(@PathVariable Long amusementParkId, @PathVariable Long visitorId) {
         return createResourceForRestVisitor(amusementParkId, visitorService.read(visitorId));
     }
 
     @DeleteMapping("/visitor/{visitorId}")
-    public void leavePark(@PathVariable(name = VISITOR_ID) Long visitorId) {
+    public void leavePark(@PathVariable Long visitorId) {
         visitorService.leavePark(visitorId);
     }
 
     @PutMapping("/machine/{machineId}/visitor/{visitorId}/getOnMachine")
-    public Resource<Visitor> getOnMachine(@PathVariable(name = AMUSEMENT_PARK_ID) Long amusementParkId,
-            @PathVariable(name = MACHINE_ID) Long machineId, @PathVariable(name = VISITOR_ID) Long visitorId) {
+    public Resource<Visitor> getOnMachine(@PathVariable Long amusementParkId,
+            @PathVariable Long machineId, @PathVariable Long visitorId) {
         return createResourceForOnMachineVisitor(amusementParkId, machineId, visitorService.getOnMachine(amusementParkId, machineId, visitorId));    
     }
 
     @PutMapping("/machine/{machineId}/visitor/{visitorId}/getOffMachine")
-    public Resource<Visitor> getOffMachine(@PathVariable(name = AMUSEMENT_PARK_ID) Long amusementParkId,
-            @PathVariable(name = MACHINE_ID) Long machineId, @PathVariable(name = VISITOR_ID) Long visitorId) {
+    public Resource<Visitor> getOffMachine(@PathVariable Long amusementParkId,
+            @PathVariable Long machineId, @PathVariable Long visitorId) {
         return createResourceForRestVisitor(amusementParkId, visitorService.getOffMachine(machineId, visitorId));
     }
 

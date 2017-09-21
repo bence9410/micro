@@ -23,17 +23,17 @@ public class MachineController {
     private final MachineService machineService;
 
     @PostMapping
-    public Resource<Machine> addMachine(@PathVariable(name = AMUSEMENT_PARK_ID) Long amusementParkId, @RequestBody Machine machine) {
+    public Resource<Machine> addMachine(@PathVariable Long amusementParkId, @RequestBody Machine machine) {
         return createResource(amusementParkId, machineService.addMachine(amusementParkId, machine));
     }
 
     @GetMapping("/{machineId}")
-    public Resource<Machine> read(@PathVariable(name = AMUSEMENT_PARK_ID) Long amusementParkId, @PathVariable(name = MACHINE_ID) Long machineId) {
+    public Resource<Machine> read(@PathVariable Long amusementParkId, @PathVariable Long machineId) {
         return createResource(amusementParkId, machineService.read(machineId));
     }
 
     @DeleteMapping("/{machineId}")
-    public void delete(@PathVariable(name = AMUSEMENT_PARK_ID) Long amusementParkId, @PathVariable(name = MACHINE_ID) Long machineId) {
+    public void delete(@PathVariable Long amusementParkId, @PathVariable Long machineId) {
         machineService.removeMachine(amusementParkId, machineId);
     }
 
