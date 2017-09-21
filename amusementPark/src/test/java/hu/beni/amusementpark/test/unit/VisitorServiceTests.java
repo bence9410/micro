@@ -12,6 +12,10 @@ import hu.beni.amusementpark.service.VisitorService;
 import org.junit.After;
 import org.junit.Before;
 import static org.mockito.Mockito.*;
+
+import java.sql.Timestamp;
+import java.time.Instant;
+
 import static org.junit.Assert.*;
 import org.junit.Test;
 import static hu.beni.amusementpark.test.MyAssert.assertThrows;
@@ -97,7 +101,8 @@ public class VisitorServiceTests {
 
         assertEquals(spendingMoney - entranceFee, visitor.getSpendingMoney().longValue());
         assertEquals(amusementPark, visitor.getAmusementPark());
-
+        assertTrue(Timestamp.from(Instant.now()).after(visitor.getDateOfEntry()));
+        
         verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
         verify(amusementParkRepository).incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
         verify(visitorRepository).save(visitor);

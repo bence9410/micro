@@ -11,6 +11,7 @@ import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Calendar;
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +45,7 @@ public class VisitorService {
     
     private void modifyVisitorForEnter(Visitor visitor, Integer entranceFee){
         visitor.setSpendingMoney(visitor.getSpendingMoney() - entranceFee);
-        visitor.setDateOfEntry(Timestamp.from(Calendar.getInstance().toInstant()));
+        visitor.setDateOfEntry(Timestamp.from(Instant.now()));
         visitor.setState(VisitorState.REST);
     }
     
