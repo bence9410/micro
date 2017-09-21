@@ -18,9 +18,9 @@ import static org.mockito.Mockito.*;
 import java.sql.Timestamp;
 import java.time.Instant;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import org.junit.Test;
-import static hu.beni.amusementpark.test.MyAssert.assertThrows;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 
 public class VisitorServiceTests {
@@ -70,7 +70,8 @@ public class VisitorServiceTests {
         Long amusementParkId = 0L;
         Visitor visitor = Visitor.builder().build();
 
-        assertThrows(() -> visitorService.enterPark(amusementParkId, visitor), AmusementParkException.class, NO_AMUSEMENT_PARK_WITH_ID);
+        assertThatThrownBy(() -> visitorService.enterPark(amusementParkId, visitor))
+        		.isInstanceOf(AmusementParkException.class).hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
 
         verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
     }
@@ -83,7 +84,8 @@ public class VisitorServiceTests {
 
         when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId)).thenReturn(amusementPark);
 
-        assertThrows(() -> visitorService.enterPark(amusementParkId, visitor), AmusementParkException.class, NOT_ENOUGH_MONEY);
+        assertThatThrownBy(() -> visitorService.enterPark(amusementParkId, visitor))
+        .isInstanceOf(AmusementParkException.class).hasMessage(NOT_ENOUGH_MONEY);
 
         verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
     }
@@ -116,7 +118,8 @@ public class VisitorServiceTests {
         Long machineId = 1L;
         Long visitorId = 2L;
 
-        assertThrows(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId), AmusementParkException.class, NO_MACHINE_IN_PARK_WITH_ID);
+        assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId))
+        		.isInstanceOf(AmusementParkException.class).hasMessage(NO_MACHINE_IN_PARK_WITH_ID);
 
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
     }
@@ -130,7 +133,8 @@ public class VisitorServiceTests {
 
         when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(machine);
 
-        assertThrows(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId), AmusementParkException.class, NO_VISITOR_IN_PARK_WITH_ID);
+        assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId))
+        		.isInstanceOf(AmusementParkException.class).hasMessage(NO_VISITOR_IN_PARK_WITH_ID);
 
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
         verify(visitorRepository).findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
@@ -147,7 +151,8 @@ public class VisitorServiceTests {
         when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(machine);
         when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId)).thenReturn(visitor);
 
-        assertThrows(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId), AmusementParkException.class, VISITOR_IS_ON_A_MACHINE);
+        assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId))
+        		.isInstanceOf(AmusementParkException.class).hasMessage(VISITOR_IS_ON_A_MACHINE);
 
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
         verify(visitorRepository).findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
@@ -164,7 +169,8 @@ public class VisitorServiceTests {
         when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(machine);
         when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId)).thenReturn(visitor);
 
-        assertThrows(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId), AmusementParkException.class, NOT_ENOUGH_MONEY);
+        assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId))
+        		.isInstanceOf(AmusementParkException.class).hasMessage(NOT_ENOUGH_MONEY);
 
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
         verify(visitorRepository).findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
@@ -182,7 +188,8 @@ public class VisitorServiceTests {
         when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId)).thenReturn(visitor);
         when(visitorRepository.countByMachineId(machineId)).thenReturn(10L);
 
-        assertThrows(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId), AmusementParkException.class, NO_FREE_SEAT_ON_MACHINE);
+        assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId))
+        		.isInstanceOf(AmusementParkException.class).hasMessage(NO_FREE_SEAT_ON_MACHINE);
 
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
         verify(visitorRepository).findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
@@ -221,7 +228,8 @@ public class VisitorServiceTests {
         Long machineId = 0L;
         Long visitorId = 1L;
 
-        assertThrows(() -> visitorService.getOffMachine(machineId, visitorId), AmusementParkException.class, NO_VISITOR_ON_MACHINE_WITH_ID);
+        assertThatThrownBy(() -> visitorService.getOffMachine(machineId, visitorId))
+        		.isInstanceOf(AmusementParkException.class).hasMessage(NO_VISITOR_ON_MACHINE_WITH_ID);
 
         verify(visitorRepository).findByMachineIdAndVisitorId(machineId, visitorId);
     }

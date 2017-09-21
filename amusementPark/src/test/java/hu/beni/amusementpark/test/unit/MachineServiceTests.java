@@ -9,12 +9,12 @@ import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.MachineService;
 import hu.beni.amusementpark.service.impl.MachineServiceImpl;
 
-import static hu.beni.amusementpark.test.MyAssert.assertThrows;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 
 public class MachineServiceTests {
@@ -43,7 +43,8 @@ public class MachineServiceTests {
         Long amusementParkId = 0L;
         Machine machine = Machine.builder().build();
 
-        assertThrows(() -> machineService.addMachine(amusementParkId, machine), AmusementParkException.class, NO_AMUSEMENT_PARK_WITH_ID);
+        assertThatThrownBy(() -> machineService.addMachine(amusementParkId, machine))
+        		.isInstanceOf(AmusementParkException.class).hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
 
         verify(amusementParkRepository).findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
     }
@@ -56,7 +57,8 @@ public class MachineServiceTests {
 
         when(amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId)).thenReturn(amusementPark);
 
-        assertThrows(() -> machineService.addMachine(amusementParkId, machine), AmusementParkException.class, MACHINE_IS_TOO_EXPENSIVE);
+        assertThatThrownBy(() -> machineService.addMachine(amusementParkId, machine))
+        		.isInstanceOf(AmusementParkException.class).hasMessage(MACHINE_IS_TOO_EXPENSIVE);
 
         verify(amusementParkRepository).findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
     }
@@ -70,7 +72,8 @@ public class MachineServiceTests {
         when(amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId)).thenReturn(amusementPark);
         when(machineRepository.sumAreaByAmusementParkId(amusementParkId)).thenReturn(80L);
 
-        assertThrows(() -> machineService.addMachine(amusementParkId, machine), AmusementParkException.class, MACHINE_IS_TOO_BIG);
+        assertThatThrownBy(() -> machineService.addMachine(amusementParkId, machine))
+        		.isInstanceOf(AmusementParkException.class).hasMessage(MACHINE_IS_TOO_BIG);
 
         verify(amusementParkRepository).findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
         verify(machineRepository).sumAreaByAmusementParkId(amusementParkId);
@@ -101,7 +104,8 @@ public class MachineServiceTests {
         Long amusementParkId = 0L;
         Long machineId = 1L;
 
-        assertThrows(() -> machineService.removeMachine(amusementParkId, machineId), AmusementParkException.class, NO_MACHINE_IN_PARK_WITH_ID);
+        assertThatThrownBy(() -> machineService.removeMachine(amusementParkId, machineId))
+        		.isInstanceOf(AmusementParkException.class).hasMessage(NO_MACHINE_IN_PARK_WITH_ID);
 
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
     }
@@ -116,7 +120,8 @@ public class MachineServiceTests {
         when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(machine);
         when(visitorRepository.countByMachineId(machineId)).thenReturn(numberOfVisitorsOnMachine);
 
-        assertThrows(() -> machineService.removeMachine(amusementParkId, machineId), AmusementParkException.class, VISITORS_ON_MACHINE);
+        assertThatThrownBy(() -> machineService.removeMachine(amusementParkId, machineId))
+        		.isInstanceOf(AmusementParkException.class).hasMessage(VISITORS_ON_MACHINE);
 
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
         verify(visitorRepository).countByMachineId(machineId);
