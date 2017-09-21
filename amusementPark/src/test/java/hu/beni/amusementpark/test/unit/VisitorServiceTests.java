@@ -66,7 +66,7 @@ public class VisitorServiceTests {
 
         assertThrows(() -> visitorService.enterPark(amusementParkId, visitor), AmusementParkException.class, NO_AMUSEMENT_PARK_WITH_ID);
 
-        verify(amusementParkRepository).findAmusementParkByIdReadOnlyIdAndEntranceFee(amusementParkId);
+        verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
     }
 
     @Test
@@ -75,11 +75,11 @@ public class VisitorServiceTests {
         Long amusementParkId = amusementPark.getId();
         Visitor visitor = Visitor.builder().spendingMoney(40).build();
 
-        when(amusementParkRepository.findAmusementParkByIdReadOnlyIdAndEntranceFee(amusementParkId)).thenReturn(amusementPark);
+        when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId)).thenReturn(amusementPark);
 
         assertThrows(() -> visitorService.enterPark(amusementParkId, visitor), AmusementParkException.class, NOT_ENOUGH_MONEY);
 
-        verify(amusementParkRepository).findAmusementParkByIdReadOnlyIdAndEntranceFee(amusementParkId);
+        verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
     }
 
     @Test
@@ -90,7 +90,7 @@ public class VisitorServiceTests {
         Visitor visitor = Visitor.builder().spendingMoney(100).build();
         Integer spendingMoney = visitor.getSpendingMoney();
 
-        when(amusementParkRepository.findAmusementParkByIdReadOnlyIdAndEntranceFee(amusementParkId)).thenReturn(amusementPark);
+        when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId)).thenReturn(amusementPark);
         when(visitorRepository.save(visitor)).thenReturn(visitor);
 
         assertEquals(visitor, visitorService.enterPark(amusementParkId, visitor));
@@ -98,7 +98,7 @@ public class VisitorServiceTests {
         assertEquals(spendingMoney - entranceFee, visitor.getSpendingMoney().longValue());
         assertEquals(amusementPark, visitor.getAmusementPark());
 
-        verify(amusementParkRepository).findAmusementParkByIdReadOnlyIdAndEntranceFee(amusementParkId);
+        verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
         verify(amusementParkRepository).incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
         verify(visitorRepository).save(visitor);
     }

@@ -13,20 +13,21 @@ import hu.beni.amusementpark.entity.AmusementPark;
 public interface AmusementParkRepository extends JpaRepository<AmusementPark, Long>, JpaSpecificationExecutor<AmusementPark>{
 
     @Modifying
-    @Query("Update AmusementPark a set a.capital = a.capital - :ammount where a.id = :id")
-    public void decreaseCapitalById(@Param("ammount") Integer ammount, @Param("id") Long id);
+    @Query("Update AmusementPark a set a.capital = a.capital - :ammount where a.id = :amusementParkId")
+    public void decreaseCapitalById(@Param("ammount") Integer ammount, @Param("amusementParkId") Long amusementParkId);
 
     @Modifying
-    @Query("Update AmusementPark a set a.capital = a.capital + :ammount where a.id = :id")
-    public void incrementCapitalById(@Param("ammount") Integer ammount, @Param("id") Long id);
+    @Query("Update AmusementPark a set a.capital = a.capital + :ammount where a.id = :amusementParkId")
+    public void incrementCapitalById(@Param("ammount") Integer ammount, @Param("amusementParkId") Long amusementParkId);
 
-    @Query("Select new hu.beni.amusementpark.entity.AmusementPark(a.id, a.entranceFee) from AmusementPark a where a.id = :id")
-    public AmusementPark findAmusementParkByIdReadOnlyIdAndEntranceFee(@Param("id") Long id);
+    @Query("Select new hu.beni.amusementpark.entity.AmusementPark(a.id) from AmusementPark a where a.id = :amusementParkId")
+    public AmusementPark findByIdReadOnlyId(@Param("amusementParkId") Long amusementParkId);
     
-    @Query("Select new hu.beni.amusementpark.entity.AmusementPark(a.id, a.capital, a.totalArea) from AmusementPark a where a.id = :id")
-    public AmusementPark findAmusementParkByIdReadOnlyIdAndCapitalAndTotalArea(@Param("id") Long id);
+    @Query("Select new hu.beni.amusementpark.entity.AmusementPark(a.id, a.entranceFee) from AmusementPark a where a.id = :amusementParkId")
+    public AmusementPark findByIdReadOnlyIdAndEntranceFee(@Param("amusementParkId") Long amusementParkId);
     
-    @Query("Select new hu.beni.amusementpark.entity.AmusementPark(a.id) from AmusementPark a where a.id = :id")
-    public AmusementPark findByIdReadOnlyId(@Param("id") Long id);
+    @Query("Select new hu.beni.amusementpark.entity.AmusementPark(a.id, a.capital, a.totalArea) from AmusementPark a where a.id = :amusementParkId")
+    public AmusementPark findByIdReadOnlyIdAndCapitalAndTotalArea(@Param("amusementParkId") Long amusementParkId);
+    
     
 }

@@ -33,7 +33,7 @@ public class VisitorService {
     }
 
     public Visitor enterPark(Long amusementParkId, Visitor visitor) {
-        AmusementPark amusementPark = amusementParkRepository.findAmusementParkByIdReadOnlyIdAndEntranceFee(amusementParkId);
+        AmusementPark amusementPark = amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId);
         exceptionIfNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
         exceptionIfFirstLessThanSecond(visitor.getSpendingMoney(), amusementPark.getEntranceFee(), NOT_ENOUGH_MONEY);
         modifyVisitorForEnter(visitor, amusementPark.getEntranceFee());

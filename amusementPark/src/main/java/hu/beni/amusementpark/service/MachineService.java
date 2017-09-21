@@ -23,7 +23,7 @@ public class MachineService {
     private final VisitorRepository visitorRepository;
 
     public Machine addMachine(Long amusementParkId, Machine machine) {
-        AmusementPark amusementPark = amusementParkRepository.findAmusementParkByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
+        AmusementPark amusementPark = amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
         exceptionIfNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
         checkForMoneyAndFreeArea(amusementPark, machine);
         return buyMachine(amusementPark, machine);
