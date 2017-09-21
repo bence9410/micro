@@ -7,6 +7,8 @@ import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.MachineService;
+import hu.beni.amusementpark.service.impl.MachineServiceImpl;
+
 import static hu.beni.amusementpark.test.MyAssert.assertThrows;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 import org.junit.After;
@@ -28,7 +30,7 @@ public class MachineServiceTests {
         amusementParkRepository = mock(AmusementParkRepository.class);
         machineRepository = mock(MachineRepository.class);
         visitorRepository = mock(VisitorRepository.class);
-        machineService = new MachineService(amusementParkRepository, machineRepository, visitorRepository);
+        machineService = new MachineServiceImpl(amusementParkRepository, machineRepository, visitorRepository);
     }
 
     @After

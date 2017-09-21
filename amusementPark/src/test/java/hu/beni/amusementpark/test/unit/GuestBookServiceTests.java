@@ -18,6 +18,7 @@ import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.GuestBookRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.GuestBookService;
+import hu.beni.amusementpark.service.impl.GuestBookServiceImpl;
 
 public class GuestBookServiceTests {
 
@@ -32,7 +33,7 @@ public class GuestBookServiceTests {
 		amusementParkRepository = mock(AmusementParkRepository.class);
 		visitorRepository = mock(VisitorRepository.class);
 		guestBookRepository = mock(GuestBookRepository.class);
-		guestBookService = new GuestBookService(amusementParkRepository, visitorRepository, guestBookRepository);
+		guestBookService = new GuestBookServiceImpl(amusementParkRepository, visitorRepository, guestBookRepository);
 	}
 
 	@After

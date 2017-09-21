@@ -5,37 +5,19 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Service;
 
 import hu.beni.amusementpark.entity.AmusementPark;
-import hu.beni.amusementpark.repository.AmusementParkRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 
-@Service
-@RequiredArgsConstructor
-@Transactional
-public class AmusementParkService {
+public interface AmusementParkService {
 
-    private final AmusementParkRepository amusementParkRepository;
+    AmusementPark save(AmusementPark amusementPark);
 
-    public AmusementPark save(AmusementPark amusementPark) {
-        return amusementParkRepository.save(amusementPark);
-    }	
+    AmusementPark findOne(Long amusementParkId);
 
-    public AmusementPark findOne(Long amusementParkId) {
-        return amusementParkRepository.findOne(amusementParkId);
-    }
-
-    public void delete(Long amusementParkId) {
-        amusementParkRepository.delete(amusementParkId);
-    }
+    void delete(Long amusementParkId);
     
-    public Page<AmusementPark> findAll(Pageable pageable){
-    	return amusementParkRepository.findAll(pageable);
-    }
+    Page<AmusementPark> findAll(Pageable pageable);
     
-    public List<AmusementPark> findAll(Specification<AmusementPark> specification) {
-    	return amusementParkRepository.findAll(specification);
-    }    
+    List<AmusementPark> findAll(Specification<AmusementPark> specification);
+    
 }

@@ -3,6 +3,8 @@ package hu.beni.amusementpark.test.unit;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.service.AmusementParkService;
+import hu.beni.amusementpark.service.impl.AmusementParkServiceImpl;
+
 import org.junit.After;
 import org.junit.Before;
 import static org.mockito.Mockito.*;
@@ -18,7 +20,7 @@ public class AmusementParkServiceTests {
     @Before
     public void setUp() {
         amusementParkRepository = mock(AmusementParkRepository.class);
-        amusementParkService = new AmusementParkService(amusementParkRepository);
+        amusementParkService = new AmusementParkServiceImpl(amusementParkRepository);
     }
 
     @After

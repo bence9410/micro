@@ -9,6 +9,8 @@ import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.VisitorService;
+import hu.beni.amusementpark.service.impl.VisitorServiceImpl;
+
 import org.junit.After;
 import org.junit.Before;
 import static org.mockito.Mockito.*;
@@ -34,7 +36,7 @@ public class VisitorServiceTests {
         amusementParkRepository = mock(AmusementParkRepository.class);
         machineRepository = mock(MachineRepository.class);
         visitorRepository = mock(VisitorRepository.class);
-        visitorService = new VisitorService(amusementParkRepository, machineRepository, visitorRepository);
+        visitorService = new VisitorServiceImpl(amusementParkRepository, machineRepository, visitorRepository);
     }
 
     @After
