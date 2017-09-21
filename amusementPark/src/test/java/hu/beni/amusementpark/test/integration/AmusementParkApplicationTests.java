@@ -2,6 +2,7 @@ package hu.beni.amusementpark.test.integration;
 
 import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
+import hu.beni.amusementpark.entity.GuestBook;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.enums.MachineType;
@@ -65,7 +66,13 @@ public class AmusementParkApplicationTests {
         //visitor getOffMachine
         visitorResource = restTemplate.exchange(visitorOnMachineResource.getLink(GET_OFF_MACHINE).getHref(), HttpMethod.PUT, HttpEntity.EMPTY, visitorType()).getBody();
         assertEquals(VisitorState.REST, visitor.getState());
-
+        
+        //writeInGuestBook
+        String textOfRegistry = "Nagyon jó!";
+        Resource<GuestBook> guestBookResource = restTemplate.exchange(visitorResource.getLink(WRITE_IN_GUEST_BOOK).getHref(), HttpMethod.POST, new HttpEntity(textOfRegistry), guestBookType()).getBody();
+        assertEquals(textOfRegistry, restTemplate.exchange(guestBookResource.getId().getHref(), HttpMethod.GET, HttpEntity.EMPTY, guestBookType()).getBody().getContent().getTextOfRegistry());
+        
+        
         //visitor leavePark
         restTemplate.exchange(visitorResource.getId().getHref(), HttpMethod.DELETE, HttpEntity.EMPTY, Void.class);
 
@@ -163,8 +170,9 @@ public class AmusementParkApplicationTests {
         visitor.setId(responseVisitor.getId());
         assertEquals(visitor.getSpendingMoney().longValue(), responseVisitor.getSpendingMoney() + entranceFee);
 
-        assertEquals(1, visitorResource.getLinks().size());
+        assertEquals(2, visitorResource.getLinks().size());
         assertTrue(visitorResource.getId().getHref().endsWith(responseVisitor.getId().toString()));
+        assertTrue(visitorResource.getLink(WRITE_IN_GUEST_BOOK).getHref().endsWith(responseVisitor.getId()+"/guestBook"));
 
         return visitorResource;
     }
@@ -236,6 +244,11 @@ public class AmusementParkApplicationTests {
     private ParameterizedTypeReference<Resource<Visitor>> visitorType() {
         return new ParameterizedTypeReference<Resource<Visitor>>() {
         };
+    }
+    
+    private ParameterizedTypeReference<Resource<GuestBook>> guestBookType(){
+    	return new ParameterizedTypeReference<Resource<GuestBook>>() {
+		};
     }
 
 }

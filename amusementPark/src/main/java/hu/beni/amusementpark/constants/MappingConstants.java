@@ -10,5 +10,6 @@ public class MappingConstants {
     public static final String VISITOR = "visitor";
     public static final String GET_ON_MACHINE = "getOnMachine";
     public static final String GET_OFF_MACHINE = "getOffMachine";
+    public static final String WRITE_IN_GUEST_BOOK = "writeInGuestBook";
 
 }

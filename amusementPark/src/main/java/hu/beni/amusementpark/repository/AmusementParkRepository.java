@@ -26,4 +26,7 @@ public interface AmusementParkRepository extends JpaRepository<AmusementPark, Lo
     @Query("Select new hu.beni.amusementpark.entity.AmusementPark(a.id, a.capital, a.totalArea) from AmusementPark a where a.id = :id")
     public AmusementPark findAmusementParkByIdReadOnlyIdAndCapitalAndTotalArea(@Param("id") Long id);
     
+    @Query("Select new hu.beni.amusementpark.entity.AmusementPark(a.id) from AmusementPark a where a.id = :id")
+    public AmusementPark findByIdReadOnlyId(@Param("id") Long id);
+    
 }

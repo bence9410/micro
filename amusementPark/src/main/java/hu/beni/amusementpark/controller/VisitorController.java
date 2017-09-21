@@ -25,12 +25,12 @@ public class VisitorController {
 
     @PostMapping("/visitor")
     public Resource<Visitor> enterPark(@PathVariable(name = AMUSEMENT_PARK_ID) Long amusementParkId, @RequestBody Visitor visitor) {
-        return createResource(amusementParkId, visitorService.enterPark(amusementParkId, visitor));
+        return createResourceForRestVisitor(amusementParkId, visitorService.enterPark(amusementParkId, visitor));
     }
 
     @GetMapping("/visitor/{visitorId}")
     public Resource<Visitor> read(@PathVariable(name = AMUSEMENT_PARK_ID) Long amusementParkId, @PathVariable(name = VISITOR_ID) Long visitorId) {
-        return createResource(amusementParkId, visitorService.read(visitorId));
+        return createResourceForRestVisitor(amusementParkId, visitorService.read(visitorId));
     }
 
     @DeleteMapping("/visitor/{visitorId}")
@@ -41,19 +41,29 @@ public class VisitorController {
     @PutMapping("/machine/{machineId}/visitor/{visitorId}/getOnMachine")
     public Resource<Visitor> getOnMachine(@PathVariable(name = AMUSEMENT_PARK_ID) Long amusementParkId,
             @PathVariable(name = MACHINE_ID) Long machineId, @PathVariable(name = VISITOR_ID) Long visitorId) {
-        Resource<Visitor> visitorResource = createResource(amusementParkId, visitorService.getOnMachine(amusementParkId, machineId, visitorId));
-        visitorResource.add(linkTo(methodOn(VisitorController.class).getOffMachine(amusementParkId, machineId, visitorId)).withRel(GET_OFF_MACHINE));
-        return visitorResource;
+        return createResourceForOnMachineVisitor(amusementParkId, machineId, visitorService.getOnMachine(amusementParkId, machineId, visitorId));    
     }
 
     @PutMapping("/machine/{machineId}/visitor/{visitorId}/getOffMachine")
     public Resource<Visitor> getOffMachine(@PathVariable(name = AMUSEMENT_PARK_ID) Long amusementParkId,
             @PathVariable(name = MACHINE_ID) Long machineId, @PathVariable(name = VISITOR_ID) Long visitorId) {
-        return createResource(amusementParkId, visitorService.getOffMachine(machineId, visitorId));
+        return createResourceForRestVisitor(amusementParkId, visitorService.getOffMachine(machineId, visitorId));
     }
 
+    private Resource<Visitor> createResourceForRestVisitor(Long amusementParkId, Visitor visitor){
+    	Resource<Visitor> visitorResource = createResource(amusementParkId, visitor);
+    	visitorResource.add(linkTo(methodOn(GuestBookController.class).writeInGuestBook(amusementParkId, visitor.getId(), null)).withRel(WRITE_IN_GUEST_BOOK));
+    	return visitorResource;
+    }
+    
+    private Resource<Visitor> createResourceForOnMachineVisitor(Long amusementParkId, Long machineId, Visitor visitor){
+    	Resource<Visitor> visitorResource = createResource(amusementParkId, visitor);
+    	visitorResource.add(linkTo(methodOn(getClass()).getOffMachine(amusementParkId, machineId, visitor.getId())).withRel(GET_OFF_MACHINE));
+    	return visitorResource;
+    }
+    
     private Resource<Visitor> createResource(Long amusementParkId, Visitor visitor) {
         return new Resource<>(visitor, linkTo(methodOn(VisitorController.class).read(amusementParkId, visitor.getId())).withSelfRel());
     }
-
+    
 }

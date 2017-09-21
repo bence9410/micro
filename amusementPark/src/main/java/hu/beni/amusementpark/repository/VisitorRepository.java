@@ -19,4 +19,7 @@ public interface VisitorRepository extends JpaRepository<Visitor, Long> {
     @Query("Select v from Visitor v where v.machine.id = :machineId and v.id = :visitorId")
     public Visitor findByMachineIdAndVisitorId(@Param("machineId") Long machineId, @Param("visitorId") Long visitorId);
 
+    @Query("Select new hu.beni.amusementpark.entity.Visitor(v.id) from Visitor v where v.amusementPark.id = :amusementParkId and v.id = :visitorId")
+    public Visitor findByAmusementParkIdAndVisitorIdReadOnlyId(@Param("amusementParkId") Long amusementParkId, @Param("visitorId")Long visitorId);
+    
 }

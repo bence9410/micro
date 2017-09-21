@@ -62,6 +62,11 @@ public class AmusementPark implements Serializable {
     protected AmusementPark() {
         super();
     }
+    
+    @Tolerate
+    public AmusementPark(Long id) {
+    	this.id = id;
+    }
 
     @Tolerate
     public AmusementPark(Long id, Integer entranceFee) {

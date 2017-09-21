@@ -62,5 +62,10 @@ public class Visitor implements Serializable {
     protected Visitor() {
         super();
     }
+    
+    @Tolerate
+    public Visitor(Long id) {
+    	this.id = id;
+    }
 
 }
