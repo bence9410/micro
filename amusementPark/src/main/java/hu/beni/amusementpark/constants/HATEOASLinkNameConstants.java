@@ -1,6 +1,6 @@
 package hu.beni.amusementpark.constants;
 
-public class MappingConstants {
+public class HATEOASLinkNameConstants {
 
     public static final String MACHINE = "machine";
     public static final String VISITOR = "visitor";

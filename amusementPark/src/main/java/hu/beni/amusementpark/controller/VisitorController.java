@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-import static hu.beni.amusementpark.constants.MappingConstants.*;
+import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.*;
 import hu.beni.amusementpark.service.VisitorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.Resource;

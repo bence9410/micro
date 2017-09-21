@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import static hu.beni.amusementpark.constants.MappingConstants.*;
+import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.*;
 import hu.beni.amusementpark.service.MachineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.Resource;

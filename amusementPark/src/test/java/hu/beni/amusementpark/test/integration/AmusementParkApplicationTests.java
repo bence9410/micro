@@ -20,7 +20,7 @@ import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
-import static hu.beni.amusementpark.constants.MappingConstants.*;
+import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.*;
 import static org.junit.Assert.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
