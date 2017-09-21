@@ -29,5 +29,9 @@ public class ExceptionUtil {
             throw new AmusementParkException(message);
         }
     }
+    
+    private ExceptionUtil() {
+    	super();
+    }
 
 }

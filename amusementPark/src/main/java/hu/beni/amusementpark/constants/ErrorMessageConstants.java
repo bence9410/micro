@@ -15,4 +15,8 @@ public class ErrorMessageConstants {
     public static final String VISITOR_IS_ON_A_MACHINE = "Visitor is on a machine";
     public static final String VISITOR_IS_TOO_YOUNG = "Visitor is too young!";
     public static final String NO_FREE_SEAT_ON_MACHINE = "No free seat on machine";
+    
+    private ErrorMessageConstants() {
+    	super();
+    }
 }

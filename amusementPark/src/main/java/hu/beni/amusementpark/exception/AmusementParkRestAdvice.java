@@ -29,6 +29,7 @@ public class AmusementParkRestAdvice {
     public String handleMethodArgumentNotValidException(MethodArgumentNotValidException methodArgumentNotValidException) {
         log.error(ERROR, methodArgumentNotValidException);
         return methodArgumentNotValidException.getBindingResult().getFieldErrors().stream()
-                .map(fe -> "Validation error: " + fe.getField() + " " + fe.getDefaultMessage() + ".").reduce(String::concat).get();
+                .map(fe -> "Validation error: " + fe.getField() + " " + fe.getDefaultMessage() + ".")
+                .reduce(String::concat).orElse("Validation error occurred, but could not get error message.");
     }
 }
