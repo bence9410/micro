@@ -139,13 +139,13 @@ public class MachineServiceTests {
     }
 
     @Test
-    public void readPositive() {
+    public void findOnePositive() {
         Machine machine = Machine.builder().id(0L).build();
         Long machineId = machine.getId();
 
         when(machineRepository.findOne(machineId)).thenReturn(machine);
 
-        assertEquals(machine, machineService.read(machineId));
+        assertEquals(machine, machineService.findOne(machineId));
 
         verify(machineRepository).findOne(machineId);
     }

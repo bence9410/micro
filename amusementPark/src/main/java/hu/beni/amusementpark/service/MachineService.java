@@ -41,8 +41,8 @@ public class MachineService {
         return machineRepository.save(machine);
     }
 
-    public Machine read(Long id) {
-        return machineRepository.findOne(id);
+    public Machine findOne(Long amusementParkId) {
+        return machineRepository.findOne(amusementParkId);
     }
 
     public void removeMachine(Long amusementParkId, Long machineId) {

@@ -32,11 +32,11 @@ public class MachineServiceTests {
         assertNotNull(machineId);
         assertEquals(amusementPark.getCapital() - machine.getPrice(), amusementParkService.findOne(amusementParkId).getCapital().longValue());
         
-        Machine readMachine = machineService.read(machineId);
+        Machine readMachine = machineService.findOne(machineId);
         assertEquals(machine, readMachine);
         
         machineService.removeMachine(amusementParkId, machineId);
-        assertNull(machineService.read(machineId));
+        assertNull(machineService.findOne(machineId));
         assertEquals(amusementPark.getCapital().longValue(), amusementParkService.findOne(amusementParkId).getCapital().longValue());
     }
 

@@ -29,7 +29,7 @@ public class MachineController {
 
     @GetMapping("/{machineId}")
     public Resource<Machine> read(@PathVariable Long amusementParkId, @PathVariable Long machineId) {
-        return createResource(amusementParkId, machineService.read(machineId));
+        return createResource(amusementParkId, machineService.findOne(machineId));
     }
 
     @DeleteMapping("/{machineId}")
