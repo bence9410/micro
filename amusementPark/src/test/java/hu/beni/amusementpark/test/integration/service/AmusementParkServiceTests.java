@@ -42,7 +42,7 @@ public class AmusementParkServiceTests {
 		Address address = Address.builder().build();
 		AmusementPark amusementPark = AmusementPark.builder().address(address).build();
 
-		AmusementPark createdAmusementPark = amusementParkService.create(amusementPark);
+		AmusementPark createdAmusementPark = amusementParkService.save(amusementPark);
 		assertNotNull(createdAmusementPark);
 		Long id = createdAmusementPark.getId();
 		amusementPark.setId(id);
@@ -51,11 +51,11 @@ public class AmusementParkServiceTests {
 		assertNotNull(id);
 		assertNotNull(address.getId());
 
-		AmusementPark readAmusementPark = amusementParkService.read(id);
+		AmusementPark readAmusementPark = amusementParkService.findOne(id);
 		assertEquals(amusementPark, readAmusementPark);
 
 		amusementParkService.delete(id);
-		assertNull(amusementParkService.read(id));
+		assertNull(amusementParkService.findOne(id));
 	}
 
 	@Test

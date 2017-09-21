@@ -19,16 +19,16 @@ public class AmusementParkService {
 
     private final AmusementParkRepository amusementParkRepository;
 
-    public AmusementPark create(AmusementPark amusementPark) {
+    public AmusementPark save(AmusementPark amusementPark) {
         return amusementParkRepository.save(amusementPark);
     }	
 
-    public AmusementPark read(Long id) {
-        return amusementParkRepository.findOne(id);
+    public AmusementPark findOne(Long amusementParkId) {
+        return amusementParkRepository.findOne(amusementParkId);
     }
 
-    public void delete(Long id) {
-        amusementParkRepository.delete(id);
+    public void delete(Long amusementParkId) {
+        amusementParkRepository.delete(amusementParkId);
     }
     
     public Page<AmusementPark> findAll(Pageable pageable){

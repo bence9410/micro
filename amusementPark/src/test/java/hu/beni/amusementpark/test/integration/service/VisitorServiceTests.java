@@ -34,7 +34,7 @@ public class VisitorServiceTests {
     @Test
     public void test(){
         AmusementPark amusementPark = AmusementPark.builder().capital(100).entranceFee(10).totalArea(100).address(Address.builder().build()).build();
-        Long amusementParkId = amusementParkService.create(amusementPark).getId();
+        Long amusementParkId = amusementParkService.save(amusementPark).getId();
         Integer capital = amusementPark.getCapital();
         Integer entranceFee = amusementPark.getEntranceFee();
         
@@ -48,7 +48,7 @@ public class VisitorServiceTests {
         Long visitorId = visitorService.enterPark(amusementParkId, visitor).getId();
         capital += entranceFee;
         spendingMoney -= entranceFee;
-        assertEquals(capital, amusementParkService.read(amusementParkId).getCapital());
+        assertEquals(capital, amusementParkService.findOne(amusementParkId).getCapital());
         
         Visitor readVisitor = visitorService.read(visitorId);
         assertEquals(spendingMoney, readVisitor.getSpendingMoney());
@@ -57,7 +57,7 @@ public class VisitorServiceTests {
         visitorService.getOnMachine(amusementParkId, machineId, visitorId);
         capital += ticketPrice;
         spendingMoney -= ticketPrice;
-        assertEquals(capital, amusementParkService.read(amusementParkId).getCapital());
+        assertEquals(capital, amusementParkService.findOne(amusementParkId).getCapital());
         
         readVisitor = visitorService.read(visitorId);
         assertEquals(spendingMoney, readVisitor.getSpendingMoney());

@@ -34,7 +34,7 @@ public class GuestBookServiceTests {
 
 	@Test
 	public void test() {
-		AmusementPark amusementPark = amusementParkService.create(
+		AmusementPark amusementPark = amusementParkService.save(
 				AmusementPark.builder().capital(100).entranceFee(10).address(Address.builder().build()).build());
 		Long amusementParkId = amusementPark.getId();
 

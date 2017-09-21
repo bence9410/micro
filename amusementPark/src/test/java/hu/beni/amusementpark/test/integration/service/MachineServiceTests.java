@@ -25,19 +25,19 @@ public class MachineServiceTests {
     @Test
     public void test(){
         AmusementPark amusementPark = AmusementPark.builder().capital(100).totalArea(100).address(Address.builder().build()).build();
-        Long amusementParkId = amusementParkService.create(amusementPark).getId();
+        Long amusementParkId = amusementParkService.save(amusementPark).getId();
         
         Machine machine = Machine.builder().price(10).size(10).build();
         Long machineId = machineService.addMachine(amusementParkId, machine).getId();
         assertNotNull(machineId);
-        assertEquals(amusementPark.getCapital() - machine.getPrice(), amusementParkService.read(amusementParkId).getCapital().longValue());
+        assertEquals(amusementPark.getCapital() - machine.getPrice(), amusementParkService.findOne(amusementParkId).getCapital().longValue());
         
         Machine readMachine = machineService.read(machineId);
         assertEquals(machine, readMachine);
         
         machineService.removeMachine(amusementParkId, machineId);
         assertNull(machineService.read(machineId));
-        assertEquals(amusementPark.getCapital().longValue(), amusementParkService.read(amusementParkId).getCapital().longValue());
+        assertEquals(amusementPark.getCapital().longValue(), amusementParkService.findOne(amusementParkId).getCapital().longValue());
     }
 
 }

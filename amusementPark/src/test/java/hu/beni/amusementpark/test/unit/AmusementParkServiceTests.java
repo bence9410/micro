@@ -27,24 +27,24 @@ public class AmusementParkServiceTests {
     }
 
     @Test
-    public void createPositive() {
+    public void savePositive() {
         AmusementPark amusementPark = AmusementPark.builder().build();
 
         when(amusementParkRepository.save(amusementPark)).thenReturn(amusementPark);
 
-        assertEquals(amusementPark, amusementParkService.create(amusementPark));
+        assertEquals(amusementPark, amusementParkService.save(amusementPark));
 
         verify(amusementParkRepository).save(amusementPark);
     }
 
     @Test
-    public void readPositive() {
+    public void findOnePositive() {
         AmusementPark amusementPark = AmusementPark.builder().id(0L).build();
         Long amusementParkId = amusementPark.getId();
 
         when(amusementParkRepository.findOne(amusementParkId)).thenReturn(amusementPark);
 
-        assertEquals(amusementPark, amusementParkService.read(amusementParkId));
+        assertEquals(amusementPark, amusementParkService.findOne(amusementParkId));
 
         verify(amusementParkRepository).findOne(amusementParkId);
     }

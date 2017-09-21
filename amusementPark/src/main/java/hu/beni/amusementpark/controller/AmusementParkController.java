@@ -25,12 +25,12 @@ public class AmusementParkController {
 
     @PostMapping
     public Resource<AmusementPark> create(@Valid @RequestBody AmusementPark amusementPark) {
-        return createResource(amusementParkService.create(amusementPark));
+        return createResource(amusementParkService.save(amusementPark));
     }
 
     @GetMapping("/{amusementParkId}")
     public Resource<AmusementPark> read(@PathVariable Long amusementParkId) {
-        return createResource(amusementParkService.read(amusementParkId));
+        return createResource(amusementParkService.findOne(amusementParkId));
     }
 
     @DeleteMapping("/{amusementParkId}")
