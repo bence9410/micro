@@ -30,7 +30,7 @@ public class VisitorController {
 
     @GetMapping("/visitor/{visitorId}")
     public Resource<Visitor> read(@PathVariable Long amusementParkId, @PathVariable Long visitorId) {
-        return createResourceForRestVisitor(amusementParkId, visitorService.read(visitorId));
+        return createResourceForRestVisitor(amusementParkId, visitorService.findOne(visitorId));
     }
 
     @DeleteMapping("/visitor/{visitorId}")

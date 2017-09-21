@@ -39,13 +39,13 @@ public class VisitorServiceTests {
     }
 
     @Test
-    public void readPositive() {
+    public void findOnePositive() {
         Visitor visitor = Visitor.builder().id(0L).build();
         Long visitorId = visitor.getId();
 
         when(visitorRepository.findOne(visitorId)).thenReturn(visitor);
 
-        assertEquals(visitor, visitorService.read(visitorId));
+        assertEquals(visitor, visitorService.findOne(visitorId));
 
         verify(visitorRepository).findOne(visitorId);
     }

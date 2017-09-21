@@ -24,12 +24,12 @@ public class VisitorService {
     private final MachineRepository machineRepository;
     private final VisitorRepository visitorRepository;
 
-    public Visitor read(Long id) {
-        return visitorRepository.findOne(id);
+    public Visitor findOne(Long visitorId) {
+        return visitorRepository.findOne(visitorId);
     }
 
-    public void leavePark(Long id) {
-        visitorRepository.delete(id);
+    public void leavePark(Long visitorId) {
+        visitorRepository.delete(visitorId);
     }
 
     public Visitor enterPark(Long amusementParkId, Visitor visitor) {

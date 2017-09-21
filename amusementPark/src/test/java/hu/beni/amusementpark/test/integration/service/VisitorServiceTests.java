@@ -50,7 +50,7 @@ public class VisitorServiceTests {
         spendingMoney -= entranceFee;
         assertEquals(capital, amusementParkService.findOne(amusementParkId).getCapital());
         
-        Visitor readVisitor = visitorService.read(visitorId);
+        Visitor readVisitor = visitorService.findOne(visitorId);
         assertEquals(spendingMoney, readVisitor.getSpendingMoney());
         assertEquals(VisitorState.REST, readVisitor.getState());
         
@@ -59,15 +59,15 @@ public class VisitorServiceTests {
         spendingMoney -= ticketPrice;
         assertEquals(capital, amusementParkService.findOne(amusementParkId).getCapital());
         
-        readVisitor = visitorService.read(visitorId);
+        readVisitor = visitorService.findOne(visitorId);
         assertEquals(spendingMoney, readVisitor.getSpendingMoney());
         assertEquals(VisitorState.ON_MACHINE, readVisitor.getState());
         
         visitorService.getOffMachine(machineId, visitorId);
-        assertEquals(VisitorState.REST, visitorService.read(visitorId).getState());
+        assertEquals(VisitorState.REST, visitorService.findOne(visitorId).getState());
         
         visitorService.leavePark(visitorId);
-        assertNull(visitorService.read(visitorId));
+        assertNull(visitorService.findOne(visitorId));
     }
 
 }
