@@ -29,7 +29,7 @@ public class VisitorController {
     }
 
     @GetMapping("/visitor/{visitorId}")
-    public Resource<Visitor> read(@PathVariable Long amusementParkId, @PathVariable Long visitorId) {
+    public Resource<Visitor> findOne(@PathVariable Long amusementParkId, @PathVariable Long visitorId) {
         return createResourceForRestVisitor(amusementParkId, visitorService.findOne(visitorId));
     }
 
@@ -63,7 +63,7 @@ public class VisitorController {
     }
     
     private Resource<Visitor> createResource(Long amusementParkId, Visitor visitor) {
-        return new Resource<>(visitor, linkTo(methodOn(VisitorController.class).read(amusementParkId, visitor.getId())).withSelfRel());
+        return new Resource<>(visitor, linkTo(methodOn(VisitorController.class).findOne(amusementParkId, visitor.getId())).withSelfRel());
     }
     
 }

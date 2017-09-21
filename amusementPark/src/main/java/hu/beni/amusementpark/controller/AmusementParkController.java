@@ -24,12 +24,12 @@ public class AmusementParkController {
     private final AmusementParkService amusementParkService;
 
     @PostMapping
-    public Resource<AmusementPark> create(@Valid @RequestBody AmusementPark amusementPark) {
+    public Resource<AmusementPark> save(@Valid @RequestBody AmusementPark amusementPark) {
         return createResource(amusementParkService.save(amusementPark));
     }
 
     @GetMapping("/{amusementParkId}")
-    public Resource<AmusementPark> read(@PathVariable Long amusementParkId) {
+    public Resource<AmusementPark> findOne(@PathVariable Long amusementParkId) {
         return createResource(amusementParkService.findOne(amusementParkId));
     }
 
@@ -39,7 +39,7 @@ public class AmusementParkController {
     }
 
     private Resource<AmusementPark> createResource(AmusementPark amusementPark) {
-        return new Resource<>(amusementPark, linkTo(methodOn(AmusementParkController.class).read(amusementPark.getId())).withSelfRel(),
+        return new Resource<>(amusementPark, linkTo(methodOn(AmusementParkController.class).findOne(amusementPark.getId())).withSelfRel(),
                 linkTo(methodOn(MachineController.class).addMachine(amusementPark.getId(), null)).withRel(MACHINE),
                 linkTo(methodOn(VisitorController.class).enterPark(amusementPark.getId(), null)).withRel(VISITOR));
     }

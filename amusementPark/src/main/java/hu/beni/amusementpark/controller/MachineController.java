@@ -28,7 +28,7 @@ public class MachineController {
     }
 
     @GetMapping("/{machineId}")
-    public Resource<Machine> read(@PathVariable Long amusementParkId, @PathVariable Long machineId) {
+    public Resource<Machine> findOne(@PathVariable Long amusementParkId, @PathVariable Long machineId) {
         return createResource(amusementParkId, machineService.findOne(machineId));
     }
 
@@ -38,7 +38,7 @@ public class MachineController {
     }
 
     private Resource<Machine> createResource(Long amusementParkId, Machine machine) {
-        return new Resource<>(machine, linkTo(methodOn(MachineController.class).read(amusementParkId, machine.getId())).withSelfRel(),
+        return new Resource<>(machine, linkTo(methodOn(MachineController.class).findOne(amusementParkId, machine.getId())).withSelfRel(),
                 linkTo(methodOn(VisitorController.class).getOnMachine(amusementParkId, machine.getId(), null)).withRel(GET_ON_MACHINE));
     }
 

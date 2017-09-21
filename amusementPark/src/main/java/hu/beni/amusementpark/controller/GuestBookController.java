@@ -22,7 +22,7 @@ public class GuestBookController {
 	private final GuestBookService guestBookService;
 	
 	@GetMapping("/{guestBookId}")
-	public Resource<GuestBook> read(@PathVariable Long amusementParkId, @PathVariable Long visitorId, @PathVariable Long guestBookId){
+	public Resource<GuestBook> findOne(@PathVariable Long amusementParkId, @PathVariable Long visitorId, @PathVariable Long guestBookId){
 		return createResource(amusementParkId, visitorId, guestBookService.findOne(guestBookId));
 	}
 	
@@ -32,7 +32,7 @@ public class GuestBookController {
 	}
 	
 	private Resource<GuestBook> createResource(Long amusementParkId, Long visitorId, GuestBook guestBook){
-		return new Resource<>(guestBook, linkTo(methodOn(getClass()).read(amusementParkId, visitorId, guestBook.getId())).withSelfRel());
+		return new Resource<>(guestBook, linkTo(methodOn(getClass()).findOne(amusementParkId, visitorId, guestBook.getId())).withSelfRel());
 	}
 
 }
