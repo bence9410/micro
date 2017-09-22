@@ -1,6 +1,5 @@
 package hu.beni.amusementpark.test.integration.service;
 
-import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.service.AmusementParkService;
@@ -11,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import static org.junit.Assert.*;
+import static hu.beni.amusementpark.test.ValidEntityFactory.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -24,10 +24,11 @@ public class MachineServiceTests {
     
     @Test
     public void test(){
-        AmusementPark amusementPark = AmusementPark.builder().capital(100).totalArea(100).address(Address.builder().build()).build();
+        AmusementPark amusementPark = createAmusementPark();
+        amusementPark.setAddress(createAddress());
         Long amusementParkId = amusementParkService.save(amusementPark).getId();
         
-        Machine machine = Machine.builder().price(10).size(10).build();
+        Machine machine = createMachine();
         Long machineId = machineService.addMachine(amusementParkId, machine).getId();
         assertNotNull(machineId);
         assertEquals(amusementPark.getCapital() - machine.getPrice(), amusementParkService.findOne(amusementParkId).getCapital().longValue());

@@ -30,6 +30,8 @@ import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.service.AmusementParkService;
 
+import static hu.beni.amusementpark.test.ValidEntityFactory.*;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class AmusementParkServiceTests {
@@ -39,8 +41,9 @@ public class AmusementParkServiceTests {
 
 	@Test
 	public void test() {
-		Address address = Address.builder().build();
-		AmusementPark amusementPark = AmusementPark.builder().address(address).build();
+		Address address = createAddress();
+		AmusementPark amusementPark = createAmusementPark();
+		amusementPark.setAddress(address);
 
 		AmusementPark createdAmusementPark = amusementParkService.save(amusementPark);
 		assertNotNull(createdAmusementPark);

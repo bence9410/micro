@@ -61,7 +61,8 @@ public class AmusementParkApplicationTests {
         restTemplate.exchange(visitorResource.getLink(WRITE_IN_GUEST_BOOK).getHref(), HttpMethod.POST, new HttpEntity<>(OPINION_ON_THE_PARK), guestBookType()).getBody();
         
         //visitor leavePark
-        restTemplate.exchange(visitorResource.getId().getHref(), HttpMethod.DELETE, HttpEntity.EMPTY, Void.class);
+        //TODO: Got a lot of work to do here!!!
+        assertEquals(HttpStatus.I_AM_A_TEAPOT, restTemplate.exchange(visitorResource.getId().getHref(), HttpMethod.DELETE, HttpEntity.EMPTY, Void.class).getStatusCode());
 
         //sell Machine
         restTemplate.exchange(machineResource.getId().getHref(), HttpMethod.DELETE, HttpEntity.EMPTY, Void.class);

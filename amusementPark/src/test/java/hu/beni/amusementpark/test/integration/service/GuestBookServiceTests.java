@@ -10,8 +10,7 @@ import static org.junit.Assert.*;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-
-import hu.beni.amusementpark.entity.Address;
+import static hu.beni.amusementpark.test.ValidEntityFactory.*;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.GuestBook;
 import hu.beni.amusementpark.entity.Visitor;
@@ -34,9 +33,9 @@ public class GuestBookServiceTests {
 
 	@Test
 	public void test() {
-		AmusementPark amusementPark = amusementParkService.save(
-				AmusementPark.builder().capital(100).entranceFee(10).address(Address.builder().build()).build());
-		Long amusementParkId = amusementPark.getId();
+		AmusementPark amusementPark = createAmusementPark();
+		amusementPark.setAddress(createAddress());
+		Long amusementParkId = amusementParkService.save(amusementPark).getId();
 
 		Visitor visitor = visitorService.enterPark(amusementParkId, Visitor.builder().spendingMoney(50).build());
 		Long visitorId = visitor.getId();

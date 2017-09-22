@@ -1,4 +1,4 @@
-insert into address(id, city, country, house_number, street, zip_code) values(null, null, null, null, null, null);
+insert into address(id, city, country, house_number, street, zip_code) values(null, 'Budapest', 'Magyarország', '80/C', 'Fogarasi út', '1148');
 insert into amusement_park(id, address_id, capital, entrance_fee, name, total_area) values(null, 1, 0, null, 'asd0', null);
 insert into amusement_park(id, address_id, capital, entrance_fee, name, total_area) values(null, 1, 1, null, 'asd1', null);
 insert into amusement_park(id, address_id, capital, entrance_fee, name, total_area) values(null, 1, 2, null, 'asd2', null);
