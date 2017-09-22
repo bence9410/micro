@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -44,22 +45,18 @@ public class AmusementParkApplicationTests {
         //create AmusementPark
         Resource<AmusementPark> amusementParkResource = postAmusementParkWithAddress();
         String amusementParkUrl = amusementParkResource.getId().getHref();
-        AmusementPark amusementPark = amusementParkResource.getContent();
-
+        
         //add Machine
         Resource<Machine> machineResource = postMachine(amusementParkResource.getLink(MACHINE).getHref());
-        Machine machine = machineResource.getContent();
         
         //visitor enterPark
         Resource<Visitor> visitorResource = postVisitor(amusementParkResource.getLink(VISITOR).getHref());
-        Visitor visitor = visitorResource.getContent();
         
         //visitor getOnMachine
-        String visitorGetOffMachineUrl = restTemplate.exchange(machineResource.getLink(GET_ON_MACHINE).getHref(), HttpMethod.PUT, HttpEntity.EMPTY, visitorType(), visitor.getId()).getBody().getLink(GET_OFF_MACHINE).getHref();
+        Link visitorGetOffMachineLink = restTemplate.exchange(machineResource.getLink(GET_ON_MACHINE).getHref(), HttpMethod.PUT, HttpEntity.EMPTY, visitorType(), visitorResource.getContent().getId()).getBody().getLink(GET_OFF_MACHINE);
         
         //visitor getOffMachine
-        restTemplate.exchange(visitorGetOffMachineUrl, HttpMethod.PUT, HttpEntity.EMPTY, visitorType()).getBody();
-        assertEquals(VisitorState.REST, visitor.getState());
+        restTemplate.exchange(visitorGetOffMachineLink.getHref(), HttpMethod.PUT, HttpEntity.EMPTY, visitorType()).getBody();
         
         //writeInGuestBook
         String textOfRegistry = "Nagyon jó!";
