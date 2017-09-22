@@ -6,7 +6,6 @@ import hu.beni.amusementpark.entity.GuestBook;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.enums.MachineType;
-import hu.beni.amusementpark.enums.VisitorState;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.context.embedded.LocalServerPort;
@@ -23,6 +22,7 @@ import org.springframework.http.HttpMethod;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.*;
 import static org.junit.Assert.*;
+import static hu.beni.amusementpark.test.TestConstants.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -37,7 +37,7 @@ public class AmusementParkApplicationTests {
     private int port;
 
     private String getAmusementParkUrl() {
-        return "http://localhost:" + port + "/amusementPark";
+        return LOCALHOST + port + SLASH_AMUSEMENT_PARK;
     }
 
     @Test
@@ -59,8 +59,7 @@ public class AmusementParkApplicationTests {
         restTemplate.exchange(visitorGetOffMachineLink.getHref(), HttpMethod.PUT, HttpEntity.EMPTY, visitorType()).getBody();
         
         //writeInGuestBook
-        String textOfRegistry = "Nagyon jó!";
-        restTemplate.exchange(visitorResource.getLink(WRITE_IN_GUEST_BOOK).getHref(), HttpMethod.POST, new HttpEntity(textOfRegistry), guestBookType()).getBody();
+        restTemplate.exchange(visitorResource.getLink(WRITE_IN_GUEST_BOOK).getHref(), HttpMethod.POST, new HttpEntity<>(OPINION_ON_THE_PARK), guestBookType()).getBody();
         
         //visitor leavePark
         restTemplate.exchange(visitorResource.getId().getHref(), HttpMethod.DELETE, HttpEntity.EMPTY, Void.class);
@@ -74,7 +73,7 @@ public class AmusementParkApplicationTests {
 
     @Test
     public void negativeTest() {
-        ResponseEntity<String> errorResponse = restTemplate.exchange(getAmusementParkUrl(), HttpMethod.POST, new HttpEntity(createAmusementPark()), String.class);
+        ResponseEntity<String> errorResponse = restTemplate.exchange(getAmusementParkUrl(), HttpMethod.POST, new HttpEntity<>(createAmusementPark()), String.class);
         
         assertEquals(HttpStatus.I_AM_A_TEAPOT, errorResponse.getStatusCode());
         String errorMessage = errorResponse.getBody();
@@ -87,7 +86,7 @@ public class AmusementParkApplicationTests {
         Machine machine = createMachine();
         machine.setPrice(4000);
 
-        errorResponse = restTemplate.exchange(amusementParkResource.getLink(MACHINE).getHref(), HttpMethod.POST, new HttpEntity(machine), String.class);
+        errorResponse = restTemplate.exchange(amusementParkResource.getLink(MACHINE).getHref(), HttpMethod.POST, new HttpEntity<>(machine), String.class);
 
         assertEquals(HttpStatus.I_AM_A_TEAPOT, errorResponse.getStatusCode());
         assertEquals(MACHINE_IS_TOO_EXPENSIVE, errorResponse.getBody());
@@ -99,7 +98,7 @@ public class AmusementParkApplicationTests {
 
         Resource<AmusementPark> amusementParkResource = restTemplate.exchange(getAmusementParkUrl(), HttpMethod.POST, new HttpEntity<>(amusementPark), amusementParkType()).getBody();
         
-        assertEquals(3, amusementParkResource.getLinks().size());
+        assertEquals(NUMBER_OF_LINKS_IN_AMUSEMENT_PARK_RESOURCE, amusementParkResource.getLinks().size());
         assertTrue(amusementParkResource.getId().getHref().endsWith(amusementParkResource.getContent().getId().toString()));
         assertNotNull(amusementParkResource.getLink(MACHINE));
         assertNotNull(amusementParkResource.getLink(VISITOR));
@@ -112,7 +111,7 @@ public class AmusementParkApplicationTests {
 
         Resource<Machine> machineResource = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(machine), machineType()).getBody();
 
-        assertEquals(2, machineResource.getLinks().size());
+        assertEquals(NUMBER_OF_LINKS_IN_MACHINE_RESOURCE, machineResource.getLinks().size());
         assertTrue(machineResource.getId().getHref().endsWith(machineResource.getContent().getId().toString()));
         assertNotNull(machineResource.getLink(GET_ON_MACHINE));
 
@@ -125,7 +124,7 @@ public class AmusementParkApplicationTests {
         Resource<Visitor> visitorResource = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(visitor), visitorType()).getBody();
         Long visitorId = visitorResource.getContent().getId();
         
-        assertEquals(2, visitorResource.getLinks().size());
+        assertEquals(NUMBER_OF_LINKS_IN_VISITOR_RESOURCE_AFTER_ENTER, visitorResource.getLinks().size());
         assertTrue(visitorResource.getId().getHref().endsWith(visitorId.toString()));
         assertTrue(visitorResource.getLink(WRITE_IN_GUEST_BOOK).getHref().endsWith(visitorId + "/guestBook"));
 
