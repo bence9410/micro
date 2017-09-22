@@ -1,11 +1,9 @@
 package hu.beni.amusementpark.test.integration;
 
-import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.GuestBook;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
-import hu.beni.amusementpark.enums.MachineType;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.context.embedded.LocalServerPort;
@@ -23,6 +21,7 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.*;
 import static org.junit.Assert.*;
 import static hu.beni.amusementpark.test.TestConstants.*;
+import static hu.beni.amusementpark.test.ValidEntityFactory.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -129,40 +128,6 @@ public class AmusementParkApplicationTests {
         assertTrue(visitorResource.getLink(WRITE_IN_GUEST_BOOK).getHref().endsWith(visitorId + "/guestBook"));
 
         return visitorResource;
-    }
-
-    private AmusementPark createAmusementPark() {
-        return AmusementPark.builder()
-                .name("Park")
-                .capital(3000)
-                .totalArea(1000)
-                .entranceFee(50).build();
-    }
-
-    private Address createAddress() {
-        return Address.builder()
-                .zipCode("1148")
-                .city("Budapest")
-                .country("Magyarország")
-                .street("Fogarasi út")
-                .houseNumber("80/C").build();
-    }
-
-    private Machine createMachine() {
-        return Machine.builder()
-                .fantasyName("Nagy hajó")
-                .size(100)
-                .price(250)
-                .numberOfSeats(10)
-                .minimumRequiredAge(18)
-                .ticketPrice(10)
-                .type(MachineType.CAROUSEL).build();
-    }
-
-    private Visitor createVisitor() {
-        return Visitor.builder()
-                .spendingMoney(100)
-                .age(20).build();
     }
 
     private ParameterizedTypeReference<Resource<AmusementPark>> amusementParkType() {
