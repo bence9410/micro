@@ -21,7 +21,7 @@ public class Address implements Serializable {
     @JsonProperty("identifier")
     private Long id;
 
-    private Integer zipCode;
+    private String zipCode;
 
     private String country;
 

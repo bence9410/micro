@@ -141,7 +141,7 @@ public class AmusementParkApplicationTests {
 
     private Address createAddress() {
         return Address.builder()
-                .zipCode(1148)
+                .zipCode("1148")
                 .city("Budapest")
                 .country("Magyarország")
                 .street("Fogarasi út")
