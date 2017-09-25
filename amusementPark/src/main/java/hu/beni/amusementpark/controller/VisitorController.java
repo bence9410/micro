@@ -34,8 +34,8 @@ public class VisitorController {
     }
 
     @DeleteMapping("/visitor/{visitorId}")
-    public void leavePark(@PathVariable Long visitorId) {
-        visitorService.leavePark(visitorId);
+    public void leavePark(@PathVariable Long amusementParkId, @PathVariable Long visitorId) {
+        visitorService.leavePark(amusementParkId, visitorId);
     }
 
     @PutMapping("/machine/{machineId}/visitor/{visitorId}/getOnMachine")

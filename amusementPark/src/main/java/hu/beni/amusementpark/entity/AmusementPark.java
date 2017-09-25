@@ -47,15 +47,15 @@ public class AmusementPark implements Serializable {
     private Address address;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "amusementPark")
+    @OneToMany(mappedBy = "amusementPark", cascade = CascadeType.REMOVE)
     private List<Machine> machines;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "amusementPark")
+    @OneToMany(mappedBy = "amusementPark", cascade = CascadeType.REMOVE)
     private List<Visitor> visitors;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "amusementPark")
+    @OneToMany(mappedBy = "amusementPark", cascade = CascadeType.REMOVE)
     private List<GuestBook> guestBooks;
 
     @Tolerate

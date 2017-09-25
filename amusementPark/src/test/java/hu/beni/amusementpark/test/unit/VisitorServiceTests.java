@@ -43,7 +43,7 @@ public class VisitorServiceTests {
     public void verifyNoMoreInteractionsOnMocks() {
         verifyNoMoreInteractions(amusementParkRepository, machineRepository, visitorRepository);
     }
-
+    
     @Test
     public void findOnePositive() {
         Visitor visitor = Visitor.builder().id(0L).build();
@@ -57,12 +57,28 @@ public class VisitorServiceTests {
     }
 
     @Test
+    public void leaveParkNegativeNoVisitorInPark() {
+    	Long amusementParkId = 0L;
+        Long visitorId = 1L;
+
+        assertThatThrownBy(() -> visitorService.leavePark(amusementParkId, visitorId))
+        		.isInstanceOf(AmusementParkException.class).hasMessage(NO_VISITOR_IN_PARK_WITH_ID);
+        
+        verify(visitorRepository).findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);    
+    }
+    
+    @Test
     public void leaveParkPositive() {
-        Long visitorId = 0L;
-
-        visitorService.leavePark(visitorId);
-
-        verify(visitorRepository).delete(visitorId);
+    	Long amusementParkId = 0L;
+    	Visitor visitor = Visitor.builder().id(1L).build();
+        Long visitorId = visitor.getId();
+        
+        when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId)).thenReturn(visitor);
+        
+        visitorService.leavePark(amusementParkId, visitorId);
+        
+        verify(visitorRepository).findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
+        verify(visitorRepository).save(visitor);
     }
 
     @Test
@@ -106,6 +122,7 @@ public class VisitorServiceTests {
         assertEquals(spendingMoney - entranceFee, visitor.getSpendingMoney().longValue());
         assertEquals(amusementPark, visitor.getAmusementPark());
         assertTrue(Timestamp.from(Instant.now()).after(visitor.getDateOfEntry()));
+        assertTrue(visitor.getActive());
         
         verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
         verify(amusementParkRepository).incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);

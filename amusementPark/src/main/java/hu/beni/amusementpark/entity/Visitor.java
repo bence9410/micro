@@ -28,7 +28,7 @@ import lombok.experimental.Tolerate;
 @Getter
 @Setter
 @Builder
-@EqualsAndHashCode(of = {"id", "spendingMoney", "age", "dateOfEntry", "state"})
+@EqualsAndHashCode(of = {"id", "spendingMoney", "age", "dateOfEntry", "active", "state"})
 public class Visitor implements Serializable {
 
     @Id
@@ -41,6 +41,8 @@ public class Visitor implements Serializable {
     private Integer age;
 
     private Timestamp dateOfEntry;
+    
+    private Boolean active;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "Visitor_State")

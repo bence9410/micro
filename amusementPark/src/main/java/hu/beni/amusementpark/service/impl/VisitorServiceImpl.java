@@ -42,8 +42,11 @@ public class VisitorServiceImpl implements VisitorService{
         return visitorRepository.findOne(visitorId);
     }
 
-    public void leavePark(Long visitorId) {
-        visitorRepository.delete(visitorId);
+    public void leavePark(Long amusementParkId, Long visitorId) {
+    	Visitor visitor = visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
+    	exceptionIfNull(visitor, NO_VISITOR_IN_PARK_WITH_ID);
+    	visitor.setActive(Boolean.FALSE);
+        visitorRepository.save(visitor);
     }
 
     public Visitor enterPark(Long amusementParkId, Visitor visitor) {
@@ -60,6 +63,7 @@ public class VisitorServiceImpl implements VisitorService{
         visitor.setSpendingMoney(visitor.getSpendingMoney() - entranceFee);
         visitor.setDateOfEntry(Timestamp.from(Instant.now()));
         visitor.setState(VisitorState.REST);
+        visitor.setActive(Boolean.TRUE);
     }
     
     public Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId) {

@@ -6,7 +6,7 @@ public interface VisitorService {
 
     Visitor findOne(Long visitorId);
 
-    void leavePark(Long visitorId);
+    void leavePark(Long amusementParkId, Long visitorId);
     
     Visitor enterPark(Long amusementParkId, Visitor visitor);
     

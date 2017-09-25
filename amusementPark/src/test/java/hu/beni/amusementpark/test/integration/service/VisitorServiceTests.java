@@ -1,7 +1,9 @@
 package hu.beni.amusementpark.test.integration.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,6 +56,7 @@ public class VisitorServiceTests {
         Visitor readVisitor = visitorService.findOne(visitorId);
         assertEquals(spendingMoney, readVisitor.getSpendingMoney());
         assertEquals(VisitorState.REST, readVisitor.getState());
+        assertTrue(readVisitor.getActive());
         
         visitorService.getOnMachine(amusementParkId, machineId, visitorId);
         capital += ticketPrice;
@@ -67,7 +70,11 @@ public class VisitorServiceTests {
         visitorService.getOffMachine(machineId, visitorId);
         assertEquals(VisitorState.REST, visitorService.findOne(visitorId).getState());
         
-        visitorService.leavePark(visitorId);
+        visitorService.leavePark(amusementParkId, visitorId);
+        readVisitor = visitorService.findOne(visitorId);
+        assertFalse(readVisitor.getActive());
+        
+        amusementParkService.delete(amusementParkId);
         assertNull(visitorService.findOne(visitorId));
     }
 

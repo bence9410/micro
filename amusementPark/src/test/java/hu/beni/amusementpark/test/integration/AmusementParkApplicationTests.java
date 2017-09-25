@@ -4,12 +4,14 @@ import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.GuestBook;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -20,10 +22,11 @@ import org.springframework.http.HttpMethod;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.*;
 import static org.junit.Assert.*;
+
+import static hu.beni.amusementpark.test.MyAssert.assertThrows;
 import static hu.beni.amusementpark.test.TestConstants.*;
 import static hu.beni.amusementpark.test.ValidEntityFactory.*;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -61,8 +64,7 @@ public class AmusementParkApplicationTests {
         restTemplate.exchange(visitorResource.getLink(WRITE_IN_GUEST_BOOK).getHref(), HttpMethod.POST, new HttpEntity<>(OPINION_ON_THE_PARK), guestBookType()).getBody();
         
         //visitor leavePark
-        //TODO: Got a lot of work to do here!!!
-        assertEquals(HttpStatus.I_AM_A_TEAPOT, restTemplate.exchange(visitorResource.getId().getHref(), HttpMethod.DELETE, HttpEntity.EMPTY, Void.class).getStatusCode());
+        restTemplate.exchange(visitorResource.getId().getHref(), HttpMethod.DELETE, HttpEntity.EMPTY, Void.class).getStatusCode();
 
         //sell Machine
         restTemplate.exchange(machineResource.getId().getHref(), HttpMethod.DELETE, HttpEntity.EMPTY, Void.class);
@@ -73,23 +75,25 @@ public class AmusementParkApplicationTests {
 
     @Test
     public void negativeTest() {
-        ResponseEntity<String> errorResponse = restTemplate.exchange(getAmusementParkUrl(), HttpMethod.POST, new HttpEntity<>(createAmusementPark()), String.class);
-        
-        assertEquals(HttpStatus.I_AM_A_TEAPOT, errorResponse.getStatusCode());
-        String errorMessage = errorResponse.getBody();
-        assertTrue(errorMessage.contains("Validation error: "));
-        assertTrue(errorMessage.contains("address"));
-        assertTrue(errorMessage.contains("null"));
+    	assertThrows(() -> restTemplate.exchange(getAmusementParkUrl(), HttpMethod.POST, new HttpEntity<>(createAmusementPark()), String.class),
+    			HttpClientErrorException.class, exception -> {
+    		assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
+    		String errorMessage = exception.getResponseBodyAsString();
+            assertTrue(errorMessage.contains("Validation error: "));
+            assertTrue(errorMessage.contains("address"));
+            assertTrue(errorMessage.contains("null"));
+		});
         
         Resource<AmusementPark> amusementParkResource = postAmusementParkWithAddress();
 
         Machine machine = createMachine();
         machine.setPrice(4000);
-
-        errorResponse = restTemplate.exchange(amusementParkResource.getLink(MACHINE).getHref(), HttpMethod.POST, new HttpEntity<>(machine), String.class);
-
-        assertEquals(HttpStatus.I_AM_A_TEAPOT, errorResponse.getStatusCode());
-        assertEquals(MACHINE_IS_TOO_EXPENSIVE, errorResponse.getBody());
+                
+        assertThrows(() -> restTemplate.exchange(amusementParkResource.getLink(MACHINE).getHref(), HttpMethod.POST, new HttpEntity<>(machine), String.class),
+        		HttpClientErrorException.class, exception -> {
+            assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
+            assertEquals(MACHINE_IS_TOO_EXPENSIVE, exception.getResponseBodyAsString());
+        });
     }
 
     private Resource<AmusementPark> postAmusementParkWithAddress() {

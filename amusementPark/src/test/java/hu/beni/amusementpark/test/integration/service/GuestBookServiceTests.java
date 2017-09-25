@@ -47,6 +47,10 @@ public class GuestBookServiceTests {
 		
 		assertEquals(textOfRegistry, guestBook.getTextOfRegistry());
 		assertTrue(guestBook.getDateOfRegistry().before(Timestamp.from(Instant.now())));
+		
+		visitorService.leavePark(amusementParkId, visitorId);
+		
+		assertNotNull(guestBookService.findOne(guestBookId));
 	}
 
 }
