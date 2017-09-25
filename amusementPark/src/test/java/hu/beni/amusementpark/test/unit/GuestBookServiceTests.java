@@ -2,6 +2,7 @@ package hu.beni.amusementpark.test.unit;
 
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_IN_PARK_WITH_ID;
+import static hu.beni.amusementpark.test.TestConstants.OPINION_ON_THE_PARK;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -57,7 +58,7 @@ public class GuestBookServiceTests {
 	public void writeInGuestBookNegativeNoAmusementPark() {
 		Long amusementParkId = 0L;
 		Long visitorId = 1L;
-		String textOfRegistry = "Nagyon jó";
+		String textOfRegistry = OPINION_ON_THE_PARK;
 
 		assertThatThrownBy(() -> guestBookService.writeInGuestBook(amusementParkId, visitorId, textOfRegistry))
 				.isInstanceOf(AmusementParkException.class).hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
@@ -70,7 +71,7 @@ public class GuestBookServiceTests {
 		AmusementPark amusementPark = AmusementPark.builder().id(0L).build();
 		Long amusementParkId = amusementPark.getId();
 		Long visitorId = 1L;
-		String textOfRegistry = "Nagyon jó";
+		String textOfRegistry = OPINION_ON_THE_PARK;
 
 		when(amusementParkRepository.findByIdReadOnlyId(amusementParkId)).thenReturn(amusementPark);
 
@@ -87,7 +88,7 @@ public class GuestBookServiceTests {
 		Long amusementParkId = amusementPark.getId();
 		Visitor visitor = Visitor.builder().id(1L).build();
 		Long visitorId = visitor.getId();
-		String textOfRegistry = "Nagyon jó";
+		String textOfRegistry = OPINION_ON_THE_PARK;
 
 		when(amusementParkRepository.findByIdReadOnlyId(amusementParkId)).thenReturn(amusementPark);
 		when(visitorRepository.findByAmusementParkIdAndVisitorIdReadOnlyId(amusementParkId, visitorId)).thenReturn(visitor);

@@ -11,6 +11,7 @@ import static org.junit.Assert.*;
 import java.sql.Timestamp;
 import java.time.Instant;
 import static hu.beni.amusementpark.test.ValidEntityFactory.*;
+import static hu.beni.amusementpark.test.TestConstants.OPINION_ON_THE_PARK;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.GuestBook;
 import hu.beni.amusementpark.entity.Visitor;
@@ -40,7 +41,7 @@ public class GuestBookServiceTests {
 		Visitor visitor = visitorService.enterPark(amusementParkId, Visitor.builder().spendingMoney(50).build());
 		Long visitorId = visitor.getId();
 
-		String textOfRegistry = "Nagyon jó!";
+		String textOfRegistry = OPINION_ON_THE_PARK;
 
 		Long guestBookId = guestBookService.writeInGuestBook(amusementParkId, visitorId, textOfRegistry).getId();
 		GuestBook guestBook = guestBookService.findOne(guestBookId);
