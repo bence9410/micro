@@ -1,4 +1,4 @@
-package hu.beni.amusementpark.test.integration.service;
+package hu.beni.amusementpark.test.integration;
 
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;

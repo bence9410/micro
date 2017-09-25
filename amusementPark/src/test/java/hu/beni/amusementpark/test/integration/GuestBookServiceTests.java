@@ -1,4 +1,4 @@
-package hu.beni.amusementpark.test.integration.service;
+package hu.beni.amusementpark.test.integration;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
