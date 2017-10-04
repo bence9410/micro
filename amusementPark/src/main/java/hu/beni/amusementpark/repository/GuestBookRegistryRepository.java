@@ -3,9 +3,9 @@ package hu.beni.amusementpark.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import hu.beni.amusementpark.entity.GuestBook;
+import hu.beni.amusementpark.entity.GuestBookRegistry;
 
 @Repository
-public interface GuestBookRepository extends JpaRepository<GuestBook, Long>{
+public interface GuestBookRegistryRepository extends JpaRepository<GuestBookRegistry, Long>{
 
 }

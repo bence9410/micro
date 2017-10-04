@@ -20,11 +20,12 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 @RequestMapping(path = "/amusementPark")
 @RequiredArgsConstructor
 public class AmusementParkController {
-
+	
     private final AmusementParkService amusementParkService;
 
     @PostMapping
     public Resource<AmusementPark> save(@Valid @RequestBody AmusementPark amusementPark) {
+    	amusementPark.getAddress().setAmusementPark(amusementPark);
         return createResource(amusementParkService.save(amusementPark));
     }
 
@@ -39,8 +40,9 @@ public class AmusementParkController {
     }
 
     private Resource<AmusementPark> createResource(AmusementPark amusementPark) {
-        return new Resource<>(amusementPark, linkTo(methodOn(AmusementParkController.class).findOne(amusementPark.getId())).withSelfRel(),
+        return new Resource<>(amusementPark, linkTo(methodOn(getClass()).findOne(amusementPark.getId())).withSelfRel(),
                 linkTo(methodOn(MachineController.class).addMachine(amusementPark.getId(), null)).withRel(MACHINE),
-                linkTo(methodOn(VisitorController.class).enterPark(amusementPark.getId(), null)).withRel(VISITOR));
+                linkTo(methodOn(VisitorController.class).registrate(null)).withRel(VISITOR_REGISTRATE),
+                linkTo(methodOn(VisitorController.class).enterPark(amusementPark.getId(), null, null)).withRel(VISITOR_ENTER_PARK));
     }
 }

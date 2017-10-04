@@ -9,6 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -23,28 +25,29 @@ import lombok.experimental.Tolerate;
 @Setter
 @Builder
 @EqualsAndHashCode(of = {"id", "textOfRegistry", "dateOfRegistry"})
-public class GuestBook implements Serializable {
+public class GuestBookRegistry implements Serializable{
 
-    @Id
-    @GeneratedValue
-    @JsonProperty("identifier")
-    private Long id;
-
-    private String textOfRegistry;
-
-    private Timestamp dateOfRegistry;
-
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    private AmusementPark amusementPark;
-
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Visitor visitor;
-
-    @Tolerate
-    protected GuestBook() {
-        super();
-    }
-
+	@Id
+	@GeneratedValue
+	@JsonProperty("identifier")
+	private Long id;
+	
+	private String textOfRegistry;
+	
+	@CreationTimestamp
+	private Timestamp dateOfRegistry;
+	
+	@ManyToOne
+	@JsonIgnore
+	private Visitor visitor;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JsonIgnore
+	private AmusementPark amusementPark;
+	
+	@Tolerate
+	protected GuestBookRegistry() {
+		super();
+	}
+	
 }

@@ -1,46 +1,39 @@
 package hu.beni.amusementpark.service.impl;
 
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_IN_PARK_WITH_ID;
-import static hu.beni.amusementpark.exception.ExceptionUtil.exceptionIfNull;
-
-import java.sql.Timestamp;
-import java.time.Instant;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import static hu.beni.amusementpark.exception.ExceptionUtil.*;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 
 import hu.beni.amusementpark.entity.AmusementPark;
-import hu.beni.amusementpark.entity.GuestBook;
+import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
-import hu.beni.amusementpark.repository.GuestBookRepository;
+import hu.beni.amusementpark.repository.GuestBookRegistryRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
-import hu.beni.amusementpark.service.GuestBookService;
+import hu.beni.amusementpark.service.GuestBookRegistryService;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@RequiredArgsConstructor
 @Transactional
-public class GuestBookServiceImpl implements GuestBookService {
-	
+@RequiredArgsConstructor
+public class GuestBookRegistryServiceImpl implements GuestBookRegistryService{
+
 	private final AmusementParkRepository amusementParkRepository;
 	private final VisitorRepository visitorRepository;
-	private final GuestBookRepository guestBookRepository;
+	private final GuestBookRegistryRepository guestBookRegistryRepository;
 	
-	public GuestBook findOne(Long guestBookId) {
-		return guestBookRepository.findOne(guestBookId);
+	public GuestBookRegistry findOneRegistry(Long guestBookRegistryId) {
+		return guestBookRegistryRepository.findOne(guestBookRegistryId);
 	}
 	
-	public GuestBook writeInGuestBook(Long amusementParkId, Long visitorId, String textOfRegistry) {
+	public GuestBookRegistry addRegistry(Long amusementParkId, Long visitorId, String textOfRegistry) {
 		AmusementPark amusementPark = amusementParkRepository.findByIdReadOnlyId(amusementParkId);
 		exceptionIfNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
-		Visitor visitor = visitorRepository.findByAmusementParkIdAndVisitorIdReadOnlyId(amusementParkId, visitorId);
+		Visitor visitor = visitorRepository.findOne(visitorId);
 		exceptionIfNull(visitor, NO_VISITOR_IN_PARK_WITH_ID);
-		return guestBookRepository.save(GuestBook.builder().textOfRegistry(textOfRegistry)
-				.dateOfRegistry(Timestamp.from(Instant.now()))
-				.amusementPark(amusementPark).visitor(visitor).build());
+		return guestBookRegistryRepository.save(GuestBookRegistry.builder().textOfRegistry(textOfRegistry)
+				.visitor(visitor).amusementPark(amusementPark).build());
 	}
-	
 	
 }

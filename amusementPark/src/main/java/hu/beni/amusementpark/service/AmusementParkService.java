@@ -13,6 +13,8 @@ public interface AmusementParkService {
     AmusementPark save(AmusementPark amusementPark);
 
     AmusementPark findOne(Long amusementParkId);
+    
+    AmusementPark findOne(Specification<AmusementPark> specification);
 
     void delete(Long amusementParkId);
     

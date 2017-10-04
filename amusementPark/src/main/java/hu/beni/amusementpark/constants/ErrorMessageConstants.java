@@ -12,9 +12,11 @@ public class ErrorMessageConstants {
     public static final String MACHINE_IS_TOO_BIG = "Machine is too big!";
     public static final String VISITORS_ON_MACHINE = "Visitors on machine!";
     public static final String NOT_ENOUGH_MONEY = "Not enough money!";
-    public static final String VISITOR_IS_ON_A_MACHINE = "Visitor is on a machine";
+    public static final String VISITOR_IS_ON_A_MACHINE = "Visitor is on a machine!";
     public static final String VISITOR_IS_TOO_YOUNG = "Visitor is too young!";
-    public static final String NO_FREE_SEAT_ON_MACHINE = "No free seat on machine";
+    public static final String NO_FREE_SEAT_ON_MACHINE = "No free seat on machine!";
+    public static final String VISITOR_NOT_REGISTRATED = "Visitor not registrated!";
+    public static final String VISITOR_IS_IN_A_PARK = "Visitor is in a park!";
     
     private ErrorMessageConstants() {
     	super();

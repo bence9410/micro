@@ -1,15 +1,16 @@
 package hu.beni.amusementpark.test.integration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+
+import java.sql.Timestamp;
+import java.time.Instant;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
@@ -22,7 +23,7 @@ import static hu.beni.amusementpark.test.ValidEntityFactory.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class VisitorServiceTests {
+public class VisitorServiceIntegrationTests {
     
     @Autowired
     private AmusementParkService amusementParkService;
@@ -35,8 +36,7 @@ public class VisitorServiceTests {
     
     @Test
     public void test(){
-        AmusementPark amusementPark = createAmusementPark();
-        amusementPark.setAddress(createAddress());
+        AmusementPark amusementPark = createAmusementParkWithAddress();
         Long amusementParkId = amusementParkService.save(amusementPark).getId();
         Integer capital = amusementPark.getCapital();
         Integer entranceFee = amusementPark.getEntranceFee();
@@ -47,35 +47,40 @@ public class VisitorServiceTests {
         capital -= machine.getPrice();
         
         Visitor visitor = createVisitor();
-        Integer spendingMoney = visitor.getSpendingMoney();
-        Long visitorId = visitorService.enterPark(amusementParkId, visitor).getId();
+        visitor = visitorService.registrate(visitor);
+        Long visitorId = visitor.getId();
+        assertNotNull(visitorId);
+        assertTrue(visitor.getDateOfRegistrate().before(Timestamp.from(Instant.now())));
+        
+        Integer spendingMoney = 200;
+        
+        visitorService.enterPark(amusementParkId, visitorId, spendingMoney);
         capital += entranceFee;
         spendingMoney -= entranceFee;
         assertEquals(capital, amusementParkService.findOne(amusementParkId).getCapital());
         
-        Visitor readVisitor = visitorService.findOne(visitorId);
-        assertEquals(spendingMoney, readVisitor.getSpendingMoney());
-        assertEquals(VisitorState.REST, readVisitor.getState());
-        assertTrue(readVisitor.getActive());
+        visitor = visitorService.findOne(visitorId);
+        assertNotNull(visitor.getAmusementPark());
+        assertEquals(spendingMoney, visitor.getSpendingMoney());
+        assertEquals(VisitorState.REST, visitor.getState());
         
         visitorService.getOnMachine(amusementParkId, machineId, visitorId);
         capital += ticketPrice;
         spendingMoney -= ticketPrice;
         assertEquals(capital, amusementParkService.findOne(amusementParkId).getCapital());
         
-        readVisitor = visitorService.findOne(visitorId);
-        assertEquals(spendingMoney, readVisitor.getSpendingMoney());
-        assertEquals(VisitorState.ON_MACHINE, readVisitor.getState());
+        visitor = visitorService.findOne(visitorId);
+        assertEquals(spendingMoney, visitor.getSpendingMoney());
+        assertEquals(VisitorState.ON_MACHINE, visitor.getState());
         
         visitorService.getOffMachine(machineId, visitorId);
         assertEquals(VisitorState.REST, visitorService.findOne(visitorId).getState());
         
         visitorService.leavePark(amusementParkId, visitorId);
-        readVisitor = visitorService.findOne(visitorId);
-        assertFalse(readVisitor.getActive());
+        assertNull(visitorService.findOne(visitorId).getAmusementPark());
         
         amusementParkService.delete(amusementParkId);
-        assertNull(visitorService.findOne(visitorId));
+        //assertNull(visitorService.findOne(visitorId));
     }
 
 }

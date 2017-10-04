@@ -1,8 +1,7 @@
 package hu.beni.amusementpark.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,10 +11,12 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import hu.beni.amusementpark.enums.MachineType;
-import java.util.List;
-import javax.persistence.OneToMany;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -50,12 +51,12 @@ public class Machine implements Serializable {
     @Enumerated(EnumType.STRING)
     private MachineType type;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
     private AmusementPark amusementPark;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "machine")
+    @JsonIgnore
     private List<Visitor> visitors;
 
     @Tolerate

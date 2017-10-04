@@ -1,20 +1,10 @@
 package hu.beni.amusementpark.service.impl;
 
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.NOT_ENOUGH_MONEY;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_FREE_SEAT_ON_MACHINE;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_MACHINE_IN_PARK_WITH_ID;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_IN_PARK_WITH_ID;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_ON_MACHINE_WITH_ID;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_ON_A_MACHINE;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_TOO_YOUNG;
-import static hu.beni.amusementpark.exception.ExceptionUtil.exceptionIfEquals;
-import static hu.beni.amusementpark.exception.ExceptionUtil.exceptionIfFirstLessThanSecond;
-import static hu.beni.amusementpark.exception.ExceptionUtil.exceptionIfNull;
-import static hu.beni.amusementpark.exception.ExceptionUtil.exceptionIfPrimitivesEquals;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
+import static hu.beni.amusementpark.exception.ExceptionUtil.*;
 
 import java.sql.Timestamp;
-import java.time.Instant;
+import java.util.Calendar;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,48 +27,51 @@ public class VisitorServiceImpl implements VisitorService{
     private final AmusementParkRepository amusementParkRepository;
     private final MachineRepository machineRepository;
     private final VisitorRepository visitorRepository;
+    
+    public Visitor registrate(Visitor visitor) {
+    	return visitorRepository.save(visitor);
+    }
 
     public Visitor findOne(Long visitorId) {
         return visitorRepository.findOne(visitorId);
-    }
+    }	
 
-    public void leavePark(Long amusementParkId, Long visitorId) {
-    	Visitor visitor = visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
-    	exceptionIfNull(visitor, NO_VISITOR_IN_PARK_WITH_ID);
-    	visitor.setActive(Boolean.FALSE);
-        visitorRepository.save(visitor);
-    }
-
-    public Visitor enterPark(Long amusementParkId, Visitor visitor) {
+    public Visitor enterPark(Long amusementParkId, Long visitorId, Integer spendingMoney) {
         AmusementPark amusementPark = amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId);
         exceptionIfNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
-        exceptionIfFirstLessThanSecond(visitor.getSpendingMoney(), amusementPark.getEntranceFee(), NOT_ENOUGH_MONEY);
-        modifyVisitorForEnter(visitor, amusementPark.getEntranceFee());
-        amusementParkRepository.incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
+        
+        Integer entranceFee = amusementPark.getEntranceFee();
+        exceptionIfFirstLessThanSecond(spendingMoney, entranceFee, NOT_ENOUGH_MONEY);
+        
+        exceptionIfNotZero(visitorRepository.countByVisitorIdWhereAmusementParkIsNotNull(visitorId), VISITOR_IS_IN_A_PARK);
+        
+        Visitor visitor = visitorRepository.findOne(visitorId);
+        exceptionIfNull(visitor, VISITOR_NOT_REGISTRATED);
+        
+        visitor.setSpendingMoney(spendingMoney - entranceFee);
+        visitor.setState(VisitorState.REST);
         visitor.setAmusementPark(amusementPark);
+        
+        amusementParkRepository.incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
         return visitorRepository.save(visitor);
     }
     
-    private void modifyVisitorForEnter(Visitor visitor, Integer entranceFee){
-        visitor.setSpendingMoney(visitor.getSpendingMoney() - entranceFee);
-        visitor.setDateOfEntry(Timestamp.from(Instant.now()));
-        visitor.setState(VisitorState.REST);
-        visitor.setActive(Boolean.TRUE);
-    }
-    
+
     public Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId) {
         Machine machine = machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId);
         exceptionIfNull(machine, NO_MACHINE_IN_PARK_WITH_ID);
         Visitor visitor = visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
         exceptionIfNull(visitor, NO_VISITOR_IN_PARK_WITH_ID);
-        checkIfVisitorAbleToGetOnMachine(visitor, machine);
+        
+        checkIfVisitorAbleToGetOnMachine(machine, visitor);
+        
         return incrementCapitalAndDecraiseSpendingMoneyAndSave(amusementParkId, machine, visitor);
     }
-
-    private void checkIfVisitorAbleToGetOnMachine(Visitor visitor, Machine machine) {
+    
+    private void checkIfVisitorAbleToGetOnMachine(Machine machine, Visitor visitor) {
         exceptionIfEquals(VisitorState.ON_MACHINE, visitor.getState(), VISITOR_IS_ON_A_MACHINE);
         exceptionIfFirstLessThanSecond(visitor.getSpendingMoney(), machine.getTicketPrice(), NOT_ENOUGH_MONEY);
-        exceptionIfFirstLessThanSecond(visitor.getAge(), machine.getMinimumRequiredAge(), VISITOR_IS_TOO_YOUNG);
+        exceptionIfFirstLessThanSecond(calculateAge(visitor.getDateOfBirth()), machine.getMinimumRequiredAge(), VISITOR_IS_TOO_YOUNG);
         exceptionIfPrimitivesEquals(visitorRepository.countByMachineId(machine.getId()), machine.getNumberOfSeats(), NO_FREE_SEAT_ON_MACHINE);
     }
 
@@ -88,8 +81,8 @@ public class VisitorServiceImpl implements VisitorService{
         visitor.setMachine(machine);
         visitor.setState(VisitorState.ON_MACHINE);
         return visitorRepository.save(visitor);
-    }
-
+    } 
+    
     public Visitor getOffMachine(Long machineId, Long visitorId) {
         Visitor visitor = visitorRepository.findByMachineIdAndVisitorId(machineId, visitorId);
         exceptionIfNull(visitor, NO_VISITOR_ON_MACHINE_WITH_ID);
@@ -97,5 +90,32 @@ public class VisitorServiceImpl implements VisitorService{
         visitor.setState(VisitorState.REST);
         return visitorRepository.save(visitor);
     }
-
+    
+    public Visitor leavePark(Long amusementParkId, Long visitorId) {
+    	Visitor visitor = visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
+    	exceptionIfNull(visitor, NO_VISITOR_IN_PARK_WITH_ID);
+    	visitor.setAmusementPark(null);
+    	visitor.setSpendingMoney(null);
+    	visitor.setState(null);
+    	return visitorRepository.save(visitor);
+    }
+    
+    private int calculateAge(Timestamp dateOfBirth) {
+    	Calendar calendarOfBirth = Calendar.getInstance();
+    	calendarOfBirth.setTime(dateOfBirth);
+    	
+    	Calendar now = Calendar.getInstance();
+    	
+    	int nowYear = now.get(Calendar.YEAR);
+    	int birthYear = calendarOfBirth.get(Calendar.YEAR);
+    	
+    	int age = nowYear - birthYear;
+    	
+    	if( nowYear == birthYear &&	now.get(Calendar.DAY_OF_YEAR) > 
+    		calendarOfBirth.get(Calendar.DAY_OF_YEAR)) {
+    		age--;
+    	}    	
+    	return age;
+    }
+	
 }

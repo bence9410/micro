@@ -4,14 +4,16 @@ import hu.beni.amusementpark.entity.Visitor;
 
 public interface VisitorService {
 
-    Visitor findOne(Long visitorId);
+	Visitor registrate(Visitor visitor);
 
-    void leavePark(Long amusementParkId, Long visitorId);
-    
-    Visitor enterPark(Long amusementParkId, Visitor visitor);
-    
-    Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId);
-    
-    Visitor getOffMachine(Long machineId, Long visitorId);
+	Visitor findOne(Long visitorId);
+	
+	Visitor leavePark(Long amusementParkId, Long visitorId);
+
+	Visitor enterPark(Long amusementParkId, Long visitorId, Integer spendingMoney);
+
+	Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId);
+
+	Visitor getOffMachine(Long machineId, Long visitorId);
 
 }

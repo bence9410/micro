@@ -12,16 +12,17 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import static hu.beni.amusementpark.test.ValidEntityFactory.*;
 import static hu.beni.amusementpark.test.TestConstants.OPINION_ON_THE_PARK;
+
 import hu.beni.amusementpark.entity.AmusementPark;
-import hu.beni.amusementpark.entity.GuestBook;
+import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.service.AmusementParkService;
-import hu.beni.amusementpark.service.GuestBookService;
+import hu.beni.amusementpark.service.GuestBookRegistryService;
 import hu.beni.amusementpark.service.VisitorService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
-public class GuestBookServiceTests {
+public class GuestBookServiceIntegrationTests {
 
 	@Autowired
 	private AmusementParkService amusementParkService;
@@ -30,28 +31,29 @@ public class GuestBookServiceTests {
 	private VisitorService visitorService;
 
 	@Autowired
-	private GuestBookService guestBookService;
+	private GuestBookRegistryService guestBookService;
 
 	@Test
 	public void test() {
-		AmusementPark amusementPark = createAmusementPark();
-		amusementPark.setAddress(createAddress());
+		AmusementPark amusementPark = createAmusementParkWithAddress();
 		Long amusementParkId = amusementParkService.save(amusementPark).getId();
-
-		Visitor visitor = visitorService.enterPark(amusementParkId, Visitor.builder().spendingMoney(50).build());
-		Long visitorId = visitor.getId();
+		
+		Visitor visitor = createVisitor();
+		Long visitorId = visitorService.registrate(visitor).getId();
+		
+		visitorService.enterPark(amusementParkId, visitorId, 200);
 
 		String textOfRegistry = OPINION_ON_THE_PARK;
 
-		Long guestBookId = guestBookService.writeInGuestBook(amusementParkId, visitorId, textOfRegistry).getId();
-		GuestBook guestBook = guestBookService.findOne(guestBookId);
+		Long guestBookRegistryId = guestBookService.addRegistry(amusementParkId, visitorId, textOfRegistry).getId();
+		GuestBookRegistry guestBookRegistry = guestBookService.findOneRegistry(guestBookRegistryId);
 		
-		assertEquals(textOfRegistry, guestBook.getTextOfRegistry());
-		assertTrue(guestBook.getDateOfRegistry().before(Timestamp.from(Instant.now())));
+		assertEquals(textOfRegistry, guestBookRegistry.getTextOfRegistry());
+		assertTrue(guestBookRegistry.getDateOfRegistry().before(Timestamp.from(Instant.now())));
 		
 		visitorService.leavePark(amusementParkId, visitorId);
 		
-		assertNotNull(guestBookService.findOne(guestBookId));
+		assertNotNull(guestBookService.findOneRegistry(guestBookRegistryId));
 	}
 
 }

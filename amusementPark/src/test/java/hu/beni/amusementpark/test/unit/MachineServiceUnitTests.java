@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 
-public class MachineServiceTests {
+public class MachineServiceUnitTests {
 
     private AmusementParkRepository amusementParkRepository;
     private MachineRepository machineRepository;
@@ -98,6 +98,18 @@ public class MachineServiceTests {
         verify(amusementParkRepository).decreaseCapitalById(machine.getPrice(), amusementParkId);
         verify(machineRepository).save(machine);
     }
+    
+    @Test
+    public void findOnePositive() {
+        Machine machine = Machine.builder().id(0L).build();
+        Long machineId = machine.getId();
+
+        when(machineRepository.findOne(machineId)).thenReturn(machine);
+
+        assertEquals(machine, machineService.findOne(machineId));
+
+        verify(machineRepository).findOne(machineId);
+    }
 
     @Test
     public void removeMachineNegativeNoMachine() {
@@ -144,17 +156,4 @@ public class MachineServiceTests {
         verify(amusementParkRepository).incrementCapitalById(machine.getPrice(), amusementParkId);
         verify(machineRepository).delete(machineId);
     }
-
-    @Test
-    public void findOnePositive() {
-        Machine machine = Machine.builder().id(0L).build();
-        Long machineId = machine.getId();
-
-        when(machineRepository.findOne(machineId)).thenReturn(machine);
-
-        assertEquals(machine, machineService.findOne(machineId));
-
-        verify(machineRepository).findOne(machineId);
-    }
-
 }

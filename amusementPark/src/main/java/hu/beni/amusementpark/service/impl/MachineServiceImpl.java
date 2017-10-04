@@ -1,11 +1,19 @@
 package hu.beni.amusementpark.service.impl;
 
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.MACHINE_IS_TOO_BIG;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.MACHINE_IS_TOO_EXPENSIVE;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_MACHINE_IN_PARK_WITH_ID;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITORS_ON_MACHINE;
+import static hu.beni.amusementpark.exception.ExceptionUtil.exceptionIfFirstLessThanSecond;
+import static hu.beni.amusementpark.exception.ExceptionUtil.exceptionIfNotZero;
+import static hu.beni.amusementpark.exception.ExceptionUtil.exceptionIfNull;
+
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
-import static hu.beni.amusementpark.exception.ExceptionUtil.*;
+
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.repository.AmusementParkRepository;

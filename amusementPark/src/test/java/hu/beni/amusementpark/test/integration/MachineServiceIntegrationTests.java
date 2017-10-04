@@ -14,7 +14,7 @@ import static hu.beni.amusementpark.test.ValidEntityFactory.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class MachineServiceTests {
+public class MachineServiceIntegrationTests {
     
     @Autowired
     private AmusementParkService amusementParkService;
@@ -24,8 +24,7 @@ public class MachineServiceTests {
     
     @Test
     public void test(){
-        AmusementPark amusementPark = createAmusementPark();
-        amusementPark.setAddress(createAddress());
+        AmusementPark amusementPark = createAmusementParkWithAddress();
         Long amusementParkId = amusementParkService.save(amusementPark).getId();
         
         Machine machine = createMachine();
@@ -39,6 +38,8 @@ public class MachineServiceTests {
         machineService.removeMachine(amusementParkId, machineId);
         assertNull(machineService.findOne(machineId));
         assertEquals(amusementPark.getCapital().longValue(), amusementParkService.findOne(amusementParkId).getCapital().longValue());
+        
+        amusementParkService.delete(amusementParkId);
     }
 
 }

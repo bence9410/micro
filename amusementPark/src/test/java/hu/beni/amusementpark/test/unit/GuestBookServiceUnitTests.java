@@ -12,62 +12,62 @@ import org.junit.Before;
 import org.junit.Test;
 
 import hu.beni.amusementpark.entity.AmusementPark;
-import hu.beni.amusementpark.entity.GuestBook;
+import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
-import hu.beni.amusementpark.repository.GuestBookRepository;
+import hu.beni.amusementpark.repository.GuestBookRegistryRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
-import hu.beni.amusementpark.service.GuestBookService;
-import hu.beni.amusementpark.service.impl.GuestBookServiceImpl;
+import hu.beni.amusementpark.service.GuestBookRegistryService;
+import hu.beni.amusementpark.service.impl.GuestBookRegistryServiceImpl;
 
-public class GuestBookServiceTests {
+public class GuestBookServiceUnitTests {
 
 	private AmusementParkRepository amusementParkRepository;
 	private VisitorRepository visitorRepository;
-	private GuestBookRepository guestBookRepository;
-
-	private GuestBookService guestBookService;
+	private GuestBookRegistryRepository guestBookRegistryRepository;
+	
+	private GuestBookRegistryService guestBookService;
 
 	@Before
 	public void setUp() {
 		amusementParkRepository = mock(AmusementParkRepository.class);
 		visitorRepository = mock(VisitorRepository.class);
-		guestBookRepository = mock(GuestBookRepository.class);
-		guestBookService = new GuestBookServiceImpl(amusementParkRepository, visitorRepository, guestBookRepository);
+		guestBookRegistryRepository = mock(GuestBookRegistryRepository.class);
+		guestBookService = new GuestBookRegistryServiceImpl(amusementParkRepository, visitorRepository, guestBookRegistryRepository);
 	}
 
 	@After
 	public void verifyNoMoreInteractionsOnMocks() {
-		verifyNoMoreInteractions(amusementParkRepository);
+		verifyNoMoreInteractions(amusementParkRepository, visitorRepository, guestBookRegistryRepository);
 	}
 
 	@Test
 	public void findOnePositive() {
-		GuestBook guestBook = GuestBook.builder().id(0L).build();
-		Long guestBookId = guestBook.getId();
+		GuestBookRegistry guestBookRegistry = GuestBookRegistry.builder().id(0L).build();
+		Long guestBookRegistryId = guestBookRegistry.getId();
 
-		when(guestBookRepository.findOne(guestBookId)).thenReturn(guestBook);
+		when(guestBookRegistryRepository.findOne(guestBookRegistryId)).thenReturn(guestBookRegistry);
 
-		assertEquals(guestBook, guestBookService.findOne(guestBookId));
+		assertEquals(guestBookRegistry, guestBookService.findOneRegistry(guestBookRegistryId));
 
-		verify(guestBookRepository).findOne(guestBookId);
+		verify(guestBookRegistryRepository).findOne(guestBookRegistryId);
 	}
 
 	@Test
-	public void writeInGuestBookNegativeNoAmusementPark() {
+	public void addRegistryNegativeNoAmusementPark() {
 		Long amusementParkId = 0L;
 		Long visitorId = 1L;
 		String textOfRegistry = OPINION_ON_THE_PARK;
 
-		assertThatThrownBy(() -> guestBookService.writeInGuestBook(amusementParkId, visitorId, textOfRegistry))
+		assertThatThrownBy(() -> guestBookService.addRegistry(amusementParkId, visitorId, textOfRegistry))
 				.isInstanceOf(AmusementParkException.class).hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
 
 		verify(amusementParkRepository).findByIdReadOnlyId(amusementParkId);
 	}
 
 	@Test
-	public void writeInGuestBookNegativeNoVisitorInPark() {
+	public void addRegistryNegativeNoVisitorInPark() {
 		AmusementPark amusementPark = AmusementPark.builder().id(0L).build();
 		Long amusementParkId = amusementPark.getId();
 		Long visitorId = 1L;
@@ -75,15 +75,15 @@ public class GuestBookServiceTests {
 
 		when(amusementParkRepository.findByIdReadOnlyId(amusementParkId)).thenReturn(amusementPark);
 
-		assertThatThrownBy(() -> guestBookService.writeInGuestBook(amusementParkId, visitorId, textOfRegistry))
+		assertThatThrownBy(() -> guestBookService.addRegistry(amusementParkId, visitorId, textOfRegistry))
 				.isInstanceOf(AmusementParkException.class).hasMessage(NO_VISITOR_IN_PARK_WITH_ID);
 
 		verify(amusementParkRepository).findByIdReadOnlyId(amusementParkId);
-		verify(visitorRepository).findByAmusementParkIdAndVisitorIdReadOnlyId(amusementParkId, visitorId);
+		verify(visitorRepository).findOne(visitorId);
 	}
 
 	@Test
-	public void writeInGuestBookPositive() {
+	public void addRegistryPositive() {
 		AmusementPark amusementPark = AmusementPark.builder().id(0L).build();
 		Long amusementParkId = amusementPark.getId();
 		Visitor visitor = Visitor.builder().id(1L).build();
@@ -91,13 +91,16 @@ public class GuestBookServiceTests {
 		String textOfRegistry = OPINION_ON_THE_PARK;
 
 		when(amusementParkRepository.findByIdReadOnlyId(amusementParkId)).thenReturn(amusementPark);
-		when(visitorRepository.findByAmusementParkIdAndVisitorIdReadOnlyId(amusementParkId, visitorId)).thenReturn(visitor);
+		when(visitorRepository.findOne(visitorId)).thenReturn(visitor);
+		GuestBookRegistry guestBookRegistry = GuestBookRegistry.builder().amusementPark(amusementPark)
+				.textOfRegistry(textOfRegistry).visitor(visitor).build();
+		when(guestBookRegistryRepository.save(any(GuestBookRegistry.class))).thenReturn(guestBookRegistry);
 		
-		guestBookService.writeInGuestBook(amusementParkId, visitorId, textOfRegistry);
+		assertEquals(guestBookRegistry, guestBookService.addRegistry(amusementParkId, visitorId, textOfRegistry));
 		
 		verify(amusementParkRepository).findByIdReadOnlyId(amusementParkId);
-		verify(visitorRepository).findByAmusementParkIdAndVisitorIdReadOnlyId(amusementParkId, visitorId);
-		verify(guestBookRepository).save(any(GuestBook.class));
+		verify(visitorRepository).findOne(visitorId);
+		verify(guestBookRegistryRepository).save(any(GuestBookRegistry.class));
 	}
 
 }

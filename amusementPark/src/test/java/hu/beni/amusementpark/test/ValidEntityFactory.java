@@ -1,5 +1,8 @@
 package hu.beni.amusementpark.test;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
+
 import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
@@ -37,8 +40,18 @@ public class ValidEntityFactory {
     }
 
     public static Visitor createVisitor() {
-        return Visitor.builder()
-                .spendingMoney(100)
-                .age(20).build();
+    	Calendar c = Calendar.getInstance();
+		c.set(1994, 9, 22);
+        return Visitor.builder().name("Németh Bence")
+        		.dateOfBirth(Timestamp.from(c.toInstant())).build();
     }
+    
+    public static AmusementPark createAmusementParkWithAddress(){
+    	Address address = createAddress();
+    	AmusementPark amusementPark = createAmusementPark();
+    	address.setAmusementPark(amusementPark);
+    	amusementPark.setAddress(address);
+    	return amusementPark;
+    }
+    
 }

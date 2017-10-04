@@ -1,7 +1,7 @@
 package hu.beni.amusementpark.test.integration;
 
 import hu.beni.amusementpark.entity.AmusementPark;
-import hu.beni.amusementpark.entity.GuestBook;
+import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
 
@@ -51,8 +51,11 @@ public class AmusementParkApplicationTests {
         //add Machine
         Resource<Machine> machineResource = postMachine(amusementParkResource.getLink(MACHINE).getHref());
         
+        //visitor registrate
+        Resource<Visitor> visitorResource = postVisitor(amusementParkResource.getLink(VISITOR_REGISTRATE).getHref());
+        
         //visitor enterPark
-        Resource<Visitor> visitorResource = postVisitor(amusementParkResource.getLink(VISITOR).getHref());
+        visitorResource = restTemplate.exchange(visitorResource.getLink(VISITOR_ENTER_PARK).getHref(), HttpMethod.PUT, new HttpEntity<>(200), visitorType(), amusementParkResource.getContent().getId()).getBody();
         
         //visitor getOnMachine
         Link visitorGetOffMachineLink = restTemplate.exchange(machineResource.getLink(GET_ON_MACHINE).getHref(), HttpMethod.PUT, HttpEntity.EMPTY, visitorType(), visitorResource.getContent().getId()).getBody().getLink(GET_OFF_MACHINE);
@@ -60,11 +63,11 @@ public class AmusementParkApplicationTests {
         //visitor getOffMachine
         restTemplate.exchange(visitorGetOffMachineLink.getHref(), HttpMethod.PUT, HttpEntity.EMPTY, visitorType()).getBody();
         
-        //writeInGuestBook
-        restTemplate.exchange(visitorResource.getLink(WRITE_IN_GUEST_BOOK).getHref(), HttpMethod.POST, new HttpEntity<>(OPINION_ON_THE_PARK), guestBookType()).getBody();
+        //addRegistry
+        restTemplate.exchange(visitorResource.getLink(ADD_REGISTRY).getHref(), HttpMethod.POST, new HttpEntity<>(OPINION_ON_THE_PARK), guestBookRegistryType(), visitorResource.getContent().getId()).getBody();
         
         //visitor leavePark
-        restTemplate.exchange(visitorResource.getId().getHref(), HttpMethod.DELETE, HttpEntity.EMPTY, Void.class).getStatusCode();
+        restTemplate.exchange(visitorResource.getLink(VISITOR_LEAVE_PARK).getHref(), HttpMethod.PUT, HttpEntity.EMPTY, Void.class).getStatusCode();
 
         //sell Machine
         restTemplate.exchange(machineResource.getId().getHref(), HttpMethod.DELETE, HttpEntity.EMPTY, Void.class);
@@ -97,15 +100,15 @@ public class AmusementParkApplicationTests {
     }
 
     private Resource<AmusementPark> postAmusementParkWithAddress() {
-        AmusementPark amusementPark = createAmusementPark();
-        amusementPark.setAddress(createAddress());
+        AmusementPark amusementPark = createAmusementParkWithAddress();
 
         Resource<AmusementPark> amusementParkResource = restTemplate.exchange(getAmusementParkUrl(), HttpMethod.POST, new HttpEntity<>(amusementPark), amusementParkType()).getBody();
         
         assertEquals(NUMBER_OF_LINKS_IN_AMUSEMENT_PARK_RESOURCE, amusementParkResource.getLinks().size());
         assertTrue(amusementParkResource.getId().getHref().endsWith(amusementParkResource.getContent().getId().toString()));
         assertNotNull(amusementParkResource.getLink(MACHINE));
-        assertNotNull(amusementParkResource.getLink(VISITOR));
+        assertNotNull(amusementParkResource.getLink(VISITOR_REGISTRATE));
+        assertNotNull(amusementParkResource.getLink(VISITOR_ENTER_PARK));
 
         return amusementParkResource;
     }
@@ -116,6 +119,7 @@ public class AmusementParkApplicationTests {
         Resource<Machine> machineResource = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(machine), machineType()).getBody();
 
         assertEquals(NUMBER_OF_LINKS_IN_MACHINE_RESOURCE, machineResource.getLinks().size());
+        assertNotNull(machineResource.getId());
         assertTrue(machineResource.getId().getHref().endsWith(machineResource.getContent().getId().toString()));
         assertNotNull(machineResource.getLink(GET_ON_MACHINE));
 
@@ -128,9 +132,9 @@ public class AmusementParkApplicationTests {
         Resource<Visitor> visitorResource = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(visitor), visitorType()).getBody();
         Long visitorId = visitorResource.getContent().getId();
         
-        assertEquals(NUMBER_OF_LINKS_IN_VISITOR_RESOURCE_AFTER_ENTER, visitorResource.getLinks().size());
+        assertEquals(NUMBER_OF_LINKS_IN_NOT_IN_PARK_VISITOR_RESOURCE, visitorResource.getLinks().size());
         assertTrue(visitorResource.getId().getHref().endsWith(visitorId.toString()));
-        assertTrue(visitorResource.getLink(WRITE_IN_GUEST_BOOK).getHref().endsWith(visitorId + "/guestBook"));
+        assertNotNull(visitorResource.getLink(VISITOR_ENTER_PARK));
 
         return visitorResource;
     }
@@ -150,8 +154,8 @@ public class AmusementParkApplicationTests {
         };
     }
     
-    private ParameterizedTypeReference<Resource<GuestBook>> guestBookType(){
-    	return new ParameterizedTypeReference<Resource<GuestBook>>() {
+    private ParameterizedTypeReference<Resource<GuestBookRegistry>> guestBookRegistryType(){
+    	return new ParameterizedTypeReference<Resource<GuestBookRegistry>>() {
 		};
     }
 
