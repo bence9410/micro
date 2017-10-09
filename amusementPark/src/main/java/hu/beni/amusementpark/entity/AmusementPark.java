@@ -13,6 +13,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Range;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -35,12 +38,17 @@ public class AmusementPark implements Serializable {
     @JsonProperty("identifier")
     private Long id;
 
+    @NotNull
+    @Size(min = 5, max = 20)
     private String name;
 
+    @Range(min = 100, max = 50000)
     private Integer capital;
 
+    @Range(min = 50, max = 2000)
     private Integer totalArea;
 
+    @Range(min = 10, max = 200)
     private Integer entranceFee;
         
     @NotNull
