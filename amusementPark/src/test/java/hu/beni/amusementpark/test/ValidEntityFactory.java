@@ -22,7 +22,7 @@ public class ValidEntityFactory {
 	
 	public static AmusementPark createAmusementPark() {
         return AmusementPark.builder()
-                .name("Beniparkja")
+                .name("Beni parkja")
                 .capital(3000)
                 .totalArea(1000)
                 .entranceFee(50).build();

@@ -12,6 +12,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -51,6 +52,7 @@ public class AmusementPark implements Serializable {
     @Range(min = 10, max = 200)
     private Integer entranceFee;
         
+    @Valid
     @NotNull
     @PrimaryKeyJoinColumn
     @OneToOne(cascade = CascadeType.ALL)
@@ -69,6 +71,7 @@ public class AmusementPark implements Serializable {
     private List<Visitor> activeVisitors;
 
     @ManyToMany
+    @JsonIgnore
     private Set<Visitor> visitors;
     
     @Tolerate

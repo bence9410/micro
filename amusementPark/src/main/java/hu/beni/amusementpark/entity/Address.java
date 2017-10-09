@@ -46,7 +46,7 @@ public class Address implements Serializable {
     private String city;
 
     @NotNull
-    @Size(min = 3, max = 25)
+    @Size(min = 5, max = 25)
     private String street;
 
     @NotEmpty
