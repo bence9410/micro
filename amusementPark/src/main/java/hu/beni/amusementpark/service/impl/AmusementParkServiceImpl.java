@@ -36,6 +36,10 @@ public class AmusementParkServiceImpl implements AmusementParkService {
         amusementParkRepository.delete(amusementParkId);
     }
     
+    public List<AmusementPark> findAll(){
+    	return amusementParkRepository.findAll();
+    }
+    
     public Page<AmusementPark> findAll(Pageable pageable){
     	return amusementParkRepository.findAll(pageable);
     }
