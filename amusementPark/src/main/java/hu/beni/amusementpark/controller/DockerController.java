@@ -10,7 +10,8 @@ public class DockerController {
 
 	@GetMapping
 	public String getContainerId() {
-		return System.getenv("HOSTNAME");
+		String response = System.getenv("HOSTNAME");
+		return response == null ? "Not running in a Docker container" : response;
 	}
 
 }
