@@ -43,13 +43,16 @@ public class AmusementPark implements Serializable {
     @Size(min = 5, max = 20)
     private String name;
 
-    @Range(min = 100, max = 50000)
+    @NotNull
+    @Range(min = 500, max = 50000)
     private Integer capital;
 
+    @NotNull
     @Range(min = 50, max = 2000)
     private Integer totalArea;
 
-    @Range(min = 10, max = 200)
+    @NotNull
+    @Range(min = 5, max = 200)
     private Integer entranceFee;
         
     @Valid

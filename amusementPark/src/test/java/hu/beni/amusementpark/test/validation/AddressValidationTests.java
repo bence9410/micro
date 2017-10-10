@@ -89,12 +89,12 @@ public class AddressValidationTests extends AbstractValidation<Address> {
 		street = "as";
 		address.setStreet(street);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(street, "street", "size must be between 3 and 25");
+		assertInvalidValueAndPropertyNameAndMessageEquals(street, "street", "size must be between 5 and 25");
 		
 		street = "asdfghjklxcvbnmqwertzuiopa";
 		address.setStreet(street);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(street, "street", "size must be between 3 and 25");
+		assertInvalidValueAndPropertyNameAndMessageEquals(street, "street", "size must be between 5 and 25");
 	}
 	
 
