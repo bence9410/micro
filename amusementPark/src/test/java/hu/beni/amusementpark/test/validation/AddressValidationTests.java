@@ -22,25 +22,6 @@ public class AddressValidationTests extends AbstractValidation<Address> {
 	}
 	
 	@Test
-	public void invalidZipCode() {
-		String zipCode = null;
-		address.setZipCode(zipCode);
-		
-		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(zipCode, "zipCode", "may not be null");
-		
-		zipCode = "as";
-		address.setZipCode(zipCode);
-		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(zipCode, "zipCode", "size must be between 3 and 10");
-		
-		zipCode = "asdfghjklxc";
-		address.setZipCode(zipCode);
-		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(zipCode, "zipCode", "size must be between 3 and 10");
-	}
-	
-	@Test
 	public void invalidCountry() {
 		String country = null;
 		address.setCountry(country);
@@ -57,6 +38,25 @@ public class AddressValidationTests extends AbstractValidation<Address> {
 		address.setCountry(country);
 		validateAndAssertViolationsSizeIsOne(address);
 		assertInvalidValueAndPropertyNameAndMessageEquals(country, "country", "size must be between 3 and 15");
+	}
+	
+	@Test
+	public void invalidZipCode() {
+		String zipCode = null;
+		address.setZipCode(zipCode);
+		
+		validateAndAssertViolationsSizeIsOne(address);
+		assertInvalidValueAndPropertyNameAndMessageEquals(zipCode, "zipCode", "may not be null");
+		
+		zipCode = "as";
+		address.setZipCode(zipCode);
+		validateAndAssertViolationsSizeIsOne(address);
+		assertInvalidValueAndPropertyNameAndMessageEquals(zipCode, "zipCode", "size must be between 3 and 10");
+		
+		zipCode = "asdfghjklxc";
+		address.setZipCode(zipCode);
+		validateAndAssertViolationsSizeIsOne(address);
+		assertInvalidValueAndPropertyNameAndMessageEquals(zipCode, "zipCode", "size must be between 3 and 10");
 	}
 	
 	@Test
