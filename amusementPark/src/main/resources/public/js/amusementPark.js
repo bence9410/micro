@@ -36,8 +36,8 @@ function save() {
 
 function collectData() {
 	var address = {};
-	address.zipCode = $('#zipCode').val();
 	address.country = $('#country').val();
+	address.zipCode = $('#zipCode').val();
 	address.city = $('#city').val();
 	address.street = $('#street').val();
 	address.houseNumber = $('#houseNumber').val();
@@ -61,8 +61,8 @@ function fillWithSampleData() {
 	$('#totalArea').val('1000');
 	$('#entranceFee').val('50');
 
-	$('#zipCode').val('1148');
 	$('#country').val('Magyarország');
+	$('#zipCode').val('1148');
 	$('#city').val('Budapest');
 	$('#street').val('Fogarasi út');
 	$('#houseNumber').val('80/C');
@@ -106,14 +106,9 @@ function convertAmusementParkToTableRow(amusementPark) {
 	tr.push('<td>' + amusementPark.entranceFee + '</td>');
 	var address = amusementPark.address;
 	tr.push('<td>' + address.country + ' ' + address.zipCode + ' ' + address.city 
-			+ address.street + address.houseNumber + '</td>');
+			+ ' ' + address.street + ' ' + address.houseNumber + '</td>');
 	tr.push('</tr>')
 	return tr.join('');
 }
-
-
-
-
-
 
 
