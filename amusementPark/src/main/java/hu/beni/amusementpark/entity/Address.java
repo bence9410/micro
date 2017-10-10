@@ -34,13 +34,13 @@ public class Address implements Serializable {
     private Long id;
 
     @NotNull
-    @Size(min = 3, max = 10)
-    private String zipCode;
-
-    @NotNull
     @Size(min = 3, max = 15)
     private String country;
 
+    @NotNull
+    @Size(min = 3, max = 10)
+    private String zipCode;
+    
     @NotNull
     @Size(min = 3, max = 15)
     private String city;
