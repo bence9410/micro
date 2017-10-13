@@ -99,7 +99,7 @@ public class VisitorServiceImpl implements VisitorService{
     	return visitorRepository.save(visitor);
     }
     
-    private int calculateAge(Timestamp dateOfBirth) {
+    private int calculateAge(Timestamp dateOfBirth) { 
     	Calendar calendarOfBirth = Calendar.getInstance();
     	calendarOfBirth.setTime(dateOfBirth);
     	
@@ -110,10 +110,10 @@ public class VisitorServiceImpl implements VisitorService{
     	
     	int age = nowYear - birthYear;
     	
-    	if( nowYear == birthYear &&	now.get(Calendar.DAY_OF_YEAR) > 
-    		calendarOfBirth.get(Calendar.DAY_OF_YEAR)) {
+    	if(now.get(Calendar.MONTH) == calendarOfBirth.get(Calendar.MONTH) &&
+    			now.get(Calendar.DAY_OF_MONTH) > calendarOfBirth.get(Calendar.DAY_OF_MONTH)) {
     		age--;
-    	}    	
+    	}
     	return age;
     }
 	

@@ -15,8 +15,10 @@ import org.junit.After;
 import org.junit.Before;
 import static org.mockito.Mockito.*;
 
+import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Calendar;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
@@ -41,7 +43,7 @@ public class VisitorServiceUnitTests {
 
     @After
     public void verifyNoMoreInteractionsOnMocks() {
-//        verifyNoMoreInteractions(amusementParkRepository, machineRepository, visitorRepository, activeVisitorRepository);
+    	verifyNoMoreInteractions(amusementParkRepository, machineRepository, visitorRepository);
     }
     
     @Test
@@ -238,6 +240,26 @@ public class VisitorServiceUnitTests {
 
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
         verify(visitorRepository).findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
+    }
+    
+    @Test
+    public void calculateAgeTest() {
+    	try {
+    		Method calculateAge = VisitorServiceImpl.class.getDeclaredMethod("calculateAge", Timestamp.class);
+    		calculateAge.setAccessible(true);
+    			
+    		Calendar c = Calendar.getInstance();
+    		c.set(Calendar.YEAR, c.get(Calendar.YEAR)-1);
+    		
+        	assertEquals(1, calculateAge.invoke(visitorService, Timestamp.from(c.toInstant())));
+        	
+        	c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR)-1);
+        	
+        	assertEquals(0, calculateAge.invoke(visitorService, Timestamp.from(c.toInstant())));
+    	}catch (Exception e) {
+    		e.printStackTrace();
+    		fail("Could not find, access or call the calculacteAge method");
+    	}
     }
     
     @Test
