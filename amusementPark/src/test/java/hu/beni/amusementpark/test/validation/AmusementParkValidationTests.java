@@ -8,8 +8,8 @@ import hu.beni.amusementpark.entity.AmusementPark;
 
 import static hu.beni.amusementpark.constants.StringParamConstants.*;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.*;
+import static hu.beni.amusementpark.helper.ValidEntityFactory.*;
 import static hu.beni.amusementpark.constants.FieldNameConstants.*;
-import static hu.beni.amusementpark.test.ValidEntityFactory.*;
 
 public class AmusementParkValidationTests extends AbstractValidation<AmusementPark>{
 

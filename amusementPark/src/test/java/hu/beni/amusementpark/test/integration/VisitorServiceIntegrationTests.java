@@ -1,5 +1,6 @@
 package hu.beni.amusementpark.test.integration;
 
+import static hu.beni.amusementpark.helper.ValidEntityFactory.*;
 import static org.junit.Assert.*;
 
 import java.sql.Timestamp;
@@ -18,8 +19,6 @@ import hu.beni.amusementpark.enums.VisitorState;
 import hu.beni.amusementpark.service.AmusementParkService;
 import hu.beni.amusementpark.service.MachineService;
 import hu.beni.amusementpark.service.VisitorService;
-
-import static hu.beni.amusementpark.test.ValidEntityFactory.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)

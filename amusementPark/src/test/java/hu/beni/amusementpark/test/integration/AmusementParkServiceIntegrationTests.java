@@ -1,6 +1,6 @@
 package hu.beni.amusementpark.test.integration;
 
-import static hu.beni.amusementpark.test.ValidEntityFactory.*;
+import static hu.beni.amusementpark.helper.ValidEntityFactory.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;

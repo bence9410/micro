@@ -1,4 +1,4 @@
-package hu.beni.amusementpark.test;
+package hu.beni.amusementpark.helper;
 
 import static org.junit.Assert.fail;
 

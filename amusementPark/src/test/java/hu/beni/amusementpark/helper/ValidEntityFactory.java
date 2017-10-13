@@ -1,4 +1,4 @@
-package hu.beni.amusementpark.test;
+package hu.beni.amusementpark.helper;
 
 import java.sql.Timestamp;
 import java.util.Calendar;

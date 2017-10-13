@@ -3,8 +3,8 @@ package hu.beni.amusementpark.test.validation;
 
 import static hu.beni.amusementpark.constants.StringParamConstants.*;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.*;
+import static hu.beni.amusementpark.helper.ValidEntityFactory.createAddress;
 import static hu.beni.amusementpark.constants.FieldNameConstants.*;
-import static hu.beni.amusementpark.test.ValidEntityFactory.createAddress;
 
 import org.junit.Before;
 import org.junit.Test;
