@@ -21,10 +21,11 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.*;
+import static hu.beni.amusementpark.constants.AppConstraints.*;
+import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
 import static org.junit.Assert.*;
 
 import static hu.beni.amusementpark.test.MyAssert.assertThrows;
-import static hu.beni.amusementpark.test.TestConstants.*;
 import static hu.beni.amusementpark.test.ValidEntityFactory.*;
 import org.springframework.http.HttpStatus;
 

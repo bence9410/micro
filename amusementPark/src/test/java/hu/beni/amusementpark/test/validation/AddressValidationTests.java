@@ -1,5 +1,9 @@
 package hu.beni.amusementpark.test.validation;
 
+
+import static hu.beni.amusementpark.constants.StringParamConstants.*;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.*;
+import static hu.beni.amusementpark.constants.FieldNameConstants.*;
 import static hu.beni.amusementpark.test.ValidEntityFactory.createAddress;
 
 import org.junit.Before;
@@ -10,155 +14,90 @@ import hu.beni.amusementpark.entity.Address;
 public class AddressValidationTests extends AbstractValidation<Address> {
 
 	private Address address;
-	
+
 	@Before
 	public void setUp() {
 		address = createAddress();
 	}
-	
+
 	@Test
 	public void validAddress() {
 		validateAndAssertNoViolations(address);
 	}
-	
+
 	@Test
 	public void invalidCountry() {
-		String country = null;
-		address.setCountry(country);
-		
+		address.setCountry(null);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(country, "country", "may not be null");
-		
-		country = "as";
-		address.setCountry(country);
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getCountry(), COUNTRY, NOT_NULL_MESSAGE);
+
+		address.setCountry(STRING_WITH_2_LENGTH);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(country, "country", "size must be between 3 and 15");
-		
-		country = "asdfghjklxcvbnmq";
-		address.setCountry(country);
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getCountry(), COUNTRY, SIZE_3_15_MESSAGE);
+
+		address.setCountry(STRING_WITH_16_LENGTH);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(country, "country", "size must be between 3 and 15");
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getCountry(), COUNTRY, SIZE_3_15_MESSAGE);
 	}
-	
+
 	@Test
 	public void invalidZipCode() {
-		String zipCode = null;
-		address.setZipCode(zipCode);
-		
+		address.setZipCode(null);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(zipCode, "zipCode", "may not be null");
-		
-		zipCode = "as";
-		address.setZipCode(zipCode);
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getZipCode(), ZIP_CODE, NOT_NULL_MESSAGE);
+
+		address.setZipCode(STRING_WITH_2_LENGTH);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(zipCode, "zipCode", "size must be between 3 and 10");
-		
-		zipCode = "asdfghjklxc";
-		address.setZipCode(zipCode);
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getZipCode(), ZIP_CODE, SIZE_3_10_MESSAGE);
+
+		address.setZipCode(STRING_WITH_11_LENGTH);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(zipCode, "zipCode", "size must be between 3 and 10");
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getZipCode(), ZIP_CODE, SIZE_3_10_MESSAGE);
 	}
-	
+
 	@Test
 	public void invalidCity() {
-		String city = null;
-		address.setCity(city);
-		
+		address.setCity(null);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(city, "city", "may not be null");
-		
-		city = "as";
-		address.setCity(city);
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getCity(), CITY, NOT_NULL_MESSAGE);
+
+		address.setCity(STRING_WITH_2_LENGTH);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(city, "city", "size must be between 3 and 15");
-		
-		city = "asdfghjklxcvbnmq";
-		address.setCity(city);
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getCity(), CITY, SIZE_3_15_MESSAGE);
+
+		address.setCity(STRING_WITH_16_LENGTH);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(city, "city", "size must be between 3 and 15");
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getCity(), CITY, SIZE_3_15_MESSAGE);
 	}
-	
+
 	@Test
 	public void invalidStreet() {
-		String street = null;
-		address.setStreet(street);
-		
+		address.setStreet(null);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(street, "street", "may not be null");
-		
-		street = "as";
-		address.setStreet(street);
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getStreet(), STREET, NOT_NULL_MESSAGE);
+
+		address.setStreet(STRING_WITH_4_LENGTH);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(street, "street", "size must be between 5 and 25");
-		
-		street = "asdfghjklxcvbnmqwertzuiopa";
-		address.setStreet(street);
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getStreet(), STREET, SIZE_5_25_MESSAGE);
+
+		address.setStreet(STRING_WITH_26_LENGTH);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(street, "street", "size must be between 5 and 25");
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getStreet(), STREET, SIZE_5_25_MESSAGE);
 	}
-	
 
 	@Test
 	public void invalidHouseNumber() {
-		String houseNumber = null;
-		address.setHouseNumber(houseNumber);
-		
+		address.setHouseNumber(null);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(houseNumber, "houseNumber", "may not be empty");
-		
-		houseNumber = "asdfgh";
-		address.setHouseNumber(houseNumber);
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getHouseNumber(), HOUSE_NUMBER, NOT_EMPTY_MESSAGE);
+
+		address.setHouseNumber(STRING_EMPTY);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(houseNumber, "houseNumber", "size must be between 0 and 5");
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getHouseNumber(), HOUSE_NUMBER, NOT_EMPTY_MESSAGE);
+		
+		address.setHouseNumber(STRING_WITH_6_LENGTH);
+		validateAndAssertViolationsSizeIsOne(address);
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getHouseNumber(), HOUSE_NUMBER, SIZE_0_5_MESSAGE);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 }

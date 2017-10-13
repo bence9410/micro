@@ -2,7 +2,7 @@ package hu.beni.amusementpark.test.unit;
 
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_IN_PARK_WITH_ID;
-import static hu.beni.amusementpark.test.TestConstants.OPINION_ON_THE_PARK;
+import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

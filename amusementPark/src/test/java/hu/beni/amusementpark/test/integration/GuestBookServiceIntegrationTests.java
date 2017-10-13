@@ -10,8 +10,9 @@ import static org.junit.Assert.*;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+
+import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
 import static hu.beni.amusementpark.test.ValidEntityFactory.*;
-import static hu.beni.amusementpark.test.TestConstants.OPINION_ON_THE_PARK;
 
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.GuestBookRegistry;

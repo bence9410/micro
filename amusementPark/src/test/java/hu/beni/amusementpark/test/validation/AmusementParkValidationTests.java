@@ -5,8 +5,11 @@ import org.junit.Test;
 
 import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
+
+import static hu.beni.amusementpark.constants.StringParamConstants.*;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.*;
+import static hu.beni.amusementpark.constants.FieldNameConstants.*;
 import static hu.beni.amusementpark.test.ValidEntityFactory.*;
-import static hu.beni.amusementpark.test.TestConstants.*;
 
 public class AmusementParkValidationTests extends AbstractValidation<AmusementPark>{
 
@@ -92,6 +95,6 @@ public class AmusementParkValidationTests extends AbstractValidation<AmusementPa
 		address.setCountry(null);
 		amusementPark.setAddress(address);
 		validateAndAssertViolationsSizeIsOne(amusementPark);
-		assertInvalidValueAndPropertyNameAndMessageEquals(address.getCountry(), "address.country", NOT_NULL_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getCountry(), COUNTRY_IN_ADDRESS, NOT_NULL_MESSAGE);
 	}
 }
