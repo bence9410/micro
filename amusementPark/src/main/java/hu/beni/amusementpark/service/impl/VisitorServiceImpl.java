@@ -52,10 +52,9 @@ public class VisitorServiceImpl implements VisitorService{
         visitor.setState(VisitorState.REST);
         visitor.setAmusementPark(amusementPark);
         
-        amusementParkRepository.incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
+        amusementParkRepository.incrementCapitalById(entranceFee, amusementParkId);
         return visitorRepository.save(visitor);
-    }
-    
+    }    
 
     public Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId) {
         Machine machine = machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId);
