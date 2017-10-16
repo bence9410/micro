@@ -1,0 +1,1 @@
+mvn test -DargLine="-Dspring.profiles.active=oracleDB"
