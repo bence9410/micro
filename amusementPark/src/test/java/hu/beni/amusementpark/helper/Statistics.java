@@ -1,12 +1,32 @@
 package hu.beni.amusementpark.helper;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Statistics {
+	
+	private static final String GIT_BRANCH;
+	private static final String GIT_COMMIT_ID;
+	
+	static {
+		String gitBranch = null;
+		String gitCommitId = null;
+		try {
+			Properties p = new Properties();
+			p.load(Statistics.class.getResourceAsStream("/git.properties"));
+			gitBranch = p.getProperty("git.branch");
+			gitCommitId = p.getProperty("git.commit.id");
+		} catch (IOException e) {
+			log.error("Error: ", e);
+		}
+		GIT_BRANCH = gitBranch;
+		GIT_COMMIT_ID = gitCommitId;
+	}
 	
 	private long millisToSaveOneHundredAmusementParkWithAddress;
 	private long millisToAddOneThousandMachine;
@@ -86,6 +106,7 @@ public class Statistics {
 		log.info("millisForOneAmusementPark: " + calculateMinMaxAvgAndGetAsNiceString(millisForOneAmusementPark));
 		log.info("millisForTenAmusementPark: " + calculateMinMaxAvgAndGetAsNiceString(millisForTenAmusementPark));
 		log.info("totalRunningTime: " + totalTestRunningTime);
+		log.info("branch: " + GIT_BRANCH + ", commit id: " + GIT_COMMIT_ID);
 	}
 	
 	public long end() {
