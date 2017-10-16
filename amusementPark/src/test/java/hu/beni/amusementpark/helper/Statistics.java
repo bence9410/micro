@@ -137,20 +137,25 @@ public class Statistics {
 	private String calculateMinMaxAvgAndGetAsNiceString(List<Long> data) {
 		long avg = data.get(0);
 		long min = avg;
+		int minIndx = 0;
 		long max = avg;
+		int maxIndx = 0;
 		
 		for(int i = 1; i < data.size(); i++) {
 			long actual = data.get(i);
 			if (min > actual) {
 				min = actual;
+				minIndx = i;
 			}
 			if (max < actual) {
 				max = actual;
+				maxIndx = i;
 			}
 			avg += actual;
 		}
-		return new StringBuilder("Minimum: ").append(min).append(", Maximum: ")
-				.append(max).append(", Avarage: ").append(avg / data.size()).append('.').toString();
+		avg /= data.size();
+		return new StringBuilder("Minimum: ").append(min).append(" in ").append(++minIndx).append(". park, Maximum: ")
+				.append(max).append(" in ").append(++maxIndx).append(". park, Avarage: ").append(avg).append('.').toString();
 	
 	}	
 	
