@@ -1,27 +1,23 @@
 package hu.beni.amusementpark.test;
 
-import static hu.beni.amusementpark.helper.ValidEntityFactory.*;
 import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
+import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
+import static hu.beni.amusementpark.helper.ValidEntityFactory.createMachine;
+import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
-import java.util.Properties;
-import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -37,7 +33,6 @@ import hu.beni.amusementpark.service.AmusementParkService;
 import hu.beni.amusementpark.service.GuestBookRegistryService;
 import hu.beni.amusementpark.service.MachineService;
 import hu.beni.amusementpark.service.VisitorService;
-import lombok.extern.slf4j.Slf4j;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
@@ -61,11 +56,15 @@ public class PerformanceTest {
 
 	@Autowired
 	private VisitorRepository visitorRepository;
+	
+	@Autowired
+	private Environment environment;
 
-	private final Statistics statistics = new Statistics();
+	private Statistics statistics;
 	
 	@Before
 	public void fillDataBaseWithData() {
+		statistics  = new Statistics(environment.getActiveProfiles());
 		statistics.start();
 		saveOneHundredAmusementPark();
 		statistics.setMillisToSaveOneHundredAmusementParkWithAddress();

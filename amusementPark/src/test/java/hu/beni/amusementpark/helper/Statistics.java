@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,6 +29,8 @@ public class Statistics {
 		GIT_COMMIT_ID = gitCommitId;
 	}
 	
+	private final String database;
+	
 	private long millisToSaveOneHundredAmusementParkWithAddress;
 	private long millisToAddOneThousandMachine;
 	private long millisToRegistrateOneHundredVisitor;
@@ -42,6 +45,19 @@ public class Statistics {
 	private List<Long> millisForTenAmusementPark = new ArrayList<>(10);
 
 	private long counter;
+	
+	public Statistics(String[] activeSpringProfiles) {
+		String database = null;
+		if(activeSpringProfiles.length == 0) {
+			database = "H2 (in-memory)";
+		} else {
+			if (Stream.of(activeSpringProfiles).filter(p -> "oracleDB".equals(p))
+					.findFirst().isPresent()) {
+				database = "Oracle";
+			} 
+		}
+		this.database = database;
+	}
 	
 	public long getCurrentTimeMillis() {
 		return System.currentTimeMillis();
@@ -107,6 +123,7 @@ public class Statistics {
 		log.info("millisForTenAmusementPark: " + calculateMinMaxAvgAndGetAsNiceString(millisForTenAmusementPark));
 		log.info("totalRunningTime: " + totalTestRunningTime);
 		log.info("branch: " + GIT_BRANCH + ", commit id: " + GIT_COMMIT_ID);
+		log.info("Database: " + database);
 	}
 	
 	public long end() {
