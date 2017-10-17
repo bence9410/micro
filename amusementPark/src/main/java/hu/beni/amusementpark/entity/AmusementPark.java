@@ -8,6 +8,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -74,6 +76,9 @@ public class AmusementPark implements Serializable {
     private List<Visitor> activeVisitors;
 
     @ManyToMany
+    @JoinTable(name = "amusement_park_visitor",
+		joinColumns = @JoinColumn(name = "amusement_park_id"),
+		inverseJoinColumns = @JoinColumn(name = "visitor_id"))
     @JsonIgnore
     private Set<Visitor> visitors;
     

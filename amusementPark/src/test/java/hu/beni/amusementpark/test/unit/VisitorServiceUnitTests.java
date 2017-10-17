@@ -131,7 +131,7 @@ public class VisitorServiceUnitTests {
         verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
         verify(visitorRepository).countByVisitorIdWhereAmusementParkIsNotNull(visitorId);
         verify(visitorRepository).findOne(visitorId);
-    }   
+    }
     
     @Test
     public void enterParkPositive() {
@@ -145,6 +145,7 @@ public class VisitorServiceUnitTests {
         when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId)).thenReturn(amusementPark);
         when(visitorRepository.countByVisitorIdWhereAmusementParkIsNotNull(visitorId)).thenReturn(numberOfVisitorsWithNotNullPark);
         when(visitorRepository.findOne(visitorId)).thenReturn(visitor);
+        when(amusementParkRepository.countKnownVisitor(amusementParkId, visitorId)).thenReturn(0L);
         when(visitorRepository.save(visitor)).thenReturn(visitor);
         
         assertEquals(visitor, visitorService.enterPark(amusementParkId, visitorId, spendingMoney));
@@ -155,6 +156,8 @@ public class VisitorServiceUnitTests {
         
         verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
         verify(visitorRepository).countByVisitorIdWhereAmusementParkIsNotNull(visitorId);
+        verify(amusementParkRepository).countKnownVisitor(amusementParkId, visitorId);
+        verify(amusementParkRepository).addKnownVisitor(amusementParkId, visitorId);
         verify(visitorRepository).findOne(visitorId);
         verify(amusementParkRepository).incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
         verify(visitorRepository).save(visitor);

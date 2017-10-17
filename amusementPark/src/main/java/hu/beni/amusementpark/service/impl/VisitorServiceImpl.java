@@ -5,6 +5,7 @@ import static hu.beni.amusementpark.exception.ExceptionUtil.*;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +48,9 @@ public class VisitorServiceImpl implements VisitorService{
         
         Visitor visitor = visitorRepository.findOne(visitorId);
         exceptionIfNull(visitor, VISITOR_NOT_REGISTRATED);
+        
+        Optional.of(amusementParkRepository.countKnownVisitor(amusementParkId, visitorId)).filter(count -> count == 0)
+        	.ifPresent(count -> amusementParkRepository.addKnownVisitor(amusementParkId, visitorId));
         
         visitor.setSpendingMoney(spendingMoney - entranceFee);
         visitor.setState(VisitorState.REST);
