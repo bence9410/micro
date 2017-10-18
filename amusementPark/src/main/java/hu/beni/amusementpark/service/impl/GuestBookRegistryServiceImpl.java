@@ -23,7 +23,7 @@ public class GuestBookRegistryServiceImpl implements GuestBookRegistryService{
 	private final VisitorRepository visitorRepository;
 	private final GuestBookRegistryRepository guestBookRegistryRepository;
 	
-	public GuestBookRegistry findOneRegistry(Long guestBookRegistryId) {
+	public GuestBookRegistry findOne(Long guestBookRegistryId) {
 		return guestBookRegistryRepository.findOne(guestBookRegistryId);
 	}
 	

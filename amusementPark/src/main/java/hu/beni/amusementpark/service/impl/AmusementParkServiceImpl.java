@@ -45,7 +45,7 @@ public class AmusementParkServiceImpl implements AmusementParkService {
     	exceptionIfNotZero(visitorRepository.countByAmusementParkId(amusementParkId), VISITORS_IN_PARK);
     	AmusementPark amusementPark = amusementParkRepository.findOne(amusementParkId);
     	exceptionIfNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
-    	amusementParkArchivator.archivate(amusementPark);
+    	amusementParkArchivator.archivateWithGuestBookRegistries(amusementPark);
     	amusementParkRepository.delete(amusementPark);
     }
     

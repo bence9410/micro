@@ -132,7 +132,7 @@ public class AmusementParkServiceUnitTests {
 
         verify(visitorRepository).countByAmusementParkId(amusementParkId);
         verify(amusementParkRepository).findOne(amusementParkId);
-        verify(amusementParkArchivator).archivate(amusementPark);
+        verify(amusementParkArchivator).archivateWithGuestBookRegistries(amusementPark);
         verify(amusementParkRepository).delete(amusementPark);
     }
     

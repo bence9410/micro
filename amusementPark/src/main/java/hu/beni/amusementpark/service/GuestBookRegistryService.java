@@ -4,7 +4,7 @@ import hu.beni.amusementpark.entity.GuestBookRegistry;
 
 public interface GuestBookRegistryService {
 	
-	GuestBookRegistry findOneRegistry(Long guestBookRegistryId);
+	GuestBookRegistry findOne(Long guestBookRegistryId);
 	
 	GuestBookRegistry addRegistry(Long amusementParkId, Long visitorId, String textOfRegistry);
 

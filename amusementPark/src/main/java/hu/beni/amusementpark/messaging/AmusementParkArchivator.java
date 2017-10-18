@@ -7,7 +7,7 @@ import hu.beni.amusementpark.entity.AmusementPark;
 @Service
 public class AmusementParkArchivator {
 	
-	public void archivate(AmusementPark amusementPark) {
+	public void archivateWithGuestBookRegistries(AmusementPark amusementPark) {
 		//TODO implement method
 	}
 

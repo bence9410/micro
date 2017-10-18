@@ -49,7 +49,7 @@ public class GuestBookServiceUnitTests {
 
 		when(guestBookRegistryRepository.findOne(guestBookRegistryId)).thenReturn(guestBookRegistry);
 
-		assertEquals(guestBookRegistry, guestBookService.findOneRegistry(guestBookRegistryId));
+		assertEquals(guestBookRegistry, guestBookService.findOne(guestBookRegistryId));
 
 		verify(guestBookRegistryRepository).findOne(guestBookRegistryId);
 	}
