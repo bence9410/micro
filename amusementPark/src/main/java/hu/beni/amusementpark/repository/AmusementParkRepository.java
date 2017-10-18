@@ -35,4 +35,5 @@ public interface AmusementParkRepository extends JpaRepository<AmusementPark, Lo
     @Modifying
     @Query(nativeQuery = true, value = "Insert into amusement_park_visitor(amusement_park_id, visitor_id) values(:amusementParkId, :visitorId)")
     public void addKnownVisitor(@Param(AMUSEMENT_PARK_ID) Long amusementParkId, @Param(VISITOR_ID) Long visitorId);
+    
 }

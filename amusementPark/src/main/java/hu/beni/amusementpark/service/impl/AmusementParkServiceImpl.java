@@ -9,9 +9,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import hu.beni.amusementpark.entity.AmusementPark;
+import hu.beni.amusementpark.messaging.AmusementParkArchivator;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
+import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.AmusementParkService;
 import lombok.RequiredArgsConstructor;
+
+import static hu.beni.amusementpark.exception.ExceptionUtil.exceptionIfNotZero;
+import static hu.beni.amusementpark.exception.ExceptionUtil.exceptionIfNull;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITORS_IN_PARK;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +26,8 @@ import lombok.RequiredArgsConstructor;
 public class AmusementParkServiceImpl implements AmusementParkService {
 
     private final AmusementParkRepository amusementParkRepository;
+    private final VisitorRepository visitorRepository;
+    private final AmusementParkArchivator amusementParkArchivator;
 	
     public AmusementPark save(AmusementPark amusementPark) {
     	return amusementParkRepository.save(amusementPark);
@@ -33,7 +42,11 @@ public class AmusementParkServiceImpl implements AmusementParkService {
     }
 
     public void delete(Long amusementParkId) {
-        amusementParkRepository.delete(amusementParkId);
+    	exceptionIfNotZero(visitorRepository.countByAmusementParkId(amusementParkId), VISITORS_IN_PARK);
+    	AmusementPark amusementPark = amusementParkRepository.findOne(amusementParkId);
+    	exceptionIfNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
+    	amusementParkArchivator.archivate(amusementPark);
+    	amusementParkRepository.delete(amusementPark);
     }
     
     public Page<AmusementPark> findAll(Pageable pageable){

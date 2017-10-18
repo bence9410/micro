@@ -71,7 +71,7 @@ public class AmusementPark implements Serializable {
     @JsonIgnore
     private List<Machine> machines;
 
-    @OneToMany(mappedBy = "amusementPark", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "amusementPark")
     @JsonIgnore
     private List<Visitor> activeVisitors;
 

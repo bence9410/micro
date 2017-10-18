@@ -1,5 +1,6 @@
 package hu.beni.amusementpark.test.unit;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -23,25 +24,34 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import hu.beni.amusementpark.entity.AmusementPark;
+import hu.beni.amusementpark.exception.AmusementParkException;
+import hu.beni.amusementpark.messaging.AmusementParkArchivator;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
+import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.AmusementParkService;
 import hu.beni.amusementpark.service.impl.AmusementParkServiceImpl;
+
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 
 public class AmusementParkServiceUnitTests {
 
     private AmusementParkRepository amusementParkRepository;
-
+    private VisitorRepository visitorRepository;
+    private AmusementParkArchivator amusementParkArchivator;
+    
     private AmusementParkService amusementParkService;
 
     @Before
     public void setUp() {
         amusementParkRepository = mock(AmusementParkRepository.class);
-        amusementParkService = new AmusementParkServiceImpl(amusementParkRepository);
+        visitorRepository = mock(VisitorRepository.class);
+        amusementParkArchivator = mock(AmusementParkArchivator.class);
+        amusementParkService = new AmusementParkServiceImpl(amusementParkRepository, visitorRepository, amusementParkArchivator);
     }
 
     @After
     public void verifyNoMoreInteractionsOnMocks() {
-        verifyNoMoreInteractions(amusementParkRepository);
+        verifyNoMoreInteractions(amusementParkRepository, visitorRepository, amusementParkArchivator);
     }
 
     @Test
@@ -83,12 +93,47 @@ public class AmusementParkServiceUnitTests {
     }
 
     @Test
+    public void deleteNegativeVisitorsInPark() {
+    	Long amusementParkId = 0L;
+    	Long numberOfVisitorsInPark = 10L;
+    	
+    	when(visitorRepository.countByAmusementParkId(amusementParkId)).thenReturn(numberOfVisitorsInPark);
+    	
+    	assertThatThrownBy(() -> amusementParkService.delete(amusementParkId))
+    		.isInstanceOf(AmusementParkException.class).hasMessage(VISITORS_IN_PARK);
+    	
+    	verify(visitorRepository).countByAmusementParkId(amusementParkId);
+    }
+    
+    @Test
+    public void deleteNegativeNoParkWithId() {
+    	Long amusementParkId = 0L;
+    	Long numberOfVisitorsInPark = 0L;
+    	
+    	when(visitorRepository.countByAmusementParkId(amusementParkId)).thenReturn(numberOfVisitorsInPark);
+    	
+    	assertThatThrownBy(() -> amusementParkService.delete(amusementParkId))
+    		.isInstanceOf(AmusementParkException.class).hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
+    	
+    	verify(visitorRepository).countByAmusementParkId(amusementParkId);
+    	verify(amusementParkRepository).findOne(amusementParkId);
+    }
+    
+    @Test
     public void deletePositive() {
-        Long amusementParkId = 0L;
-
+    	AmusementPark amusementPark = AmusementPark.builder().id(0L).build();
+        Long amusementParkId = amusementPark.getId();
+        Long numberOfVisitorsInPark = 0L;
+        
+        when(visitorRepository.countByAmusementParkId(amusementParkId)).thenReturn(numberOfVisitorsInPark);
+        when(amusementParkRepository.findOne(amusementParkId)).thenReturn(amusementPark);
+        
         amusementParkService.delete(amusementParkId);
 
-        verify(amusementParkRepository).delete(amusementParkId);
+        verify(visitorRepository).countByAmusementParkId(amusementParkId);
+        verify(amusementParkRepository).findOne(amusementParkId);
+        verify(amusementParkArchivator).archivate(amusementPark);
+        verify(amusementParkRepository).delete(amusementPark);
     }
     
     @Test
