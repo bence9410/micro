@@ -28,7 +28,7 @@ public class GuestBookRegistryController {
 	
 	@GetMapping("guestBookRegistry/{guestBookRegistryId}")
 	public Resource<GuestBookRegistry> findOne(@PathVariable Long guestBookRegistryId) {
-		return createResource(null, null, guestBookRegistryService.findOneRegistry(guestBookRegistryId));
+		return createResource(null, null, guestBookRegistryService.findOne(guestBookRegistryId));
 	}
 
 	private Resource<GuestBookRegistry> createResource(Long amusementParkId, Long visitorId, GuestBookRegistry guestBookRegistry){
