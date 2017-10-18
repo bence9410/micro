@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.stream.Stream;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,16 +45,7 @@ public class Statistics {
 
 	private long counter;
 	
-	public Statistics(String[] activeSpringProfiles) {
-		String database = null;
-		if(activeSpringProfiles.length == 0) {
-			database = "H2 (in-memory)";
-		} else {
-			if (Stream.of(activeSpringProfiles).filter(p -> "oracleDB".equals(p))
-					.findFirst().isPresent()) {
-				database = "Oracle";
-			} 
-		}
+	public Statistics(String database) {
 		this.database = database;
 	}
 	

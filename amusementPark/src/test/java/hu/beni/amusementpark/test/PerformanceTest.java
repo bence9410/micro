@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.junit.After;
 import org.junit.Before;
@@ -64,7 +65,7 @@ public class PerformanceTest {
 	
 	@Before
 	public void fillDataBaseWithData() {
-		statistics  = new Statistics(environment.getActiveProfiles());
+		statistics  = new Statistics(determineDatabaseFromActiveSpringProfiles());
 		statistics.start();
 		saveOneHundredAmusementPark();
 		statistics.setMillisToSaveOneHundredAmusementParkWithAddress();
@@ -150,6 +151,18 @@ public class PerformanceTest {
 			visitorService.leavePark(amusementParkId, visitorId);
 		});
 		statistics.addRegistryAndLeaveTime();
+	}
+	
+	private String determineDatabaseFromActiveSpringProfiles() {
+		String[] activeSpringProfiles = environment.getActiveProfiles();
+		String database = null;
+		if(activeSpringProfiles.length == 0) {
+			database = "H2 (in-memory)";
+		} else {
+			database = Stream.of(activeSpringProfiles).filter(p -> "oracleDB".equals(p))
+					.findFirst().map(p -> "Oracle").orElse("Unknown");
+		}
+		return database;
 	}
 	
 	private void saveOneHundredAmusementPark() {
