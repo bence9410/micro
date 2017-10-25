@@ -39,6 +39,11 @@ import hu.beni.amusementpark.service.VisitorService;
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 @TestPropertySource(properties = {"spring.jpa.show-sql=false"})
 public class PerformanceTest {
+	
+	private static final int NUMBER_OF_PARKS = 100;
+	private static final int NUMBER_OF_MACHINES_IN_A_PARK = 10;
+	private static final int NUMBER_OF_VISITORS = 100;
+	private static final int NUMBER_OF_VISITORS_GET_ON_A_MACHINE = NUMBER_OF_VISITORS/NUMBER_OF_MACHINES_IN_A_PARK;
 
 	@Autowired
 	private AmusementParkService amusementParkService;
@@ -65,10 +70,10 @@ public class PerformanceTest {
 	
 	@Before
 	public void fillDataBaseWithData() {
-		statistics  = new Statistics(determineDatabaseFromActiveSpringProfiles());
+		statistics  = new Statistics(NUMBER_OF_PARKS, determineDatabaseFromActiveSpringProfiles());
 		statistics.start();
-		saveOneHundredAmusementPark();
-		statistics.setMillisToSaveOneHundredAmusementParkWithAddress();
+		saveAmusementParksWithAddresses();
+		statistics.setSaveAmusementParksWithAddresses();
 
 		Page<AmusementPark> page = null;
 		Pageable pageable = new PageRequest(0, 10, new Sort("id"));
@@ -76,33 +81,32 @@ public class PerformanceTest {
 		do {
 			page = amusementParkService.findAll(pageable);
 			pageable = page.nextPageable();
-			page.getContent().stream().forEach(a -> saveTenMachineToAmusementPark(a.getId()));
+			page.getContent().stream().forEach(a -> addMachines(a.getId()));
 		} while (page.hasNext());
-		statistics.setMillisToAddOneThousandMachine();
+		statistics.setAddMachines();
 		
 		statistics.start();
-		registrateOneHundredVisitor();
-		statistics.setMillisToRegistrateOneHundredVisitor();
+		registrateVisitors();
+		statistics.setRegistrateVisitors();
 	}
 
 	@After
 	public void logResults() throws IOException {
-		statistics.logResults();	
+		statistics.writeToFile();
 	}
 
 	@Test
 	public void test() {
-		long testStartTime = statistics.getCurrentTimeMillis();
 		statistics.start();
 		List<Long> visitorIds = visitorRepository.findAll().stream().map(v -> v.getId()).collect(Collectors.toList());
-		statistics.setMillisToGetOneHundredVisitorId();
+		statistics.setReadVisitorIds();
 		
 		Page<AmusementPark> page = null;
 		Pageable pageable = new PageRequest(0, 10, new Sort("id"));
 		do {
+			System.gc();
 			page = amusementParkService.findAll(pageable);
 			pageable = page.nextPageable();
-			long startTimeInMillisTenPark = statistics.getCurrentTimeMillis();
 			page.getContent().stream().map(a -> a.getId()).forEach(amusementParkId -> {
 				long startTimeInMillis = statistics.getCurrentTimeMillis();
 				List<Long> machineIds = machineRepository.findAllByAmusementParkId(amusementParkId).stream().map(m -> m.getId()).collect(Collectors.toList());
@@ -113,35 +117,27 @@ public class PerformanceTest {
 				addRegistriesAndLeavePark(amusementParkId, visitorIds);
 				statistics.addOneParkTime(startTimeInMillis);
 			});
-			statistics.addTenParkTime(startTimeInMillisTenPark);
 		} while (page.hasNext());
-		statistics.setTotalTestRunningTime(testStartTime);
 	}
 
 	private void enterPark(Long amusementParkId, List<Long> visitorIds) {
 		statistics.start();
 		visitorIds.forEach(visitorId -> visitorService.enterPark(amusementParkId, visitorId, 10000));
-		statistics.addEnterTime();
+		statistics.addEnterParkTime();
 	}
 	
 	private void getOnMachines(Long amusementParkId, List<Long> machineIds, List<Long> visitorIds) {
 		statistics.start();
-		for (int i = 0; i < machineIds.size(); i++) {
-			for (int j = i * 10; j < i * 10 + 10; j++) {
-				visitorService.getOnMachine(amusementParkId, machineIds.get(i), visitorIds.get(j));
-			}
-		}
-		statistics.addGetOnTime();
-	}
+		doubleLoopInnerContinuesWhereFinished(machineIds.size(), NUMBER_OF_VISITORS_GET_ON_A_MACHINE,
+				(i, j) -> visitorService.getOnMachine(amusementParkId, machineIds.get(i), visitorIds.get(j)));
+		statistics.addGetOnMachineTime();
+	}	
 	
 	private void getOffMachines(List<Long> machineIds, List<Long> visitorIds) {
 		statistics.start();
-		for (int i = 0; i < machineIds.size(); i++) {
-			for (int j = i * 10; j < i * 10 + 10; j++) {
-				visitorService.getOffMachine(machineIds.get(i), visitorIds.get(j));
-			}
-		}
-		statistics.addGetOffTime();
+		doubleLoopInnerContinuesWhereFinished(machineIds.size(), NUMBER_OF_VISITORS_GET_ON_A_MACHINE,
+				(i, j) -> visitorService.getOffMachine(machineIds.get(i), visitorIds.get(j)));
+		statistics.addGetOffMachineTime();
 	}
 	
 	private void addRegistriesAndLeavePark(Long amusementParkId, List<Long> visitorIds) {
@@ -150,7 +146,7 @@ public class PerformanceTest {
 			guestBookRegistryService.addRegistry(amusementParkId, visitorId, OPINION_ON_THE_PARK);
 			visitorService.leavePark(amusementParkId, visitorId);
 		});
-		statistics.addRegistryAndLeaveTime();
+		statistics.addAddRegistryAndLeaveParkTime();
 	}
 	
 	private String determineDatabaseFromActiveSpringProfiles() {
@@ -165,16 +161,27 @@ public class PerformanceTest {
 		return database;
 	}
 	
-	private void saveOneHundredAmusementPark() {
-		IntStream.range(0, 100).forEach(i -> amusementParkService.save(createAmusementParkWithAddress()));
+	private void saveAmusementParksWithAddresses() {
+		IntStream.range(0, NUMBER_OF_PARKS).forEach(i -> amusementParkService.save(createAmusementParkWithAddress()));
 	}
 
-	private void saveTenMachineToAmusementPark(Long amusementParkId) {
-		IntStream.range(0, 10).forEach(i -> machineService.addMachine(amusementParkId, createMachine()));
+	private void addMachines(Long amusementParkId) {
+		IntStream.range(0, NUMBER_OF_MACHINES_IN_A_PARK).forEach(i -> machineService.addMachine(amusementParkId, createMachine()));
 	}
 
-	private void registrateOneHundredVisitor() {
-		IntStream.range(0, 100).forEach(i -> visitorService.registrate(createVisitor()));
+	private void registrateVisitors() {
+		IntStream.range(0, NUMBER_OF_VISITORS).forEach(i -> visitorService.registrate(createVisitor()));
 	}
-
+	
+	private void doubleLoopInnerContinuesWhereFinished(int outerEndExclusive, int stepInInner, TwoIntConsumer bodyOfInner) {
+		IntStream.range(0, outerEndExclusive).forEach(i -> IntStream.range(i * stepInInner,
+				i * stepInInner + stepInInner).forEach(j -> bodyOfInner.accept(i, j)));
+	}
+	
+	@FunctionalInterface
+	private static interface TwoIntConsumer{
+		
+		public void accept(int i, int j);
+	
+	}
 }
