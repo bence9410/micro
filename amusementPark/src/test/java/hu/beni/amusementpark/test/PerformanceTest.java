@@ -104,7 +104,7 @@ public class PerformanceTest {
 		Page<AmusementPark> page = null;
 		Pageable pageable = new PageRequest(0, 10, new Sort("id"));
 		do {
-			System.gc();
+			//System.gc();
 			page = amusementParkService.findAll(pageable);
 			pageable = page.nextPageable();
 			page.getContent().stream().map(a -> a.getId()).forEach(amusementParkId -> {
