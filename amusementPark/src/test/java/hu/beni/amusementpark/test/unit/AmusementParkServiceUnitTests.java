@@ -23,9 +23,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
+import hu.beni.amusementpark.archive.AmusementParkArchivator;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.exception.AmusementParkException;
-import hu.beni.amusementpark.messaging.AmusementParkArchivator;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.AmusementParkService;
@@ -132,7 +132,7 @@ public class AmusementParkServiceUnitTests {
 
         verify(visitorRepository).countByAmusementParkId(amusementParkId);
         verify(amusementParkRepository).findOne(amusementParkId);
-        verify(amusementParkArchivator).archivateWithGuestBookRegistries(amusementPark);
+        verify(amusementParkArchivator).sendToArchive(amusementPark);
         verify(amusementParkRepository).delete(amusementPark);
     }
     

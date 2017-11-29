@@ -8,8 +8,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import hu.beni.amusementpark.archive.AmusementParkArchivator;
 import hu.beni.amusementpark.entity.AmusementPark;
-import hu.beni.amusementpark.messaging.AmusementParkArchivator;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.AmusementParkService;
@@ -45,7 +45,7 @@ public class AmusementParkServiceImpl implements AmusementParkService {
     	exceptionIfNotZero(visitorRepository.countByAmusementParkId(amusementParkId), VISITORS_IN_PARK);
     	AmusementPark amusementPark = amusementParkRepository.findOne(amusementParkId);
     	exceptionIfNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
-    	amusementParkArchivator.archivateWithGuestBookRegistries(amusementPark);
+    	amusementParkArchivator.sendToArchive(amusementPark);
     	amusementParkRepository.delete(amusementPark);
     }
     
