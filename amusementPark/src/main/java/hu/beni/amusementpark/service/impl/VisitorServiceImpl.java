@@ -29,7 +29,7 @@ public class VisitorServiceImpl implements VisitorService{
     private final MachineRepository machineRepository;
     private final VisitorRepository visitorRepository;
     
-    public Visitor registrate(Visitor visitor) {
+    public Visitor signUp(Visitor visitor) {
     	return visitorRepository.save(visitor);
     }
 
@@ -47,7 +47,7 @@ public class VisitorServiceImpl implements VisitorService{
         exceptionIfNotZero(visitorRepository.countByVisitorIdWhereAmusementParkIsNotNull(visitorId), VISITOR_IS_IN_A_PARK);
         
         Visitor visitor = visitorRepository.findOne(visitorId);
-        exceptionIfNull(visitor, VISITOR_NOT_REGISTRATED);
+        exceptionIfNull(visitor, VISITOR_NOT_SIGNED_UP);
         
         Optional.of(amusementParkRepository.countKnownVisitor(amusementParkId, visitorId)).filter(count -> count == 0)
         	.ifPresent(count -> amusementParkRepository.addKnownVisitor(amusementParkId, visitorId));

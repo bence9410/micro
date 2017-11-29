@@ -4,7 +4,7 @@ import hu.beni.amusementpark.entity.Visitor;
 
 public interface VisitorService {
 
-	Visitor registrate(Visitor visitor);
+	Visitor signUp(Visitor visitor);
 
 	Visitor findOne(Long visitorId);
 	

@@ -24,8 +24,8 @@ public class VisitorController {
     private final VisitorService visitorService;
     
     @PostMapping("/visitor")
-    public Resource<Visitor> registrate(@RequestBody Visitor visitor){
-    	return createResourceForNotInParkVisitor(visitorService.registrate(visitor));
+    public Resource<Visitor> signUp(@RequestBody Visitor visitor){
+    	return createResourceForNotInParkVisitor(visitorService.signUp(visitor));
     }
 
     @GetMapping("/visitor/{visitorId}")

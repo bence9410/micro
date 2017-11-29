@@ -169,7 +169,7 @@ public class PerformanceTest {
 	}
 
 	private void registrateVisitors() {
-		IntStream.range(0, NUMBER_OF_VISITORS).forEach(i -> visitorService.registrate(createVisitor()));
+		IntStream.range(0, NUMBER_OF_VISITORS).forEach(i -> visitorService.signUp(createVisitor()));
 	}
 	
 	private void doubleLoopInnerContinuesWhereFinished(int outerEndExclusive, int stepInInner, TwoIntConsumer bodyOfInner) {

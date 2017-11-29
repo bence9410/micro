@@ -47,12 +47,12 @@ public class VisitorServiceUnitTests {
     }
     
     @Test
-    public void registratePositive() {
+    public void signUpPositive() {
     	Visitor visitor = Visitor.builder().build();
     	
     	when(visitorRepository.save(visitor)).thenReturn(visitor);
     	
-    	assertEquals(visitor, visitorService.registrate(visitor));
+    	assertEquals(visitor, visitorService.signUp(visitor));
     	
     	verify(visitorRepository).save(visitor);
     }
@@ -126,7 +126,7 @@ public class VisitorServiceUnitTests {
         when(visitorRepository.countByVisitorIdWhereAmusementParkIsNotNull(visitorId)).thenReturn(numberOfVisitorsWithNotNullPark);
         
         assertThatThrownBy(() -> visitorService.enterPark(amusementParkId, visitorId, spendingMoney))
-        		.isInstanceOf(AmusementParkException.class).hasMessage(VISITOR_NOT_REGISTRATED);
+        		.isInstanceOf(AmusementParkException.class).hasMessage(VISITOR_NOT_SIGNED_UP);
 
         verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
         verify(visitorRepository).countByVisitorIdWhereAmusementParkIsNotNull(visitorId);

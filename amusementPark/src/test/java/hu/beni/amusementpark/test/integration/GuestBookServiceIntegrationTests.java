@@ -40,7 +40,7 @@ public class GuestBookServiceIntegrationTests {
 		Long amusementParkId = amusementParkService.save(amusementPark).getId();
 		
 		Visitor visitor = createVisitor();
-		Long visitorId = visitorService.registrate(visitor).getId();
+		Long visitorId = visitorService.signUp(visitor).getId();
 		
 		visitorService.enterPark(amusementParkId, visitorId, 200);
 

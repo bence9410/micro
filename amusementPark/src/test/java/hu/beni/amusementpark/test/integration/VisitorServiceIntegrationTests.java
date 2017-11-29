@@ -46,7 +46,7 @@ public class VisitorServiceIntegrationTests {
         capital -= machine.getPrice();
         
         Visitor visitor = createVisitor();
-        visitor = visitorService.registrate(visitor);
+        visitor = visitorService.signUp(visitor);
         Long visitorId = visitor.getId();
         assertNotNull(visitorId);
         assertTrue(visitor.getDateOfRegistrate().before(Timestamp.from(Instant.now())));

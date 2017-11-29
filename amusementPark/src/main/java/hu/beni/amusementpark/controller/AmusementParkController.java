@@ -42,7 +42,7 @@ public class AmusementParkController {
     private Resource<AmusementPark> createResource(AmusementPark amusementPark) {
         return new Resource<>(amusementPark, linkTo(methodOn(getClass()).findOne(amusementPark.getId())).withSelfRel(),
                 linkTo(methodOn(MachineController.class).addMachine(amusementPark.getId(), null)).withRel(MACHINE),
-                linkTo(methodOn(VisitorController.class).registrate(null)).withRel(VISITOR_REGISTRATE),
+                linkTo(methodOn(VisitorController.class).signUp(null)).withRel(VISITOR_REGISTRATE),
                 linkTo(methodOn(VisitorController.class).enterPark(amusementPark.getId(), null, null)).withRel(VISITOR_ENTER_PARK));
     }
 }
