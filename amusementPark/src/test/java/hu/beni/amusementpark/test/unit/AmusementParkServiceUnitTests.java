@@ -23,7 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
-import hu.beni.amusementpark.archive.AmusementParkArchivator;
+import hu.beni.amusementpark.archive.ArchiveSender;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
@@ -37,7 +37,7 @@ public class AmusementParkServiceUnitTests {
 
     private AmusementParkRepository amusementParkRepository;
     private VisitorRepository visitorRepository;
-    private AmusementParkArchivator amusementParkArchivator;
+    private ArchiveSender archiveSender;
     
     private AmusementParkService amusementParkService;
 
@@ -45,13 +45,13 @@ public class AmusementParkServiceUnitTests {
     public void setUp() {
         amusementParkRepository = mock(AmusementParkRepository.class);
         visitorRepository = mock(VisitorRepository.class);
-        amusementParkArchivator = mock(AmusementParkArchivator.class);
-        amusementParkService = new AmusementParkServiceImpl(amusementParkRepository, visitorRepository, amusementParkArchivator);
+        archiveSender = mock(ArchiveSender.class);
+        amusementParkService = new AmusementParkServiceImpl(amusementParkRepository, visitorRepository, archiveSender);
     }
 
     @After
     public void verifyNoMoreInteractionsOnMocks() {
-        verifyNoMoreInteractions(amusementParkRepository, visitorRepository, amusementParkArchivator);
+        verifyNoMoreInteractions(amusementParkRepository, visitorRepository, archiveSender);
     }
 
     @Test
@@ -132,8 +132,8 @@ public class AmusementParkServiceUnitTests {
 
         verify(visitorRepository).countByAmusementParkId(amusementParkId);
         verify(amusementParkRepository).findOne(amusementParkId);
-        verify(amusementParkArchivator).sendToArchive(amusementPark);
         verify(amusementParkRepository).delete(amusementPark);
+        verify(archiveSender).sendToArchive(amusementPark);
     }
     
     @Test

@@ -19,6 +19,8 @@ public class ErrorMessageConstants {
     public static final String VISITOR_IS_IN_A_PARK = "Visitor is in a park!";
     public static final String VISITORS_IN_PARK = "Visitors in the park!";
     
+    public static final String NO_ARCHIVE_SEND_TYPE = "Could not send park to archive. No acrhive send type specified.";
+    
     private ErrorMessageConstants() {
     	super();
     }

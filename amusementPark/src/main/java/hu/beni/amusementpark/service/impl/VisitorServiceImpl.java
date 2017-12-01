@@ -109,15 +109,15 @@ public class VisitorServiceImpl implements VisitorService{
     	
     	Calendar now = Calendar.getInstance();
     	
-    	int nowYear = now.get(Calendar.YEAR);
-    	int birthYear = calendarOfBirth.get(Calendar.YEAR);
+    	int age = now.get(Calendar.YEAR) - calendarOfBirth.get(Calendar.YEAR);
     	
-    	int age = nowYear - birthYear;
+    	int nowMonth = now.get(Calendar.MONTH);
+    	int birthMonth = now.get(Calendar.MONTH);
     	
-    	if(now.get(Calendar.MONTH) == calendarOfBirth.get(Calendar.MONTH) &&
-    			now.get(Calendar.DAY_OF_MONTH) > calendarOfBirth.get(Calendar.DAY_OF_MONTH)) {
+    	if(nowMonth < birthMonth || nowMonth == birthMonth && now.get(Calendar.DAY_OF_MONTH) < calendarOfBirth.get(Calendar.DAY_OF_MONTH)) {
     		age--;
     	}
+    	
     	return age;
     }
 	

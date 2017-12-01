@@ -2,6 +2,7 @@ package hu.beni.amusementpark.test.integration;
 
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
+import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.service.AmusementParkService;
 import hu.beni.amusementpark.service.MachineService;
 import org.junit.Test;
@@ -23,6 +24,9 @@ public class MachineServiceIntegrationTests {
     @Autowired
     private MachineService machineService;
     
+    @Autowired
+    private AmusementParkRepository amusementParkRepository;
+    
     @Test
     public void test(){
         AmusementPark amusementPark = createAmusementParkWithAddress();
@@ -39,8 +43,8 @@ public class MachineServiceIntegrationTests {
         machineService.removeMachine(amusementParkId, machineId);
         assertNull(machineService.findOne(machineId));
         assertEquals(amusementPark.getCapital().longValue(), amusementParkService.findOne(amusementParkId).getCapital().longValue());
-        
-        amusementParkService.delete(amusementParkId);
+    
+        amusementParkRepository.delete(amusementParkId);
     }
 
 }

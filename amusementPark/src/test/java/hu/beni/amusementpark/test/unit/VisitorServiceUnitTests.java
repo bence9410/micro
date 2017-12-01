@@ -252,11 +252,12 @@ public class VisitorServiceUnitTests {
     		calculateAge.setAccessible(true);
     			
     		Calendar c = Calendar.getInstance();
-    		c.set(Calendar.YEAR, c.get(Calendar.YEAR)-1);
+    		
+    		c.roll(Calendar.YEAR, false);
     		
         	assertEquals(1, calculateAge.invoke(visitorService, Timestamp.from(c.toInstant())));
         	
-        	c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR)-1);
+        	c.roll(Calendar.DAY_OF_YEAR, false);
         	
         	assertEquals(0, calculateAge.invoke(visitorService, Timestamp.from(c.toInstant())));
     	}catch (Exception e) {

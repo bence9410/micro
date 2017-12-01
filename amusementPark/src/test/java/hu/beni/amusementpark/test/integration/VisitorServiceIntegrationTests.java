@@ -16,6 +16,7 @@ import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.enums.VisitorState;
+import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.service.AmusementParkService;
 import hu.beni.amusementpark.service.MachineService;
 import hu.beni.amusementpark.service.VisitorService;
@@ -32,6 +33,9 @@ public class VisitorServiceIntegrationTests {
     
     @Autowired
     private VisitorService visitorService;
+    
+    @Autowired
+    private AmusementParkRepository amusementParkRepository;
     
     @Test
     public void test(){
@@ -78,7 +82,7 @@ public class VisitorServiceIntegrationTests {
         visitorService.leavePark(amusementParkId, visitorId);
         assertNull(visitorService.findOne(visitorId).getAmusementPark());
         
-        amusementParkService.delete(amusementParkId);
+        amusementParkRepository.delete(amusementParkId);
         assertNotNull(visitorService.findOne(visitorId));
     }
 

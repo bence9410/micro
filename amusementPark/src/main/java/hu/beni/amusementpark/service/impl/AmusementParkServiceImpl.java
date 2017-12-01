@@ -8,7 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import hu.beni.amusementpark.archive.AmusementParkArchivator;
+import hu.beni.amusementpark.archive.ArchiveSender;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
@@ -27,7 +27,7 @@ public class AmusementParkServiceImpl implements AmusementParkService {
 
     private final AmusementParkRepository amusementParkRepository;
     private final VisitorRepository visitorRepository;
-    private final AmusementParkArchivator amusementParkArchivator;
+    private final ArchiveSender amusementParkArchivator;
 	
     public AmusementPark save(AmusementPark amusementPark) {
     	return amusementParkRepository.save(amusementPark);
@@ -45,8 +45,8 @@ public class AmusementParkServiceImpl implements AmusementParkService {
     	exceptionIfNotZero(visitorRepository.countByAmusementParkId(amusementParkId), VISITORS_IN_PARK);
     	AmusementPark amusementPark = amusementParkRepository.findOne(amusementParkId);
     	exceptionIfNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
-    	amusementParkArchivator.sendToArchive(amusementPark);
     	amusementParkRepository.delete(amusementPark);
+    	amusementParkArchivator.sendToArchive(amusementPark);
     }
     
     public Page<AmusementPark> findAll(Pageable pageable){

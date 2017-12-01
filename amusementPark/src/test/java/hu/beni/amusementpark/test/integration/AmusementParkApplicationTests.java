@@ -74,7 +74,10 @@ public class AmusementParkApplicationTests {
         restTemplate.exchange(machineResource.getId().getHref(), HttpMethod.DELETE, HttpEntity.EMPTY, Void.class);
         
         //delete Park
-        restTemplate.exchange(amusementParkUrl, HttpMethod.DELETE, HttpEntity.EMPTY, Void.class);
+        assertThrows(() -> restTemplate.exchange(amusementParkUrl, HttpMethod.DELETE, HttpEntity.EMPTY, Void.class),
+        		HttpClientErrorException.class, exception -> {
+        		assertEquals(NO_ARCHIVE_SEND_TYPE, exception.getResponseBodyAsString());
+        	});
     }
 
     @Test

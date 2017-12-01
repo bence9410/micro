@@ -1,6 +1,7 @@
 package hu.beni.amusementpark.test.integration;
 
 import static hu.beni.amusementpark.helper.ValidEntityFactory.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -31,8 +32,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
+import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.service.AmusementParkService;
+
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_ARCHIVE_SEND_TYPE;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -63,7 +67,11 @@ public class AmusementParkServiceIntegrationTests {
 		AmusementPark readAmusementPark = amusementParkService.findOne(id);
 		assertEquals(amusementPark, readAmusementPark);
 
-		amusementParkService.delete(id);
+		assertThatThrownBy(() -> amusementParkService.delete(id))
+			.isInstanceOf(AmusementParkException.class).hasMessage(NO_ARCHIVE_SEND_TYPE);
+		assertNotNull(amusementParkService.findOne(id));
+		
+		amusementParkRepository.delete(id);
 		assertNull(amusementParkService.findOne(id));
 	}
 
