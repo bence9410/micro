@@ -21,7 +21,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.*;
-import static hu.beni.amusementpark.constants.AppConstraints.*;
 import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
 import static hu.beni.amusementpark.helper.MyAssert.assertThrows;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.*;
@@ -40,7 +39,7 @@ public class AmusementParkApplicationTests {
     private int port;
 
     private String getAmusementParkUrl() {
-        return LOCALHOST + port + SLASH_AMUSEMENT_PARK;
+        return "http://localhost:" + port + "/amusementPark";    	
     }
 
     @Test
@@ -108,7 +107,7 @@ public class AmusementParkApplicationTests {
 
         Resource<AmusementPark> amusementParkResource = restTemplate.exchange(getAmusementParkUrl(), HttpMethod.POST, new HttpEntity<>(amusementPark), amusementParkType()).getBody();
         
-        assertEquals(NUMBER_OF_LINKS_IN_AMUSEMENT_PARK_RESOURCE, amusementParkResource.getLinks().size());
+        assertEquals(4, amusementParkResource.getLinks().size());
         assertTrue(amusementParkResource.getId().getHref().endsWith(amusementParkResource.getContent().getId().toString()));
         assertNotNull(amusementParkResource.getLink(MACHINE));
         assertNotNull(amusementParkResource.getLink(VISITOR_REGISTRATE));
@@ -122,7 +121,7 @@ public class AmusementParkApplicationTests {
 
         Resource<Machine> machineResource = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(machine), machineType()).getBody();
 
-        assertEquals(NUMBER_OF_LINKS_IN_MACHINE_RESOURCE, machineResource.getLinks().size());
+        assertEquals(2, machineResource.getLinks().size());
         assertNotNull(machineResource.getId());
         assertTrue(machineResource.getId().getHref().endsWith(machineResource.getContent().getId().toString()));
         assertNotNull(machineResource.getLink(GET_ON_MACHINE));
@@ -136,7 +135,7 @@ public class AmusementParkApplicationTests {
         Resource<Visitor> visitorResource = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(visitor), visitorType()).getBody();
         Long visitorId = visitorResource.getContent().getId();
         
-        assertEquals(NUMBER_OF_LINKS_IN_NOT_IN_PARK_VISITOR_RESOURCE, visitorResource.getLinks().size());
+        assertEquals(2, visitorResource.getLinks().size());
         assertTrue(visitorResource.getId().getHref().endsWith(visitorId.toString()));
         assertNotNull(visitorResource.getLink(VISITOR_ENTER_PARK));
 

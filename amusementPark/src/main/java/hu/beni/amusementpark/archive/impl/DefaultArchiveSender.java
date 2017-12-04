@@ -6,9 +6,11 @@ import hu.beni.amusementpark.exception.AmusementParkException;
 
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_ARCHIVE_SEND_TYPE;
 
-import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
+@Profile("default")
 public class DefaultArchiveSender implements ArchiveSender{
 	
 	@Override
