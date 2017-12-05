@@ -2,6 +2,7 @@ package hu.beni.amusementpark.entity;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -42,7 +43,7 @@ public class Visitor implements Serializable {
     
     private String name;
 
-    private Timestamp dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @CreationTimestamp
     private Timestamp dateOfRegistrate;   

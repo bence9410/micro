@@ -1,7 +1,6 @@
 package hu.beni.amusementpark.helper;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
+import java.time.LocalDate;
 
 import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
@@ -40,10 +39,8 @@ public class ValidEntityFactory {
     }
 
     public static Visitor createVisitor() {
-    	Calendar c = Calendar.getInstance();
-		c.set(1994, 9, 22);
-        return Visitor.builder().name("Németh Bence")
-        		.dateOfBirth(Timestamp.from(c.toInstant())).build();
+    	return Visitor.builder().name("Németh Bence")
+        		.dateOfBirth(LocalDate.of(1994, 10, 22)).build();
     }
     
     public static AmusementPark createAmusementParkWithAddress(){

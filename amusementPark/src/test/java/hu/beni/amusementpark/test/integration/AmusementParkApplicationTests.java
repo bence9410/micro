@@ -101,7 +101,7 @@ public class AmusementParkApplicationTests {
             assertEquals(MACHINE_IS_TOO_EXPENSIVE, exception.getResponseBodyAsString());
         });
     }
-
+    
     private Resource<AmusementPark> postAmusementParkWithAddress() {
         AmusementPark amusementPark = createAmusementParkWithAddress();
 

@@ -1,5 +1,29 @@
 package hu.beni.amusementpark.test.unit;
 
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NOT_ENOUGH_MONEY;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_FREE_SEAT_ON_MACHINE;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_MACHINE_IN_PARK_WITH_ID;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_IN_PARK_WITH_ID;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_ON_MACHINE_WITH_ID;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_IN_A_PARK;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_ON_A_MACHINE;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_TOO_YOUNG;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_NOT_SIGNED_UP;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDate;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
@@ -10,20 +34,6 @@ import hu.beni.amusementpark.repository.MachineRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.VisitorService;
 import hu.beni.amusementpark.service.impl.VisitorServiceImpl;
-
-import org.junit.After;
-import org.junit.Before;
-import static org.mockito.Mockito.*;
-
-import java.lang.reflect.Method;
-import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.Calendar;
-
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.*;
-import org.junit.Test;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 
 public class VisitorServiceUnitTests {
 
@@ -232,7 +242,7 @@ public class VisitorServiceUnitTests {
         Long amusementParkId = 0L;
         Machine machine = Machine.builder().id(1L).ticketPrice(20).minimumRequiredAge(20).build();
         Long machineId = machine.getId();
-        Visitor visitor = Visitor.builder().id(2L).spendingMoney(40).dateOfBirth(Timestamp.from(Instant.now())).build();
+        Visitor visitor = Visitor.builder().id(2L).spendingMoney(40).dateOfBirth(LocalDate.now()).build();
         Long visitorId = visitor.getId();
 
         when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(machine);
@@ -244,34 +254,13 @@ public class VisitorServiceUnitTests {
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
         verify(visitorRepository).findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
     }
-    
-    @Test
-    public void calculateAgeTest() {
-    	try {
-    		Method calculateAge = VisitorServiceImpl.class.getDeclaredMethod("calculateAge", Timestamp.class);
-    		calculateAge.setAccessible(true);
-    			
-    		Calendar c = Calendar.getInstance();
-    		
-    		c.roll(Calendar.YEAR, false);
-    		
-        	assertEquals(1, calculateAge.invoke(visitorService, Timestamp.from(c.toInstant())));
-        	
-        	c.roll(Calendar.DAY_OF_YEAR, false);
-        	
-        	assertEquals(0, calculateAge.invoke(visitorService, Timestamp.from(c.toInstant())));
-    	}catch (Exception e) {
-    		e.printStackTrace();
-    		fail("Could not find, access or call the calculacteAge method");
-    	}
-    }
-    
+        
     @Test
     public void getOnMachineNegativeNoFreeSeat() {
         Long amusementParkId = 0L;
         Machine machine = Machine.builder().id(1L).ticketPrice(20).minimumRequiredAge(20).numberOfSeats(10).build();
         Long machineId = machine.getId();
-        Visitor visitor = Visitor.builder().id(2L).spendingMoney(40).dateOfBirth(Timestamp.from(Instant.EPOCH)).build();
+        Visitor visitor = Visitor.builder().id(2L).spendingMoney(40).dateOfBirth(LocalDate.of(1990, 10, 20)).build();
         Long visitorId = visitor.getId();
 
         when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(machine);
@@ -292,7 +281,7 @@ public class VisitorServiceUnitTests {
         Long amusementParkId = 0L;
         Machine machine = Machine.builder().id(1L).ticketPrice(20).minimumRequiredAge(20).numberOfSeats(10).build();
         Long machineId = machine.getId();
-        Visitor visitor = Visitor.builder().id(2L).spendingMoney(40).dateOfBirth(Timestamp.from(Instant.EPOCH)).build();
+        Visitor visitor = Visitor.builder().id(2L).spendingMoney(40).dateOfBirth(LocalDate.of(1990, 10, 20)).build();
         Long visitorId = visitor.getId();
         Integer spendingMoney = visitor.getSpendingMoney();
 

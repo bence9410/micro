@@ -3,8 +3,8 @@ package hu.beni.amusementpark.service.impl;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 import static hu.beni.amusementpark.exception.ExceptionUtil.*;
 
-import java.sql.Timestamp;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -58,7 +58,7 @@ public class VisitorServiceImpl implements VisitorService{
         
         amusementParkRepository.incrementCapitalById(entranceFee, amusementParkId);
         return visitorRepository.save(visitor);
-    }    
+    }
 
     public Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId) {
         Machine machine = machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId);
@@ -74,7 +74,7 @@ public class VisitorServiceImpl implements VisitorService{
     private void checkIfVisitorAbleToGetOnMachine(Machine machine, Visitor visitor) {
         exceptionIfEquals(VisitorState.ON_MACHINE, visitor.getState(), VISITOR_IS_ON_A_MACHINE);
         exceptionIfFirstLessThanSecond(visitor.getSpendingMoney(), machine.getTicketPrice(), NOT_ENOUGH_MONEY);
-        exceptionIfFirstLessThanSecond(calculateAge(visitor.getDateOfBirth()), machine.getMinimumRequiredAge(), VISITOR_IS_TOO_YOUNG);
+        exceptionIfFirstLessThanSecond(Period.between(visitor.getDateOfBirth(), LocalDate.now()).getYears(), machine.getMinimumRequiredAge(), VISITOR_IS_TOO_YOUNG);
         exceptionIfPrimitivesEquals(visitorRepository.countByMachineId(machine.getId()), machine.getNumberOfSeats(), NO_FREE_SEAT_ON_MACHINE);
     }
 
@@ -102,23 +102,4 @@ public class VisitorServiceImpl implements VisitorService{
     	visitor.setState(null);
     	return visitorRepository.save(visitor);
     }
-    
-    private int calculateAge(Timestamp dateOfBirth) { 
-    	Calendar calendarOfBirth = Calendar.getInstance();
-    	calendarOfBirth.setTime(dateOfBirth);
-    	
-    	Calendar now = Calendar.getInstance();
-    	
-    	int age = now.get(Calendar.YEAR) - calendarOfBirth.get(Calendar.YEAR);
-    	
-    	int nowMonth = now.get(Calendar.MONTH);
-    	int birthMonth = now.get(Calendar.MONTH);
-    	
-    	if(nowMonth < birthMonth || nowMonth == birthMonth && now.get(Calendar.DAY_OF_MONTH) < calendarOfBirth.get(Calendar.DAY_OF_MONTH)) {
-    		age--;
-    	}
-    	
-    	return age;
-    }
-	
 }
