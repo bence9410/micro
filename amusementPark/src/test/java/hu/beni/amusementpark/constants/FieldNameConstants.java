@@ -23,4 +23,8 @@ public class FieldNameConstants {
 	public static final String TICKET_PRICE = "ticketPrice";
 	public static final String TYPE = "type";
 	
+	public static final String TEXT_OF_REGISTRY = "textOfRegistry";
+	public static final String AMUSEMENT_PARK = "amusementPark";
+	public static final String VISITOR = "visitor";
+	
 }

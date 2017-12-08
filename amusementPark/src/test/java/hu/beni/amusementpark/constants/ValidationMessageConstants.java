@@ -14,6 +14,7 @@ public class ValidationMessageConstants {
 	public static final String SIZE_3_15_MESSAGE = String.format(SIZE_MESSAGE, 3, 15);
 	public static final String SIZE_5_20_MESSAGE = String.format(SIZE_MESSAGE, 5, 20);
 	public static final String SIZE_5_25_MESSAGE = String.format(SIZE_MESSAGE, 5, 25);
+	public static final String SIZE_5_100_MESSAGE = String.format(SIZE_MESSAGE, 5, 100);
 	
 	public static final String RANGE_0_21_MESSAGE = String.format(RANGE_MESSAGE, 0, 21);
 	public static final String RANGE_5_30_MESSAGE = String.format(RANGE_MESSAGE, 5, 30);

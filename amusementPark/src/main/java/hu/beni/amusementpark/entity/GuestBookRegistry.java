@@ -8,6 +8,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -32,15 +34,19 @@ public class GuestBookRegistry implements Serializable{
 	@JsonProperty("identifier")
 	private Long id;
 	
+	@NotNull
+	@Size(min = 5, max = 100)
 	private String textOfRegistry;
 	
 	@CreationTimestamp
 	private Timestamp dateOfRegistry;
 	
-	@ManyToOne
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonIgnore
 	private Visitor visitor;
 	
+	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JsonIgnore
 	private AmusementPark amusementPark;
