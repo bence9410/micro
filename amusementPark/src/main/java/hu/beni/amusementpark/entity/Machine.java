@@ -61,7 +61,7 @@ public class Machine implements Serializable {
     private Integer minimumRequiredAge;
 
     @NotNull
-    @Range(min = 5, max = 25)
+    @Range(min = 5, max = 30)
     private Integer ticketPrice;
 
     @NotNull
