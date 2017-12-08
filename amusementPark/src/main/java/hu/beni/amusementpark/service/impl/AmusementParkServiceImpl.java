@@ -49,6 +49,10 @@ public class AmusementParkServiceImpl implements AmusementParkService {
     	amusementParkArchivator.sendToArchive(amusementPark);
     }
     
+    public List<AmusementPark> findAll(){
+    	return amusementParkRepository.findAll();
+    }
+    
     public Page<AmusementPark> findAll(Pageable pageable){
     	return amusementParkRepository.findAll(pageable);
     }

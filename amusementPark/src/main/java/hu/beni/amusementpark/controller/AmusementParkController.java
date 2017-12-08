@@ -1,20 +1,28 @@
 package hu.beni.amusementpark.controller;
 
-import hu.beni.amusementpark.entity.AmusementPark;
+import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.MACHINE;
+import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.VISITOR_ENTER_PARK;
+import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.VISITOR_REGISTRATE;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
+
+import org.springframework.hateoas.Resource;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.*;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
+import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.service.AmusementParkService;
-import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.Resource;
-import org.springframework.web.bind.annotation.DeleteMapping;
 
 @RestController
 @RequestMapping(path = "/amusementPark")
@@ -27,6 +35,11 @@ public class AmusementParkController {
     public Resource<AmusementPark> save(@Valid @RequestBody AmusementPark amusementPark) {
     	amusementPark.getAddress().setAmusementPark(amusementPark);
         return createResource(amusementParkService.save(amusementPark));
+    }
+    
+    @GetMapping
+    public List<Resource<AmusementPark>> findAll(){
+    	return amusementParkService.findAll().stream().map(this::createResource).collect(Collectors.toList());
     }
 
     @GetMapping("/{amusementParkId}")
