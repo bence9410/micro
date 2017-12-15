@@ -9,11 +9,28 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <link rel='stylesheet' type='text/css' href='../css/amusementPark.css'>
 </head>
-<body onload="getAmusementParks();">
+<body onload="init();">
+<div class="row">
+	<div class="col-md-2"></div>
+	<div class="col-md-4">
+		<form action="/logout" method="post">
+			<input type="submit" value="logout">
+		</form>
+	</div>
+	<div class="col-md-4">
+			<p id="username"></p>
+			<p id="authorities" class="hidden"></p>
+	</div>
+	<div class="col-md-2"></div>
+</div>
+
+
+
 	<div class="jumbotron text-center">
 		<h1>Amusement Parks</h1>
 	</div>
 
+	
 	<div class="container">
 		<div class="row">
 			<div class="col-md-2"></div>

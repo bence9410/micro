@@ -1,3 +1,20 @@
+function init(){
+	$.ajax({
+		url : '/user',
+		success : function(data){
+			console.log(data);
+			$("#username").html(data.name);
+			
+			var auth = [];
+			$.each(data.authorities, function(i, e){
+				auth.push(e.authority);
+			});
+			$("#authorities").html(auth.join(","));
+		}
+	});
+	
+}
+
 function save() {
 	console.log('before ajax');
 	$('#save').attr('disabled', true);

@@ -1,20 +1,25 @@
+logging:
+ level:
+  org:
+   springframework:
+    security: DEBUG
 spring:
-  jpa:
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
+ jpa:
+  show-sql: true
+  properties:
+   hibernate:
+    format_sql: true
 
 ---
 
 spring:
-  profiles: oracleDB
-  datasource:
-    url: jdbc:oracle:thin:@localhost:1521:xe
-    username: benike
-    password: benike
-    driver-class-name: oracle.jdbc.OracleDriver
-  jpa:
-    hibernate:
-      ddl-auto: create
-    database-platform: org.hibernate.dialect.Oracle10gDialect
+ profiles: oracleDB
+ datasource:
+  url: jdbc:oracle:thin:@localhost:1521:xe
+  username: benike
+  password: benike
+  driver-class-name: oracle.jdbc.OracleDriver
+ jpa:
+  hibernate:
+   ddl-auto: create
+   database-platform: org.hibernate.dialect.Oracle10gDialect
