@@ -33,14 +33,13 @@ public class AmusementParkController {
     private final AmusementParkService amusementParkService;
 
     @PostMapping
-    @PreAuthorize("hasRole([USER])")
+    @PreAuthorize("hasRole('ADMIN')")
     public Resource<AmusementPark> save(@Valid @RequestBody AmusementPark amusementPark) {
     	amusementPark.getAddress().setAmusementPark(amusementPark);
         return createResource(amusementParkService.save(amusementPark));
     }
     
     @GetMapping
-    @PreAuthorize("isAuthenticated()")
     public List<Resource<AmusementPark>> findAll(){
     	return amusementParkService.findAll().stream().map(this::createResource).collect(Collectors.toList());
     }
@@ -50,6 +49,7 @@ public class AmusementParkController {
         return createResource(amusementParkService.findOne(amusementParkId));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{amusementParkId}")
     public void delete(@PathVariable Long amusementParkId) {
         amusementParkService.delete(amusementParkId);

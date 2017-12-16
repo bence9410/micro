@@ -1,83 +1,41 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset='UTF-8'>
-<title>Insert title here</title>
-<script	src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
-<script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<script src='../js/amusementPark.js'></script>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<link rel='stylesheet' type='text/css' href='../css/amusementPark.css'>
-</head>
-<body onload="init();">
-<div class="row">
-	<div class="col-md-2"></div>
-	<div class="col-md-4">
-		<form action="/logout" method="post">
-			<input type="submit" value="logout">
-		</form>
-	</div>
-	<div class="col-md-4">
-			<p id="username"></p>
-			<p id="authorities" class="hidden"></p>
-	</div>
-	<div class="col-md-2"></div>
+<div class="jumbotron text-center">
+    <h1>Amusement Parks</h1>
 </div>
-
-
-
-	<div class="jumbotron text-center">
-		<h1>Amusement Parks</h1>
-	</div>
-
-	
-	<div class="container">
-		<div class="row">
-			<div class="col-md-2"></div>
-			<div class="col-md-8" style="text-align: center;">
-				Name: <input id='name' type='text'> <br>
-				Capital: <input id='capital' type='text'> <br> 
-				Total area: <input id='totalArea' type='text'> <br>
-				Entrance fee: <input id='entranceFee' type='text'> <br> 
-				Country: <input	id='country' type=text> <br> 
-				ZIP code: <input id='zipCode' type=text> <br> 
-				City: <input id='city' type=text> <br> 
-				Street: <input id='street' type=text> <br> 
-				House number: <input id='houseNumber' type='text'> <br> 
-				<input id='save' type='button' onclick='save();' value='Save' /> 
-				<input type='button' onclick='fillWithSampleData();' value='Fill with sample data'>
-				<p id='result'></p>
-			</div>
-			<div class="col-md-2"></div>
-		</div>
-		<div class="row">
-			<div class="col-md-2"></div>
-			<div class="col-md-8">
-				<table style="width:100%">
-					<thead>
-						<tr>
-			    			<th>Name</th>
-			    			<th>Capital</th>
-			    			<th>Total area</th>
-			    			<th>Entrance fee</th>
-			    			<th>Address</th>
-			    		</tr>
-			  		</thead>
-			  		<tfoot>
-			  			<tr>
-			  				<td><input type="button" onclick="getAmusementParks();"  value="Refresh"></td>
-			  				<td></td>
-			  				<td></td>
-							<td></td>
-			  				<td></td>  	
-			  			</tr>
-			  		</tfoot>
-				  	<tbody id="tableBody">
-				  	</tbody>
-				</table> 
-			</div>
-			<div class="col-md-2"></div>
-		</div>
-	</div>
-</body>
-</html>
+<div id="saveDiv" class="hidden">
+    Name: <input id='parkName' type='text'> <br>
+    Capital: <input id='capital' type='text'> <br> 
+    Total area: <input id='totalArea' type='text'> <br>
+    Entrance fee: <input id='entranceFee' type='text'> <br> 
+    Country: <input	id='country' type=text> <br> 
+    ZIP code: <input id='zipCode' type=text> <br> 
+    City: <input id='city' type=text> <br> 
+    Street: <input id='street' type=text> <br> 
+    House number: <input id='houseNumber' type='text'> <br> 
+    <input id='save' type='button' onclick='save();' value='Save' > 
+    <input type='button' onclick='parkFillWithSampleData();' value='Fill with sample data'>
+    <p id='result'></p>
+</div>
+<div>
+    <table style="width:100%">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Capital</th>
+                <th>Total area</th>
+                <th>Entrance fee</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <td><input type="button" onclick="getAmusementParks();"  value="Refresh"></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>  	
+            </tr>
+        </tfoot>
+        <tbody id="tableBody">
+        </tbody>
+    </table> 
+</div>

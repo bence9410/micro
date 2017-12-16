@@ -29,6 +29,12 @@ public class VisitorServiceImpl implements VisitorService{
     private final MachineRepository machineRepository;
     private final VisitorRepository visitorRepository;
     
+    public Integer findSpendingMoneyByUsername(String username){
+        Integer spendingMoney = visitorRepository.findSpendingMoneyByUserName(username);
+        exceptionIfNull(spendingMoney, VISITOR_NOT_SIGNED_UP);
+        return spendingMoney;
+    }
+    
     public Visitor signUp(Visitor visitor) {
     	return visitorRepository.save(visitor);
     }

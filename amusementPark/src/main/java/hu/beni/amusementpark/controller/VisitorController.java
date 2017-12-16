@@ -23,6 +23,11 @@ public class VisitorController {
 
     private final VisitorService visitorService;
     
+    @GetMapping("/visitor/spendingMoney/{username}")
+    public Integer findSpendingMoneyByUsername(@PathVariable String username){
+        return visitorService.findSpendingMoneyByUsername(username);
+    }
+    
     @PostMapping("/visitor")
     public Resource<Visitor> signUp(@RequestBody Visitor visitor){
     	return createResourceForNotInParkVisitor(visitorService.signUp(visitor));

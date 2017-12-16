@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <title>Amusement Park</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script	src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+        <script	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <script src='/home.js'></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <link rel='stylesheet' type='text/css' href='../css/amusementPark.css'>
+    </head>
+    <body onload="init();">
+        <div class="container" style="text-align: center;">
+            <div>
+                <form action="/logout" method="post">
+                    <input type="submit" value="logout">
+                </form>
+                Username: <p id="username"></p>
+                <p id="authorities" class="hidden"></p>
+                <div id="notSignedUp" class="hidden">
+                    Name: <input id='name' type='text'> <br> 
+                    Date of birth: <input id='dateOfBirth' type='text'> <br> 
+                    Spending money: <input id='spendingMoney' type='text'> <br> 
+                    <input id='singUp' type='button' onclick='signUp();' value='Sign up' > 
+                    <input type='button' onclick='fillWithSampleData();' value='Fill with sample data'>
+                </div>
+                <div id="signedUp" class="hidden">
+                    Spending money: <p id="spendingMoneyP"></p>
+                    <input id='spendingMoneyUpload' type='text'> 
+                    <input id='Upload' type='button' onclick='Upload();' value='Upload' > 
+                </div>
+            </div>
+            <div id="content"></div>
+        </div>
+    </body>
+</html>

@@ -3,6 +3,8 @@ package hu.beni.amusementpark.service;
 import hu.beni.amusementpark.entity.Visitor;
 
 public interface VisitorService {
+    
+        Integer findSpendingMoneyByUsername(String username);
 
 	Visitor signUp(Visitor visitor);
 

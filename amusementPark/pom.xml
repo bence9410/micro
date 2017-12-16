@@ -49,11 +49,11 @@
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-jsr310</artifactId>
 		</dependency>
-		<dependency>
+		<!--dependency>
 			<groupId>com.oracle</groupId>
 			<artifactId>ojdbc7</artifactId>
 			<version>12.1.0.1</version>
-		</dependency>
+		</dependency-->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
@@ -113,7 +113,7 @@
 					</includes>
 				</configuration>
 			</plugin>
-			<plugin>
+			<!--plugin>
 				<groupId>pl.project13.maven</groupId>
 				<artifactId>git-commit-id-plugin</artifactId>
 				<executions>
@@ -126,7 +126,7 @@
 				<configuration>
 					<dotGitDirectory>${project.basedir}/../.git</dotGitDirectory>
 				</configuration>
-			</plugin>
+			</plugin-->
 		</plugins>
 	</build>
 

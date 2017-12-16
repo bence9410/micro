@@ -1,30 +1,22 @@
-function init(){
-	$.ajax({
-		url : '/user',
-		success : function(data){
-			console.log(data);
-			$("#username").html(data.name);
-			
-			var auth = [];
-			$.each(data.authorities, function(i, e){
-				auth.push(e.authority);
-			});
-			$("#authorities").html(auth.join(","));
-		}
-	});
-	
-}
+$(document).ready(function(){
+    
+    if (authorities.indexOf("ADMIN") != -1){
+        $("#saveDiv").removeClass();
+        $("thead").children("tr").append("<th></th>");
+    }
+    
+    getAmusementParks();
+    
+});
 
 function save() {
-	console.log('before ajax');
 	$('#save').attr('disabled', true);
 	$.ajax({
 		url : '/amusementPark',
 		method : 'POST',
 		contentType : 'application/json',
-		data : JSON.stringify(collectData()),
+		data : JSON.stringify(parkCollectData()),
 		success : function(response) {
-			console.log('success:');
 			var result = $('#result');
 			result.removeClass();
 			result.html('success');
@@ -33,7 +25,6 @@ function save() {
 			getAmusementParks();
 		},
 		error : function(response) {
-			console.log('error:');
 			var result = $('#result');
 			result.removeClass();
 			result.html('error: ' + response.responseText);
@@ -41,17 +32,15 @@ function save() {
 			result.show();
 		},
 		complete : function(response) {
-			console.log(response);
 			$('#save').attr('disabled', false);
 			setTimeout(function() {
 				$('#result').hide();
 			}, 8000);
 		}
 	});
-	console.log('after ajax sent');
 }
 
-function collectData() {
+function parkCollectData() {
 	var address = {};
 	address.country = $('#country').val();
 	address.zipCode = $('#zipCode').val();
@@ -60,20 +49,17 @@ function collectData() {
 	address.houseNumber = $('#houseNumber').val();
 
 	var amusementPark = {};
-	amusementPark.name = $('#name').val();
+	amusementPark.name = $('#parkName').val();
 	amusementPark.capital = $('#capital').val();
 	amusementPark.totalArea = $('#totalArea').val();
 	amusementPark.entranceFee = $('#entranceFee').val();
 	amusementPark.address = address;
 
-	console.log('before collectData returns');
-	console.log(amusementPark);
-
 	return amusementPark;
 }
 
-function fillWithSampleData() {
-	$('#name').val('Orsi parkja');
+function parkFillWithSampleData() {
+	$('#parkName').val('Beni parkja');
 	$('#capital').val('10000');
 	$('#totalArea').val('1000');
 	$('#entranceFee').val('50');
@@ -89,15 +75,7 @@ function getAmusementParks() {
 	$.ajax({
 		url : '/amusementPark',
 		success : function(response) {
-			console.log('success:');
 			fillTableWithData(response);
-		},
-		error : function(response) {
-			console.log('error:');
-			alert("Error in getAmusementParks, can't fill table with data.");
-		},
-		complete : function(response) {
-			console.log(response);
 		}
 	});
 }
@@ -105,8 +83,6 @@ function getAmusementParks() {
 function fillTableWithData(data) {
 	var tableBody = [];
 
-	console.log(data);
-	
 	$.each(data, function(i, e) {
 		tableBody.push(convertAmusementParkToTableRow(e));
 	});
@@ -122,10 +98,33 @@ function convertAmusementParkToTableRow(amusementPark) {
 	tr.push('<td>' + amusementPark.totalArea + '</td>');
 	tr.push('<td>' + amusementPark.entranceFee + '</td>');
 	var address = amusementPark.address;
-	tr.push('<td>' + address.country + ' ' + address.zipCode + ' ' + address.city 
-			+ ' ' + address.street + ' ' + address.houseNumber + '</td>');
-	tr.push('</tr>')
+	tr.push('<td>' + address.country + ' ' + address.zipCode);
+        tr.push(' ' + address.city + ' ' + address.street);
+        tr.push(' ' + address.houseNumber + '</td>');
+        if (authorities.indexOf("ADMIN") != -1){
+            tr.push("<th><input type='button' onclick='deletePark("+amusementPark.identifier+")' value='Delete'></th>");
+        }
+        tr.push('</tr>');
 	return tr.join('');
+}
+
+function deletePark(id){
+    $.ajax({
+        url: "/amusementPark/"+id,
+        method : 'DELETE',
+        success: function (data, textStatus, jqXHR) {
+            console.log(data);
+            console.log(textStatus);
+            console.log(jqXHR);
+            
+        },
+        error: function (data, textStatus, jqXHR) {
+             console.log(data);
+            console.log(textStatus);
+            console.log(jqXHR);
+        }
+        
+    });
 }
 
 
