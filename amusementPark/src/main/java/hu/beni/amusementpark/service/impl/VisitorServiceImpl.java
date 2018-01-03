@@ -29,20 +29,24 @@ public class VisitorServiceImpl implements VisitorService{
     private final MachineRepository machineRepository;
     private final VisitorRepository visitorRepository;
     
+    @Override
     public Integer findSpendingMoneyByUsername(String username){
         Integer spendingMoney = visitorRepository.findSpendingMoneyByUserName(username);
         exceptionIfNull(spendingMoney, VISITOR_NOT_SIGNED_UP);
         return spendingMoney;
     }
     
+    @Override
     public Visitor signUp(Visitor visitor) {
     	return visitorRepository.save(visitor);
     }
 
+    @Override
     public Visitor findOne(Long visitorId) {
         return visitorRepository.findOne(visitorId);
     }	
 
+    @Override
     public Visitor enterPark(Long amusementParkId, Long visitorId, Integer spendingMoney) {
         AmusementPark amusementPark = amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId);
         exceptionIfNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
@@ -66,6 +70,7 @@ public class VisitorServiceImpl implements VisitorService{
         return visitorRepository.save(visitor);
     }
 
+    @Override
     public Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId) {
         Machine machine = machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId);
         exceptionIfNull(machine, NO_MACHINE_IN_PARK_WITH_ID);
@@ -92,6 +97,7 @@ public class VisitorServiceImpl implements VisitorService{
         return visitorRepository.save(visitor);
     } 
     
+    @Override
     public Visitor getOffMachine(Long machineId, Long visitorId) {
         Visitor visitor = visitorRepository.findByMachineIdAndVisitorId(machineId, visitorId);
         exceptionIfNull(visitor, NO_VISITOR_ON_MACHINE_WITH_ID);
@@ -100,6 +106,7 @@ public class VisitorServiceImpl implements VisitorService{
         return visitorRepository.save(visitor);
     }
     
+    @Override
     public Visitor leavePark(Long amusementParkId, Long visitorId) {
     	Visitor visitor = visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
     	exceptionIfNull(visitor, NO_VISITOR_IN_PARK_WITH_ID);

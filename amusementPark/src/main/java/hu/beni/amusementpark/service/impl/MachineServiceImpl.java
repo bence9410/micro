@@ -31,6 +31,7 @@ public class MachineServiceImpl implements MachineService {
     private final MachineRepository machineRepository;
     private final VisitorRepository visitorRepository;
 
+    @Override
     public Machine addMachine(Long amusementParkId, Machine machine) {
         AmusementPark amusementPark = amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
         exceptionIfNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
@@ -50,10 +51,12 @@ public class MachineServiceImpl implements MachineService {
         return machineRepository.save(machine);
     }
 
+    @Override
     public Machine findOne(Long machineId) {
         return machineRepository.findOne(machineId);
     }
 
+    @Override
     public void removeMachine(Long amusementParkId, Long machineId) {
         Machine machine = machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId);
         exceptionIfNull(machine, NO_MACHINE_IN_PARK_WITH_ID);

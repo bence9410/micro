@@ -23,10 +23,12 @@ public class GuestBookRegistryServiceImpl implements GuestBookRegistryService{
 	private final VisitorRepository visitorRepository;
 	private final GuestBookRegistryRepository guestBookRegistryRepository;
 	
+        @Override
 	public GuestBookRegistry findOne(Long guestBookRegistryId) {
 		return guestBookRegistryRepository.findOne(guestBookRegistryId);
 	}
 	
+        @Override
 	public GuestBookRegistry addRegistry(Long amusementParkId, Long visitorId, String textOfRegistry) {
 		AmusementPark amusementPark = amusementParkRepository.findByIdReadOnlyId(amusementParkId);
 		exceptionIfNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);

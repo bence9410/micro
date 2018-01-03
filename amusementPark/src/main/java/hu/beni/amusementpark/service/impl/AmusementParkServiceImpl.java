@@ -29,18 +29,22 @@ public class AmusementParkServiceImpl implements AmusementParkService {
     private final VisitorRepository visitorRepository;
     private final ArchiveSender amusementParkArchivator;
 	
+    @Override
     public AmusementPark save(AmusementPark amusementPark) {
     	return amusementParkRepository.save(amusementPark);
     }	
 
+    @Override
     public AmusementPark findOne(Long amusementParkId) {
         return amusementParkRepository.findOne(amusementParkId);
     }
     
+    @Override
     public AmusementPark findOne(Specification<AmusementPark> specification) {
     	return amusementParkRepository.findOne(specification);
     }
 
+    @Override
     public void delete(Long amusementParkId) {
     	exceptionIfNotZero(visitorRepository.countByAmusementParkId(amusementParkId), VISITORS_IN_PARK);
     	AmusementPark amusementPark = amusementParkRepository.findOne(amusementParkId);
@@ -49,14 +53,17 @@ public class AmusementParkServiceImpl implements AmusementParkService {
     	amusementParkArchivator.sendToArchive(amusementPark);
     }
     
+    @Override
     public List<AmusementPark> findAll(){
     	return amusementParkRepository.findAll();
     }
     
+    @Override
     public Page<AmusementPark> findAll(Pageable pageable){
     	return amusementParkRepository.findAll(pageable);
     }
     
+    @Override
     public List<AmusementPark> findAll(Specification<AmusementPark> specification) {
     	return amusementParkRepository.findAll(specification);
     }    
