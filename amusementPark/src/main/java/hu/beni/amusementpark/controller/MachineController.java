@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.Resource;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -23,6 +24,7 @@ public class MachineController {
     private final MachineService machineService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public Resource<Machine> addMachine(@PathVariable Long amusementParkId, @RequestBody Machine machine) {
         return createResource(amusementParkId, machineService.addMachine(amusementParkId, machine));
     }
@@ -33,6 +35,7 @@ public class MachineController {
     }
 
     @DeleteMapping("/{machineId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(@PathVariable Long amusementParkId, @PathVariable Long machineId) {
         machineService.removeMachine(amusementParkId, machineId);
     }
