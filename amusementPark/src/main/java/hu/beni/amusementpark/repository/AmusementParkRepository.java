@@ -7,11 +7,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import static hu.beni.amusementpark.constants.ParameterMappingConstants.*;
+
+import java.util.List;
+
 import hu.beni.amusementpark.entity.AmusementPark;
 
 @Repository
 public interface AmusementParkRepository extends JpaRepository<AmusementPark, Long>, JpaSpecificationExecutor<AmusementPark>{
 
+	@Query("Select a from AmusementPark a join fetch a.address")
+	public List<AmusementPark> findAllFetchAddress();
+	
     @Modifying
     @Query("Update AmusementPark a set a.capital = a.capital - :ammount where a.id = :amusementParkId")
     public void decreaseCapitalById(@Param(AMMOUNT) Integer ammount, @Param(AMUSEMENT_PARK_ID) Long amusementParkId);
