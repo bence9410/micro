@@ -47,7 +47,7 @@ public class AmusementParkApplicationTests {
     private String appUrl;
     
     private HttpHeaders httpHeaders;
-
+    
     private String getAppUrl() {
         return appUrl == null ? appUrl = "http://localhost:" + port : appUrl;    	
     }
@@ -55,36 +55,6 @@ public class AmusementParkApplicationTests {
     @Before
     public void setUp() {
     	httpHeaders = new HttpHeaders();
-    }
-    
-    private <T> HttpEntity<T> createHttpEntityWithSessionIdHeaders(T body) {
-    	return new HttpEntity<T>(body, httpHeaders);
-    }
-    
-    private <T> HttpEntity<T> createHttpEntityWithSessionIdHeaders() {
-    	return new HttpEntity<T>(httpHeaders);
-    }
-    
-    private void loginAsAdminAndSetSessionIdInHeaders() {
-    	HttpHeaders headers = new HttpHeaders();
-    	headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-    	MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
-    	map.add("username", "admin");
-    	map.add("password", "pass");
-    	
-    	ResponseEntity<String> response = restTemplate.exchange(getAppUrl() + "/login", HttpMethod.POST, 
-    			new HttpEntity<MultiValueMap<String, String>>(map, headers), String.class);
-    	
-    	assertEquals(HttpStatus.FOUND, response.getStatusCode());
-    	
-    	HttpHeaders responseHeaders = response.getHeaders();
-    	
-    	assertTrue(responseHeaders.getLocation().toString().contains("home.html"));
-    	    	
-    	String cookie = response.getHeaders().getFirst("Set-Cookie");
-    	
-    	httpHeaders.add("Cookie", "JSESSIONID=" + cookie.substring(cookie.indexOf('=')+1, cookie.indexOf(';')));
     }
 
     @Test
@@ -150,6 +120,36 @@ public class AmusementParkApplicationTests {
             assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
             assertEquals(MACHINE_IS_TOO_EXPENSIVE, exception.getResponseBodyAsString());
         });
+    }
+        
+    private void loginAsAdminAndSetSessionIdInHeaders() {
+    	HttpHeaders headers = new HttpHeaders();
+    	headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+    	MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
+    	map.add("username", "admin");
+    	map.add("password", "pass");
+    	
+    	ResponseEntity<String> response = restTemplate.exchange(getAppUrl() + "/login", HttpMethod.POST, 
+    			new HttpEntity<MultiValueMap<String, String>>(map, headers), String.class);
+    	
+    	assertEquals(HttpStatus.FOUND, response.getStatusCode());
+    	
+    	HttpHeaders responseHeaders = response.getHeaders();
+    	
+    	assertTrue(responseHeaders.getLocation().toString().contains("home.html"));
+    	    	
+    	String cookie = response.getHeaders().getFirst("Set-Cookie");
+    	
+    	httpHeaders.add("Cookie", "JSESSIONID=" + cookie.substring(cookie.indexOf('=')+1, cookie.indexOf(';')));
+    }
+    
+    private <T> HttpEntity<T> createHttpEntityWithSessionIdHeaders(T body) {
+    	return new HttpEntity<T>(body, httpHeaders);
+    }
+    
+    private <T> HttpEntity<T> createHttpEntityWithSessionIdHeaders() {
+    	return new HttpEntity<T>(httpHeaders);
     }
     
     private Resource<AmusementPark> postAmusementParkWithAddress() {
