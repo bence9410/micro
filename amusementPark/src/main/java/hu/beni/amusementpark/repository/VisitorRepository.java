@@ -12,8 +12,8 @@ import hu.beni.amusementpark.entity.Visitor;
 @Repository
 public interface VisitorRepository extends JpaRepository<Visitor, Long> {
     
-    @Query("Select v.spendingMoney from Visitor v where v.username = :username")
-    public Integer findSpendingMoneyByUserName(@Param("username") String username);
+    @Query("Select v.spendingMoney from Visitor v where v.username = :#{principal.username}")
+    public Integer findSpendingMoneyByUserName();
 
     @Query("Select count(v) from Visitor v where v.machine.id = :machineId")
     public Long countByMachineId(@Param(MACHINE_ID) Long machineId);

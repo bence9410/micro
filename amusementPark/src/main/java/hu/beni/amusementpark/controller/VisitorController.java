@@ -6,6 +6,9 @@ import hu.beni.amusementpark.enums.VisitorState;
 import org.springframework.web.bind.annotation.RestController;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
+import java.security.Principal;
+
 import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.*;
 import hu.beni.amusementpark.service.VisitorService;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +26,14 @@ public class VisitorController {
 
     private final VisitorService visitorService;
     
-    @GetMapping("/visitor/spendingMoney/{username}")
-    public Integer findSpendingMoneyByUsername(@PathVariable String username){
-        return visitorService.findSpendingMoneyByUsername(username);
+    @GetMapping("/visitor/spendingMoney")
+    public Integer findSpendingMoneyByUsername(){
+        return visitorService.findSpendingMoneyByUsername();
     }
     
     @PostMapping("/visitor")
-    public Resource<Visitor> signUp(@RequestBody Visitor visitor){
+    public Resource<Visitor> signUp(@RequestBody Visitor visitor, Principal principal){
+    	visitor.setUsername(principal.getName());
     	return createResourceForNotInParkVisitor(visitorService.signUp(visitor));
     }
 

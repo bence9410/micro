@@ -30,8 +30,8 @@ public class VisitorServiceImpl implements VisitorService{
     private final VisitorRepository visitorRepository;
     
     @Override
-    public Integer findSpendingMoneyByUsername(String username){
-        Integer spendingMoney = visitorRepository.findSpendingMoneyByUserName(username);
+    public Integer findSpendingMoneyByUsername(){
+        Integer spendingMoney = visitorRepository.findSpendingMoneyByUserName();
         exceptionIfNull(spendingMoney, VISITOR_NOT_SIGNED_UP);
         return spendingMoney;
     }
