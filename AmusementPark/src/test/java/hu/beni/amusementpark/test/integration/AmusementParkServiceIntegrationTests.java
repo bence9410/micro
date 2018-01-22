@@ -27,7 +27,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.jpa.domain.Specifications;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import hu.beni.amusementpark.entity.Address;
@@ -71,7 +70,7 @@ public class AmusementParkServiceIntegrationTests {
 			.isInstanceOf(AmusementParkException.class).hasMessage(NO_ARCHIVE_SEND_TYPE);
 		assertNotNull(amusementParkService.findOne(id));
 		
-		amusementParkRepository.delete(id);
+		amusementParkRepository.deleteById(id);
 		assertNull(amusementParkService.findOne(id));
 	}
 
@@ -80,7 +79,7 @@ public class AmusementParkServiceIntegrationTests {
 		amusementParkRepository.deleteAll();
 		createNineAmusementParkWithAscendantCapital();
 
-		Pageable pageable = new PageRequest(0, 5, new Sort("capital"));
+		Pageable pageable = PageRequest.of(0, 5, Sort.by("capital"));
 
 		Page<AmusementPark> firstPage = amusementParkService.findAll(pageable);
 		Page<AmusementPark> lastPage = amusementParkService.findAll(firstPage.nextPageable());
@@ -120,7 +119,7 @@ public class AmusementParkServiceIntegrationTests {
 		assertNotNull(amusementPark);
 		assertTrue(amusementPark.getName().startsWith(name+"1"));
 		
-		Specification<AmusementPark> nameLikeAndCapitalGreaterThan = Specifications
+		Specification<AmusementPark> nameLikeAndCapitalGreaterThan = Specification
 				.where(fieldLikeParam(AmusementPark.class, "name", name + "%"))
 				.and(fieldLikeParam(AmusementPark.class, "address.city", name + "%"))
 				.and(fieldGreaterThanParam(AmusementPark.class, "capital", capital));

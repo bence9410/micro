@@ -53,7 +53,7 @@ public class MachineServiceImpl implements MachineService {
 
     @Override
     public Machine findOne(Long machineId) {
-        return machineRepository.findOne(machineId);
+        return machineRepository.findById(machineId).orElseGet(() -> null);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class MachineServiceImpl implements MachineService {
         exceptionIfNull(machine, NO_MACHINE_IN_PARK_WITH_ID);
         exceptionIfNotZero(visitorRepository.countByMachineId(machineId), VISITORS_ON_MACHINE);
         amusementParkRepository.incrementCapitalById(machine.getPrice(), amusementParkId);
-        machineRepository.delete(machineId);
+        machineRepository.deleteById(machineId);
     }
 
 }

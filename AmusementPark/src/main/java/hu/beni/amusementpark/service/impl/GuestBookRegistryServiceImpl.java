@@ -25,14 +25,14 @@ public class GuestBookRegistryServiceImpl implements GuestBookRegistryService{
 	
         @Override
 	public GuestBookRegistry findOne(Long guestBookRegistryId) {
-		return guestBookRegistryRepository.findOne(guestBookRegistryId);
+		return guestBookRegistryRepository.findById(guestBookRegistryId).orElseGet(() -> null);
 	}
 	
         @Override
 	public GuestBookRegistry addRegistry(Long amusementParkId, Long visitorId, String textOfRegistry) {
 		AmusementPark amusementPark = amusementParkRepository.findByIdReadOnlyId(amusementParkId);
 		exceptionIfNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
-		Visitor visitor = visitorRepository.findOne(visitorId);
+		Visitor visitor = visitorRepository.findById(visitorId).orElseGet(() -> null);
 		exceptionIfNull(visitor, NO_VISITOR_IN_PARK_WITH_ID);
 		return guestBookRegistryRepository.save(GuestBookRegistry.builder().textOfRegistry(textOfRegistry)
 				.visitor(visitor).amusementPark(amusementPark).build());

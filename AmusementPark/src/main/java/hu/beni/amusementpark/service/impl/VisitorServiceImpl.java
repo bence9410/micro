@@ -43,7 +43,7 @@ public class VisitorServiceImpl implements VisitorService{
 
     @Override
     public Visitor findOne(Long visitorId) {
-        return visitorRepository.findOne(visitorId);
+        return visitorRepository.findById(visitorId).orElseGet(() -> null);
     }	
 
     @Override
@@ -56,7 +56,7 @@ public class VisitorServiceImpl implements VisitorService{
         
         exceptionIfNotZero(visitorRepository.countByVisitorIdWhereAmusementParkIsNotNull(visitorId), VISITOR_IS_IN_A_PARK);
         
-        Visitor visitor = visitorRepository.findOne(visitorId);
+        Visitor visitor = visitorRepository.findById(visitorId).orElseGet(() -> null);
         exceptionIfNull(visitor, VISITOR_NOT_SIGNED_UP);
         
         Optional.of(amusementParkRepository.countKnownVisitor(amusementParkId, visitorId)).filter(count -> count == 0)

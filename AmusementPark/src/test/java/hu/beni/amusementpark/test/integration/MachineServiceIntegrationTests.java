@@ -44,7 +44,7 @@ public class MachineServiceIntegrationTests {
         assertNull(machineService.findOne(machineId));
         assertEquals(amusementPark.getCapital().longValue(), amusementParkService.findOne(amusementParkId).getCapital().longValue());
     
-        amusementParkRepository.delete(amusementParkId);
+        amusementParkRepository.deleteById(amusementParkId);
     }
 
 }

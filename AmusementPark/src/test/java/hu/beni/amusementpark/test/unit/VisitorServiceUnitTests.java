@@ -19,6 +19,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.junit.After;
 import org.junit.Before;
@@ -72,11 +73,11 @@ public class VisitorServiceUnitTests {
         Visitor visitor = Visitor.builder().id(0L).build();
         Long visitorId = visitor.getId();
 
-        when(visitorRepository.findOne(visitorId)).thenReturn(visitor);
+        when(visitorRepository.findById(visitorId)).thenReturn(Optional.of(visitor));
 
         assertEquals(visitor, visitorService.findOne(visitorId));
 
-        verify(visitorRepository).findOne(visitorId);
+        verify(visitorRepository).findById(visitorId);
     }
     
     @Test
@@ -140,7 +141,7 @@ public class VisitorServiceUnitTests {
 
         verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
         verify(visitorRepository).countByVisitorIdWhereAmusementParkIsNotNull(visitorId);
-        verify(visitorRepository).findOne(visitorId);
+        verify(visitorRepository).findById(visitorId);
     }
     
     @Test
@@ -154,7 +155,7 @@ public class VisitorServiceUnitTests {
         
         when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId)).thenReturn(amusementPark);
         when(visitorRepository.countByVisitorIdWhereAmusementParkIsNotNull(visitorId)).thenReturn(numberOfVisitorsWithNotNullPark);
-        when(visitorRepository.findOne(visitorId)).thenReturn(visitor);
+        when(visitorRepository.findById(visitorId)).thenReturn(Optional.of(visitor));
         when(amusementParkRepository.countKnownVisitor(amusementParkId, visitorId)).thenReturn(0L);
         when(visitorRepository.save(visitor)).thenReturn(visitor);
         
@@ -168,7 +169,7 @@ public class VisitorServiceUnitTests {
         verify(visitorRepository).countByVisitorIdWhereAmusementParkIsNotNull(visitorId);
         verify(amusementParkRepository).countKnownVisitor(amusementParkId, visitorId);
         verify(amusementParkRepository).addKnownVisitor(amusementParkId, visitorId);
-        verify(visitorRepository).findOne(visitorId);
+        verify(visitorRepository).findById(visitorId);
         verify(amusementParkRepository).incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
         verify(visitorRepository).save(visitor);
     }

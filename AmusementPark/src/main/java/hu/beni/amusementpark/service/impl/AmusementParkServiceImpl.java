@@ -36,18 +36,18 @@ public class AmusementParkServiceImpl implements AmusementParkService {
 
     @Override
     public AmusementPark findOne(Long amusementParkId) {
-        return amusementParkRepository.findOne(amusementParkId);
+        return amusementParkRepository.findById(amusementParkId).orElseGet(() -> null);
     }
     
     @Override
     public AmusementPark findOne(Specification<AmusementPark> specification) {
-    	return amusementParkRepository.findOne(specification);
+    	return amusementParkRepository.findOne(specification).orElseGet(() -> null);
     }
 
     @Override
     public void delete(Long amusementParkId) {
     	exceptionIfNotZero(visitorRepository.countByAmusementParkId(amusementParkId), VISITORS_IN_PARK);
-    	AmusementPark amusementPark = amusementParkRepository.findOne(amusementParkId);
+    	AmusementPark amusementPark = amusementParkRepository.findById(amusementParkId).orElseGet(() -> null);
     	exceptionIfNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
     	amusementParkRepository.delete(amusementPark);
     	amusementParkArchivator.sendToArchive(amusementPark);

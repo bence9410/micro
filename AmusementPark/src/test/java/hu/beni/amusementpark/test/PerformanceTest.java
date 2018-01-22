@@ -76,7 +76,7 @@ public class PerformanceTest {
 		statistics.setSaveAmusementParksWithAddresses();
 
 		Page<AmusementPark> page = null;
-		Pageable pageable = new PageRequest(0, 10, new Sort("id"));
+		Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
 		statistics.start();
 		do {
 			page = amusementParkService.findAll(pageable);
@@ -102,7 +102,7 @@ public class PerformanceTest {
 		statistics.setReadVisitorIds();
 		
 		Page<AmusementPark> page = null;
-		Pageable pageable = new PageRequest(0, 10, new Sort("id"));
+		Pageable pageable = PageRequest.of(0, 10, Sort.by("id"));
 		do {
 			page = amusementParkService.findAll(pageable);
 			pageable = page.nextPageable();

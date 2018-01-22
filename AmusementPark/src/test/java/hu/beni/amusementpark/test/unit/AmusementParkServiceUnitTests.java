@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -72,11 +73,11 @@ public class AmusementParkServiceUnitTests {
         AmusementPark amusementPark = AmusementPark.builder().id(0L).build();
         Long amusementParkId = amusementPark.getId();
 
-        when(amusementParkRepository.findOne(amusementParkId)).thenReturn(amusementPark);
+        when(amusementParkRepository.findById(amusementParkId)).thenReturn(Optional.of(amusementPark));
 
         assertEquals(amusementPark, amusementParkService.findOne(amusementParkId));
 
-        verify(amusementParkRepository).findOne(amusementParkId);
+        verify(amusementParkRepository).findById(amusementParkId);
     }
     
     @Test
@@ -85,7 +86,7 @@ public class AmusementParkServiceUnitTests {
     	Specification<AmusementPark> specification = (Root<AmusementPark> root, CriteriaQuery<?> query,
     			CriteriaBuilder cb) -> cb.equal(root.get("name"), "asd");
     			
-    	when(amusementParkRepository.findOne(specification)).thenReturn(amusementPark);
+    	when(amusementParkRepository.findOne(specification)).thenReturn(Optional.of(amusementPark));
     	
     	assertEquals(amusementPark, amusementParkService.findOne(specification));
     	
@@ -116,7 +117,7 @@ public class AmusementParkServiceUnitTests {
     		.isInstanceOf(AmusementParkException.class).hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
     	
     	verify(visitorRepository).countByAmusementParkId(amusementParkId);
-    	verify(amusementParkRepository).findOne(amusementParkId);
+    	verify(amusementParkRepository).findById(amusementParkId);
     }
     
     @Test
@@ -126,12 +127,12 @@ public class AmusementParkServiceUnitTests {
         Long numberOfVisitorsInPark = 0L;
         
         when(visitorRepository.countByAmusementParkId(amusementParkId)).thenReturn(numberOfVisitorsInPark);
-        when(amusementParkRepository.findOne(amusementParkId)).thenReturn(amusementPark);
+        when(amusementParkRepository.findById(amusementParkId)).thenReturn(Optional.of(amusementPark));
         
         amusementParkService.delete(amusementParkId);
 
         verify(visitorRepository).countByAmusementParkId(amusementParkId);
-        verify(amusementParkRepository).findOne(amusementParkId);
+        verify(amusementParkRepository).findById(amusementParkId);
         verify(amusementParkRepository).delete(amusementPark);
         verify(archiveSender).sendToArchive(amusementPark);
     }
@@ -140,7 +141,7 @@ public class AmusementParkServiceUnitTests {
     public void findAllByPageable() {
     	Page<AmusementPark> page = new PageImpl<>(Arrays.asList(
     			AmusementPark.builder().build(), AmusementPark.builder().build()));
-    	Pageable pageable = new PageRequest(0, 10);
+    	Pageable pageable = PageRequest.of(0, 10);
     	
     	when(amusementParkService.findAll(pageable)).thenReturn(page);
     	

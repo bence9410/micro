@@ -5,9 +5,9 @@ public class ValidationMessageConstants {
 	private static final String SIZE_MESSAGE = "size must be between %d and %d";
 	private static final String RANGE_MESSAGE = "must be between %d and %d";
 	
-	public static final String NOT_NULL_MESSAGE = "may not be null";
+	public static final String NOT_NULL_MESSAGE = "must not be null";
 	
-	public static final String NOT_EMPTY_MESSAGE = "may not be empty";
+	public static final String NOT_EMPTY_MESSAGE = "must not be empty";
 	
 	public static final String SIZE_0_5_MESSAGE = String.format(SIZE_MESSAGE, 0, 5);
 	public static final String SIZE_3_10_MESSAGE = String.format(SIZE_MESSAGE, 3, 10);

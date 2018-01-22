@@ -1,6 +1,5 @@
 package hu.beni.amusementpark;
 
-import java.time.LocalDate;
 import java.util.stream.IntStream;
 
 import org.springframework.boot.CommandLineRunner;

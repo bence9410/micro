@@ -82,7 +82,7 @@ public class VisitorServiceIntegrationTests {
         visitorService.leavePark(amusementParkId, visitorId);
         assertNull(visitorService.findOne(visitorId).getAmusementPark());
         
-        amusementParkRepository.delete(amusementParkId);
+        amusementParkRepository.deleteById(amusementParkId);
         assertNotNull(visitorService.findOne(visitorId));
     }
 

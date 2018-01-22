@@ -14,6 +14,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
+
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 
@@ -104,11 +107,11 @@ public class MachineServiceUnitTests {
         Machine machine = Machine.builder().id(0L).build();
         Long machineId = machine.getId();
 
-        when(machineRepository.findOne(machineId)).thenReturn(machine);
+        when(machineRepository.findById(machineId)).thenReturn(Optional.of(machine));
 
         assertEquals(machine, machineService.findOne(machineId));
 
-        verify(machineRepository).findOne(machineId);
+        verify(machineRepository).findById(machineId);
     }
 
     @Test
@@ -154,6 +157,6 @@ public class MachineServiceUnitTests {
         verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
         verify(visitorRepository).countByMachineId(machineId);
         verify(amusementParkRepository).incrementCapitalById(machine.getPrice(), amusementParkId);
-        verify(machineRepository).delete(machineId);
+        verify(machineRepository).deleteById(machineId);
     }
 }

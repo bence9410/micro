@@ -7,6 +7,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Optional;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,11 +49,11 @@ public class GuestBookServiceUnitTests {
 		GuestBookRegistry guestBookRegistry = GuestBookRegistry.builder().id(0L).build();
 		Long guestBookRegistryId = guestBookRegistry.getId();
 
-		when(guestBookRegistryRepository.findOne(guestBookRegistryId)).thenReturn(guestBookRegistry);
+		when(guestBookRegistryRepository.findById(guestBookRegistryId)).thenReturn(Optional.of(guestBookRegistry));
 
 		assertEquals(guestBookRegistry, guestBookService.findOne(guestBookRegistryId));
 
-		verify(guestBookRegistryRepository).findOne(guestBookRegistryId);
+		verify(guestBookRegistryRepository).findById(guestBookRegistryId);
 	}
 
 	@Test
@@ -79,7 +81,7 @@ public class GuestBookServiceUnitTests {
 				.isInstanceOf(AmusementParkException.class).hasMessage(NO_VISITOR_IN_PARK_WITH_ID);
 
 		verify(amusementParkRepository).findByIdReadOnlyId(amusementParkId);
-		verify(visitorRepository).findOne(visitorId);
+		verify(visitorRepository).findById(visitorId);
 	}
 
 	@Test
@@ -91,7 +93,7 @@ public class GuestBookServiceUnitTests {
 		String textOfRegistry = OPINION_ON_THE_PARK;
 
 		when(amusementParkRepository.findByIdReadOnlyId(amusementParkId)).thenReturn(amusementPark);
-		when(visitorRepository.findOne(visitorId)).thenReturn(visitor);
+		when(visitorRepository.findById(visitorId)).thenReturn(Optional.of(visitor));
 		GuestBookRegistry guestBookRegistry = GuestBookRegistry.builder().amusementPark(amusementPark)
 				.textOfRegistry(textOfRegistry).visitor(visitor).build();
 		when(guestBookRegistryRepository.save(any(GuestBookRegistry.class))).thenReturn(guestBookRegistry);
@@ -99,7 +101,7 @@ public class GuestBookServiceUnitTests {
 		assertEquals(guestBookRegistry, guestBookService.addRegistry(amusementParkId, visitorId, textOfRegistry));
 		
 		verify(amusementParkRepository).findByIdReadOnlyId(amusementParkId);
-		verify(visitorRepository).findOne(visitorId);
+		verify(visitorRepository).findById(visitorId);
 		verify(guestBookRegistryRepository).save(any(GuestBookRegistry.class));
 	}
 
