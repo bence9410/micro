@@ -8,8 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 import static org.junit.Assert.*;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;

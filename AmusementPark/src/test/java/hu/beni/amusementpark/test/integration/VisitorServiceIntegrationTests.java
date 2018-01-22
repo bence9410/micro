@@ -3,8 +3,6 @@ package hu.beni.amusementpark.test.integration;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.*;
 import static org.junit.Assert.*;
 
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDateTime;
 
 import org.junit.Test;
