@@ -14,11 +14,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+@SuppressWarnings("deprecation")
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
-	@SuppressWarnings("deprecation")
 	@Bean
 	public NoOpPasswordEncoder noOpPasswordEncoder() {
 		return NoOpPasswordEncoder.class.cast(NoOpPasswordEncoder.getInstance());
