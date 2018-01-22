@@ -15,7 +15,7 @@ function init() {
             authorities = auth.join(",");
             $("#authorities").html(authorities);
 
-            /*$.ajax({
+            $.ajax({
                 url: '/visitor/spendingMoney/',
                 success: function (data) {
                     $('#spendingMoneyP').html(data);
@@ -26,7 +26,7 @@ function init() {
                         $('#notSignedUp').removeClass();
                     }
                 }
-            });*/
+            });
         }
     });
     getAmusementParkPage();
