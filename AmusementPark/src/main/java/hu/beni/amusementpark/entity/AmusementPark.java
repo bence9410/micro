@@ -36,7 +36,9 @@ import lombok.experimental.Tolerate;
 @EqualsAndHashCode(of = {"id", "name", "capital", "totalArea", "entranceFee"})
 public class AmusementPark implements Serializable {
 
-    @Id
+    private static final long serialVersionUID = -2064262013451563720L;
+
+	@Id
     @GeneratedValue
     @JsonProperty("identifier")
     private Long id;

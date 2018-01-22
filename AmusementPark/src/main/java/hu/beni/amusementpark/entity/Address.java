@@ -27,7 +27,9 @@ import lombok.experimental.Tolerate;
 @EqualsAndHashCode(of = {"id", "zipCode", "country", "city", "street", "houseNumber"})
 public class Address implements Serializable {
 
-    @Id
+    private static final long serialVersionUID = 5753682920839496113L;
+
+	@Id
     @Column(name = "id")
     @JsonProperty("identifier")
     private Long id;

@@ -29,6 +29,8 @@ import lombok.experimental.Tolerate;
 @EqualsAndHashCode(of = {"id", "textOfRegistry", "dateOfRegistry"})
 public class GuestBookRegistry implements Serializable{
 
+	private static final long serialVersionUID = 2987327348565883455L;
+
 	@Id
 	@GeneratedValue
 	@JsonProperty("identifier")

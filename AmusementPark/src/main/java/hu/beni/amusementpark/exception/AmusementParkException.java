@@ -2,7 +2,9 @@ package hu.beni.amusementpark.exception;
 
 public class AmusementParkException extends RuntimeException {
 
-    public AmusementParkException(String message) {
+    private static final long serialVersionUID = 9136108464735214111L;
+
+	public AmusementParkException(String message) {
         super(message);
     }
 
