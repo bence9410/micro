@@ -53,9 +53,8 @@ public class VisitorController {
     }
     
     @PutMapping("amusementPark/{amusementParkId}/visitor/{visitorId}/enterPark")
-    public Resource<Visitor> enterPark(@PathVariable Long amusementParkId, @PathVariable Long visitorId, 
-    		@RequestBody Integer spendingMoney) {
-        return createResourceForRestVisitor(amusementParkId, visitorService.enterPark(amusementParkId, visitorId, spendingMoney));
+    public Resource<Visitor> enterPark(@PathVariable Long amusementParkId, @PathVariable Long visitorId) {
+        return createResourceForRestVisitor(amusementParkId, visitorService.enterPark(amusementParkId, visitorId));
     }
 
     @PutMapping("amusementPark/{amusementParkId}/visitor/{visitorId}/leavePark")
@@ -78,7 +77,7 @@ public class VisitorController {
     
     private Resource<Visitor> createResourceForNotInParkVisitor(Visitor visitor){
     	Resource<Visitor> visitorResource = createResource(visitor);
-    	visitorResource.add(linkTo(methodOn(getClass()).enterPark(null, visitor.getId(), null)).withRel(VISITOR_ENTER_PARK));
+    	visitorResource.add(linkTo(methodOn(getClass()).enterPark(null, visitor.getId())).withRel(VISITOR_ENTER_PARK));
     	return visitorResource;
     }
 

@@ -41,7 +41,7 @@ public class GuestBookServiceIntegrationTests {
 		Visitor visitor = createVisitor();
 		Long visitorId = visitorService.signUp(visitor).getId();
 		
-		visitorService.enterPark(amusementParkId, visitorId, 200);
+		visitorService.enterPark(amusementParkId, visitorId);
 
 		String textOfRegistry = OPINION_ON_THE_PARK;
 

@@ -47,17 +47,18 @@ public class VisitorServiceImpl implements VisitorService{
     }	
 
     @Override
-    public Visitor enterPark(Long amusementParkId, Long visitorId, Integer spendingMoney) {
+    public Visitor enterPark(Long amusementParkId, Long visitorId) {
         AmusementPark amusementPark = amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId);
         exceptionIfNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
         
+        Visitor visitor = visitorRepository.findById(visitorId).orElseGet(() -> null);
+        exceptionIfNull(visitor, VISITOR_NOT_SIGNED_UP);
+        
         Integer entranceFee = amusementPark.getEntranceFee();
+        Integer spendingMoney = visitor.getSpendingMoney();
         exceptionIfFirstLessThanSecond(spendingMoney, entranceFee, NOT_ENOUGH_MONEY);
         
         exceptionIfNotZero(visitorRepository.countByVisitorIdWhereAmusementParkIsNotNull(visitorId), VISITOR_IS_IN_A_PARK);
-        
-        Visitor visitor = visitorRepository.findById(visitorId).orElseGet(() -> null);
-        exceptionIfNull(visitor, VISITOR_NOT_SIGNED_UP);
         
         Optional.of(amusementParkRepository.countKnownVisitor(amusementParkId, visitorId)).filter(count -> count == 0)
         	.ifPresent(count -> amusementParkRepository.addKnownVisitor(amusementParkId, visitorId));

@@ -12,7 +12,7 @@ public interface VisitorService {
 	
 	Visitor leavePark(Long amusementParkId, Long visitorId);
 
-	Visitor enterPark(Long amusementParkId, Long visitorId, Integer spendingMoney);
+	Visitor enterPark(Long amusementParkId, Long visitorId);
 
 	Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId);
 

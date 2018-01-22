@@ -54,9 +54,9 @@ public class VisitorServiceIntegrationTests {
         assertNotNull(visitorId);
         assertTrue(visitor.getDateOfRegistrate().isBefore(LocalDateTime.now()));
         
-        Integer spendingMoney = 200;
+        Integer spendingMoney = visitor.getSpendingMoney();
         
-        visitorService.enterPark(amusementParkId, visitorId, spendingMoney);
+        visitorService.enterPark(amusementParkId, visitorId);
         capital += entranceFee;
         spendingMoney -= entranceFee;
         assertEquals(capital, amusementParkService.findOne(amusementParkId).getCapital());

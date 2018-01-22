@@ -2,7 +2,7 @@ package hu.beni.amusementpark.controller;
 
 import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.MACHINE;
 import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.VISITOR_ENTER_PARK;
-import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.VISITOR_REGISTRATE;
+import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.VISITOR_SIGN_UP;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
@@ -58,7 +58,7 @@ public class AmusementParkController {
     private Resource<AmusementPark> createResource(AmusementPark amusementPark) {
         return new Resource<>(amusementPark, linkTo(methodOn(getClass()).findOne(amusementPark.getId())).withSelfRel(),
                 linkTo(methodOn(MachineController.class).addMachine(amusementPark.getId(), null)).withRel(MACHINE),
-                linkTo(methodOn(VisitorController.class).signUp(null, null)).withRel(VISITOR_REGISTRATE),
-                linkTo(methodOn(VisitorController.class).enterPark(amusementPark.getId(), null, null)).withRel(VISITOR_ENTER_PARK));
+                linkTo(methodOn(VisitorController.class).signUp(null, null)).withRel(VISITOR_SIGN_UP),
+                linkTo(methodOn(VisitorController.class).enterPark(amusementPark.getId(), null)).withRel(VISITOR_ENTER_PARK));
     }
 }

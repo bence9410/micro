@@ -4,7 +4,7 @@ public class HATEOASLinkNameConstants {
 	
 	public static final String MACHINE = "machine";
 	public static final String VISITOR_ENTER_PARK = "visitorEnterPark";
-	public static final String VISITOR_REGISTRATE = "visitorRegistrate";
+	public static final String VISITOR_SIGN_UP = "visitorSignUp";
 	public static final String GET_ON_MACHINE = "getOnMachine";
 	public static final String VISITOR_LEAVE_PARK = "leavePark";
 	public static final String VISITOR_GET_ON_MACHINE = "getOnMachine";

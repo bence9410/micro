@@ -121,7 +121,7 @@ public class PerformanceTest {
 
 	private void enterPark(Long amusementParkId, List<Long> visitorIds) {
 		statistics.start();
-		visitorIds.forEach(visitorId -> visitorService.enterPark(amusementParkId, visitorId, 10000));
+		//visitorIds.forEach(visitorId -> visitorService.enterPark(amusementParkId, visitorId, 10000));
 		statistics.addEnterParkTime();
 	}
 	

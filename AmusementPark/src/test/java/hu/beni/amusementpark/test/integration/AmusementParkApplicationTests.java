@@ -69,7 +69,7 @@ public class AmusementParkApplicationTests {
         Resource<Machine> machineResource = postMachine(amusementParkResource.getLink(MACHINE).getHref());
         
         //visitor registrate
-        Resource<Visitor> visitorResource = postVisitor(amusementParkResource.getLink(VISITOR_REGISTRATE).getHref());
+        Resource<Visitor> visitorResource = postVisitor(amusementParkResource.getLink(VISITOR_SIGN_UP).getHref());
         
         //visitor enterPark
         visitorResource = restTemplate.exchange(visitorResource.getLink(VISITOR_ENTER_PARK).getHref(), HttpMethod.PUT, createHttpEntityWithSessionIdHeaders(200), visitorType(), amusementParkResource.getContent().getId()).getBody();
@@ -164,7 +164,7 @@ public class AmusementParkApplicationTests {
         assertEquals(4, amusementParkResource.getLinks().size());
         assertTrue(amusementParkResource.getId().getHref().endsWith(amusementParkResource.getContent().getId().toString()));
         assertNotNull(amusementParkResource.getLink(MACHINE));
-        assertNotNull(amusementParkResource.getLink(VISITOR_REGISTRATE));
+        assertNotNull(amusementParkResource.getLink(VISITOR_SIGN_UP));
         assertNotNull(amusementParkResource.getLink(VISITOR_ENTER_PARK));
 
         return amusementParkResource;
