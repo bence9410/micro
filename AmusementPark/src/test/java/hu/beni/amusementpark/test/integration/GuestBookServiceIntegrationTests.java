@@ -10,6 +10,7 @@ import static org.junit.Assert.*;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.*;
@@ -50,7 +51,7 @@ public class GuestBookServiceIntegrationTests {
 		GuestBookRegistry guestBookRegistry = guestBookService.findOne(guestBookRegistryId);
 		
 		assertEquals(textOfRegistry, guestBookRegistry.getTextOfRegistry());
-		assertTrue(guestBookRegistry.getDateOfRegistry().before(Timestamp.from(Instant.now())));
+		assertTrue(guestBookRegistry.getDateOfRegistry().isBefore(LocalDateTime.now()));
 		
 		visitorService.leavePark(amusementParkId, visitorId);
 		

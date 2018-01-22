@@ -1,7 +1,7 @@
 package hu.beni.amusementpark.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -39,7 +39,7 @@ public class GuestBookRegistry implements Serializable{
 	private String textOfRegistry;
 	
 	@CreationTimestamp
-	private Timestamp dateOfRegistry;
+	private LocalDateTime dateOfRegistry;
 	
 	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)

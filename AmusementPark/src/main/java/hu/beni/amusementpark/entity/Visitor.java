@@ -1,8 +1,8 @@
 package hu.beni.amusementpark.entity;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -48,7 +48,7 @@ public class Visitor implements Serializable {
     private LocalDate dateOfBirth;
 
     @CreationTimestamp
-    private Timestamp dateOfRegistrate;   
+    private LocalDateTime dateOfRegistrate;   
     
 	private Integer spendingMoney;
 	

@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,7 +54,7 @@ public class VisitorServiceIntegrationTests {
         visitor = visitorService.signUp(visitor);
         Long visitorId = visitor.getId();
         assertNotNull(visitorId);
-        assertTrue(visitor.getDateOfRegistrate().before(Timestamp.from(Instant.now())));
+        assertTrue(visitor.getDateOfRegistrate().isBefore(LocalDateTime.now()));
         
         Integer spendingMoney = 200;
         
