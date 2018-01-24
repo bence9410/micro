@@ -59,6 +59,7 @@ public class AmusementParkApplicationTests {
 
     @Test
     public void positiveTest() {
+    	
     	loginAsAdminAndSetSessionIdInHeaders();
     	    	
         //create AmusementPark
@@ -95,6 +96,8 @@ public class AmusementParkApplicationTests {
         		assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
         		assertEquals(NO_ARCHIVE_SEND_TYPE, exception.getResponseBodyAsString());
         	});
+        
+        logout();
     }
 
     @Test
@@ -120,6 +123,8 @@ public class AmusementParkApplicationTests {
             assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
             assertEquals(MACHINE_IS_TOO_EXPENSIVE, exception.getResponseBodyAsString());
         });
+        
+        logout();
     }
         
     private void loginAsAdminAndSetSessionIdInHeaders() {
@@ -142,6 +147,24 @@ public class AmusementParkApplicationTests {
     	String cookie = response.getHeaders().getFirst("Set-Cookie");
     	
     	httpHeaders.add("Cookie", cookie.substring(0, cookie.indexOf(';')));
+    }
+    
+    private void logout() {
+    	ResponseEntity<String> response = restTemplate.exchange(getAppUrl() + "/logout", HttpMethod.POST,
+    			createHttpEntityWithSessionIdHeaders(), String.class);
+    	
+    	assertEquals(HttpStatus.FOUND, response.getStatusCode());
+    	assertTrue(response.getHeaders().getLocation().toString().contains("login?logout"));
+    	
+    	response = restTemplate.exchange(getAppUrl() + "/amusementPark", HttpMethod.POST, createHttpEntityWithSessionIdHeaders(), String.class);
+        		
+    	assertEquals(HttpStatus.FOUND, response.getStatusCode());
+    	assertTrue(response.getHeaders().getLocation().toString().endsWith("login"));
+    	
+    	response = restTemplate.exchange(getAppUrl() + "/amusementPark", HttpMethod.GET, createHttpEntityWithSessionIdHeaders(), String.class);
+    
+    	assertEquals(HttpStatus.OK, response.getStatusCode());
+    	assertTrue(response.getBody().length() > 450);
     }
     
     private <T> HttpEntity<T> createHttpEntityWithSessionIdHeaders(T body) {
