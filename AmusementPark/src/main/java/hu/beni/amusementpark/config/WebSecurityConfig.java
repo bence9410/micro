@@ -48,8 +48,28 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
-                .withUser("admin").password("pass").roles("ADMIN").and()
-                .withUser("user").password("pass").roles("USER");
+        		.withUser("admin").password("pass").roles("ADMIN").and()
+        		.withUser("user").password("pass").roles("USER").and()
+                .withUser("admin0").password("pass").roles("ADMIN").and()
+                .withUser("admin1").password("pass").roles("ADMIN").and()
+                .withUser("admin2").password("pass").roles("ADMIN").and()
+                .withUser("admin3").password("pass").roles("ADMIN").and()
+                .withUser("admin4").password("pass").roles("ADMIN").and()
+                .withUser("admin5").password("pass").roles("ADMIN").and()
+                .withUser("admin6").password("pass").roles("ADMIN").and()
+                .withUser("admin7").password("pass").roles("ADMIN").and()
+                .withUser("admin8").password("pass").roles("ADMIN").and()
+                .withUser("admin9").password("pass").roles("ADMIN").and()
+                .withUser("user0").password("pass").roles("USER").and()
+                .withUser("user1").password("pass").roles("USER").and()
+                .withUser("user2").password("pass").roles("USER").and()
+                .withUser("user3").password("pass").roles("USER").and()
+                .withUser("user4").password("pass").roles("USER").and()
+                .withUser("user5").password("pass").roles("USER").and()
+                .withUser("user6").password("pass").roles("USER").and()
+                .withUser("user7").password("pass").roles("USER").and()
+                .withUser("user8").password("pass").roles("USER").and()
+                .withUser("user9").password("pass").roles("USER").and();
     }
     
     @Component
