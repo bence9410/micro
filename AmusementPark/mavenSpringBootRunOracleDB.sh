@@ -1,0 +1,1 @@
+mvn spring-boot:run -Drun.profiles=oracleDB

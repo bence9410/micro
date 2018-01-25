@@ -71,6 +71,11 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+          			<profiles>
+            			<profile>oracleDB</profile>
+          			</profiles>
+        		</configuration>
 			</plugin>
 			<plugin>
 				<groupId>com.spotify</groupId>
