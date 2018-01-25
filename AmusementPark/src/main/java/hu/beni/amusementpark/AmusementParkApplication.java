@@ -5,6 +5,8 @@ import java.util.stream.IntStream;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
+import org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 
@@ -15,7 +17,7 @@ import hu.beni.amusementpark.enums.MachineType;
 import hu.beni.amusementpark.service.AmusementParkService;
 import hu.beni.amusementpark.service.MachineService;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {RabbitAutoConfiguration.class, JmxAutoConfiguration.class})
 public class AmusementParkApplication {
 
 	public static void main(String[] args) {
@@ -23,7 +25,7 @@ public class AmusementParkApplication {
 	}
 	
 	@Bean
-	@Profile("!oracleDB")
+	@Profile("default")
 	public CommandLineRunner createSamleData(AmusementParkService amusementParkService, MachineService machineService) {
 		return args -> IntStream.range(0, 10)
 				.mapToObj(i -> amusementParkService.save(createAmusementParkWithAddress()).getId())
