@@ -69,7 +69,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("user6").password("pass").roles("USER").and()
                 .withUser("user7").password("pass").roles("USER").and()
                 .withUser("user8").password("pass").roles("USER").and()
-                .withUser("user9").password("pass").roles("USER").and();
+                .withUser("user9").password("pass").roles("USER").and()
+                .withUser("user10").password("pass").roles("USER").and()
+                .withUser("user11").password("pass").roles("USER").and()
+                .withUser("user12").password("pass").roles("USER").and()
+                .withUser("user13").password("pass").roles("USER").and()
+                .withUser("user14").password("pass").roles("USER").and()
+                .withUser("user15").password("pass").roles("USER").and()
+                .withUser("user16").password("pass").roles("USER").and()
+                .withUser("user17").password("pass").roles("USER").and()
+                .withUser("user18").password("pass").roles("USER").and()
+                .withUser("user19").password("pass").roles("USER");
     }
     
     @Component
