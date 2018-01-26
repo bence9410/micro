@@ -9,10 +9,8 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_ARCHIVE_S
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import static hu.beni.amusementpark.constants.RabbitMQConstants.RABBIT_MQ_PROFILE_NAME;
-
 @Component
-@Profile("!"+RABBIT_MQ_PROFILE_NAME)
+@Profile("default")
 public class DefaultArchiveSender implements ArchiveSender{
 	
 	@Override
