@@ -9,6 +9,7 @@ import static hu.beni.amusementpark.exception.ExceptionUtil.exceptionIfFirstLess
 import static hu.beni.amusementpark.exception.ExceptionUtil.exceptionIfNotZero;
 import static hu.beni.amusementpark.exception.ExceptionUtil.exceptionIfNull;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -55,6 +56,12 @@ public class MachineServiceImpl implements MachineService {
     public Machine findOne(Long machineId) {
         return machineRepository.findById(machineId).orElseGet(() -> null);
     }
+    
+    @Override
+	public List<Machine> findAllByAmusementParkId(Long amusementParkId) {
+		// TODO write tests;
+		return machineRepository.findAllByAmusementParkId(amusementParkId);
+	}
 
     @Override
     public void removeMachine(Long amusementParkId, Long machineId) {

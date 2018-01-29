@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import hu.beni.amusementpark.entity.AmusementPark;
@@ -42,6 +45,13 @@ public class AmusementParkController {
     @GetMapping
     public List<Resource<AmusementPark>> findAll(){
     	return amusementParkService.findAll().stream().map(this::createResource).collect(Collectors.toList());
+    }
+    
+    @GetMapping("/paged")
+    public List<Resource<AmusementPark>> findAllPaged(@RequestParam(name = "page") int page, 
+    		@RequestParam(name = "size") int size, @RequestParam(name = "sort", defaultValue = "id") String sort){
+    	return amusementParkService.findAll(PageRequest.of(page, size, Sort.by(sort)))
+    			.stream().map(this::createResource).collect(Collectors.toList());
     }
 
     @GetMapping("/{amusementParkId}")

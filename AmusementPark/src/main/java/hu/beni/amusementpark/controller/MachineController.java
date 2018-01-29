@@ -12,6 +12,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.Resource;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +36,12 @@ public class MachineController {
     @GetMapping("/{machineId}")
     public Resource<Machine> findOne(@PathVariable Long amusementParkId, @PathVariable Long machineId) {
         return createResource(amusementParkId, machineService.findOne(machineId));
+    }
+    
+    @GetMapping
+    public List<Resource<Machine>> findAllByAmusementParkId(@PathVariable Long amusementParkId){
+    	return machineService.findAllByAmusementParkId(amusementParkId).stream()
+    			.map(machine -> createResource(amusementParkId, machine)).collect(Collectors.toList());
     }
 
     @DeleteMapping("/{machineId}")
