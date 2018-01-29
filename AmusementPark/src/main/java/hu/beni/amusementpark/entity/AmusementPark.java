@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -62,7 +63,7 @@ public class AmusementPark implements Serializable {
     @Valid
     @NotNull
     @PrimaryKeyJoinColumn
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
     private Address address;
 
     @OneToMany(mappedBy = "amusementPark", cascade = CascadeType.REMOVE)

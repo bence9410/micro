@@ -11,7 +11,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -29,6 +28,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
@@ -44,6 +44,9 @@ public class AmusementParkServiceIntegrationTests {
 
 	@Autowired
 	private Environment environment;
+	
+	@Autowired
+	private TransactionTemplate transactionTemplate;
 	
 	@Autowired
 	private AmusementParkService amusementParkService;
@@ -125,17 +128,22 @@ public class AmusementParkServiceIntegrationTests {
 		assertNotNull(amusementPark);
 		assertTrue(amusementPark.getName().startsWith(name+"1"));
 		
-		Specification<AmusementPark> nameLikeAndCapitalGreaterThan = Specification
+		Specification<AmusementPark> nameLikeAndAddressCityLikeAndCapitalGreaterThan = Specification
 				.where(fieldLikeParam(AmusementPark.class, "name", name + "%"))
 				.and(fieldLikeParam(AmusementPark.class, "address.city", name + "%"))
 				.and(fieldGreaterThanParam(AmusementPark.class, "capital", capital));
 
-		List<AmusementPark> amusementParks = amusementParkService.findAll(nameLikeAndCapitalGreaterThan);
-		assertFalse(amusementParks.isEmpty());
-
-		for (AmusementPark a : amusementParks) {
-			assertTrue(a.getName().startsWith(name) && a.getCapital() > capital);
-		}
+		transactionTemplate.execute(status -> {			
+			List<AmusementPark> amusementParks = amusementParkService.findAll(nameLikeAndAddressCityLikeAndCapitalGreaterThan);
+			assertFalse(amusementParks.isEmpty());
+	
+			for (AmusementPark a : amusementParks) {
+				assertTrue(a.getName().startsWith(name) && 
+						a.getAddress().getCity().startsWith(name) && 
+						a.getCapital() > capital);
+			}
+			return null;
+		});
 		
 		amusementParkRepository.deleteAll();
 	}
@@ -153,19 +161,23 @@ public class AmusementParkServiceIntegrationTests {
 	}
 
 	private <T> Specification<T> fieldLikeParam(Class<T> clazz, String fieldName, String param) {
-		return (Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> cb.like(getPathIfFieldNameContainsDot(root, fieldName), param);
+		return (Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> cb.like(createPath(root, fieldName), param);
 	}
 
 	private <T> Specification<T> fieldGreaterThanParam(Class<T> clazz, String fieldName, int param) {
-		return (Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> cb.greaterThan(getPathIfFieldNameContainsDot(root, fieldName), param);
+		return (Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> cb.greaterThan(createPath(root, fieldName), param);
 	}
 	
-	private <T,Y> Path<Y> getPathIfFieldNameContainsDot(Root<T> root, String fieldName){
-		String[] parts = fieldName.split("\\.");
-		Stream.of(parts).forEach(s -> System.out.println(s));
-		Path<Y> path = root.get(parts[0]);
-		for(int i = 1; i < parts.length; i++) {
-			path = path.get(parts[i]);
+	private <T,Y> Path<Y> createPath(Root<T> root, String fieldName){
+		Path<Y> path = null;
+		if (fieldName.indexOf('.') == -1) {
+			path = root.get(fieldName);
+		} else {
+			String[] parts = fieldName.split("\\.");
+			path = root.get(parts[0]);
+			for(int i = 1; i < parts.length; i++) {
+				path = path.get(parts[i]);
+			}
 		}
 		return path;
 	}
