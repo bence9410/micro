@@ -73,7 +73,7 @@ public class AmusementParkApplicationTests {
         //add Machine
         Resource<Machine> machineResource = postMachine(amusementParkResource.getLink(MACHINE).getHref());
         
-        //visitor registrate
+        //visitor signUp
         Resource<Visitor> visitorResource = postVisitor(amusementParkResource.getLink(VISITOR_SIGN_UP).getHref());
         
         //visitor enterPark
