@@ -17,6 +17,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.env.Environment;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpEntity;
@@ -35,9 +36,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = "spring.profiles.active=oracleDB")
 public class AmusementParkApplicationTests {
 
+	@Autowired
+	private Environment environment;
+	
     @Autowired
     private RestTemplate restTemplate;
 
@@ -91,12 +95,16 @@ public class AmusementParkApplicationTests {
         restTemplate.exchange(machineResource.getId().getHref(), HttpMethod.DELETE, createHttpEntityWithSessionIdHeaders(), Void.class);
         
         //delete Park
-        assertThrows(() -> restTemplate.exchange(amusementParkUrl, HttpMethod.DELETE, createHttpEntityWithSessionIdHeaders(), Void.class),
-        		HttpClientErrorException.class, exception -> {
-        		assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
-        		assertEquals(NO_ARCHIVE_SEND_TYPE, exception.getResponseBodyAsString());
-        	});
-        
+        if (environment.getActiveProfiles().length == 0) {
+        	assertThrows(() -> deleteAmusementPark(amusementParkUrl),
+            		HttpClientErrorException.class, exception -> {
+            		assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
+            		assertEquals(NO_ARCHIVE_SEND_TYPE, exception.getResponseBodyAsString());
+            	});
+		} else {
+			deleteAmusementPark(amusementParkUrl);
+		}
+		
         logout();
     }
 
@@ -217,6 +225,10 @@ public class AmusementParkApplicationTests {
         assertNotNull(visitorResource.getLink(VISITOR_ENTER_PARK));
 
         return visitorResource;
+    }
+    
+    private void deleteAmusementPark(String amusementParkUrl) {
+    	restTemplate.exchange(amusementParkUrl, HttpMethod.DELETE, createHttpEntityWithSessionIdHeaders(), Void.class);
     }
 
     private ParameterizedTypeReference<Resource<AmusementPark>> amusementParkType() {

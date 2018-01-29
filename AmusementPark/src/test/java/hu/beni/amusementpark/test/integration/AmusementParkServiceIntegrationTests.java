@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +42,9 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_ARCHIVE_S
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class AmusementParkServiceIntegrationTests {
 
+	@Autowired
+	private Environment environment;
+	
 	@Autowired
 	private AmusementParkService amusementParkService;
 
@@ -66,9 +70,11 @@ public class AmusementParkServiceIntegrationTests {
 		AmusementPark readAmusementPark = amusementParkService.findOne(id);
 		assertEquals(amusementPark, readAmusementPark);
 
-		assertThatThrownBy(() -> amusementParkService.delete(id))
-			.isInstanceOf(AmusementParkException.class).hasMessage(NO_ARCHIVE_SEND_TYPE);
-		assertNotNull(amusementParkService.findOne(id));
+		if (environment.getActiveProfiles().length == 0) {
+			assertThatThrownBy(() -> amusementParkService.delete(id))
+				.isInstanceOf(AmusementParkException.class).hasMessage(NO_ARCHIVE_SEND_TYPE);
+			assertNotNull(amusementParkService.findOne(id));
+		}
 		
 		amusementParkRepository.deleteById(id);
 		assertNull(amusementParkService.findOne(id));
