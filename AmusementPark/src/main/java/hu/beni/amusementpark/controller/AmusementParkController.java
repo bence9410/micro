@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.Resource;
@@ -48,10 +49,9 @@ public class AmusementParkController {
     }
     
     @GetMapping("/paged")
-    public List<Resource<AmusementPark>> findAllPaged(@RequestParam(name = "page") int page, 
-    		@RequestParam(name = "size") int size, @RequestParam(name = "sort", defaultValue = "id") String sort){
-    	return amusementParkService.findAll(PageRequest.of(page, size, Sort.by(sort)))
-    			.stream().map(this::createResource).collect(Collectors.toList());
+    public Page<Resource<AmusementPark>> findAllPaged(@RequestParam(name = "page") int page, 
+    		@RequestParam(name = "size") int size, @RequestParam(name = "sort", defaultValue = "id") String sort){	
+    	return amusementParkService.findAll(PageRequest.of(page, size, Sort.by(sort))).map(this::createResource);
     }
 
     @GetMapping("/{amusementParkId}")

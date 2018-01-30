@@ -25,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import hu.beni.amusementpark.archive.ArchiveSender;
+import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
@@ -140,10 +141,11 @@ public class AmusementParkServiceUnitTests {
     @Test
     public void findAllByPageable() {
     	Page<AmusementPark> page = new PageImpl<>(Arrays.asList(
-    			AmusementPark.builder().build(), AmusementPark.builder().build()));
+    			AmusementPark.builder().address(Address.builder().build()).build(),
+    			AmusementPark.builder().address(Address.builder().build()).build()));
     	Pageable pageable = PageRequest.of(0, 10);
     	
-    	when(amusementParkService.findAll(pageable)).thenReturn(page);
+    	when(amusementParkRepository.findAll(pageable)).thenReturn(page);
     	
     	assertEquals(page, amusementParkService.findAll(pageable));
     	

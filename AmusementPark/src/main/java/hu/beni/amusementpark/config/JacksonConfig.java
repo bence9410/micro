@@ -12,7 +12,7 @@ public class JacksonConfig {
 
     @Bean
     public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {
-        return builder.createXmlMapper(false).build()
+    	return builder.createXmlMapper(false).failOnEmptyBeans(false).build()
         		.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     }
 }
