@@ -60,7 +60,9 @@ public class AmusementParkServiceImpl implements AmusementParkService {
     
     @Override
     public Page<AmusementPark> findAll(Pageable pageable){
-    	return amusementParkRepository.findAll(pageable);
+    	Page<AmusementPark> page = amusementParkRepository.findAll(pageable);
+    	page.getContent().stream().forEach(a -> a.getAddress().getCity());
+    	return page;
     }
     
     @Override
