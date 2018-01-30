@@ -112,7 +112,6 @@ public class VisitorServiceImpl implements VisitorService{
     	Visitor visitor = visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
     	exceptionIfNull(visitor, NO_VISITOR_IN_PARK_WITH_ID);
     	visitor.setAmusementPark(null);
-    	visitor.setSpendingMoney(null);
     	visitor.setState(null);
     	return visitorRepository.save(visitor);
     }

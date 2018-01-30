@@ -12,6 +12,7 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_T
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_NOT_SIGNED_UP;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -383,12 +384,17 @@ public class VisitorServiceUnitTests {
     @Test
     public void leaveParkPositive() {
     	Long amusementParkId = 0L;
-    	Visitor visitor = Visitor.builder().id(1L).build();
+    	Visitor visitor = Visitor.builder().id(1L).amusementPark(AmusementPark.builder().build())
+    			.state(VisitorState.REST).spendingMoney(100).build();
         Long visitorId = visitor.getId();
         
         when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId)).thenReturn(visitor);
         
         visitorService.leavePark(amusementParkId, visitorId);
+        
+        assertNull(visitor.getAmusementPark());
+        assertNull(visitor.getState());
+        assertNotNull(visitor.getSpendingMoney());
         
         verify(visitorRepository).findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
         verify(visitorRepository).save(visitor);
