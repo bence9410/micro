@@ -7,6 +7,8 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -115,4 +117,14 @@ public class VisitorServiceImpl implements VisitorService{
     	visitor.setState(null);
     	return visitorRepository.save(visitor);
     }
+
+	@Override
+	public Page<Visitor> findAll(Pageable pageable) {
+		return visitorRepository.findAll(pageable);
+	}
+
+	@Override
+	public void delete(Long visitorId) {
+		visitorRepository.deleteById(visitorId);
+	}
 }

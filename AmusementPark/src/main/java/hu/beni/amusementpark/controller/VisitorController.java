@@ -12,13 +12,19 @@ import java.security.Principal;
 import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.*;
 import hu.beni.amusementpark.service.VisitorService;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,6 +41,17 @@ public class VisitorController {
     public Resource<Visitor> signUp(@RequestBody Visitor visitor, Principal principal){
     	visitor.setUsername(principal.getName());
     	return createResourceForNotInParkVisitor(visitorService.signUp(visitor));
+    }
+    
+    @GetMapping("/visitor")
+    public Page<Resource<Visitor>> findAllPaged(@RequestParam(name = "page") int page, 
+    		@RequestParam(name = "size") int size, @RequestParam(name = "sort", defaultValue = "id") String sort){
+    	return visitorService.findAll(PageRequest.of(page, size, Sort.by(sort))).map(this::createResource);
+    }
+    
+    @DeleteMapping("/visitor/{visitorId}") 
+    public void delete(@PathVariable Long visitorId){
+    	visitorService.delete(visitorId);
     }
 
     @GetMapping("/visitor/{visitorId}")
