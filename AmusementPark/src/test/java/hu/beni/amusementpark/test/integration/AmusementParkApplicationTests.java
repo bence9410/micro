@@ -36,7 +36,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, properties = "spring.profiles.active=oracleDB")
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class AmusementParkApplicationTests {
 
 	@Autowired
