@@ -40,15 +40,16 @@ public class TesterApplicationTests {
 	public static final int NUMBER_OF_ADMINS = 2;
 	public static final int NUMBER_OF_USERS = 5;
 	
-	private static final int EXPECTED_CAPITAL_BEFORE_VISITORS = AMUSEMENT_PARK_CAPITAL - NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK * MACHINE_PRICE;
-	private static final int EXPECTED_CAPITAL_BEFORE_VISITORS_SUM = NUMBER_OF_ADMINS * NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN * EXPECTED_CAPITAL_BEFORE_VISITORS;
-	private static final int MONEY_ONE_VISITOR_SPEND_IN_A_PARK = AMUSEMENT_PARK_ENTRANCE_FEE + NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK * MACHINE_TICKET_PRICE;
+	private static final int EXPECTED_CAPITAL_BEFORE_VISITORS_SUM;
+	private static final int EXPECTED_CAPITAL_AFTER_VISITORS_SUM;
+	private static final int EXPECTED_SPENDING_MONEY_SUM;
 	
-	private static final int EXPECTED_CAPITAL_AFTER_VISITORS = NUMBER_OF_USERS * MONEY_ONE_VISITOR_SPEND_IN_A_PARK;
-	private static final int EXPECTED_CAPITAL_AFTER_VISITORS_SUM = EXPECTED_CAPITAL_BEFORE_VISITORS_SUM + EXPECTED_CAPITAL_AFTER_VISITORS * NUMBER_OF_ADMINS * NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN;
-	
-	private static final int EXPECTED_SPENDING_MONEY = VISITOR_SPENDING_MONEY - (MONEY_ONE_VISITOR_SPEND_IN_A_PARK * NUMBER_OF_ADMINS * NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN);
-	private static final int EXPECTED_SPENDING_MONEY_SUM = EXPECTED_SPENDING_MONEY * NUMBER_OF_USERS;
+	static {
+		EXPECTED_CAPITAL_BEFORE_VISITORS_SUM = NUMBER_OF_ADMINS * NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN * (AMUSEMENT_PARK_CAPITAL - NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK * MACHINE_PRICE);
+		int moneyOneVisitorSpendInAPark = AMUSEMENT_PARK_ENTRANCE_FEE + NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK * MACHINE_TICKET_PRICE;
+		EXPECTED_CAPITAL_AFTER_VISITORS_SUM = EXPECTED_CAPITAL_BEFORE_VISITORS_SUM + NUMBER_OF_USERS * moneyOneVisitorSpendInAPark * NUMBER_OF_ADMINS * NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN;
+		EXPECTED_SPENDING_MONEY_SUM = (VISITOR_SPENDING_MONEY - (moneyOneVisitorSpendInAPark * NUMBER_OF_ADMINS * NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN)) * NUMBER_OF_USERS;
+	}
 	
 	@Autowired
 	public AsyncTestSuite async;
@@ -84,55 +85,87 @@ public class TesterApplicationTests {
 	@Test
 	public void test() {
 		
-		log.info("deleteParksAndVisitors");
-		CompletableFuture.allOf(async.deleteAllPark(admins.get(0))).join();
-		CompletableFuture.allOf(async.deleteAllVisitor(admins.get(0))).join();
+		deleteParksAndVisitors();
 		
-		log.info("createAmusementParksWithMachines");
-		timeTo.setCreateAmusementParksWithMachines(executeAsyncAndGet(admins, async::createAmusementParksWithMachines));
+		createAmusementParksWithMachines();
 		
-		log.info("sumAmusementParksCapitalBeforeVisitorStuff");
-		List<SumAndTime> list = executeAsyncAndGet(admins, async::sumAmusementParksCapital);
-		timeTo.setFindAllParksPagedBeforeVisitorStuff(map(list, t -> t.getTime()));	
-		if (mapToPrimitiveLongAllEquals(list, l -> l.getSum(), EXPECTED_CAPITAL_BEFORE_VISITORS_SUM)) {
-			log.info("OK");
-		} else {
-			log.info("Problem with capital sum.");
-		}
+		sumAmusementParksCapitalBeforeVisitorStuff();
 				
-		log.info("visitSomeStuffInEveryPark");
-		List<Long> wholeTimes = new LinkedList<>();
-		List<Long> oneParkTimes = new LinkedList<>();
-		executeAsyncAndGet(users, async::visitSomeStuffInEveryPark)
-			.forEach(r -> {
-				wholeTimes.add(r.getWholeTime());
-				oneParkTimes.addAll(r.getOneParkTimes());
-			});
-		timeTo.setWholeVisitorStuff(wholeTimes);
-		timeTo.setOneParkVisitorStuff(oneParkTimes);
-
-		log.info("sumAmusementParksCapitalAfterVisitorStuff");
-		list = executeAsyncAndGet(admins, async::sumAmusementParksCapital);
-		timeTo.setFindAllParksPagedAfterVisitorStuff(map(list, t -> t.getTime()));
-		if (mapToPrimitiveLongAllEquals(list, l -> l.getSum(), EXPECTED_CAPITAL_AFTER_VISITORS_SUM)) {
-			log.info("OK");
-		} else {
-			log.info("Problem with capital sum.");
-		}
+		visitorsVisitSomeStuffInEveryPark();
 		
-		log.info("sumVisitorsSpendingMoney");
-		list = executeAsyncAndGet(admins, async::sumVisitorsSpendingMoney);
-		timeTo.setFindAllVisitorsPaged(list.stream().map(t -> t.getTime()).collect(toList()));
-		if (mapToPrimitiveLongAllEquals(list, l -> l.getSum(), EXPECTED_SPENDING_MONEY_SUM)) {
-			log.info("OK");
-		} else {
-			log.info("Problem with spending money sum.");
-		}
+		sumAmusementParksCapitalAfterVisitorStuff();
+		
+		sumVisitorsSpendingMoney();
+		
+		deleteParksAndVisitors();
+		
+	}
 	
+	private void deleteParksAndVisitors() {
 		log.info("deleteParksAndVisitors");
 		timeTo.setDeleteParks(extract(async.deleteAllPark(admins.get(0))));
 		timeTo.setDeleteVisitors(extract(async.deleteAllVisitor(admins.get(0))));
-		
+	}
+	
+	private void createAmusementParksWithMachines() {
+		log.info("createAmusementParksWithMachines");
+		timeTo.setCreateAmusementParksWithMachines(executeAsyncAndGet(admins, async::createAmusementParksWithMachines));
+	}
+	
+	private void sumAmusementParksCapitalBeforeVisitorStuff() {
+		log.info("sumAmusementParksCapitalBeforeVisitorStuff");
+		timeTo.setFindAllParksPagedBeforeVisitorStuff(
+				map(executeAsyncAndGet(admins, async::sumAmusementParksCapital), 
+						this::checkCapitalSumBeforeVisitorsGetTime));
+	}
+	
+	private void visitorsVisitSomeStuffInEveryPark() {
+		log.info("visitorsVisitSomeStuffInEveryPark");
+		List<Long> wholeTimes = new LinkedList<>();
+		List<Long> oneParkTimes = new LinkedList<>();
+		executeAsyncAndGet(users, async::visitSomeStuffInEveryPark)
+			.forEach(VisitorStuffTime -> {
+				wholeTimes.add(VisitorStuffTime.getWholeTime());
+				oneParkTimes.addAll(VisitorStuffTime.getOneParkTimes());
+			});
+		timeTo.setWholeVisitorStuff(wholeTimes);
+		timeTo.setOneParkVisitorStuff(oneParkTimes);
+	}
+	
+	private void sumAmusementParksCapitalAfterVisitorStuff() {
+		log.info("sumAmusementParksCapitalAfterVisitorStuff");
+		timeTo.setFindAllParksPagedAfterVisitorStuff(
+				map(executeAsyncAndGet(admins, async::sumAmusementParksCapital),
+						this::checkCapitalSumAfterVisitorsGetTime));
+	}
+	
+	private void sumVisitorsSpendingMoney() {
+		log.info("sumVisitorsSpendingMoney");
+		timeTo.setFindAllVisitorsPaged(
+				map(executeAsyncAndGet(admins, async::sumVisitorsSpendingMoney),
+						this::checkSpendingMoneySunGetTime));
+	}
+	
+	private Long checkCapitalSumBeforeVisitorsGetTime(SumAndTime sumAndTime) {
+		return checkSumAndReturnTime(sumAndTime, EXPECTED_CAPITAL_BEFORE_VISITORS_SUM,
+				"Problem with capital sum before visitors!");
+	}
+
+	private Long checkCapitalSumAfterVisitorsGetTime(SumAndTime sumAndTime) {
+		return checkSumAndReturnTime(sumAndTime, EXPECTED_CAPITAL_AFTER_VISITORS_SUM,
+				"Problem with capital sum after visitors!");
+	}
+	
+	private Long checkSpendingMoneySunGetTime(SumAndTime sumAndTime) {
+		return checkSumAndReturnTime(sumAndTime, EXPECTED_SPENDING_MONEY_SUM,
+				"Problem with spending money sum!");
+	}
+	
+	private Long checkSumAndReturnTime(SumAndTime sumAndTime, long expectedSum, String errorMessage) {
+		if (sumAndTime.getSum() != expectedSum) {
+			throw new RuntimeException(errorMessage);
+		}
+		return sumAndTime.getTime();
 	}
 	
 	private <T, R> List<R> executeAsyncAndGet(List<T> list, Function<T, CompletableFuture<R>> function) {
@@ -145,10 +178,6 @@ public class TesterApplicationTests {
 	
 	private <T, R> List<R> map(List<T> list, Function<T, R> function){
 		return list.stream().map(function).collect(toList());
-	}
-	
-	private <T> boolean mapToPrimitiveLongAllEquals(List<T> list, Function<T, Long> function, long expectedValue) {
-		return list.stream().map(function).mapToLong(Long::valueOf).allMatch(actual -> actual == expectedValue);
 	}
 	
 	private String createAdminUsername(int usernameIndex){
