@@ -65,10 +65,10 @@ public class AmusementParkClient {
 				createEntityWithHeaders(headers), String.class, amusementParkId);
 	}
 	
-	public Long postAmusementParkAndGetId(HttpHeaders headers) {
+	public Resource<AmusementParkDTO> postAmusementPark(HttpHeaders headers) {
 		return restTemplate.exchange(AMUSEMENT_PARK_URL, HttpMethod.POST, createEntityWithHeaders(
 				ValidDTOFactory.createAmusementParkWithAddress(), headers),
-				AMUSEMENT_PARK_DTO_TYPE).getBody().getContent().getIdentifier();
+				AMUSEMENT_PARK_DTO_TYPE).getBody();
 	}
 	
 	public void postMachine(Long amusementParkId, HttpHeaders headers) {
@@ -76,9 +76,9 @@ public class AmusementParkClient {
 				ValidDTOFactory.createMachine(), headers), MACHINE_DTO_TYPE, amusementParkId);
 	}
 	
-	public Long postVisitorAndGetId(HttpHeaders headers) {
+	public Resource<VisitorDTO> postVisitor(HttpHeaders headers) {
 		return restTemplate.exchange(VISITOR_URL, HttpMethod.POST, createEntityWithHeaders(
-				ValidDTOFactory.createVisitor(), headers), VISITOR_DTO_TYPE).getBody().getContent().getIdentifier();
+				ValidDTOFactory.createVisitor(), headers), VISITOR_DTO_TYPE).getBody();
 	}
 	
 	public Page<Resource<AmusementParkDTO>> getAmusementParks(int page, int size, HttpHeaders headers) {

@@ -15,11 +15,13 @@ import org.springframework.stereotype.Component;
 import hu.beni.tester.client.AmusementParkClient;
 import hu.beni.tester.dto.AmusementParkDTO;
 import hu.beni.tester.dto.DeleteTime;
+import hu.beni.tester.dto.MachineDTO;
 import hu.beni.tester.dto.Page;
 import hu.beni.tester.dto.SumAndTime;
 import hu.beni.tester.dto.VisitorDTO;
 import hu.beni.tester.dto.VisitorStuffTime;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Async
 @Component
@@ -41,29 +43,29 @@ public class AsyncTestSuite {
 		Page<Resource<AmusementParkDTO>> page = null;
 		int pageIndex = 0;
 		List<Long> tenParkTimes = new LinkedList<>();
-		long start = System.currentTimeMillis();
+		long start = now();
 		do {
 			page = client.getAmusementParks(pageIndex, PAGE_SIZE, headers);
-			long tenParkStart = System.currentTimeMillis();
+			long tenParkStart = now();
 			page.getContent().stream()
-				.map(amusementParkResource -> amusementParkResource.getContent().getIdentifier())
+				.map(this::parkToContentId)
 				.forEach(amusementParkId -> client.deletePark(amusementParkId, headers));
-			tenParkTimes.add(System.currentTimeMillis() - tenParkStart);
+			tenParkTimes.add(millisFrom(tenParkStart));
 		}while (!page.isLast());
 		return CompletableFuture.completedFuture(new DeleteTime(System.currentTimeMillis() - start, tenParkTimes));
 	}
 	
 	public CompletableFuture<Long> createAmusementParksWithMachines(HttpHeaders headers) {
-		long start = System.currentTimeMillis();
+		long start = now();
 		IntStream.range(0, NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN)
-			.mapToLong(i -> client.postAmusementParkAndGetId(headers))
+			.mapToLong(i -> parkToContentId(client.postAmusementPark(headers)))
 			.forEach(amusementParkId -> IntStream.range(0, NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK)
 					.forEach(i -> client.postMachine(amusementParkId, headers)));
-		return CompletableFuture.completedFuture(System.currentTimeMillis() - start);
+		return CompletableFuture.completedFuture(millisFrom(start));
 	}
 	
 	public CompletableFuture<SumAndTime> sumAmusementParksCapital(HttpHeaders headers){
-		long start = System.currentTimeMillis();
+		long start = now();
 		Page<Resource<AmusementParkDTO>> page = null;
 		int pageIndex = 0;
 		long sum = 0;
@@ -73,38 +75,41 @@ public class AsyncTestSuite {
 				.mapToInt(amusementParkResource -> amusementParkResource.getContent().getCapital())
 				.sum();
 		}while (!page.isLast());
-		return CompletableFuture.completedFuture(new SumAndTime(sum, System.currentTimeMillis() - start));
+		return CompletableFuture.completedFuture(new SumAndTime(sum, millisFrom(start)));
 	}
 	
 	public CompletableFuture<VisitorStuffTime> visitSomeStuffInEveryPark(HttpHeaders headers){
 		List<Long> oneParkTimes = new LinkedList<>();
-		long start = System.currentTimeMillis();
-		long visitorId = client.postVisitorAndGetId(headers);
+		long start = now();
+		long visitorId = visitorToContentId(client.postVisitor(headers));
 		Page<Resource<AmusementParkDTO>> page = null;
 		int pageIndex = 0;
 		do {
 			page = client.getAmusementParks(pageIndex++, PAGE_SIZE, headers);
 			page.getContent().stream()
-				.map(amusementParkResource -> amusementParkResource.getContent().getIdentifier())
-				.forEach(amusementParkId -> {
-					long startPark = System.currentTimeMillis();
-					client.enterPark(amusementParkId, visitorId, headers);
-					client.getMachineIdsByAmusementParkId(amusementParkId, headers).stream()
-						.map(machineResource -> machineResource.getContent().getIdentifier())
-						.forEach(machineId -> {
-							client.getOnMachine(amusementParkId, machineId, visitorId, headers);
-							client.getOffMachine(amusementParkId, machineId, visitorId, headers);
-						});
-					client.addGuestBookRegistry(amusementParkId, visitorId, headers);
-					client.leavePark(amusementParkId, visitorId, headers);
-					oneParkTimes.add(System.currentTimeMillis() - startPark);
-			});
+				.map(this::parkToContentId)
+				.forEach(amusementParkId -> 
+					visitEveryThingInAPark(amusementParkId, visitorId, headers, oneParkTimes));
 		} while (!page.isLast());
-		return CompletableFuture.completedFuture(new VisitorStuffTime(System.currentTimeMillis() - start, oneParkTimes));
+		return CompletableFuture.completedFuture(new VisitorStuffTime(millisFrom(start), oneParkTimes));
+	}
+	
+	private void visitEveryThingInAPark(Long amusementParkId, Long visitorId, HttpHeaders headers, List<Long> oneParkTimes) {
+		long startPark = now();
+		client.enterPark(amusementParkId, visitorId, headers);
+		client.getMachineIdsByAmusementParkId(amusementParkId, headers).stream()
+			.map(this::machineToContentId)
+			.forEach(machineId -> {
+				client.getOnMachine(amusementParkId, machineId, visitorId, headers);
+				client.getOffMachine(amusementParkId, machineId, visitorId, headers);
+			});
+		client.addGuestBookRegistry(amusementParkId, visitorId, headers);
+		client.leavePark(amusementParkId, visitorId, headers);
+		oneParkTimes.add(millisFrom(startPark));
 	}
 	
 	public CompletableFuture<SumAndTime> sumVisitorsSpendingMoney(HttpHeaders headers) {
-		long start = System.currentTimeMillis();
+		long start = now();
 		Page<Resource<VisitorDTO>> page = null;
 		int pageIndex = 0;
 		long sum = 0;
@@ -114,22 +119,42 @@ public class AsyncTestSuite {
 				.mapToInt(visitorResource -> visitorResource.getContent().getSpendingMoney())
 				.sum();
 		}while (!page.isLast());
-		return CompletableFuture.completedFuture(new SumAndTime(sum, System.currentTimeMillis() - start));
+		return CompletableFuture.completedFuture(new SumAndTime(sum, millisFrom(start)));
 	}
 	
 	public CompletableFuture<DeleteTime> deleteAllVisitor(HttpHeaders headers){
 		Page<Resource<VisitorDTO>> page = null;
 		int pageIndex = 0;
 		List<Long> tenVisitorTimes = new LinkedList<>();
-		long start = System.currentTimeMillis();
+		long start = now();
 		do {
 			page = client.getVisitors(pageIndex, PAGE_SIZE, headers);
-			long tenVisitorStart = System.currentTimeMillis();
+			long tenVisitorStart = now();
 			page.getContent().stream()
-				.map(visitorResource -> visitorResource.getContent().getIdentifier())
+				.map(this::visitorToContentId)
 				.forEach(visitorId -> client.deleteVisitor(visitorId, headers));
-			tenVisitorTimes.add(System.currentTimeMillis() - tenVisitorStart);
+			tenVisitorTimes.add(millisFrom(tenVisitorStart));
 		}while (!page.isLast());
-		return CompletableFuture.completedFuture(new DeleteTime(System.currentTimeMillis() - start, tenVisitorTimes));
+		return CompletableFuture.completedFuture(new DeleteTime(millisFrom(start), tenVisitorTimes));
+	}
+	
+	private long now() {
+		return System.currentTimeMillis();
+	}
+	
+	private long millisFrom(long start) {
+		return now() - start;
+	}
+	
+	private Long parkToContentId(Resource<AmusementParkDTO> resource) {
+		return resource.getContent().getIdentifier();
+	}
+	
+	private Long machineToContentId(Resource<MachineDTO> resource) {
+		return resource.getContent().getIdentifier();
+	}
+	
+	private Long visitorToContentId(Resource<VisitorDTO> resource) {
+		return resource.getContent().getIdentifier();
 	}
 }
