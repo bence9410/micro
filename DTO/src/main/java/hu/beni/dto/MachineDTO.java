@@ -1,6 +1,5 @@
-package hu.beni.tester.dto;
+package hu.beni.dto;
 
-import hu.beni.tester.enums.MachineType;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Tolerate;
@@ -23,7 +22,7 @@ public class MachineDTO {
 
 	private Integer ticketPrice;
 
-	private MachineType type;
+	private String type;
 
 	@Tolerate
 	protected MachineDTO() {

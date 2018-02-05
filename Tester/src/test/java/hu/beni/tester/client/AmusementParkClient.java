@@ -12,10 +12,10 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import hu.beni.tester.dto.AmusementParkDTO;
-import hu.beni.tester.dto.MachineDTO;
+import hu.beni.dto.AmusementParkDTO;
+import hu.beni.dto.MachineDTO;
 import hu.beni.tester.dto.Page;
-import hu.beni.tester.dto.VisitorDTO;
+import hu.beni.dto.VisitorDTO;
 import hu.beni.tester.factory.ValidDTOFactory;
 import lombok.RequiredArgsConstructor;
 

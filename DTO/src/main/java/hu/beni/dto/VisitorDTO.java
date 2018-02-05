@@ -1,8 +1,7 @@
-package hu.beni.tester.dto;
+package hu.beni.dto;
 
 import java.time.LocalDate;
 
-import hu.beni.tester.enums.VisitorState;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Tolerate;
@@ -19,7 +18,7 @@ public class VisitorDTO {
 
 	private Integer spendingMoney;
 	
-    private VisitorState state;
+    private String state;
 		  
     @Tolerate
     protected VisitorDTO() {

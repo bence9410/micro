@@ -2,11 +2,10 @@ package hu.beni.tester.factory;
 
 import java.time.LocalDate;
 
-import hu.beni.tester.dto.AddressDTO;
-import hu.beni.tester.dto.AmusementParkDTO;
-import hu.beni.tester.dto.MachineDTO;
-import hu.beni.tester.dto.VisitorDTO;
-import hu.beni.tester.enums.MachineType;
+import hu.beni.dto.AddressDTO;
+import hu.beni.dto.AmusementParkDTO;
+import hu.beni.dto.MachineDTO;
+import hu.beni.dto.VisitorDTO;
 
 public class ValidDTOFactory {
 	
@@ -24,7 +23,7 @@ public class ValidDTOFactory {
 				.numberOfSeats(30)
 				.minimumRequiredAge(18)
 				.ticketPrice(MACHINE_TICKET_PRICE)
-				.type(MachineType.CAROUSEL).build();
+				.type("CAROUSEL").build();
 	}
 
 	public static AmusementParkDTO createAmusementParkWithAddress() {

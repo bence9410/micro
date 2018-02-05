@@ -1,4 +1,4 @@
-package hu.beni.tester.dto;
+package hu.beni.dto;
 
 import lombok.Builder;
 import lombok.Data;

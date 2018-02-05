@@ -13,13 +13,13 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import hu.beni.tester.client.AmusementParkClient;
-import hu.beni.tester.dto.AmusementParkDTO;
 import hu.beni.tester.dto.DeleteTime;
-import hu.beni.tester.dto.MachineDTO;
 import hu.beni.tester.dto.Page;
 import hu.beni.tester.dto.SumAndTime;
-import hu.beni.tester.dto.VisitorDTO;
 import hu.beni.tester.dto.VisitorStuffTime;
+import hu.beni.dto.AmusementParkDTO;
+import hu.beni.dto.MachineDTO;
+import hu.beni.dto.VisitorDTO;
 import lombok.RequiredArgsConstructor;
 
 @Async
