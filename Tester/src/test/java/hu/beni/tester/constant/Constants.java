@@ -13,6 +13,9 @@ public class Constants {
 	public static final String COOKIE = "Cookie";
 	public static final String SET_COOKIE = "Set-Cookie";
 	
+	public static final String PAGE = "page";
+	public static final String SIZE = "size";
+	
 	public static final int NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN = 10;
 	public static final int NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK = 10;
 	

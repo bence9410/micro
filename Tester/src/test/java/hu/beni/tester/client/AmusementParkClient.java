@@ -82,8 +82,8 @@ public class AmusementParkClient {
 	}
 	
 	public Page<Resource<AmusementParkDTO>> getAmusementParks(int page, int size, HttpHeaders headers) {
-		return restTemplate.exchange(UriComponentsBuilder.fromHttpUrl(PAGED_AMUSEMENT_PARK_URL).queryParam("page", page)
-				.queryParam("size", size).build().toUriString(), HttpMethod.GET, createEntityWithHeaders(headers),
+		return restTemplate.exchange(UriComponentsBuilder.fromHttpUrl(PAGED_AMUSEMENT_PARK_URL).queryParam(PAGE, page)
+				.queryParam(SIZE, size).build().toUriString(), HttpMethod.GET, createEntityWithHeaders(headers),
 				PAGE_OF_AMUSEMENT_PARK_DTO_TYPE).getBody();
 	}
 	
@@ -118,8 +118,8 @@ public class AmusementParkClient {
 	}
 	
 	public Page<Resource<VisitorDTO>> getVisitors(int page, int size, HttpHeaders headers) {
-		return restTemplate.exchange(UriComponentsBuilder.fromHttpUrl(VISITOR_URL).queryParam("page", page)
-				.queryParam("size", size).build().toUriString(), HttpMethod.GET, createEntityWithHeaders(headers),
+		return restTemplate.exchange(UriComponentsBuilder.fromHttpUrl(VISITOR_URL).queryParam(PAGE, page)
+				.queryParam(SIZE, size).build().toUriString(), HttpMethod.GET, createEntityWithHeaders(headers),
 				PAGE_OF_VISITOR_DTO_TYPE).getBody();
 	}
 	
