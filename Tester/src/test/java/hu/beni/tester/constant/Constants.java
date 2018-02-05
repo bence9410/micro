@@ -6,6 +6,13 @@ public class Constants {
 	public static final String USER = "user";
 	public static final String PASS = "pass";
 	
+	public static final String USERNAME = "username";
+	public static final String PASSWORD = "password";
+	
+	public static final String SEMICOLON = ";";
+	public static final String COOKIE = "Cookie";
+	public static final String SET_COOKIE = "Set-Cookie";
+	
 	public static final int NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN = 10;
 	public static final int NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK = 10;
 	

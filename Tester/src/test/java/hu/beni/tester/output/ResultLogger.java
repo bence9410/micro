@@ -20,7 +20,6 @@ public class ResultLogger {
 	
 	private static final File RESULT_FILE = new File("results.csv");
 	private static final String NEW_LINE = "\n";
-	private static final String SEMICOLON = ";";
 	private static final String GIT_COMMIT_ID;
 	
 	static {

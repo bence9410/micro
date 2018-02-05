@@ -50,9 +50,9 @@ public class AmusementParkClient {
 	public HttpHeaders loginAndReturnHeadersWithJSESSIONID(String username, String password) {
     	String cookie = restTemplate.exchange(LOGIN_URL, HttpMethod.POST,
     			createEntityWithFormEncodeing(username, password), String.class)
-    			.getHeaders().getFirst("Set-Cookie");	
+    			.getHeaders().getFirst(SET_COOKIE);	
     	HttpHeaders httpHeaders = new HttpHeaders();
-    	httpHeaders.add("Cookie", cookie.substring(0, cookie.indexOf(';')));
+    	httpHeaders.add(COOKIE, cookie.substring(0, cookie.indexOf(SEMICOLON)));
 		return httpHeaders;
 	}
 	
@@ -141,8 +141,8 @@ public class AmusementParkClient {
     	headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
     	MultiValueMap<String, String> map= new LinkedMultiValueMap<String, String>();
-    	map.add("username", username);
-    	map.add("password", password);
+    	map.add(USERNAME, username);
+    	map.add(PASSWORD, password);
     	
     	return new HttpEntity<MultiValueMap<String, String>>(map, headers);
 	}	
