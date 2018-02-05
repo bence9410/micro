@@ -37,8 +37,8 @@ import java.util.List;
 @Slf4j
 public class TesterApplicationTests {
 	
-	public static final int NUMBER_OF_ADMINS = 2;
-	public static final int NUMBER_OF_USERS = 5;
+	public static final int NUMBER_OF_ADMINS = 5;
+	public static final int NUMBER_OF_USERS = 10;
 	
 	private static final int EXPECTED_CAPITAL_BEFORE_VISITORS_SUM;
 	private static final int EXPECTED_CAPITAL_AFTER_VISITORS_SUM;
@@ -85,7 +85,7 @@ public class TesterApplicationTests {
 	@Test
 	public void test() {
 		
-		deleteParksAndVisitors();
+		clearDB();
 		
 		createAmusementParksWithMachines();
 		
@@ -101,10 +101,10 @@ public class TesterApplicationTests {
 		
 	}
 	
-	private void deleteParksAndVisitors() {
-		log.info("deleteParksAndVisitors");
-		timeTo.setDeleteParks(extract(async.deleteAllPark(admins.get(0))));
-		timeTo.setDeleteVisitors(extract(async.deleteAllVisitor(admins.get(0))));
+	private void clearDB() {
+		log.info("clearDB");
+		extract(async.deleteAllPark(admins.get(0)));
+		extract(async.deleteAllVisitor(admins.get(0)));
 	}
 	
 	private void createAmusementParksWithMachines() {
@@ -144,6 +144,12 @@ public class TesterApplicationTests {
 		timeTo.setFindAllVisitorsPaged(
 				map(executeAsyncAndGet(admins, async::sumVisitorsSpendingMoney),
 						this::checkSpendingMoneySunGetTime));
+	}
+	
+	private void deleteParksAndVisitors() {
+		log.info("deleteParksAndVisitors");
+		timeTo.setDeleteParks(extract(async.deleteAllPark(admins.get(0))));
+		timeTo.setDeleteVisitors(extract(async.deleteAllVisitor(admins.get(0))));
 	}
 	
 	private Long checkCapitalSumBeforeVisitorsGetTime(SumAndTime sumAndTime) {
