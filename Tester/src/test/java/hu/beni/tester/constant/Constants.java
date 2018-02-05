@@ -6,6 +6,9 @@ public class Constants {
 	public static final String USER = "user";
 	public static final String PASS = "pass";
 	
+	public static final int NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN = 10;
+	public static final int NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK = 10;
+	
 	public static final int PAGE_SIZE = 10;
 	public static final String GUEST_BOOK_REGISTRY_TEXT = "nice park";
 	

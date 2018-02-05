@@ -1,4 +1,4 @@
-package hu.beni.tester;
+package hu.beni.tester.output;
 
 import static hu.beni.tester.AmusementParkTesterApplicationTests.*;
 
@@ -11,6 +11,8 @@ import java.util.List;
 import hu.beni.tester.dto.DeleteTime;
 import hu.beni.tester.dto.TimeTo;
 import lombok.extern.slf4j.Slf4j;
+
+import static hu.beni.tester.constant.Constants.*;
 
 @Slf4j
 public class ResultLogger {

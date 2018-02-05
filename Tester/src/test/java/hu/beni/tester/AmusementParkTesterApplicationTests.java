@@ -21,10 +21,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import hu.beni.tester.async.AsyncTestSuite;
 import hu.beni.tester.dto.SumAndTime;
 import hu.beni.tester.dto.TimeTo;
+import hu.beni.tester.output.ResultLogger;
 import lombok.extern.slf4j.Slf4j;
 
 import static hu.beni.tester.constant.Constants.*;
 import static java.util.stream.Collectors.toList;
+import static hu.beni.tester.factory.ValidDTOFactory.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -34,15 +36,6 @@ import java.util.List;
 @SpringBootApplication
 @Slf4j
 public class AmusementParkTesterApplicationTests {
-	
-	public static final int NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN = 10;
-	public static final int NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK = 10;
-	
-	public static final int AMUSEMENT_PARK_CAPITAL = 3000;
-	public static final int AMUSEMENT_PARK_ENTRANCE_FEE = 50;
-	public static final int MACHINE_PRICE = 250;
-	public static final int MACHINE_TICKET_PRICE = 10;
-	public static final int VISITOR_SPENDING_MONEY = 1000000;
 	
 	public static final int NUMBER_OF_ADMINS = 2;
 	public static final int NUMBER_OF_USERS = 5;

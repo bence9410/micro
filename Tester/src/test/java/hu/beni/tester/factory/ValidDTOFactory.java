@@ -1,7 +1,5 @@
 package hu.beni.tester.factory;
 
-import static hu.beni.tester.AmusementParkTesterApplicationTests.*;
-
 import java.time.LocalDate;
 
 import hu.beni.tester.dto.AddressDTO;
@@ -11,6 +9,12 @@ import hu.beni.tester.dto.VisitorDTO;
 import hu.beni.tester.enums.MachineType;
 
 public class ValidDTOFactory {
+	
+	public static final int AMUSEMENT_PARK_CAPITAL = 3000;
+	public static final int AMUSEMENT_PARK_ENTRANCE_FEE = 50;
+	public static final int MACHINE_PRICE = 250;
+	public static final int MACHINE_TICKET_PRICE = 10;
+	public static final int VISITOR_SPENDING_MONEY = 1000000;
 
 	public static MachineDTO createMachine() {
 		return MachineDTO.builder()

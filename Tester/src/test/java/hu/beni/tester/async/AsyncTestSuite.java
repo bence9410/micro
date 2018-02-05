@@ -1,6 +1,5 @@
 package hu.beni.tester.async;
 
-import static hu.beni.tester.AmusementParkTesterApplicationTests.*;
 import static hu.beni.tester.constant.Constants.*;
 
 import java.util.LinkedList;
