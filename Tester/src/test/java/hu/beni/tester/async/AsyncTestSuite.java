@@ -21,7 +21,6 @@ import hu.beni.tester.dto.SumAndTime;
 import hu.beni.tester.dto.VisitorDTO;
 import hu.beni.tester.dto.VisitorStuffTime;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Async
 @Component
