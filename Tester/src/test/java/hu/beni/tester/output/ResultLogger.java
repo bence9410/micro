@@ -5,8 +5,10 @@ import static hu.beni.tester.TesterApplicationTests.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Properties;
 
 import hu.beni.tester.dto.DeleteTime;
 import hu.beni.tester.dto.TimeTo;
@@ -20,6 +22,19 @@ public class ResultLogger {
 	private static final File RESULT_FILE = new File("results.csv");
 	private static final String NEW_LINE = "\n";
 	private static final String SEMICOLON = ";";
+	private static final String GIT_COMMIT_ID;
+	
+	static {
+		String gitCommitId = "";
+		try {
+			Properties p = new Properties();
+			p.load(ResultLogger.class.getResourceAsStream("/git.properties"));
+			gitCommitId = p.getProperty("git.commit.id");
+		} catch (Throwable e) {
+			log.error("Error: ", e);
+		}
+		GIT_COMMIT_ID = gitCommitId; 
+	}
 	
 	private final String[] header = { "",
 			"createAmusementParksWithMachines", 
@@ -31,7 +46,8 @@ public class ResultLogger {
 			"wholeDeleteParks", 
 			"tenDeleteParks",
 			"wholeDeleteVisitors",
-			"tenDeleteVisitors" };
+			"tenDeleteVisitors",
+			"gitCommitId" };
 	
 	private final String[] result;
 
@@ -48,7 +64,8 @@ public class ResultLogger {
 				Long.toString(deleteParks.getWholeTime()),
 				minAvgMax(deleteParks.getTenDeleteTimes()),
 				Long.toString(deleteVisitors.getWholeTime()),
-				minAvgMax(deleteVisitors.getTenDeleteTimes()) };	
+				minAvgMax(deleteVisitors.getTenDeleteTimes()),
+				GIT_COMMIT_ID };	
 	}
 
 	public void logToConsole() {
