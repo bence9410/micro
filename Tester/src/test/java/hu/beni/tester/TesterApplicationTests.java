@@ -35,7 +35,7 @@ import java.util.List;
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 @SpringBootApplication
 @Slf4j
-public class AmusementParkTesterApplicationTests {
+public class TesterApplicationTests {
 	
 	public static final int NUMBER_OF_ADMINS = 2;
 	public static final int NUMBER_OF_USERS = 5;

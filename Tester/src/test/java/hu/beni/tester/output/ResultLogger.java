@@ -1,6 +1,6 @@
 package hu.beni.tester.output;
 
-import static hu.beni.tester.AmusementParkTesterApplicationTests.*;
+import static hu.beni.tester.TesterApplicationTests.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
