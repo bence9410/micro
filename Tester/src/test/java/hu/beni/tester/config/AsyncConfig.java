@@ -2,7 +2,9 @@ package hu.beni.tester.config;
 
 import java.util.concurrent.Executor;
 
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
+import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
@@ -13,13 +15,15 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import hu.beni.tester.archive.ArchiveReceiver;
+
 @Configuration
 @EnableAsync
 public class AsyncConfig {
 	
 	@Bean
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
-        return builder.build();
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 
 	@Bean
@@ -35,5 +39,20 @@ public class AsyncConfig {
 		executor.setMaxPoolSize(20);
 		executor.initialize();
 		return executor;
+	}
+	
+	@Bean
+	public SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
+			MessageListenerAdapter listenerAdapter) {
+		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+		container.setConnectionFactory(connectionFactory);
+		container.setQueueNames("archiveAmusementPark");
+		container.setMessageListener(listenerAdapter);
+		return container;
+	}
+
+	@Bean
+	public MessageListenerAdapter listenerAdapter(ArchiveReceiver receiver) {
+		return new MessageListenerAdapter(receiver, "receive");
 	}
 }

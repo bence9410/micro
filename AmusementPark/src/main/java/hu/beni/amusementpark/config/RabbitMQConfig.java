@@ -2,7 +2,6 @@ package hu.beni.amusementpark.config;
 
 import static hu.beni.amusementpark.constants.RabbitMQConstants.EXCHANGE_NAME;
 import static hu.beni.amusementpark.constants.RabbitMQConstants.QUEUE_NAME;
-import static hu.beni.amusementpark.constants.RabbitMQConstants.RABBIT_MQ_PROFILE_NAME;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -13,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-@Profile(RABBIT_MQ_PROFILE_NAME)
+@Profile("oracleDB")
 public class RabbitMQConfig {
 	
 	

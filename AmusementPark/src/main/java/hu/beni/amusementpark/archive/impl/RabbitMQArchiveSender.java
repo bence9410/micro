@@ -6,12 +6,13 @@ import org.springframework.stereotype.Component;
 
 import hu.beni.amusementpark.archive.ArchiveSender;
 import hu.beni.amusementpark.entity.AmusementPark;
+import hu.beni.dto.ArchiveAmusementParkDTO;
 import lombok.RequiredArgsConstructor;
 
 import static hu.beni.amusementpark.constants.RabbitMQConstants.*;
 
 @Component
-@Profile(RABBIT_MQ_PROFILE_NAME)
+@Profile("oracleDB")
 @RequiredArgsConstructor
 public class RabbitMQArchiveSender implements ArchiveSender {
 
@@ -19,6 +20,12 @@ public class RabbitMQArchiveSender implements ArchiveSender {
 	
 	@Override
 	public void sendToArchive(AmusementPark amusementPark) {
-		rabbitTemplate.convertAndSend(QUEUE_NAME, amusementPark);
+		rabbitTemplate.convertAndSend(QUEUE_NAME, convert(amusementPark));
 	}	
+	
+	private ArchiveAmusementParkDTO convert(AmusementPark amusementPark) {
+		return ArchiveAmusementParkDTO.builder()
+				.name(amusementPark.getName()).build();
+				
+	}
 }

@@ -2,12 +2,14 @@ package hu.beni.tester;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import hu.beni.tester.archive.ArchiveReceiver;
 import hu.beni.tester.async.AsyncTestSuite;
 import hu.beni.tester.dto.SumAndTime;
 import hu.beni.tester.dto.TimeTo;
@@ -38,7 +41,7 @@ import java.util.List;
 public class TesterApplicationTests {
 	
 	public static final int NUMBER_OF_ADMINS = 5;
-	public static final int NUMBER_OF_USERS = 10;
+	public static final int NUMBER_OF_USERS = 5;
 	
 	private static final int EXPECTED_CAPITAL_BEFORE_VISITORS_SUM;
 	private static final int EXPECTED_CAPITAL_AFTER_VISITORS_SUM;
@@ -52,7 +55,10 @@ public class TesterApplicationTests {
 	}
 	
 	@Autowired
-	public AsyncTestSuite async;
+	private AsyncTestSuite async;
+	
+	@Autowired
+	private ArchiveReceiver archiveReceiver;
 	
 	private List<HttpHeaders> admins;
 	private List<HttpHeaders> users;
@@ -98,6 +104,8 @@ public class TesterApplicationTests {
 		sumVisitorsSpendingMoney();
 		
 		deleteParksAndVisitors();
+		
+		waitForArchiveAmusementParks();
 		
 	}
 	
@@ -152,6 +160,16 @@ public class TesterApplicationTests {
 		timeTo.setDeleteVisitors(extract(async.deleteAllVisitor(admins.get(0))));
 	}
 	
+	private void waitForArchiveAmusementParks() {
+		log.info("waitForArchiveAmusementParks");
+		try {
+			Assert.assertTrue("ArchiveReceiver CountDownLatch timeout before reaching zero.",
+					archiveReceiver.getCountDownLatch().await(10, TimeUnit.SECONDS));
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
 	private Long checkCapitalSumBeforeVisitorsGetTime(SumAndTime sumAndTime) {
 		return checkSumAndReturnTime(sumAndTime, EXPECTED_CAPITAL_BEFORE_VISITORS_SUM,
 				"Problem with capital sum before visitors!");
@@ -199,7 +217,7 @@ public class TesterApplicationTests {
 		try {
 			t = completableFuture.get();
 		} catch (InterruptedException | ExecutionException e) {
-			log.error("Error:", e);
+			throw new RuntimeException(e);
 		}
 		return t;	
 	}
