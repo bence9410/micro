@@ -50,7 +50,7 @@ public class Visitor implements Serializable {
     private LocalDate dateOfBirth;
 
     @CreationTimestamp
-    private LocalDateTime dateOfRegistrate;   
+    private LocalDateTime dateOfSignUp;   
     
 	private Integer spendingMoney;
 	

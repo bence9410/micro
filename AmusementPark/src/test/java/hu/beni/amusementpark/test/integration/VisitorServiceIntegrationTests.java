@@ -52,7 +52,7 @@ public class VisitorServiceIntegrationTests {
         visitor = visitorService.signUp(visitor);
         Long visitorId = visitor.getId();
         assertNotNull(visitorId);
-        assertTrue(visitor.getDateOfRegistrate().isBefore(LocalDateTime.now()));
+        assertTrue(visitor.getDateOfSignUp().isBefore(LocalDateTime.now()));
         
         Integer spendingMoney = visitor.getSpendingMoney();
         
