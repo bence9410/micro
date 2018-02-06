@@ -2,7 +2,6 @@ package hu.beni.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.Tolerate;
 
 @Data
 @Builder
@@ -20,9 +19,4 @@ public class AddressDTO {
 
     private String houseNumber;
     
-    @Tolerate
-    protected AddressDTO() {
-        super();
-    }
-	
 }

@@ -2,7 +2,6 @@ package hu.beni.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.Tolerate;
 
 @Data
 @Builder
@@ -23,10 +22,5 @@ public class MachineDTO {
 	private Integer ticketPrice;
 
 	private String type;
-
-	@Tolerate
-	protected MachineDTO() {
-		super();
-	}
 
 }

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.experimental.Tolerate;
 
 @Data
 @Builder
@@ -20,8 +19,4 @@ public class VisitorDTO {
 	
     private String state;
 		  
-    @Tolerate
-    protected VisitorDTO() {
-        super();
-    }
 }
