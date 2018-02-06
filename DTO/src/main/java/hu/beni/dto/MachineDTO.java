@@ -1,11 +1,15 @@
 package hu.beni.dto;
 
+import java.io.Serializable;
+
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class MachineDTO {
+public class MachineDTO implements Serializable{
+	
+	private static final long serialVersionUID = 1009869702988779913L;
 
 	private Long identifier;
 

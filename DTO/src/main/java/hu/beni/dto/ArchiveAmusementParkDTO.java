@@ -1,5 +1,6 @@
 package hu.beni.dto;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -8,8 +9,10 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ArchiveAmusementParkDTO {
+public class ArchiveAmusementParkDTO implements Serializable{
 	
+	private static final long serialVersionUID = -8578786392708912052L;
+
 	private Long identifier;
 
 	private String name;
