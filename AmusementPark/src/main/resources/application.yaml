@@ -7,6 +7,8 @@ logging:
             sql:
               BasicBinder: TRACE
 spring:
+  jmx:
+    enabled: false
   jpa:
     open-in-view: false
     show-sql: true

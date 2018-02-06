@@ -5,7 +5,6 @@ import java.util.stream.IntStream;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.jmx.JmxAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 
@@ -16,7 +15,7 @@ import hu.beni.amusementpark.enums.MachineType;
 import hu.beni.amusementpark.service.AmusementParkService;
 import hu.beni.amusementpark.service.MachineService;
 
-@SpringBootApplication(exclude = {JmxAutoConfiguration.class})
+@SpringBootApplication
 public class AmusementParkApplication {
 
 	public static void main(String[] args) {
