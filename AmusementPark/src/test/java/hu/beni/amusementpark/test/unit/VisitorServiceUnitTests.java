@@ -60,7 +60,7 @@ public class VisitorServiceUnitTests {
     
     @Test
     public void findSpendingMoneyByUsernameNegativeNotSignedUp() {
-    	when(visitorRepository.findSpendingMoneyByUserName()).thenReturn(null);
+    	when(visitorRepository.findSpendingMoneyByUserName()).thenReturn(Optional.ofNullable(null));
     	
     	assertThatThrownBy(() -> visitorService.findSpendingMoneyByUsername())
     		.isInstanceOf(AmusementParkException.class).hasMessage(VISITOR_NOT_SIGNED_UP);
@@ -109,7 +109,7 @@ public class VisitorServiceUnitTests {
         Long amusementParkId = amusementPark.getId();
         Long visitorId = 1L;
         
-        when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId)).thenReturn(amusementPark);
+        when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId)).thenReturn(Optional.of(amusementPark));
         
         assertThatThrownBy(() -> visitorService.enterPark(amusementParkId, visitorId))
         		.isInstanceOf(AmusementParkException.class).hasMessage(VISITOR_NOT_SIGNED_UP);
@@ -125,7 +125,7 @@ public class VisitorServiceUnitTests {
         Visitor visitor = Visitor.builder().id(1L).spendingMoney(20).build();
         Long visitorId = visitor.getId();
         
-        when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId)).thenReturn(amusementPark);
+        when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId)).thenReturn(Optional.of(amusementPark));
         when(visitorRepository.findById(visitorId)).thenReturn(Optional.of(visitor));
         
         assertThatThrownBy(() -> visitorService.enterPark(amusementParkId, visitorId))
@@ -144,7 +144,7 @@ public class VisitorServiceUnitTests {
         Long visitorId = visitor.getId();
         Long numberOfVisitorsWithNotNullPark = 1L;
         
-        when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId)).thenReturn(amusementPark);
+        when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId)).thenReturn(Optional.of(amusementPark));
         when(visitorRepository.findById(visitorId)).thenReturn(Optional.of(visitor));
         when(visitorRepository.countByVisitorIdWhereAmusementParkIsNotNull(visitorId)).thenReturn(numberOfVisitorsWithNotNullPark);
         
@@ -164,7 +164,7 @@ public class VisitorServiceUnitTests {
         Long visitorId = visitor.getId();
         Integer spendingMoney = visitor.getSpendingMoney();
         
-        when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId)).thenReturn(amusementPark);
+        when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId)).thenReturn(Optional.of(amusementPark));
         when(visitorRepository.findById(visitorId)).thenReturn(Optional.of(visitor));
         when(visitorRepository.save(visitor)).thenReturn(visitor);
         
@@ -192,7 +192,7 @@ public class VisitorServiceUnitTests {
         Long numberOfKnowsVisitorsById = 1L;
         Integer spendingMoney = visitor.getSpendingMoney();
         
-        when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId)).thenReturn(amusementPark);
+        when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId)).thenReturn(Optional.of(amusementPark));
         when(visitorRepository.findById(visitorId)).thenReturn(Optional.of(visitor));
         when(amusementParkRepository.countKnownVisitor(amusementParkId, visitorId)).thenReturn(numberOfKnowsVisitorsById);
         when(visitorRepository.save(visitor)).thenReturn(visitor);
@@ -230,7 +230,7 @@ public class VisitorServiceUnitTests {
         Long machineId = machine.getId();
         Long visitorId = 2L;
         
-        when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(machine);
+        when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(Optional.of(machine));
         
         assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId))
         		.isInstanceOf(AmusementParkException.class).hasMessage(NO_VISITOR_IN_PARK_WITH_ID);
@@ -247,8 +247,8 @@ public class VisitorServiceUnitTests {
         Visitor visitor = Visitor.builder().id(2L).state(VisitorState.ON_MACHINE).build();
         Long visitorId = visitor.getId();
 
-        when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(machine);
-        when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId)).thenReturn(visitor);
+        when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(Optional.of(machine));
+        when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId)).thenReturn(Optional.of(visitor));
 
         assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId))
         		.isInstanceOf(AmusementParkException.class).hasMessage(VISITOR_IS_ON_A_MACHINE);
@@ -265,8 +265,8 @@ public class VisitorServiceUnitTests {
         Visitor visitor = Visitor.builder().id(2L).spendingMoney(40).build();
         Long visitorId = visitor.getId();
 
-        when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(machine);
-        when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId)).thenReturn(visitor);
+        when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(Optional.of(machine));
+        when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId)).thenReturn(Optional.of(visitor));
 
         assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId))
         		.isInstanceOf(AmusementParkException.class).hasMessage(NOT_ENOUGH_MONEY);
@@ -283,8 +283,8 @@ public class VisitorServiceUnitTests {
         Visitor visitor = Visitor.builder().id(2L).spendingMoney(40).dateOfBirth(LocalDate.now()).build();
         Long visitorId = visitor.getId();
 
-        when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(machine);
-        when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId)).thenReturn(visitor);
+        when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(Optional.of(machine));
+        when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId)).thenReturn(Optional.of(visitor));
         
         assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId))
         		.isInstanceOf(AmusementParkException.class).hasMessage(VISITOR_IS_TOO_YOUNG);
@@ -301,8 +301,8 @@ public class VisitorServiceUnitTests {
         Visitor visitor = Visitor.builder().id(2L).spendingMoney(40).dateOfBirth(LocalDate.of(1990, 10, 20)).build();
         Long visitorId = visitor.getId();
 
-        when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(machine);
-        when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId)).thenReturn(visitor);
+        when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(Optional.of(machine));
+        when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId)).thenReturn(Optional.of(visitor));
         when(visitorRepository.countByMachineId(machineId)).thenReturn(10L);
 
         assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId))
@@ -323,8 +323,8 @@ public class VisitorServiceUnitTests {
         Long visitorId = visitor.getId();
         Integer spendingMoney = visitor.getSpendingMoney();
 
-        when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(machine);
-        when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId)).thenReturn(visitor);
+        when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(Optional.of(machine));
+        when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId)).thenReturn(Optional.of(visitor));
         when(visitorRepository.countByMachineId(machineId)).thenReturn(1L);
         when(visitorRepository.save(visitor)).thenReturn(visitor);
 
@@ -358,7 +358,7 @@ public class VisitorServiceUnitTests {
         Visitor visitor = Visitor.builder().id(1L).state(VisitorState.ON_MACHINE).machine(Machine.builder().build()).build();
         Long visitorId = visitor.getId();
 
-        when(visitorRepository.findByMachineIdAndVisitorId(machineId, visitorId)).thenReturn(visitor);
+        when(visitorRepository.findByMachineIdAndVisitorId(machineId, visitorId)).thenReturn(Optional.of(visitor));
         when(visitorRepository.save(visitor)).thenReturn(visitor);
 
         assertEquals(visitor, visitorService.getOffMachine(machineId, visitorId));
@@ -388,7 +388,7 @@ public class VisitorServiceUnitTests {
     			.state(VisitorState.REST).spendingMoney(100).build();
         Long visitorId = visitor.getId();
         
-        when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId)).thenReturn(visitor);
+        when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId)).thenReturn(Optional.of(visitor));
         
         visitorService.leavePark(amusementParkId, visitorId);
         

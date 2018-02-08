@@ -32,10 +32,10 @@ public interface AmusementParkRepository extends JpaRepository<AmusementPark, Lo
     public void incrementCapitalById(@Param(AMMOUNT) Integer ammount, @Param(AMUSEMENT_PARK_ID) Long amusementParkId);
 
     @Query("Select new hu.beni.amusementpark.entity.AmusementPark(a.id) from AmusementPark a where a.id = :amusementParkId")
-    public AmusementPark findByIdReadOnlyId(@Param(AMUSEMENT_PARK_ID) Long amusementParkId);
+    public Optional<AmusementPark> findByIdReadOnlyId(@Param(AMUSEMENT_PARK_ID) Long amusementParkId);
     
     @Query("Select new hu.beni.amusementpark.entity.AmusementPark(a.id, a.entranceFee) from AmusementPark a where a.id = :amusementParkId")
-    public AmusementPark findByIdReadOnlyIdAndEntranceFee(@Param(AMUSEMENT_PARK_ID) Long amusementParkId);
+    public Optional<AmusementPark> findByIdReadOnlyIdAndEntranceFee(@Param(AMUSEMENT_PARK_ID) Long amusementParkId);
     
     @Query("Select new hu.beni.amusementpark.entity.AmusementPark(a.id, a.capital, a.totalArea) from AmusementPark a where a.id = :amusementParkId")
     public Optional<AmusementPark> findByIdReadOnlyIdAndCapitalAndTotalArea(@Param(AMUSEMENT_PARK_ID) Long amusementParkId);

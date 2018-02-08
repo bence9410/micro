@@ -5,7 +5,6 @@ import static hu.beni.amusementpark.exception.ExceptionUtil.*;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -33,9 +32,7 @@ public class VisitorServiceImpl implements VisitorService{
     
     @Override
     public Integer findSpendingMoneyByUsername(){
-        Integer spendingMoney = visitorRepository.findSpendingMoneyByUserName();
-        ifNull(spendingMoney, VISITOR_NOT_SIGNED_UP);
-        return spendingMoney;
+        return ifNull(visitorRepository.findSpendingMoneyByUserName(), VISITOR_NOT_SIGNED_UP);
     }
     
     @Override
@@ -45,16 +42,14 @@ public class VisitorServiceImpl implements VisitorService{
 
     @Override
     public Visitor findOne(Long visitorId) {
-        return visitorRepository.findById(visitorId).orElseGet(() -> null);
-    }	
+        return ifNull(visitorRepository.findById(visitorId), VISITOR_NOT_SIGNED_UP);
+    }
 
     @Override
     public Visitor enterPark(Long amusementParkId, Long visitorId) {
-        AmusementPark amusementPark = amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId);
-        ifNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
+        AmusementPark amusementPark = ifNull(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId), NO_AMUSEMENT_PARK_WITH_ID);
         
-        Visitor visitor = visitorRepository.findById(visitorId).orElseGet(() -> null);
-        ifNull(visitor, VISITOR_NOT_SIGNED_UP);
+        Visitor visitor = ifNull(visitorRepository.findById(visitorId), VISITOR_NOT_SIGNED_UP);
         
         Integer entranceFee = amusementPark.getEntranceFee();
         Integer spendingMoney = visitor.getSpendingMoney();
@@ -62,8 +57,9 @@ public class VisitorServiceImpl implements VisitorService{
         
         ifNotZero(visitorRepository.countByVisitorIdWhereAmusementParkIsNotNull(visitorId), VISITOR_IS_IN_A_PARK);
         
-        Optional.of(amusementParkRepository.countKnownVisitor(amusementParkId, visitorId)).filter(count -> count == 0)
-        	.ifPresent(count -> amusementParkRepository.addKnownVisitor(amusementParkId, visitorId));
+        if (amusementParkRepository.countKnownVisitor(amusementParkId, visitorId) == 0) {
+        	amusementParkRepository.addKnownVisitor(amusementParkId, visitorId);
+        }
         
         visitor.setSpendingMoney(spendingMoney - entranceFee);
         visitor.setState(VisitorState.REST);
@@ -75,10 +71,8 @@ public class VisitorServiceImpl implements VisitorService{
 
     @Override
     public Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId) {
-        Machine machine = machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId);
-        ifNull(machine, NO_MACHINE_IN_PARK_WITH_ID);
-        Visitor visitor = visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
-        ifNull(visitor, NO_VISITOR_IN_PARK_WITH_ID);
+        Machine machine = ifNull(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId), NO_MACHINE_IN_PARK_WITH_ID);
+        Visitor visitor = ifNull(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId), NO_VISITOR_IN_PARK_WITH_ID);
         
         checkIfVisitorAbleToGetOnMachine(machine, visitor);
         
@@ -102,8 +96,7 @@ public class VisitorServiceImpl implements VisitorService{
     
     @Override
     public Visitor getOffMachine(Long machineId, Long visitorId) {
-        Visitor visitor = visitorRepository.findByMachineIdAndVisitorId(machineId, visitorId);
-        ifNull(visitor, NO_VISITOR_ON_MACHINE_WITH_ID);
+        Visitor visitor = ifNull(visitorRepository.findByMachineIdAndVisitorId(machineId, visitorId), NO_VISITOR_ON_MACHINE_WITH_ID);
         visitor.setMachine(null);
         visitor.setState(VisitorState.REST);
         return visitorRepository.save(visitor);
@@ -111,8 +104,7 @@ public class VisitorServiceImpl implements VisitorService{
     
     @Override
     public Visitor leavePark(Long amusementParkId, Long visitorId) {
-    	Visitor visitor = visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
-    	ifNull(visitor, NO_VISITOR_IN_PARK_WITH_ID);
+    	Visitor visitor = ifNull(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId), NO_VISITOR_IN_PARK_WITH_ID);
     	visitor.setAmusementPark(null);
     	visitor.setState(null);
     	return visitorRepository.save(visitor);

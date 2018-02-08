@@ -132,7 +132,7 @@ public class MachineServiceUnitTests {
         Long machineId = machine.getId();
         Long numberOfVisitorsOnMachine = 10L;
 
-        when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(machine);
+        when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(Optional.of(machine));
         when(visitorRepository.countByMachineId(machineId)).thenReturn(numberOfVisitorsOnMachine);
 
         assertThatThrownBy(() -> machineService.removeMachine(amusementParkId, machineId))
@@ -149,7 +149,7 @@ public class MachineServiceUnitTests {
         Long machineId = machine.getId();
         Long numberOfVisitorsOnMachine = 0L;
 
-        when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(machine);
+        when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(Optional.of(machine));
         when(visitorRepository.countByMachineId(machineId)).thenReturn(numberOfVisitorsOnMachine);
 
         machineService.removeMachine(amusementParkId, machineId);

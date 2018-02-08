@@ -75,7 +75,7 @@ public class GuestBookServiceUnitTests {
 		Long visitorId = 1L;
 		String textOfRegistry = OPINION_ON_THE_PARK;
 
-		when(amusementParkRepository.findByIdReadOnlyId(amusementParkId)).thenReturn(amusementPark);
+		when(amusementParkRepository.findByIdReadOnlyId(amusementParkId)).thenReturn(Optional.of(amusementPark));
 
 		assertThatThrownBy(() -> guestBookService.addRegistry(amusementParkId, visitorId, textOfRegistry))
 				.isInstanceOf(AmusementParkException.class).hasMessage(NO_VISITOR_IN_PARK_WITH_ID);
@@ -92,7 +92,7 @@ public class GuestBookServiceUnitTests {
 		Long visitorId = visitor.getId();
 		String textOfRegistry = OPINION_ON_THE_PARK;
 
-		when(amusementParkRepository.findByIdReadOnlyId(amusementParkId)).thenReturn(amusementPark);
+		when(amusementParkRepository.findByIdReadOnlyId(amusementParkId)).thenReturn(Optional.of(amusementPark));
 		when(visitorRepository.findById(visitorId)).thenReturn(Optional.of(visitor));
 		GuestBookRegistry guestBookRegistry = GuestBookRegistry.builder().amusementPark(amusementPark)
 				.textOfRegistry(textOfRegistry).visitor(visitor).build();
