@@ -55,14 +55,12 @@ public class AmusementParkServiceImpl implements AmusementParkService {
     
     @Override
     public List<AmusementPark> findAll(){
-    	return amusementParkRepository.findAllFetchAddress();
+    	return amusementParkRepository.findAll();
     }
     
     @Override
     public Page<AmusementPark> findAll(Pageable pageable){
-    	Page<AmusementPark> page = amusementParkRepository.findAll(pageable);
-    	page.getContent().stream().forEach(a -> a.getAddress().getCity());
-    	return page;
+    	return amusementParkRepository.findAllFetchAddress(pageable);
     }
     
     @Override

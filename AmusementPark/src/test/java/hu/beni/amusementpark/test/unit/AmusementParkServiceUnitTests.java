@@ -145,11 +145,11 @@ public class AmusementParkServiceUnitTests {
     			AmusementPark.builder().address(Address.builder().build()).build()));
     	Pageable pageable = PageRequest.of(0, 10);
     	
-    	when(amusementParkRepository.findAll(pageable)).thenReturn(page);
+    	when(amusementParkRepository.findAllFetchAddress(pageable)).thenReturn(page);
     	
     	assertEquals(page, amusementParkService.findAll(pageable));
     	
-    	verify(amusementParkRepository).findAll(pageable);
+    	verify(amusementParkRepository).findAllFetchAddress(pageable);
     }
     
     @Test
