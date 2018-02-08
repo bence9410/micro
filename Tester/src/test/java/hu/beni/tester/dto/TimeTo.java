@@ -9,6 +9,8 @@ import lombok.Setter;
 @Setter
 public class TimeTo {
 	
+	private long fullRun;
+	
 	private List<Long> createAmusementParksWithMachines;
 
 	private List<Long> findAllParksPagedBeforeVisitorStuff;

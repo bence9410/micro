@@ -64,6 +64,7 @@ public class TesterApplicationTests {
 	private List<HttpHeaders> users;
 	
 	private TimeTo timeTo;
+	private long start;
 	
 	private static Stream<String> createUsernameStream(int endExclusive, IntFunction<String> function) {
 		return IntStream.range(0, endExclusive).mapToObj(function);
@@ -71,6 +72,7 @@ public class TesterApplicationTests {
 	
 	@Before
 	public void setUp() {
+		start = System.currentTimeMillis();
 		log.info("login");
 		admins = executeAsyncAndGet(createUsernameStream(NUMBER_OF_ADMINS, this::createAdminUsername), async::login);
 		users = executeAsyncAndGet(createUsernameStream(NUMBER_OF_USERS, this::createUserUsername), async::login);
@@ -83,6 +85,7 @@ public class TesterApplicationTests {
 		admins.stream().forEach(async::logout);
 		users.stream().forEach(async::logout);
 		log.info("log");
+		timeTo.setFullRun(System.currentTimeMillis() - start);
 		ResultLogger resultLogger = new ResultLogger(timeTo);
 		resultLogger.logToConsole();
 		resultLogger.writeToFile();

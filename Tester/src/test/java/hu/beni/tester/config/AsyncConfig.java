@@ -2,6 +2,7 @@ package hu.beni.tester.config;
 
 import java.util.concurrent.Executor;
 
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
@@ -39,6 +40,11 @@ public class AsyncConfig {
 		executor.setMaxPoolSize(20);
 		executor.initialize();
 		return executor;
+	}
+	
+	@Bean
+	public Queue queue() {
+		return new Queue("archiveAmusementPark", false);
 	}
 	
 	@Bean

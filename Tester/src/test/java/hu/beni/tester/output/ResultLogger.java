@@ -35,6 +35,7 @@ public class ResultLogger {
 	}
 	
 	private final String[] header = { "",
+			"fullRun",
 			"createAmusementParksWithMachines", 
 			"findAllParksPagedBeforeVisitorStuff",
 			"wholeVisitorStuff",
@@ -53,6 +54,7 @@ public class ResultLogger {
 		DeleteTime deleteParks = timeTo.getDeleteParks();
 		DeleteTime deleteVisitors = timeTo.getDeleteVisitors();
 		result = new String[] { NUMBER_OF_ADMINS + "a " + NUMBER_OF_USERS + "v " + NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN  + "p/a " + NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK + "m/p ",
+				Long.toString(timeTo.getFullRun()),
 				minAvgMax(timeTo.getCreateAmusementParksWithMachines()),
 				minAvgMax(timeTo.getFindAllParksPagedBeforeVisitorStuff()), 
 				minAvgMax(timeTo.getWholeVisitorStuff()),
