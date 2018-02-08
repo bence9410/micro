@@ -58,7 +58,7 @@ public class MachineServiceUnitTests {
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().price(200).build();
 
-        when(amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId)).thenReturn(amusementPark);
+        when(amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId)).thenReturn(Optional.of(amusementPark));
 
         assertThatThrownBy(() -> machineService.addMachine(amusementParkId, machine))
         		.isInstanceOf(AmusementParkException.class).hasMessage(MACHINE_IS_TOO_EXPENSIVE);
@@ -72,8 +72,8 @@ public class MachineServiceUnitTests {
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().price(200).size(30).build();
 
-        when(amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId)).thenReturn(amusementPark);
-        when(machineRepository.sumAreaByAmusementParkId(amusementParkId)).thenReturn(80L);
+        when(amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId)).thenReturn(Optional.of(amusementPark));
+        when(machineRepository.sumAreaByAmusementParkId(amusementParkId)).thenReturn(Optional.of(80L));
 
         assertThatThrownBy(() -> machineService.addMachine(amusementParkId, machine))
         		.isInstanceOf(AmusementParkException.class).hasMessage(MACHINE_IS_TOO_BIG);
@@ -88,8 +88,8 @@ public class MachineServiceUnitTests {
         Long amusementParkId = amusementPark.getId();
         Machine machine = Machine.builder().price(200).size(30).build();
 
-        when(amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId)).thenReturn(amusementPark);
-        when(machineRepository.sumAreaByAmusementParkId(amusementParkId)).thenReturn(20L);
+        when(amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId)).thenReturn(Optional.of(amusementPark));
+        when(machineRepository.sumAreaByAmusementParkId(amusementParkId)).thenReturn(Optional.of(20L));
         when(machineRepository.save(machine)).thenReturn(machine);
 
         assertEquals(machine, machineService.addMachine(amusementPark.getId(), machine));

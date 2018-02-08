@@ -12,6 +12,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import static hu.beni.amusementpark.constants.ParameterMappingConstants.*;
 
+import java.util.Optional;
+
 import hu.beni.amusementpark.entity.AmusementPark;
 
 @Repository
@@ -36,7 +38,7 @@ public interface AmusementParkRepository extends JpaRepository<AmusementPark, Lo
     public AmusementPark findByIdReadOnlyIdAndEntranceFee(@Param(AMUSEMENT_PARK_ID) Long amusementParkId);
     
     @Query("Select new hu.beni.amusementpark.entity.AmusementPark(a.id, a.capital, a.totalArea) from AmusementPark a where a.id = :amusementParkId")
-    public AmusementPark findByIdReadOnlyIdAndCapitalAndTotalArea(@Param(AMUSEMENT_PARK_ID) Long amusementParkId);
+    public Optional<AmusementPark> findByIdReadOnlyIdAndCapitalAndTotalArea(@Param(AMUSEMENT_PARK_ID) Long amusementParkId);
 
     @Query(nativeQuery = true, value = "Select count(*) from amusement_park_visitor where amusement_park_id = :amusementParkId and visitor_id = :visitorId")
     public Long countKnownVisitor(@Param(AMUSEMENT_PARK_ID) Long amusementParkId, @Param(VISITOR_ID) Long visitorId);

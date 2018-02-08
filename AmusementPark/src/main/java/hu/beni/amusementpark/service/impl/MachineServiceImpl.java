@@ -5,12 +5,9 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.MACHINE_IS_T
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_MACHINE_IN_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITORS_ON_MACHINE;
-import static hu.beni.amusementpark.exception.ExceptionUtil.ifFirstLessThanSecond;
-import static hu.beni.amusementpark.exception.ExceptionUtil.ifNotZero;
-import static hu.beni.amusementpark.exception.ExceptionUtil.ifNull;
+import static hu.beni.amusementpark.exception.ExceptionUtil.*;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,16 +31,14 @@ public class MachineServiceImpl implements MachineService {
 
     @Override
     public Machine addMachine(Long amusementParkId, Machine machine) {
-        AmusementPark amusementPark = amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId);
-        ifNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
+        AmusementPark amusementPark = ifNull(amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId), NO_AMUSEMENT_PARK_WITH_ID);
         checkForMoneyAndFreeArea(amusementPark, machine);
         return buyMachine(amusementPark, machine);
     }
 
     private void checkForMoneyAndFreeArea(AmusementPark amusementPark, Machine machine) {
         ifFirstLessThanSecond(amusementPark.getCapital(), machine.getPrice(), MACHINE_IS_TOO_EXPENSIVE);
-        ifFirstLessThanSecond(amusementPark.getTotalArea(),
-                Optional.ofNullable(machineRepository.sumAreaByAmusementParkId(amusementPark.getId())).orElse(0L) + machine.getSize(), MACHINE_IS_TOO_BIG);
+        ifFirstLessThanSecond(amusementPark.getTotalArea(), machineRepository.sumAreaByAmusementParkId(amusementPark.getId()).orElse(0L) + machine.getSize(), MACHINE_IS_TOO_BIG);
     }
 
     private Machine buyMachine(AmusementPark amusementPark, Machine machine) {
@@ -54,19 +49,17 @@ public class MachineServiceImpl implements MachineService {
 
     @Override
     public Machine findOne(Long machineId) {
-        return machineRepository.findById(machineId).orElseGet(() -> null);
+        return ifNull(machineRepository.findById(machineId), NO_MACHINE_IN_PARK_WITH_ID);
     }
     
     @Override
 	public List<Machine> findAllByAmusementParkId(Long amusementParkId) {
-		// TODO write tests;
 		return machineRepository.findAllByAmusementParkId(amusementParkId);
 	}
 
     @Override
     public void removeMachine(Long amusementParkId, Long machineId) {
-        Machine machine = machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId);
-        ifNull(machine, NO_MACHINE_IN_PARK_WITH_ID);
+        Machine machine = ifNull(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId), NO_MACHINE_IN_PARK_WITH_ID);
         ifNotZero(visitorRepository.countByMachineId(machineId), VISITORS_ON_MACHINE);
         amusementParkRepository.incrementCapitalById(machine.getPrice(), amusementParkId);
         machineRepository.deleteById(machineId);

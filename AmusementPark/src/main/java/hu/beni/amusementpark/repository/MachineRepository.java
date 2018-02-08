@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import static hu.beni.amusementpark.constants.ParameterMappingConstants.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import hu.beni.amusementpark.entity.Machine;
 
@@ -14,7 +15,7 @@ import hu.beni.amusementpark.entity.Machine;
 public interface MachineRepository extends JpaRepository<Machine, Long> {
 
     @Query("Select Sum(m.size) from Machine m where m.amusementPark.id = :amusementParkId")
-    public Long sumAreaByAmusementParkId(@Param(AMUSEMENT_PARK_ID) Long amusementParkId);
+    public Optional<Long> sumAreaByAmusementParkId(@Param(AMUSEMENT_PARK_ID) Long amusementParkId);
 
     @Query("Select m from Machine m where m.amusementPark.id = :amusementParkId and m.id = :machineId")
     public Machine findByAmusementParkIdAndMachineId(@Param(AMUSEMENT_PARK_ID) Long amusementParkId, @Param(MACHINE_ID) Long machineId);
