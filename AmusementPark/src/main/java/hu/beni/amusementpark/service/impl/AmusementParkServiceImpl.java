@@ -15,8 +15,8 @@ import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.AmusementParkService;
 import lombok.RequiredArgsConstructor;
 
-import static hu.beni.amusementpark.exception.ExceptionUtil.exceptionIfNotZero;
-import static hu.beni.amusementpark.exception.ExceptionUtil.exceptionIfNull;
+import static hu.beni.amusementpark.exception.ExceptionUtil.ifNotZero;
+import static hu.beni.amusementpark.exception.ExceptionUtil.ifNull;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITORS_IN_PARK;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
 
@@ -46,9 +46,9 @@ public class AmusementParkServiceImpl implements AmusementParkService {
 
     @Override
     public void delete(Long amusementParkId) {
-    	exceptionIfNotZero(visitorRepository.countByAmusementParkId(amusementParkId), VISITORS_IN_PARK);
+    	ifNotZero(visitorRepository.countByAmusementParkId(amusementParkId), VISITORS_IN_PARK);
     	AmusementPark amusementPark = amusementParkRepository.findById(amusementParkId).orElseGet(() -> null);
-    	exceptionIfNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
+    	ifNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
     	amusementParkRepository.delete(amusementPark);
     	amusementParkArchivator.sendToArchive(amusementPark);
     }

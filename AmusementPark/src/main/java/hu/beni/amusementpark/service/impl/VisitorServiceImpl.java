@@ -34,7 +34,7 @@ public class VisitorServiceImpl implements VisitorService{
     @Override
     public Integer findSpendingMoneyByUsername(){
         Integer spendingMoney = visitorRepository.findSpendingMoneyByUserName();
-        exceptionIfNull(spendingMoney, VISITOR_NOT_SIGNED_UP);
+        ifNull(spendingMoney, VISITOR_NOT_SIGNED_UP);
         return spendingMoney;
     }
     
@@ -51,16 +51,16 @@ public class VisitorServiceImpl implements VisitorService{
     @Override
     public Visitor enterPark(Long amusementParkId, Long visitorId) {
         AmusementPark amusementPark = amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId);
-        exceptionIfNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
+        ifNull(amusementPark, NO_AMUSEMENT_PARK_WITH_ID);
         
         Visitor visitor = visitorRepository.findById(visitorId).orElseGet(() -> null);
-        exceptionIfNull(visitor, VISITOR_NOT_SIGNED_UP);
+        ifNull(visitor, VISITOR_NOT_SIGNED_UP);
         
         Integer entranceFee = amusementPark.getEntranceFee();
         Integer spendingMoney = visitor.getSpendingMoney();
-        exceptionIfFirstLessThanSecond(spendingMoney, entranceFee, NOT_ENOUGH_MONEY);
+        ifFirstLessThanSecond(spendingMoney, entranceFee, NOT_ENOUGH_MONEY);
         
-        exceptionIfNotZero(visitorRepository.countByVisitorIdWhereAmusementParkIsNotNull(visitorId), VISITOR_IS_IN_A_PARK);
+        ifNotZero(visitorRepository.countByVisitorIdWhereAmusementParkIsNotNull(visitorId), VISITOR_IS_IN_A_PARK);
         
         Optional.of(amusementParkRepository.countKnownVisitor(amusementParkId, visitorId)).filter(count -> count == 0)
         	.ifPresent(count -> amusementParkRepository.addKnownVisitor(amusementParkId, visitorId));
@@ -76,9 +76,9 @@ public class VisitorServiceImpl implements VisitorService{
     @Override
     public Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId) {
         Machine machine = machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId);
-        exceptionIfNull(machine, NO_MACHINE_IN_PARK_WITH_ID);
+        ifNull(machine, NO_MACHINE_IN_PARK_WITH_ID);
         Visitor visitor = visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
-        exceptionIfNull(visitor, NO_VISITOR_IN_PARK_WITH_ID);
+        ifNull(visitor, NO_VISITOR_IN_PARK_WITH_ID);
         
         checkIfVisitorAbleToGetOnMachine(machine, visitor);
         
@@ -86,10 +86,10 @@ public class VisitorServiceImpl implements VisitorService{
     }
     
     private void checkIfVisitorAbleToGetOnMachine(Machine machine, Visitor visitor) {
-        exceptionIfEquals(VisitorState.ON_MACHINE, visitor.getState(), VISITOR_IS_ON_A_MACHINE);
-        exceptionIfFirstLessThanSecond(visitor.getSpendingMoney(), machine.getTicketPrice(), NOT_ENOUGH_MONEY);
-        exceptionIfFirstLessThanSecond(Period.between(visitor.getDateOfBirth(), LocalDate.now()).getYears(), machine.getMinimumRequiredAge(), VISITOR_IS_TOO_YOUNG);
-        exceptionIfPrimitivesEquals(visitorRepository.countByMachineId(machine.getId()), machine.getNumberOfSeats(), NO_FREE_SEAT_ON_MACHINE);
+        ifEquals(VisitorState.ON_MACHINE, visitor.getState(), VISITOR_IS_ON_A_MACHINE);
+        ifFirstLessThanSecond(visitor.getSpendingMoney(), machine.getTicketPrice(), NOT_ENOUGH_MONEY);
+        ifFirstLessThanSecond(Period.between(visitor.getDateOfBirth(), LocalDate.now()).getYears(), machine.getMinimumRequiredAge(), VISITOR_IS_TOO_YOUNG);
+        ifPrimitivesEquals(visitorRepository.countByMachineId(machine.getId()), machine.getNumberOfSeats(), NO_FREE_SEAT_ON_MACHINE);
     }
 
     private Visitor incrementCapitalAndDecraiseSpendingMoneyAndSave(Long amusementParkId, Machine machine, Visitor visitor) {
@@ -103,7 +103,7 @@ public class VisitorServiceImpl implements VisitorService{
     @Override
     public Visitor getOffMachine(Long machineId, Long visitorId) {
         Visitor visitor = visitorRepository.findByMachineIdAndVisitorId(machineId, visitorId);
-        exceptionIfNull(visitor, NO_VISITOR_ON_MACHINE_WITH_ID);
+        ifNull(visitor, NO_VISITOR_ON_MACHINE_WITH_ID);
         visitor.setMachine(null);
         visitor.setState(VisitorState.REST);
         return visitorRepository.save(visitor);
@@ -112,7 +112,7 @@ public class VisitorServiceImpl implements VisitorService{
     @Override
     public Visitor leavePark(Long amusementParkId, Long visitorId) {
     	Visitor visitor = visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
-    	exceptionIfNull(visitor, NO_VISITOR_IN_PARK_WITH_ID);
+    	ifNull(visitor, NO_VISITOR_IN_PARK_WITH_ID);
     	visitor.setAmusementPark(null);
     	visitor.setState(null);
     	return visitorRepository.save(visitor);
