@@ -68,6 +68,17 @@ public class AmusementParkServiceUnitTests {
         
         verify(amusementParkRepository).save(amusementPark);
     }
+    
+    @Test
+    public void findOneByIdNegativeNoPark() {
+        Long amusementParkId = 0L;
+
+        assertThatThrownBy(() -> amusementParkService.findOne(amusementParkId))
+        	.isInstanceOf(AmusementParkException.class)
+        	.hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
+
+        verify(amusementParkRepository).findById(amusementParkId);
+    }
 
     @Test
     public void findOneByIdPositive() {
@@ -82,7 +93,19 @@ public class AmusementParkServiceUnitTests {
     }
     
     @Test
-    public void findOneBySpecification() {
+    public void findOneBySpecificationNegativeNoPark() {
+    	Specification<AmusementPark> specification = (Root<AmusementPark> root, CriteriaQuery<?> query,
+    			CriteriaBuilder cb) -> cb.equal(root.get("name"), "asd");
+    			
+    	assertThatThrownBy(() -> amusementParkService.findOne(specification))
+    		.isInstanceOf(AmusementParkException.class)
+    		.hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
+    	
+    	verify(amusementParkRepository).findOne(specification);
+    }
+    
+    @Test
+    public void findOneBySpecificationPositive() {
     	AmusementPark amusementPark = AmusementPark.builder().build();
     	Specification<AmusementPark> specification = (Root<AmusementPark> root, CriteriaQuery<?> query,
     			CriteriaBuilder cb) -> cb.equal(root.get("name"), "asd");
@@ -147,7 +170,7 @@ public class AmusementParkServiceUnitTests {
     	
     	when(amusementParkRepository.findAllFetchAddress(pageable)).thenReturn(page);
     	
-    	assertEquals(page, amusementParkService.findAll(pageable));
+    	assertEquals(page, amusementParkService.findAllFetchAddress(pageable));
     	
     	verify(amusementParkRepository).findAllFetchAddress(pageable);
     }

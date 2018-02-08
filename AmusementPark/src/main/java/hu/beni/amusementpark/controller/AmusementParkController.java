@@ -51,7 +51,7 @@ public class AmusementParkController {
     @GetMapping("/paged")
     public Page<Resource<AmusementPark>> findAllPaged(@RequestParam(name = "page") int page, 
     		@RequestParam(name = "size") int size, @RequestParam(name = "sort", defaultValue = "id") String sort){	
-    	return amusementParkService.findAll(PageRequest.of(page, size, Sort.by(sort))).map(this::createResource);
+    	return amusementParkService.findAllFetchAddress(PageRequest.of(page, size, Sort.by(sort))).map(this::createResource);
     }
 
     @GetMapping("/{amusementParkId}")

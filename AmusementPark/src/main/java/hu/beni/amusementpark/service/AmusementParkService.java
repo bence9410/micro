@@ -20,7 +20,7 @@ public interface AmusementParkService {
     
     List<AmusementPark> findAll();
     
-    Page<AmusementPark> findAll(Pageable pageable);
+    Page<AmusementPark> findAllFetchAddress(Pageable pageable);
     
     List<AmusementPark> findAll(Specification<AmusementPark> specification);
     

@@ -36,7 +36,7 @@ import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.service.AmusementParkService;
 
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_ARCHIVE_SEND_TYPE;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -80,7 +80,9 @@ public class AmusementParkServiceIntegrationTests {
 		}
 		
 		amusementParkRepository.deleteById(id);
-		assertNull(amusementParkService.findOne(id));
+		assertThatThrownBy(() ->amusementParkService.findOne(id))
+			.isInstanceOf(AmusementParkException.class)
+			.hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
 	}
 
 	@Test
@@ -90,8 +92,8 @@ public class AmusementParkServiceIntegrationTests {
 
 		Pageable pageable = PageRequest.of(0, 5, Sort.by("capital"));
 
-		Page<AmusementPark> firstPage = amusementParkService.findAll(pageable);
-		Page<AmusementPark> lastPage = amusementParkService.findAll(firstPage.nextPageable());
+		Page<AmusementPark> firstPage = amusementParkService.findAllFetchAddress(pageable);
+		Page<AmusementPark> lastPage = amusementParkService.findAllFetchAddress(firstPage.nextPageable());
 
 		assertTrue(lastPage.isLast());
 
