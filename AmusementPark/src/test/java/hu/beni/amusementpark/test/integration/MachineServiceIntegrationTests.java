@@ -38,7 +38,7 @@ public class MachineServiceIntegrationTests {
         Machine machine = createMachine();
         Long machineId = machineService.addMachine(amusementParkId, machine).getId();
         assertNotNull(machineId);
-        assertEquals(amusementPark.getCapital() - machine.getPrice(), amusementParkService.findOne(amusementParkId).getCapital().longValue());
+        assertEquals(amusementPark.getCapital() - machine.getPrice(), amusementParkService.findByIdFetchAddress(amusementParkId).getCapital().longValue());
         
         Machine readMachine = machineService.findOne(machineId);
         assertEquals(machine, readMachine);
@@ -47,7 +47,7 @@ public class MachineServiceIntegrationTests {
         assertThatThrownBy(() -> machineService.findOne(machineId))
         	.isInstanceOf(AmusementParkException.class)
         	.hasMessage(NO_MACHINE_IN_PARK_WITH_ID);
-        assertEquals(amusementPark.getCapital().longValue(), amusementParkService.findOne(amusementParkId).getCapital().longValue());
+        assertEquals(amusementPark.getCapital().longValue(), amusementParkService.findByIdFetchAddress(amusementParkId).getCapital().longValue());
     
         amusementParkRepository.deleteById(amusementParkId);
     }

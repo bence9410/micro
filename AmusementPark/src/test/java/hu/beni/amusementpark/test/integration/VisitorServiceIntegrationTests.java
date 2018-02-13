@@ -59,7 +59,7 @@ public class VisitorServiceIntegrationTests {
         visitorService.enterPark(amusementParkId, visitorId);
         capital += entranceFee;
         spendingMoney -= entranceFee;
-        assertEquals(capital, amusementParkService.findOne(amusementParkId).getCapital());
+        assertEquals(capital, amusementParkService.findByIdFetchAddress(amusementParkId).getCapital());
         
         visitor = visitorService.findOne(visitorId);
         assertNotNull(visitor.getAmusementPark());
@@ -69,7 +69,7 @@ public class VisitorServiceIntegrationTests {
         visitorService.getOnMachine(amusementParkId, machineId, visitorId);
         capital += ticketPrice;
         spendingMoney -= ticketPrice;
-        assertEquals(capital, amusementParkService.findOne(amusementParkId).getCapital());
+        assertEquals(capital, amusementParkService.findByIdFetchAddress(amusementParkId).getCapital());
         
         visitor = visitorService.findOne(visitorId);
         assertEquals(spendingMoney, visitor.getSpendingMoney());

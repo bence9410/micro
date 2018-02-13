@@ -70,6 +70,8 @@ public class AmusementParkApplicationTests {
         Resource<AmusementPark> amusementParkResource = postAmusementParkWithAddress();
         String amusementParkUrl = amusementParkResource.getId().getHref();
         
+        assertEquals(amusementParkResource.getContent(), restTemplate.exchange(amusementParkUrl, HttpMethod.GET, createHttpEntityWithSessionIdHeaders(), amusementParkType()).getBody().getContent());
+        
         //add Machine
         Resource<Machine> machineResource = postMachine(amusementParkResource.getLink(MACHINE).getHref());
         

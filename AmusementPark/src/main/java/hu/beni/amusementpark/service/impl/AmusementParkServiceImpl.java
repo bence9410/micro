@@ -34,8 +34,8 @@ public class AmusementParkServiceImpl implements AmusementParkService {
     }	
 
     @Override
-    public AmusementPark findOne(Long amusementParkId) {
-        return ifNull(amusementParkRepository.findById(amusementParkId), NO_AMUSEMENT_PARK_WITH_ID);
+    public AmusementPark findByIdFetchAddress(Long amusementParkId) {
+        return ifNull(amusementParkRepository.findByIdFetchAddress(amusementParkId), NO_AMUSEMENT_PARK_WITH_ID);
     }
     
     @Override

@@ -12,7 +12,7 @@ public interface AmusementParkService {
 
     AmusementPark save(AmusementPark amusementPark);
 
-    AmusementPark findOne(Long amusementParkId);
+    AmusementPark findByIdFetchAddress(Long amusementParkId);
     
     AmusementPark findOne(Specification<AmusementPark> specification);
 

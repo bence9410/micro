@@ -73,11 +73,11 @@ public class AmusementParkServiceUnitTests {
     public void findOneByIdNegativeNoPark() {
         Long amusementParkId = 0L;
 
-        assertThatThrownBy(() -> amusementParkService.findOne(amusementParkId))
+        assertThatThrownBy(() -> amusementParkService.findByIdFetchAddress(amusementParkId))
         	.isInstanceOf(AmusementParkException.class)
         	.hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
 
-        verify(amusementParkRepository).findById(amusementParkId);
+        verify(amusementParkRepository).findByIdFetchAddress(amusementParkId);
     }
 
     @Test
@@ -85,11 +85,11 @@ public class AmusementParkServiceUnitTests {
         AmusementPark amusementPark = AmusementPark.builder().id(0L).build();
         Long amusementParkId = amusementPark.getId();
 
-        when(amusementParkRepository.findById(amusementParkId)).thenReturn(Optional.of(amusementPark));
+        when(amusementParkRepository.findByIdFetchAddress(amusementParkId)).thenReturn(Optional.of(amusementPark));
 
-        assertEquals(amusementPark, amusementParkService.findOne(amusementParkId));
+        assertEquals(amusementPark, amusementParkService.findByIdFetchAddress(amusementParkId));
 
-        verify(amusementParkRepository).findById(amusementParkId);
+        verify(amusementParkRepository).findByIdFetchAddress(amusementParkId);
     }
     
     @Test

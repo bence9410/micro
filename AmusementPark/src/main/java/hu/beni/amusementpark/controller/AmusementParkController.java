@@ -56,7 +56,7 @@ public class AmusementParkController {
 
     @GetMapping("/{amusementParkId}")
     public Resource<AmusementPark> findOne(@PathVariable Long amusementParkId) {
-        return createResource(amusementParkService.findOne(amusementParkId));
+        return createResource(amusementParkService.findByIdFetchAddress(amusementParkId));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

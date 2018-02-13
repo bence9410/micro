@@ -69,17 +69,17 @@ public class AmusementParkServiceIntegrationTests {
 		assertNotNull(id);
 		assertNotNull(address.getId());
 
-		AmusementPark readAmusementPark = amusementParkService.findOne(id);
+		AmusementPark readAmusementPark = amusementParkService.findByIdFetchAddress(id);
 		assertEquals(amusementPark, readAmusementPark);
 
 		if (environment.getActiveProfiles().length == 0) {
 			assertThatThrownBy(() -> amusementParkService.delete(id))
 				.isInstanceOf(AmusementParkException.class).hasMessage(NO_ARCHIVE_SEND_TYPE);
-			assertNotNull(amusementParkService.findOne(id));
+			assertNotNull(amusementParkService.findByIdFetchAddress(id));
 		}
 		
 		amusementParkRepository.deleteById(id);
-		assertThatThrownBy(() ->amusementParkService.findOne(id))
+		assertThatThrownBy(() ->amusementParkService.findByIdFetchAddress(id))
 			.isInstanceOf(AmusementParkException.class)
 			.hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
 	}

@@ -19,6 +19,10 @@ import hu.beni.amusementpark.entity.AmusementPark;
 @Repository
 public interface AmusementParkRepository extends JpaRepository<AmusementPark, Long>, JpaSpecificationExecutor<AmusementPark>{
 
+	@Query("Select a from AmusementPark a where a.id = :amusementParkId")
+	@EntityGraph(attributePaths = "address", type = EntityGraphType.FETCH)
+	public Optional<AmusementPark> findByIdFetchAddress(@Param(AMUSEMENT_PARK_ID) Long amusementParkId);
+	
 	@Query("Select a from AmusementPark a")
 	@EntityGraph(attributePaths = "address", type = EntityGraphType.FETCH)
 	public Page<AmusementPark> findAllFetchAddress(Pageable pageable);
