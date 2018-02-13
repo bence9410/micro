@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import static hu.beni.amusementpark.constants.ParameterMappingConstants.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import hu.beni.amusementpark.entity.AmusementPark;
@@ -22,6 +23,10 @@ public interface AmusementParkRepository extends JpaRepository<AmusementPark, Lo
 	@Query("Select a from AmusementPark a where a.id = :amusementParkId")
 	@EntityGraph(attributePaths = "address", type = EntityGraphType.FETCH)
 	public Optional<AmusementPark> findByIdFetchAddress(@Param(AMUSEMENT_PARK_ID) Long amusementParkId);
+	
+	@Query("Select a from AmusementPark a")
+	@EntityGraph(attributePaths = "address", type = EntityGraphType.FETCH)
+	public List<AmusementPark> findAllFetchAddress();
 	
 	@Query("Select a from AmusementPark a")
 	@EntityGraph(attributePaths = "address", type = EntityGraphType.FETCH)

@@ -45,7 +45,7 @@ public class AmusementParkController {
     
     @GetMapping
     public List<Resource<AmusementPark>> findAll(){
-    	return amusementParkService.findAll().stream().map(this::createResource).collect(Collectors.toList());
+    	return amusementParkService.findAllFetchAddress().stream().map(this::createResource).collect(Collectors.toList());
     }
     
     @GetMapping("/paged")

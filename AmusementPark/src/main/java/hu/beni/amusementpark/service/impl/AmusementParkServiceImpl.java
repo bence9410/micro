@@ -52,8 +52,8 @@ public class AmusementParkServiceImpl implements AmusementParkService {
     }
     
     @Override
-    public List<AmusementPark> findAll(){
-    	return amusementParkRepository.findAll();
+    public List<AmusementPark> findAllFetchAddress(){
+    	return amusementParkRepository.findAllFetchAddress();
     }
     
     @Override

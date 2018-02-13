@@ -18,7 +18,7 @@ public interface AmusementParkService {
 
     void delete(Long amusementParkId);
     
-    List<AmusementPark> findAll();
+    List<AmusementPark> findAllFetchAddress();
     
     Page<AmusementPark> findAllFetchAddress(Pageable pageable);
     
