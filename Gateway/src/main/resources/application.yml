@@ -1,0 +1,14 @@
+security:
+  oauth2:
+    client:
+      client-id: beni
+      client-secret: benisecret
+      access-token-uri: http://localhost:9999/uaa/oauth/token
+      user-authorization-uri: http://localhost:9999/uaa/oauth/authorize
+    resource:
+      user-info-uri: http://localhost:9999/uaa/me
+zuul:
+  routes:
+    zoo:
+      path: /zoo/**
+      url: http://localhost:9010/zoo
