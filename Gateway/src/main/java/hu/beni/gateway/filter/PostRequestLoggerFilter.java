@@ -1,8 +1,9 @@
 package hu.beni.gateway.filter;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ import com.netflix.zuul.context.RequestContext;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Component
 public class PostRequestLoggerFilter  extends ZuulFilter {
 
 	@Override
@@ -31,16 +33,14 @@ public class PostRequestLoggerFilter  extends ZuulFilter {
 
 	@Override
 	public Object run() {
-		
-/*		List<Pair<String, String>> headers = RequestContext.getCurrentContext().getZuulResponseHeaders();
+		HttpServletResponse response = RequestContext.getCurrentContext().getResponse();
 		
 		Map<String, String> map = new HashMap<>();
-		
-		for (Pair<String, String> header : headers) {
-			map.put(header.first(), header.second());
+		for (String headerName : response.getHeaderNames()) {
+			map.put(headerName, response.getHeader(headerName));
 		}
-	*/	
-		//log.info(String.format("Response headers: %s", map));
+
+		log.info(String.format("Response headers: %s", map));
 
 		return null;
 	}
