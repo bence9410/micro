@@ -45,3 +45,13 @@ function zoo(){
         }
     });
 }
+
+function amusementPark(){
+	$.ajax({
+    	url: "/amusementparkui/amusementPark.html",
+        success: function (data) {
+        	$("#content").html(data);
+        	$("head").append("<script type='text/javascript'  src='amusementparkui/amusementPark.js'></script>");
+        }
+    });
+}
