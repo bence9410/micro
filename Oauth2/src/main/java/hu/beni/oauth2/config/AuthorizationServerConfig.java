@@ -19,7 +19,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients.inMemory()
 			.withClient("beni").secret("benisecret")
-				.authorizedGrantTypes("authorization_code", "refresh_token")
+				.authorizedGrantTypes("authorization_code")
 				.scopes(new String[] { "read", "write" })
 				.autoApprove(true);
 	}
