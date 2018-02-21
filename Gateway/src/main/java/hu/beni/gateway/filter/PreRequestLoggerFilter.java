@@ -34,14 +34,13 @@ public class PreRequestLoggerFilter extends ZuulFilter {
 
 	@Override
 	public Object run() {
-		RequestContext ctx = RequestContext.getCurrentContext();
-		HttpServletRequest request = ctx.getRequest();
+		HttpServletRequest request = RequestContext.getCurrentContext().getRequest();
 		
 		Map<String, String> map = new HashMap<>();
-		Enumeration<String> asd = request.getHeaderNames();
-		while (asd.hasMoreElements()){
-			String name = asd.nextElement();
-			map.put(name, request.getHeader(name));
+		Enumeration<String> headerNames = request.getHeaderNames();
+		while (headerNames.hasMoreElements()){
+			String headerName = headerNames.nextElement();
+			map.put(headerName, request.getHeader(headerName));
 		}
 		
 		log.info(String.format("%s request to %s headers: %s", request.getMethod(),

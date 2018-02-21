@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Beni</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css" />
+	<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+	<script type="text/javascript" src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="/index.js"></script>
+</head>
+<body onload="init()">
+	<div id="login">
+		<input type="button" value="login" onclick="location.href='/login'">
+	</div>
+	<div id="header" class="row" style="display:none; background-color: Lime;">
+		<div class="col-md-2"></div>
+		<div class="col-md-6">
+			Username:
+			<p id="username"></p>
+			<p id="authorities" class="hidden"></p>
+			Spending money:
+			<p id="spendingMoney"></p>
+			<input type="button" value="App Selector" onclick="appSelector()">
+		</div>
+		<div class="col-md-4">
+			<form action="/logout" method="post">
+				<input type="submit" value="logout">
+			</form>
+		</div>
+	</div>
+	<div id="content" style="display:none;"></div>
+</body>
+</html>

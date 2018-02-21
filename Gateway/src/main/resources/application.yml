@@ -9,6 +9,12 @@ security:
       user-info-uri: http://localhost:9999/uaa/me
 zuul:
   routes:
+    user:
+      path: /me/**
+      url: http://localhost:9999/uaa/me
     zoo:
       path: /zoo/**
       url: http://localhost:9010/zoo
+    zooui:
+      path: /zooui/**
+      url: http://localhost:9011
