@@ -12,6 +12,9 @@ zuul:
     user:
       path: /me/**
       url: http://localhost:9999/uaa/me
+    amusementpark:
+      path: /amusementpark/**
+      url: http://localhost:9000/amusementpark
     amusementparkui:
       path: /amusementparkui/**
       url: http://localhost:9001
