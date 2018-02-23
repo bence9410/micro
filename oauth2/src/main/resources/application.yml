@@ -1,3 +1,9 @@
 server:
   port: 9999
   context-path: /uaa
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521:xe
+    username: benike
+    password: benike
+    driver-class-name: oracle.jdbc.OracleDriver

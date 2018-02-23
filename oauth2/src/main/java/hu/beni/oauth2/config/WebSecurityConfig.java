@@ -1,5 +1,8 @@
 package hu.beni.oauth2.config;
 
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -10,6 +13,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Configuration
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+	
+	@Autowired
+	private DataSource dataSource;
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -24,8 +30,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 	@Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-        		.withUser("admin").password("pass").roles("ADMIN").and()
-        		.withUser("user").password("pass").roles("USER");
+		auth.jdbcAuthentication().dataSource(dataSource);
 	}
+
 }
