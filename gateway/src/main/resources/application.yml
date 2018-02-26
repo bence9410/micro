@@ -25,5 +25,11 @@ zuul:
       path: /zooui/**
       url: http://localhost:9011
     welcome:
-      path: /**
+      path: /
+      url: http://localhost:8999
+    welcome-js:
+      path: /index.js
+      url: http://localhost:8999
+    welcome-app-selector:
+      path: /appSelector.html
       url: http://localhost:8999
