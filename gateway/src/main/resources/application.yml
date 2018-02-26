@@ -24,6 +24,6 @@ zuul:
     zooui:
       path: /zooui/**
       url: http://localhost:9011
-    loginandwelcome:
+    welcome:
       path: /**
       url: http://localhost:8999
