@@ -9,16 +9,16 @@ security:
       user-info-uri: http://localhost:9999/uaa/user
 zuul:
   routes:
-    amusementpark:
+    amusement-park:
       path: /amusement-park/**
       url: http://localhost:9000/amusement-park
     zoo:
       path: /zoo/**
       url: http://localhost:9010/zoo
-    amusementparkui:
+    amusement-park-ui:
       path: /amusement-park-ui/**
       url: http://localhost:9001
-    zooui:
+    zoo-ui:
       path: /zoo-ui/**
       url: http://localhost:9011
     welcome-app-selector:
