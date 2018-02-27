@@ -10,19 +10,19 @@ security:
 zuul:
   routes:
     amusementpark:
-      path: /amusementpark/**
-      url: http://localhost:9000/amusementpark
+      path: /amusement-park/**
+      url: http://localhost:9000/amusement-park
     zoo:
       path: /zoo/**
       url: http://localhost:9010/zoo
     amusementparkui:
-      path: /amusementparkui/**
+      path: /amusement-park-ui/**
       url: http://localhost:9001
     zooui:
-      path: /zooui/**
+      path: /zoo-ui/**
       url: http://localhost:9011
     welcome-app-selector:
-      path: /appSelector.html
+      path: /app-selector.html
       url: http://localhost:8999
     welcome:
       path: /

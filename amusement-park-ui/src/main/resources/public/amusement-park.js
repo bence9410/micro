@@ -1,6 +1,6 @@
 $(document).ready(function(){
 	$.ajax({
-        url: "/amusementpark/hello",
+        url: "/amusement-park/hello",
         success: function (data) {
         	$("#result").html(data)
         }

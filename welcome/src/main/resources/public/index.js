@@ -25,7 +25,7 @@ function init() {
 
 function appSelector(){
     $.ajax({
-    	url: '/appSelector.html',
+    	url: '/app-selector.html',
         success: function (data) {
         	$("#content").html(data);
         	var scripts = $("head").find("script");
@@ -38,20 +38,20 @@ function appSelector(){
 
 function zoo(){
 	$.ajax({
-    	url: "/zooui/zoo.html",
+    	url: "/zoo-ui/zoo.html",
         success: function (data) {
         	$("#content").html(data);
-        	$("head").append("<script type='text/javascript'  src='zooui/zoo.js'></script>");
+        	$("head").append("<script type='text/javascript'  src='zoo-ui/zoo.js'></script>");
         }
     });
 }
 
 function amusementPark(){
 	$.ajax({
-    	url: "/amusementparkui/amusementPark.html",
+    	url: "/amusement-park-ui/amusement-park.html",
         success: function (data) {
         	$("#content").html(data);
-        	$("head").append("<script type='text/javascript'  src='amusementparkui/amusementPark.js'></script>");
+        	$("head").append("<script type='text/javascript'  src='amusement-park-ui/amusement-park.js'></script>");
         }
     });
 }
