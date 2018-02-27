@@ -3,7 +3,7 @@ var authorities;
 
 function init() {
     $.ajax({
-        url: '/me',
+        url: '/user',
         success: function (data) {
             username = data.name;
             $("#username").html(username);
