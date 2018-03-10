@@ -7,6 +7,7 @@ services:
     depends_on:
       - oauth2
       - welcome
+      - zoo-ui
   oauth2:
     image: benike/oauth2
     ports:
@@ -15,5 +16,9 @@ services:
       - database
   welcome:
     image: benike/welcome
+  zoo-ui:
+    image: benike/zoo-ui
+    depends_on: 
+      - oauth2
   database:
     image: benike/database-oracle-xe-11g

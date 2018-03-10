@@ -20,7 +20,7 @@ zuul:
       url: http://localhost:9001
     zoo-ui:
       path: /zoo-ui/**
-      url: http://localhost:9011
+      url: http://zoo-ui:9011
     welcome-app-selector:
       path: /app-selector.html
       url: http://welcome:8999
