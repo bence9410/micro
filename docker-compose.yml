@@ -8,6 +8,7 @@ services:
       - oauth2
       - welcome
       - amusement-park-ui
+      - amusement-park
       - zoo-ui
       - zoo
   oauth2:
@@ -20,6 +21,10 @@ services:
     image: benike/welcome
   amusement-park-ui:
     image: benike/amusement-park-ui
+    depends_on:
+      - oauth2
+  amusement-park:
+    image: benike/amusement-park
     depends_on:
       - oauth2
   zoo-ui:
