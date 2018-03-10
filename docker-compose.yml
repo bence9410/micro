@@ -9,6 +9,7 @@ services:
       - welcome
       - amusement-park-ui
       - zoo-ui
+      - zoo
   oauth2:
     image: benike/oauth2
     ports:
@@ -24,6 +25,10 @@ services:
   zoo-ui:
     image: benike/zoo-ui
     depends_on: 
+      - oauth2
+  zoo:
+    image: benike/zoo
+    depends_on:
       - oauth2
   database:
     image: benike/database-oracle-xe-11g

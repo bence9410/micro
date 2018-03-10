@@ -14,7 +14,7 @@ public class ResourceServerConfig {
 	@Bean
 	public RemoteTokenServices remoteTokenServices() {
 		RemoteTokenServices remoteTokenServices = new RemoteTokenServices();
-		remoteTokenServices.setCheckTokenEndpointUrl("http://localhost:9999/uaa/oauth/check_token");
+		remoteTokenServices.setCheckTokenEndpointUrl("http://oauth2:9999/uaa/oauth/check_token");
 		remoteTokenServices.setClientId("beni");
 		remoteTokenServices.setClientSecret("benisecret");
 		return remoteTokenServices;
