@@ -1,5 +1,9 @@
 version: '3'
 services:
+  gateway:
+    image: benike/gateway
+    ports:
+      - 8080:8080
   oauth2:
     image: benike/oauth2
     ports:
