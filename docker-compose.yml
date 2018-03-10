@@ -1,0 +1,10 @@
+version: '3'
+services:
+  oauth2:
+    image: benike/oauth2
+    ports:
+      - 9999:9999
+    depends_on:
+      - database
+  database:
+    image: benike/database-oracle-xe-11g
