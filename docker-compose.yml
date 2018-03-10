@@ -4,11 +4,16 @@ services:
     image: benike/gateway
     ports:
       - 8080:8080
+    depends_on:
+      - oauth2
+      - welcome
   oauth2:
     image: benike/oauth2
     ports:
       - 9999:9999
     depends_on:
       - database
+  welcome:
+    image: benike/welcome
   database:
     image: benike/database-oracle-xe-11g

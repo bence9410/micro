@@ -3,10 +3,10 @@ security:
     client:
       client-id: beni
       client-secret: benisecret
-      access-token-uri: http://localhost:9999/uaa/oauth/token
+      access-token-uri: http://oauth2:9999/uaa/oauth/token
       user-authorization-uri: http://localhost:9999/uaa/oauth/authorize
     resource:
-      user-info-uri: http://localhost:9999/uaa/user
+      user-info-uri: http://oauth2:9999/uaa/user
 zuul:
   routes:
     amusement-park:
@@ -23,14 +23,14 @@ zuul:
       url: http://localhost:9011
     welcome-app-selector:
       path: /app-selector.html
-      url: http://localhost:8999
+      url: http://welcome:8999
     welcome:
       path: /
-      url: http://localhost:8999
+      url: http://welcome:8999
     welcome-js:
       path: /index.js
-      url: http://localhost:8999
+      url: http://welcome:8999
     user:
       path: /user/**
-      url: http://localhost:9999/uaa/user
+      url: http://oauth2:9999/uaa/user
     
