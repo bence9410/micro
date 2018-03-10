@@ -4,36 +4,19 @@ services:
     image: benike/gateway
     ports:
       - 8080:8080
-    depends_on:
-      - oauth2
-      - welcome
-      - amusement-park-ui
-      - amusement-park
-      - zoo-ui
-      - zoo
   oauth2:
     image: benike/oauth2
     ports:
       - 9999:9999
-    depends_on:
-      - database
   welcome:
     image: benike/welcome
   amusement-park-ui:
     image: benike/amusement-park-ui
-    depends_on:
-      - oauth2
   amusement-park:
     image: benike/amusement-park
-    depends_on:
-      - oauth2
   zoo-ui:
     image: benike/zoo-ui
-    depends_on: 
-      - oauth2
   zoo:
     image: benike/zoo
-    depends_on:
-      - oauth2
   database:
     image: benike/database-oracle-xe-11g
