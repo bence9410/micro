@@ -17,7 +17,7 @@ zuul:
       url: http://localhost:9010/zoo
     amusement-park-ui:
       path: /amusement-park-ui/**
-      url: http://localhost:9001
+      url: http://amusement-park-ui:9001
     zoo-ui:
       path: /zoo-ui/**
       url: http://zoo-ui:9011
