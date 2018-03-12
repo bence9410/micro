@@ -50,3 +50,9 @@ insert into oauth2.authorities (username, authority) values ('admin' , 'ROLE_ADM
 
 insert into oauth2.authorities (username, authority) values ('user', 'ROLE_USER');
 
+grant all privileges to zoo identified by pass;
+
+create table zoo.message (id number(19,0) not null, content varchar2(255 char), primary key (id));
+
+insert into zoo.message (id, content) values (0, '1. Zoo message');
+insert into zoo.message (id, content) values (1, '2. Zoo message');

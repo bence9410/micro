@@ -2,7 +2,13 @@ $(document).ready(function(){
 	$.ajax({
         url: "/zoo/hello",
         success: function (data) {
-        	$("#result").html(data)
+        	$("#hello").html(data)
         }
+	})
+	$.ajax({
+		url: "/zoo",
+		success: function(data) {
+			$("#messages").html(data.join(", "))
+		}
 	})
 })
