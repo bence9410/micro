@@ -1,1 +1,10 @@
 server.port: 9000
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@database:1521:xe
+    username: amusementPark
+    password: pass
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    open-in-view: false
+    database-platform: org.hibernate.dialect.Oracle10gDialect

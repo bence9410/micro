@@ -50,6 +50,16 @@ insert into oauth2.authorities (username, authority) values ('admin' , 'ROLE_ADM
 
 insert into oauth2.authorities (username, authority) values ('user', 'ROLE_USER');
 
+grant all privileges to amusementpark identified by pass;
+
+create table amusementpark.message (id number(19,0) not null, content varchar2(255 char), primary key (id));
+
+insert into amusementpark.message (id, content) values (0, '1. Amusement Park message');
+
+insert into amusementpark.message (id, content) values (1, '2. Amusement Park message');
+
+insert into amusementpark.message (id, content) values (2, '3. Amusement Park message');
+
 grant all privileges to zoo identified by pass;
 
 create table zoo.message (id number(19,0) not null, content varchar2(255 char), primary key (id));
