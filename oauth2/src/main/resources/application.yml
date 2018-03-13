@@ -11,12 +11,4 @@ spring:
 ---
    
 spring.profiles: docker 
-server:
-  port: 9999
-  context-path: /uaa
-spring:
-  datasource:
-    url: jdbc:oracle:thin:@database:1521:xe
-    username: oauth2
-    password: pass
-    driver-class-name: oracle.jdbc.OracleDriver
+spring.datasource.url: jdbc:oracle:thin:@database:1521:xe

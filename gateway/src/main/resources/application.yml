@@ -36,8 +36,8 @@ zuul:
 
 ---
 
-spring:
-  profiles: docker
+spring.profiles: docker
+server.port: 80
 security:
   oauth2:
     client.access-token-uri: http://oauth2:9999/uaa/oauth/token
@@ -46,25 +46,25 @@ zuul:
   routes:
     amusement-park:
       path: /amusement-park/**
-      url: http://amusement-park:9000/amusement-park
+      url: http://amusement-park/amusement-park
     zoo:
       path: /zoo/**
-      url: http://zoo:9010/zoo
+      url: http://zoo/zoo
     amusement-park-ui:
       path: /amusement-park-ui/**
-      url: http://amusement-park-ui:9001
+      url: http://amusement-park-ui
     zoo-ui:
       path: /zoo-ui/**
-      url: http://zoo-ui:9011
+      url: http://zoo-ui
     welcome-app-selector:
       path: /app-selector.html
-      url: http://welcome:8999
+      url: http://welcome
     welcome:
       path: /
-      url: http://welcome:8999
+      url: http://welcome
     welcome-js:
       path: /index.js
-      url: http://welcome:8999
+      url: http://welcome
     user:
       path: /user/**
       url: http://oauth2:9999/uaa/user

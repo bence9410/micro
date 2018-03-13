@@ -1,10 +1,16 @@
 server.port: 9010
 spring:
   datasource:
-    url: jdbc:oracle:thin:@database:1521:xe
+    url: jdbc:oracle:thin:@localhost:1521:xe
     username: zoo
     password: pass
     driver-class-name: oracle.jdbc.OracleDriver
   jpa:
     open-in-view: false
     database-platform: org.hibernate.dialect.Oracle10gDialect
+    
+---
+
+spring.profiles: docker
+server.port: 80
+spring.datasource.url: jdbc:oracle:thin:@database:1521:xe
