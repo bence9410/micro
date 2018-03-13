@@ -3,10 +3,45 @@ security:
     client:
       client-id: beni
       client-secret: benisecret
-      access-token-uri: http://oauth2:9999/uaa/oauth/token
+      access-token-uri: http://localhost:9999/uaa/oauth/token
       user-authorization-uri: http://localhost:9999/uaa/oauth/authorize
     resource:
-      user-info-uri: http://oauth2:9999/uaa/user
+      user-info-uri: http://localhost:9999/uaa/user
+zuul:
+  routes:
+    amusement-park:
+      path: /amusement-park/**
+      url: http://localhost:9000/amusement-park
+    zoo:
+      path: /zoo/**
+      url: http://localhost:9010/zoo
+    amusement-park-ui:
+      path: /amusement-park-ui/**
+      url: http://localhost:9001
+    zoo-ui:
+      path: /zoo-ui/**
+      url: http://localhost:9011
+    welcome-app-selector:
+      path: /app-selector.html
+      url: http://localhost:8999
+    welcome:
+      path: /
+      url: http://localhost:8999
+    welcome-js:
+      path: /index.js
+      url: http://localhost:8999
+    user:
+      path: /user/**
+      url: http://localhost:9999/uaa/user
+
+---
+
+spring:
+  profiles: docker
+security:
+  oauth2:
+    client.access-token-uri: http://oauth2:9999/uaa/oauth/token
+    resource.user-info-uri: http://oauth2:9999/uaa/user
 zuul:
   routes:
     amusement-park:
@@ -33,4 +68,3 @@ zuul:
     user:
       path: /user/**
       url: http://oauth2:9999/uaa/user
-    
