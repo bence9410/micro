@@ -14,14 +14,14 @@ public class ResourceServerConfig {
 
 	@Bean
 	public RemoteTokenServices remoteTokenServices(Environment environment) {
-		String tokenHost;
+		String tokenUrl;
 		if (environment.getActiveProfiles().length == 0) {
-			tokenHost = "localhost";
+			tokenUrl = "localhost:9999";
 		} else {
-			tokenHost = "oauth2";
+			tokenUrl = "oauth2";
 		}
 		RemoteTokenServices remoteTokenServices = new RemoteTokenServices();
-		remoteTokenServices.setCheckTokenEndpointUrl("http://" + tokenHost + ":9999/uaa/oauth/check_token");
+		remoteTokenServices.setCheckTokenEndpointUrl("http://" + tokenUrl + "/uaa/oauth/check_token");
 		remoteTokenServices.setClientId("beni");
 		remoteTokenServices.setClientSecret("benisecret");
 		return remoteTokenServices;

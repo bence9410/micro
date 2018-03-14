@@ -4,7 +4,7 @@ security:
       client-id: beni
       client-secret: benisecret
       access-token-uri: http://localhost:9999/uaa/oauth/token
-      user-authorization-uri: http://localhost:9999/uaa/oauth/authorize
+      user-authorization-uri: /uaa/oauth/authorize
     resource:
       user-info-uri: http://localhost:9999/uaa/user
 zuul:
@@ -33,6 +33,10 @@ zuul:
     user:
       path: /user/**
       url: http://localhost:9999/uaa/user
+    oauth:
+      path: /uaa/**
+      url: http://localhost:9999/uaa
+      sensitive-headers:
 
 ---
 
@@ -40,8 +44,8 @@ spring.profiles: docker
 server.port: 80
 security:
   oauth2:
-    client.access-token-uri: http://oauth2:9999/uaa/oauth/token
-    resource.user-info-uri: http://oauth2:9999/uaa/user
+    client.access-token-uri: http://oauth2/uaa/oauth/token
+    resource.user-info-uri: http://oauth2/uaa/user
 zuul:
   routes:
     amusement-park:
@@ -67,4 +71,9 @@ zuul:
       url: http://welcome
     user:
       path: /user/**
-      url: http://oauth2:9999/uaa/user
+      url: http://oauth2/uaa/user
+    oauth:
+      path: /uaa/**
+      url: http://oauth2/uaa
+      sensitive-headers:
+      

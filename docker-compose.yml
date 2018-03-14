@@ -6,8 +6,6 @@ services:
       - 80:80
   oauth2:
     image: benike/oauth2
-    ports:
-      - 9999:9999
   welcome:
     image: benike/welcome
   amusement-park-ui:
