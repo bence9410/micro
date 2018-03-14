@@ -13,20 +13,22 @@
 	<div id="login">
 		<input type="button" value="login" onclick="location.href='/login'">
 	</div>
-	<div id="header" class="row" style="display:none; background-color: Lime;">
-		<div class="col-md-2"></div>
-		<div class="col-md-6">
-			Username:
-			<p id="username"></p>
-			<p id="authorities" class="hidden"></p>
-			Spending money:
-			<p id="spendingMoney"></p>
-			<input type="button" value="App Selector" onclick="appSelector()">
-		</div>
-		<div class="col-md-4">
-			<form action="/logout" method="post">
-				<input type="submit" value="logout">
-			</form>
+	<div class="container-fluid">
+		<div id="header" class="row" style="display:none; background-color: Lime;">
+			<div class="col-md-2"></div>
+			<div class="col-md-6">
+				Username:
+				<p id="username"></p>
+				<p id="authorities" class="hidden"></p>
+				Spending money:
+				<p id="spendingMoney"></p>
+				<input type="button" value="App Selector" onclick="appSelector()">
+			</div>
+			<div class="col-md-4">
+				<form action="/logout" method="post">
+					<input type="submit" value="logout">
+				</form>
+			</div>
 		</div>
 	</div>
 	<div id="content" style="display:none;"></div>
