@@ -1,5 +1,5 @@
 gnome-terminal --maximize \
---tab -e "bash -c 'cd gateway/; mvn clean package dockerfile:build'" \
+--tab -e "bash -c 'cd gateway/; mvn clean package dockerfile:build; exec bash'" \
 --tab -e "bash -c 'cd oauth2/; mvn clean package dockerfile:build; exec bash'" \
 --tab -e "bash -c 'cd welcome/; mvn clean package dockerfile:build; exec bash'" \
 --tab -e "bash -c 'cd amusement-park-ui/; mvn clean package dockerfile:build; exec bash'" \
