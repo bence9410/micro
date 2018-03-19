@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.filter.OAuth2ClientContextFilter;
@@ -36,8 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     }
 	
 	@Bean
-	@Primary
-	public OAuth2ClientContextFilter filter() {
+	public OAuth2ClientContextFilter oauth2ClientContextFilter() {
 		return new  OAuth2ClientContextFilter() {
 		    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 	
