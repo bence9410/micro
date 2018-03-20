@@ -2,6 +2,7 @@ package hu.beni.gateway.config;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,15 +38,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	@Bean
 	public OAuth2ClientContextFilter oauth2ClientContextFilter() {
 		return new  OAuth2ClientContextFilter() {
-		    private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-	
+		    
 		    @Override
 		    protected void redirectUser(UserRedirectRequiredException e, HttpServletRequest request,
 		                                HttpServletResponse response) throws IOException {
-		        String redirectUri = e.getRedirectUri();
+		    
+		    	String redirectUri = e.getRedirectUri();
 		        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(redirectUri);
-		        Map<String, String> requestParams = e.getRequestParams();
-		        for (Map.Entry<String, String> param : requestParams.entrySet()) {
+		        
+		        for (Entry<String, String> param : e.getRequestParams().entrySet()) {
 		            builder.queryParam(param.getKey(), param.getValue());
 		        }
 	
@@ -53,14 +54,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		            builder.queryParam("state", e.getStateKey());
 		        }
 	
-		        String url = getBaseUrl(request) + builder.build().encode().toUriString();
-		        this.redirectStrategy.sendRedirect(request, response, url);
+		        response.sendRedirect(builder.build().encode().toUriString());
 		    }
 	
-		    private String getBaseUrl(HttpServletRequest request) {
-		        StringBuffer url = request.getRequestURL();
-		        return  url.substring(0, url.length() - request.getRequestURI().length() + request.getContextPath().length());
-		    }
 		};
 	}
 
