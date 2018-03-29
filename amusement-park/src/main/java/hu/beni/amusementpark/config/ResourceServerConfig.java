@@ -1,4 +1,4 @@
-package hu.beni.amusementparkmicro.config;
+package hu.beni.amusementpark.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

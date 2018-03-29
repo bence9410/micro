@@ -1,12 +1,12 @@
-package hu.beni.amusementparkmicro;
+package hu.beni.amusementpark;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AmusementParkMicroApplication {
+public class AmusementParkApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AmusementParkMicroApplication.class, args);
-	}
+		SpringApplication.run(AmusementParkApplication.class, args);
+	}	
 }

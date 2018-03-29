@@ -1,4 +1,4 @@
-package hu.beni.amusementparkmicro.entity;
+package hu.beni.amusementpark.entity;
 
 import java.io.Serializable;
 

@@ -114,7 +114,7 @@ public class TesterApplicationTests {
 	
 	private void clearDB() {
 		log.info("clearDB");
-		extract(async.deleteAllPark(admins.get(0)));
+		async.deleteAllPark(admins.get(0)).join();
 		extract(async.deleteAllVisitor(admins.get(0)));
 	}
 	
@@ -200,7 +200,7 @@ public class TesterApplicationTests {
 	}
 	
 	private <T, R> List<R> executeAsyncAndGet(Stream<T> stream, Function<T, CompletableFuture<R>> function) {
-		return stream.map(function).collect(toList()).stream().map(this::extract).collect(toList());
+		return stream.map(function).collect(toList()).stream().map(CompletableFuture::join).collect(toList());
 	}
 	
 	private <T, R> List<R> map(List<T> list, Function<T, R> function){
