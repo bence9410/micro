@@ -10,9 +10,10 @@ import hu.beni.dto.ArchiveAmusementParkDTO;
 import lombok.RequiredArgsConstructor;
 
 import static hu.beni.amusementpark.constants.RabbitMQConstants.*;
+import static hu.beni.amusementpark.constants.SpringProfileConstants.ORACLE_DB;
 
 @Component
-@Profile("oracleDB")
+@Profile(ORACLE_DB)
 @RequiredArgsConstructor
 public class RabbitMQArchiveSender implements ArchiveSender {
 
