@@ -13,7 +13,7 @@ public class MyAssert {
             throw assertionError;
         } catch (Throwable throwable) {
             if (exceptionType.isInstance(throwable)) {
-            	asserter.asserExceptiont(exceptionType.cast(throwable));
+            	asserter.assertExceptiont(exceptionType.cast(throwable));
             } else {
                 fail("Other exception was thrown! " + throwable.getClass().getName());
             }
@@ -23,7 +23,7 @@ public class MyAssert {
     @FunctionalInterface
     public static interface ExceptionAsserter<T extends Throwable>{
     	
-    	public void asserExceptiont(T t);
+    	public void assertExceptiont(T t);
     	
     }
 }
