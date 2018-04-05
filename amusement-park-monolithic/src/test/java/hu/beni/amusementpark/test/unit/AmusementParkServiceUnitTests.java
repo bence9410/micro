@@ -25,7 +25,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import hu.beni.amusementpark.archive.ArchiveSender;
-import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
@@ -61,10 +60,8 @@ public class AmusementParkServiceUnitTests {
         AmusementPark amusementPark = AmusementPark.builder().build();
 
         when(amusementParkRepository.save(amusementPark)).thenReturn(amusementPark);
-
-        AmusementPark returnedAmusementPark = amusementParkService.save(amusementPark);
         
-        assertEquals(amusementPark, returnedAmusementPark);
+        assertEquals(amusementPark, amusementParkService.save(amusementPark));
         
         verify(amusementParkRepository).save(amusementPark);
     }
@@ -162,10 +159,23 @@ public class AmusementParkServiceUnitTests {
     }
     
     @Test
-    public void findAllByPageable() {
+    public void findAllFetchAddressPositive() {
+    	List<AmusementPark> amusementParks = Arrays.asList(
+    			AmusementPark.builder().id(0L).build(),
+    			AmusementPark.builder().id(1L).build());
+    	
+    	when(amusementParkRepository.findAllFetchAddress()).thenReturn(amusementParks);
+    	
+    	assertEquals(amusementParks, amusementParkService.findAllFetchAddress());
+    	
+    	verify(amusementParkRepository).findAllFetchAddress();
+    }
+    
+    @Test
+    public void findAllFetchAddressByPageablePositive() {
     	Page<AmusementPark> page = new PageImpl<>(Arrays.asList(
-    			AmusementPark.builder().address(Address.builder().build()).build(),
-    			AmusementPark.builder().address(Address.builder().build()).build()));
+    			AmusementPark.builder().id(0L).build(),
+    			AmusementPark.builder().id(1L).build()));
     	Pageable pageable = PageRequest.of(0, 10);
     	
     	when(amusementParkRepository.findAllFetchAddress(pageable)).thenReturn(page);
@@ -176,9 +186,10 @@ public class AmusementParkServiceUnitTests {
     }
     
     @Test
-    public void findAllBySpecification() {
+    public void findAllBySpecificationPageable() {
     	List<AmusementPark> amusementParks = Arrays.asList(
-    			AmusementPark.builder().build(), AmusementPark.builder().build());
+    			AmusementPark.builder().id(0L).build(),
+    			AmusementPark.builder().id(1L).build());
     	Specification<AmusementPark> specification = (Root<AmusementPark> root, CriteriaQuery<?> query,
     			CriteriaBuilder cb) -> cb.equal(root.get("name"), "asd");
     			

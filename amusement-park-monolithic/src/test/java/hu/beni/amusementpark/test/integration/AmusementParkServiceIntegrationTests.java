@@ -16,6 +16,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 
+import org.hibernate.LazyInitializationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,11 +56,9 @@ public class AmusementParkServiceIntegrationTests {
 
 	@Test
 	public void test() {
-		Address address = createAddress();
-		AmusementPark amusementPark = createAmusementPark();
-		address.setAmusementPark(amusementPark);
-		amusementPark.setAddress(address);
-
+		AmusementPark amusementPark = createAmusementParkWithAddress();
+		Address address = amusementPark.getAddress();
+		
 		AmusementPark createdAmusementPark = amusementParkService.save(amusementPark);
 		assertNotNull(createdAmusementPark);
 		Long id = createdAmusementPark.getId();
@@ -69,8 +68,8 @@ public class AmusementParkServiceIntegrationTests {
 		assertNotNull(id);
 		assertNotNull(address.getId());
 
-		AmusementPark readAmusementPark = amusementParkService.findByIdFetchAddress(id);
-		assertEquals(amusementPark, readAmusementPark);
+		assertEquals(amusementPark, createdAmusementPark);
+		assertEquals(amusementPark, amusementParkService.findByIdFetchAddress(id));
 
 		if (environment.getActiveProfiles().length == 0) {
 			assertThatThrownBy(() -> amusementParkService.delete(id))
@@ -99,7 +98,7 @@ public class AmusementParkServiceIntegrationTests {
 		int minCapital = firstPage.getContent().get(0).getCapital();
 		int maxCapital = lastPage.getContent().get(lastPage.getNumberOfElements() - 1).getCapital();
 
-		Consumer<? super AmusementPark> minMaxCapitalAsserter = minMaxCapitalAsserter(minCapital, maxCapital);
+		Consumer<AmusementPark> minMaxCapitalAsserter = minMaxCapitalAsserter(minCapital, maxCapital);
 
 		firstPage.forEach(minMaxCapitalAsserter);
 		lastPage.forEach(minMaxCapitalAsserter);
@@ -119,7 +118,7 @@ public class AmusementParkServiceIntegrationTests {
 		amusementPark.setName(name + "123");
 		amusementPark.getAddress().setCity(name + "45");
 		amusementParkService.save(amusementPark);
-
+		
 		amusementPark = createAmusementParkWithAddress();
 		amusementPark.setName(name + "67");
 		amusementPark.getAddress().setCity(name + "89");
@@ -134,10 +133,22 @@ public class AmusementParkServiceIntegrationTests {
 				.and(fieldLikeParam(AmusementPark.class, "address.city", name + "%"))
 				.and(fieldGreaterThanParam(AmusementPark.class, "capital", capital));
 
+		List<AmusementPark> lazyAmusementParks = amusementParkService.findAll(nameLikeAndAddressCityLikeAndCapitalGreaterThan);
+		assertFalse(lazyAmusementParks.isEmpty());
+		
+		AmusementPark lazyAmusementPark = lazyAmusementParks.get(0);
+
+		Address lazyAddress = lazyAmusementPark.getAddress();
+		
+		assertNotNull(lazyAddress.getId());
+		assertEquals(lazyAmusementPark.getId(), lazyAddress.getId());
+		
+		assertThatThrownBy(() -> lazyAddress.getCity()).isInstanceOf(LazyInitializationException.class);
+		
 		transactionTemplate.execute(status -> {			
 			List<AmusementPark> amusementParks = amusementParkService.findAll(nameLikeAndAddressCityLikeAndCapitalGreaterThan);
 			assertFalse(amusementParks.isEmpty());
-	
+		
 			for (AmusementPark a : amusementParks) {
 				assertTrue(a.getName().startsWith(name) && 
 						a.getAddress().getCity().startsWith(name) && 
@@ -157,7 +168,7 @@ public class AmusementParkServiceIntegrationTests {
 		});
 	}
 
-	private Consumer<? super AmusementPark> minMaxCapitalAsserter(int min, int max) {
+	private Consumer<AmusementPark> minMaxCapitalAsserter(int min, int max) {
 		return a -> assertTrue(min <= a.getCapital() && max >= a.getCapital());
 	}
 
