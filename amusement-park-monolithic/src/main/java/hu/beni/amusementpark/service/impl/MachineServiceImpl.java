@@ -48,8 +48,8 @@ public class MachineServiceImpl implements MachineService {
     }
 
     @Override
-    public Machine findOne(Long machineId) {
-        return ifNull(machineRepository.findById(machineId), NO_MACHINE_IN_PARK_WITH_ID);
+    public Machine findOne(Long amusementParkId, Long machineId) {
+        return ifNull(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId), NO_MACHINE_IN_PARK_WITH_ID);
     }
     
     @Override

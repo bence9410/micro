@@ -35,7 +35,7 @@ public class MachineController {
 
     @GetMapping("/{machineId}")
     public Resource<Machine> findOne(@PathVariable Long amusementParkId, @PathVariable Long machineId) {
-        return createResource(amusementParkId, machineService.findOne(machineId));
+        return createResource(amusementParkId, machineService.findOne(amusementParkId, machineId));
     }
     
     @GetMapping

@@ -8,7 +8,7 @@ public interface MachineService {
 
     Machine addMachine(Long amusementParkId, Machine machine);
 
-    Machine findOne(Long machineId);
+    Machine findOne(Long amusementParkId, Long machineId);
     
     List<Machine> findAllByAmusementParkId(Long amusementParkId);
 

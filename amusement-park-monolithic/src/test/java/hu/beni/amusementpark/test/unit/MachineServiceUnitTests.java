@@ -15,6 +15,8 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -86,7 +88,7 @@ public class MachineServiceUnitTests {
     public void addMachinePositive() {
         AmusementPark amusementPark = AmusementPark.builder().id(10L).capital(300).totalArea(100).build();
         Long amusementParkId = amusementPark.getId();
-        Machine machine = Machine.builder().price(200).size(30).build();
+        Machine machine = Machine.builder().price(200).size(80).build();
 
         when(amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId)).thenReturn(Optional.of(amusementPark));
         when(machineRepository.sumAreaByAmusementParkId(amusementParkId)).thenReturn(Optional.of(20L));
@@ -103,15 +105,42 @@ public class MachineServiceUnitTests {
     }
     
     @Test
+    public void findOneNegativeNoMachine() {
+    	Long amusementParkId = 0L;
+    	Long machineId = 1L;
+    	
+    	assertThatThrownBy(() -> machineService.findOne(amusementParkId, machineId))
+    		.isInstanceOf(AmusementParkException.class)
+    		.hasMessage(NO_MACHINE_IN_PARK_WITH_ID);
+    	
+    	verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);    	
+    }
+    
+    @Test
     public void findOnePositive() {
-        Machine machine = Machine.builder().id(0L).build();
+    	Long amusementParkId = 0L;
+        Machine machine = Machine.builder().id(1L).build();
         Long machineId = machine.getId();
 
-        when(machineRepository.findById(machineId)).thenReturn(Optional.of(machine));
+        when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(Optional.of(machine));
 
-        assertEquals(machine, machineService.findOne(machineId));
+        assertEquals(machine, machineService.findOne(amusementParkId, machineId));
 
-        verify(machineRepository).findById(machineId);
+        verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
+    }
+    
+    @Test
+    public void findAllByAmusementParkIdPositive() {
+    	Long amusementParkId = 0L;
+    	List<Machine> machines = Arrays.asList(
+    			Machine.builder().id(1L).build(),
+    			Machine.builder().id(2L).build());
+    	
+    	when(machineRepository.findAllByAmusementParkId(amusementParkId)).thenReturn(machines);
+    	
+    	assertEquals(machines, machineService.findAllByAmusementParkId(amusementParkId));
+    	
+    	verify(machineRepository).findAllByAmusementParkId(amusementParkId);
     }
 
     @Test
