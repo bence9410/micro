@@ -20,9 +20,6 @@ public interface VisitorRepository extends JpaRepository<Visitor, Long> {
     @Query("Select count(v) from Visitor v where v.machine.id = :machineId")
     public Long countByMachineId(@Param(MACHINE_ID) Long machineId);
 
-    @Query("Select count(v) from Visitor v where v.id = :visitorId and v.amusementPark is not null")
-    public Long countByVisitorIdWhereAmusementParkIsNotNull(@Param(VISITOR_ID) Long visitorId);
-
     @Query("Select count(v) from Visitor v where v.amusementPark.id = :amusementParkId")
     public Long countByAmusementParkId(@Param(AMUSEMENT_PARK_ID) Long amusementParkId);
 

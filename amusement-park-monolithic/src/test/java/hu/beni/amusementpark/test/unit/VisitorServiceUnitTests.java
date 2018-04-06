@@ -20,11 +20,16 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Optional;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
@@ -60,14 +65,22 @@ public class VisitorServiceUnitTests {
     
     @Test
     public void findSpendingMoneyByUsernameNegativeNotSignedUp() {
-    	when(visitorRepository.findSpendingMoneyByUserName()).thenReturn(Optional.ofNullable(null));
-    	
     	assertThatThrownBy(() -> visitorService.findSpendingMoneyByUsername())
     		.isInstanceOf(AmusementParkException.class).hasMessage(VISITOR_NOT_SIGNED_UP);
     	
     	verify(visitorRepository).findSpendingMoneyByUserName();
     }
     
+    @Test
+    public void findSpendingMoneyByUsernamePositive() {
+    	Integer spendingMoney = 1000;
+    	
+    	when(visitorRepository.findSpendingMoneyByUserName()).thenReturn(Optional.of(spendingMoney));
+    	
+    	assertEquals(spendingMoney, visitorService.findSpendingMoneyByUsername());
+    	
+    	verify(visitorRepository).findSpendingMoneyByUserName();
+    }
     
     @Test
     public void signUpPositive() {
@@ -78,6 +91,16 @@ public class VisitorServiceUnitTests {
     	assertEquals(visitor, visitorService.signUp(visitor));
     	
     	verify(visitorRepository).save(visitor);
+    }
+    
+    @Test
+    public void findOneNegativeNotSignedUp() {
+    	Long visitorId = 0L;
+    	
+    	assertThatThrownBy(() -> visitorService.findOne(visitorId))
+    		.isInstanceOf(AmusementParkException.class).hasMessage(VISITOR_NOT_SIGNED_UP);
+    	
+    	verify(visitorRepository).findById(visitorId);    	
     }
     
     @Test
@@ -134,26 +157,22 @@ public class VisitorServiceUnitTests {
         verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
         verify(visitorRepository).findById(visitorId);
     }
-
     
     @Test
     public void enterParkNegativeVisitorIsInAPark() {
     	AmusementPark amusementPark = AmusementPark.builder().id(0L).entranceFee(50).build();
         Long amusementParkId = amusementPark.getId();
-        Visitor visitor = Visitor.builder().id(1L).spendingMoney(100).build();
+        Visitor visitor = Visitor.builder().id(1L).spendingMoney(100).amusementPark(amusementPark).build();
         Long visitorId = visitor.getId();
-        Long numberOfVisitorsWithNotNullPark = 1L;
         
         when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId)).thenReturn(Optional.of(amusementPark));
         when(visitorRepository.findById(visitorId)).thenReturn(Optional.of(visitor));
-        when(visitorRepository.countByVisitorIdWhereAmusementParkIsNotNull(visitorId)).thenReturn(numberOfVisitorsWithNotNullPark);
         
         assertThatThrownBy(() -> visitorService.enterPark(amusementParkId, visitorId))
         		.isInstanceOf(AmusementParkException.class).hasMessage(VISITOR_IS_IN_A_PARK);
 
         verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
         verify(visitorRepository).findById(visitorId);
-        verify(visitorRepository).countByVisitorIdWhereAmusementParkIsNotNull(visitorId);
     }   
         
     @Test
@@ -176,7 +195,6 @@ public class VisitorServiceUnitTests {
         
         verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
         verify(visitorRepository).findById(visitorId);
-        verify(visitorRepository).countByVisitorIdWhereAmusementParkIsNotNull(visitorId);
         verify(amusementParkRepository).countKnownVisitor(amusementParkId, visitorId);
         verify(amusementParkRepository).addKnownVisitor(amusementParkId, visitorId);
         verify(amusementParkRepository).incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
@@ -184,7 +202,7 @@ public class VisitorServiceUnitTests {
     }
 
     @Test
-    public void enterParkPositiveNotAddVisitorToKnown() {
+    public void enterParkPositiveVisitorAlreadyKnown() {
     	AmusementPark amusementPark = AmusementPark.builder().id(0L).entranceFee(50).build();
         Long amusementParkId = amusementPark.getId();
         Visitor visitor = Visitor.builder().id(1L).spendingMoney(100).build();
@@ -205,7 +223,6 @@ public class VisitorServiceUnitTests {
         
         verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
         verify(visitorRepository).findById(visitorId);
-        verify(visitorRepository).countByVisitorIdWhereAmusementParkIsNotNull(visitorId);
         verify(amusementParkRepository).countKnownVisitor(amusementParkId, visitorId);
         verify(amusementParkRepository).incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
         verify(visitorRepository).save(visitor);
@@ -322,7 +339,7 @@ public class VisitorServiceUnitTests {
         Visitor visitor = Visitor.builder().id(2L).spendingMoney(40).dateOfBirth(LocalDate.of(1990, 10, 20)).build();
         Long visitorId = visitor.getId();
         Integer spendingMoney = visitor.getSpendingMoney();
-
+ 
         when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId)).thenReturn(Optional.of(machine));
         when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId)).thenReturn(Optional.of(visitor));
         when(visitorRepository.countByMachineId(machineId)).thenReturn(1L);
@@ -400,4 +417,26 @@ public class VisitorServiceUnitTests {
         verify(visitorRepository).save(visitor);
     }
    
+    @Test
+    public void findAllPositive() {
+    	Page<Visitor> page = new PageImpl<>(Arrays.asList(
+    			Visitor.builder().id(0L).build(),
+    			Visitor.builder().id(1L).build()));
+    	Pageable pageable = PageRequest.of(0, 10);
+    	
+    	when(visitorRepository.findAll(pageable)).thenReturn(page);
+    	
+    	assertEquals(page, visitorService.findAll(pageable));
+    	
+    	verify(visitorRepository).findAll(pageable);
+    }
+    
+    @Test
+    public void deletePositive() {
+    	Long visitorId = 0L;
+    	
+    	visitorService.delete(visitorId);
+    	
+    	verify(visitorRepository).deleteById(visitorId);	
+    }
 }

@@ -55,7 +55,7 @@ public class VisitorServiceImpl implements VisitorService{
         Integer spendingMoney = visitor.getSpendingMoney();
         ifFirstLessThanSecond(spendingMoney, entranceFee, NOT_ENOUGH_MONEY);
         
-        ifNotZero(visitorRepository.countByVisitorIdWhereAmusementParkIsNotNull(visitorId), VISITOR_IS_IN_A_PARK);
+        ifNotNull(visitor.getAmusementPark(), VISITOR_IS_IN_A_PARK);
         
         if (amusementParkRepository.countKnownVisitor(amusementParkId, visitorId) == 0) {
         	amusementParkRepository.addKnownVisitor(amusementParkId, visitorId);
