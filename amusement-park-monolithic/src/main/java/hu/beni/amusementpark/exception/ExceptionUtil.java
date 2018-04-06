@@ -3,11 +3,7 @@ package hu.beni.amusementpark.exception;
 import java.util.Optional;
 
 public class ExceptionUtil {
-    
-    public static <T> T ifNull(T t, String message){
-        return ifNull(Optional.ofNullable(t), message);
-    }
-    
+     
     public static <T> T ifNull(Optional<T> optional, String message) {
     	return optional.orElseThrow(() -> new AmusementParkException(message));
     }
