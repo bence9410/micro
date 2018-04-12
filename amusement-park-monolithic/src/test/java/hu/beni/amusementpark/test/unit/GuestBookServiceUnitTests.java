@@ -2,6 +2,7 @@ package hu.beni.amusementpark.test.unit;
 
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_IN_PARK_WITH_ID;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_GUEST_BOOK_REGISTRY_WITH_ID;
 import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
@@ -42,6 +43,16 @@ public class GuestBookServiceUnitTests {
 	@After
 	public void verifyNoMoreInteractionsOnMocks() {
 		verifyNoMoreInteractions(amusementParkRepository, visitorRepository, guestBookRegistryRepository);
+	}
+	
+	@Test
+	public void findOneNegativeNoGuestBook() {
+		Long guestBookRegistryId = 0L;
+		
+		assertThatThrownBy(() -> guestBookService.findOne(guestBookRegistryId))
+			.isInstanceOf(AmusementParkException.class).hasMessage(NO_GUEST_BOOK_REGISTRY_WITH_ID);
+		
+		verify(guestBookRegistryRepository).findById(guestBookRegistryId);
 	}
 
 	@Test

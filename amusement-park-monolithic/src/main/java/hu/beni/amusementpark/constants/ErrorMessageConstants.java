@@ -4,10 +4,11 @@ public class ErrorMessageConstants {
     
     public static final String ERROR = "Error:";
 
-    public static final String NO_AMUSEMENT_PARK_WITH_ID = "No AmusementPark with the given id!";
+    public static final String NO_AMUSEMENT_PARK_WITH_ID = "No amusement park with the given id!";
     public static final String NO_MACHINE_IN_PARK_WITH_ID = "No machine in the park with the given id!";
     public static final String NO_VISITOR_IN_PARK_WITH_ID = "No visitor in the park with the given id!";
     public static final String NO_VISITOR_ON_MACHINE_WITH_ID = "No visitor on machine with the given id!";
+    public static final String NO_GUEST_BOOK_REGISTRY_WITH_ID = "No guest book registry with the given id!";
     public static final String MACHINE_IS_TOO_EXPENSIVE = "Machine is too expensive!";
     public static final String MACHINE_IS_TOO_BIG = "Machine is too big!";
     public static final String VISITORS_ON_MACHINE = "Visitors on machine!";
