@@ -12,7 +12,7 @@ $(document).ready(function(){
 function save() {
 	$('#save').attr('disabled', true);
 	$.ajax({
-		url : '/amusementPark',
+		url : '/amusement-park',
 		method : 'POST',
 		contentType : 'application/json',
 		data : JSON.stringify(parkCollectData()),
@@ -73,7 +73,7 @@ function parkFillWithSampleData() {
 
 function getAmusementParks() {
 	$.ajax({
-		url : '/amusementPark',
+		url : '/amusement-park',
 		success : function(response) {
 			fillTableWithData(response);
 		}
@@ -110,7 +110,7 @@ function convertAmusementParkToTableRow(amusementPark) {
 
 function deletePark(id){
     $.ajax({
-        url: "/amusementPark/"+id,
+        url: "/amusement-park/"+id,
         method : 'DELETE',
         success: function (data, textStatus, jqXHR) {
             console.log(data);

@@ -32,7 +32,7 @@ public class VisitorController {
 
     private final VisitorService visitorService;
     
-    @GetMapping("/visitor/spendingMoney")
+    @GetMapping("/visitor/spending-money")
     public Integer findSpendingMoneyByUsername(){
         return visitorService.findSpendingMoneyByUsername();
     }
@@ -69,24 +69,24 @@ public class VisitorController {
         return visitorResource;
     }
     
-    @PutMapping("amusementPark/{amusementParkId}/visitor/{visitorId}/enterPark")
+    @PutMapping("amusement-park/{amusementParkId}/visitor/{visitorId}/enter-park")
     public Resource<Visitor> enterPark(@PathVariable Long amusementParkId, @PathVariable Long visitorId) {
         return createResourceForRestVisitor(amusementParkId, visitorService.enterPark(amusementParkId, visitorId));
     }
 
-    @PutMapping("amusementPark/{amusementParkId}/visitor/{visitorId}/leavePark")
+    @PutMapping("amusement-park/{amusementParkId}/visitor/{visitorId}/leave-park")
     public ResponseEntity<Void> leavePark(@PathVariable Long amusementParkId, @PathVariable Long visitorId) {
         visitorService.leavePark(amusementParkId, visitorId);
         return null;
     }
 
-    @PutMapping("amusementPark/{amusementParkId}/machine/{machineId}/visitor/{visitorId}/getOnMachine")
+    @PutMapping("amusement-park/{amusementParkId}/machine/{machineId}/visitor/{visitorId}/get-on-machine")
     public Resource<Visitor> getOnMachine(@PathVariable Long amusementParkId,
             @PathVariable Long machineId, @PathVariable Long visitorId) {
         return createResourceForOnMachineVisitor(amusementParkId, machineId, visitorService.getOnMachine(amusementParkId, machineId, visitorId));    
     }
 
-    @PutMapping("amusementPark/{amusementParkId}/machine/{machineId}/visitor/{visitorId}/getOffMachine")
+    @PutMapping("amusement-park/{amusementParkId}/machine/{machineId}/visitor/{visitorId}/get-off-machine")
     public Resource<Visitor> getOffMachine(@PathVariable Long amusementParkId,
             @PathVariable Long machineId, @PathVariable Long visitorId) {
         return createResourceForRestVisitor(amusementParkId, visitorService.getOffMachine(machineId, visitorId));

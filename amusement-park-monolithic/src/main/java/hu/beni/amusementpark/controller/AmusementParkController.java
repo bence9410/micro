@@ -30,7 +30,7 @@ import hu.beni.amusementpark.service.AmusementParkService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping(path = "/amusementPark")
+@RequestMapping("/amusement-park")
 @RequiredArgsConstructor
 public class AmusementParkController {
 	

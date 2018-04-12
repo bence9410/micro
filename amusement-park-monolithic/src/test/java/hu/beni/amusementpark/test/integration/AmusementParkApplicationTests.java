@@ -114,7 +114,7 @@ public class AmusementParkApplicationTests {
     public void negativeTest() {
     	loginAsAdminAndSetSessionIdInHeaders();
     	
-    	assertThrows(() -> restTemplate.exchange(getAppUrl() + "/amusementPark", HttpMethod.POST, createHttpEntityWithSessionIdHeaders(createAmusementPark()), String.class),
+    	assertThrows(() -> restTemplate.exchange(getAppUrl() + "/amusement-park", HttpMethod.POST, createHttpEntityWithSessionIdHeaders(createAmusementPark()), String.class),
     			HttpClientErrorException.class, exception -> {
     		assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
     		String errorMessage = exception.getResponseBodyAsString();
@@ -166,12 +166,12 @@ public class AmusementParkApplicationTests {
     	assertEquals(HttpStatus.FOUND, response.getStatusCode());
     	assertTrue(response.getHeaders().getLocation().toString().contains("login?logout"));
     	
-    	response = restTemplate.exchange(getAppUrl() + "/amusementPark", HttpMethod.POST, createHttpEntityWithSessionIdHeaders(), String.class);
+    	response = restTemplate.exchange(getAppUrl() + "/amusement-park", HttpMethod.POST, createHttpEntityWithSessionIdHeaders(), String.class);
         		
     	assertEquals(HttpStatus.FOUND, response.getStatusCode());
     	assertTrue(response.getHeaders().getLocation().toString().endsWith("login"));
     	
-    	response = restTemplate.exchange(getAppUrl() + "/amusementPark", HttpMethod.GET, createHttpEntityWithSessionIdHeaders(), String.class);
+    	response = restTemplate.exchange(getAppUrl() + "/amusement-park", HttpMethod.GET, createHttpEntityWithSessionIdHeaders(), String.class);
     
     	assertEquals(HttpStatus.OK, response.getStatusCode());
     	assertTrue(response.getBody().length() > 450);
@@ -188,7 +188,7 @@ public class AmusementParkApplicationTests {
     private Resource<AmusementPark> postAmusementParkWithAddress() {
         AmusementPark amusementPark = createAmusementParkWithAddress();
 
-        ResponseEntity<Resource<AmusementPark>> response = restTemplate.exchange(getAppUrl() + "/amusementPark", HttpMethod.POST, createHttpEntityWithSessionIdHeaders(amusementPark), amusementParkType());
+        ResponseEntity<Resource<AmusementPark>> response = restTemplate.exchange(getAppUrl() + "/amusement-park", HttpMethod.POST, createHttpEntityWithSessionIdHeaders(amusementPark), amusementParkType());
         
         assertEquals(HttpStatus.OK, response.getStatusCode());
         

@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
-@RequestMapping(path = "amusementPark/{amusementParkId}/machine")
+@RequestMapping("amusement-park/{amusementParkId}/machine")
 @RequiredArgsConstructor
 public class MachineController {
 

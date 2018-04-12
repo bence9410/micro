@@ -16,7 +16,7 @@ function init() {
             $("#authorities").html(authorities);
 
             $.ajax({
-                url: '/visitor/spendingMoney/',
+                url: '/visitor/spending-money/',
                 success: function (data) {
                     $('#spendingMoneyP').html(data);
                     $('#signedUp').removeClass();
@@ -62,10 +62,10 @@ function fillWithSampleData() {
 
 function getAmusementParkPage() {
     $.ajax({
-        url: '/pages/amusementPark.html',
+        url: '/pages/amusement-park.html',
         success: function (data) {
             $("#content").html(data);
-            $('head').append("<script src='js/amusementPark.js'></script>");
+            $('head').append("<script src='js/amusement-park.js'></script>");
         }
     });
 }
