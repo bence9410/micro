@@ -78,19 +78,22 @@ public class AsyncTestSuite {
 	}
 	
 	public CompletableFuture<VisitorStuffTime> visitSomeStuffInEveryPark(HttpHeaders headers){
+		List<Long> tenParkTimes = new LinkedList<>();
 		List<Long> oneParkTimes = new LinkedList<>();
 		long start = now();
 		long visitorId = visitorToContentId(client.postVisitor(headers));
 		Page<Resource<AmusementParkDTO>> page = null;
 		int pageIndex = 0;
 		do {
+			long tenParkStart = now();
 			page = client.getAmusementParks(pageIndex++, PAGE_SIZE, headers);
 			page.getContent().stream()
 				.map(this::parkToContentId)
 				.forEach(amusementParkId -> 
 					visitEveryThingInAPark(amusementParkId, visitorId, headers, oneParkTimes));
+			tenParkTimes.add(millisFrom(tenParkStart));
 		} while (!page.isLast());
-		return CompletableFuture.completedFuture(new VisitorStuffTime(millisFrom(start), oneParkTimes));
+		return CompletableFuture.completedFuture(new VisitorStuffTime(millisFrom(start), tenParkTimes, oneParkTimes));
 	}
 	
 	private void visitEveryThingInAPark(Long amusementParkId, Long visitorId, HttpHeaders headers, List<Long> oneParkTimes) {

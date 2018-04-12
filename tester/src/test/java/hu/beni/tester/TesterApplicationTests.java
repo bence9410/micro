@@ -133,13 +133,16 @@ public class TesterApplicationTests {
 	private void visitorsVisitSomeStuffInEveryPark() {
 		log.info("visitorsVisitSomeStuffInEveryPark");
 		List<Long> wholeTimes = new LinkedList<>();
+		List<Long> tenParkTimes = new LinkedList<>();
 		List<Long> oneParkTimes = new LinkedList<>();
 		executeAsyncAndGet(users, async::visitSomeStuffInEveryPark)
 			.forEach(VisitorStuffTime -> {
 				wholeTimes.add(VisitorStuffTime.getWholeTime());
+				tenParkTimes.addAll(VisitorStuffTime.getTenParkTimes());
 				oneParkTimes.addAll(VisitorStuffTime.getOneParkTimes());
 			});
 		timeTo.setWholeVisitorStuff(wholeTimes);
+		timeTo.setTenParkVisitorStuff(tenParkTimes);
 		timeTo.setOneParkVisitorStuff(oneParkTimes);
 	}
 	

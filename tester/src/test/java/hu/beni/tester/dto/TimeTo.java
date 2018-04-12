@@ -17,6 +17,8 @@ public class TimeTo {
 
 	private List<Long> wholeVisitorStuff;
 	
+	private List<Long> tenParkVisitorStuff;
+	
 	private List<Long> oneParkVisitorStuff;
 
 	private List<Long> findAllParksPagedAfterVisitorStuff;
