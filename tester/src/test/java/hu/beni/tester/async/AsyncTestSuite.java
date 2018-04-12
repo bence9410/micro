@@ -90,13 +90,13 @@ public class AsyncTestSuite {
 			page.getContent().stream()
 				.map(this::parkToContentId)
 				.forEach(amusementParkId -> 
-					visitEveryThingInAPark(amusementParkId, visitorId, headers, oneParkTimes));
+					visitEverythingInAPark(amusementParkId, visitorId, headers, oneParkTimes));
 			tenParkTimes.add(millisFrom(tenParkStart));
 		} while (!page.isLast());
 		return CompletableFuture.completedFuture(new VisitorStuffTime(millisFrom(start), tenParkTimes, oneParkTimes));
 	}
 	
-	private void visitEveryThingInAPark(Long amusementParkId, Long visitorId, HttpHeaders headers, List<Long> oneParkTimes) {
+	private void visitEverythingInAPark(Long amusementParkId, Long visitorId, HttpHeaders headers, List<Long> oneParkTimes) {
 		long startPark = now();
 		client.enterPark(amusementParkId, visitorId, headers);
 		client.getMachineIdsByAmusementParkId(amusementParkId, headers).stream()
