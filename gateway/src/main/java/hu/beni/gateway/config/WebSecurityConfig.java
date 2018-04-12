@@ -23,7 +23,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/", "/index.js", "/webjars/**", "/uaa/oauth/authorize",
-                		"/uaa/login", "/uaa/oauth/token", "/uaa/user")
+                		"/uaa/login", "/uaa/oauth/token")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
