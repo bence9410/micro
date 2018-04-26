@@ -30,7 +30,6 @@ import static hu.beni.amusementpark.helper.MyAssert.assertThrows;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.*;
 import static org.junit.Assert.*;
 
-import org.junit.Before;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -50,17 +49,10 @@ public class AmusementParkApplicationTests {
     
     private String appUrl;
     
-    private HttpHeaders httpHeaders;
-    
     private String getAppUrl() {
         return appUrl == null ? appUrl = "http://localhost:" + port : appUrl;    	
     }
     
-    @Before
-    public void setUp() {
-    	httpHeaders = new HttpHeaders();
-    }
-
     @Test
     public void positiveTest() {
     	
@@ -70,7 +62,7 @@ public class AmusementParkApplicationTests {
         Resource<AmusementPark> amusementParkResource = postAmusementParkWithAddress();
         String amusementParkUrl = amusementParkResource.getId().getHref();
         
-        assertEquals(amusementParkResource.getContent(), restTemplate.exchange(amusementParkUrl, HttpMethod.GET, createHttpEntityWithSessionIdHeaders(), amusementParkType()).getBody().getContent());
+        assertEquals(amusementParkResource.getContent(), restTemplate.exchange(amusementParkUrl, HttpMethod.GET, HttpEntity.EMPTY, amusementParkType()).getBody().getContent());
         
         //add Machine
         Resource<Machine> machineResource = postMachine(amusementParkResource.getLink(MACHINE).getHref());
@@ -79,22 +71,22 @@ public class AmusementParkApplicationTests {
         Resource<Visitor> visitorResource = postVisitor(amusementParkResource.getLink(VISITOR_SIGN_UP).getHref());
         
         //visitor enterPark
-        visitorResource = restTemplate.exchange(visitorResource.getLink(VISITOR_ENTER_PARK).getHref(), HttpMethod.PUT, createHttpEntityWithSessionIdHeaders(200), visitorType(), amusementParkResource.getContent().getId()).getBody();
+        visitorResource = restTemplate.exchange(visitorResource.getLink(VISITOR_ENTER_PARK).getHref(), HttpMethod.PUT, createHttpEntity(200), visitorType(), amusementParkResource.getContent().getId()).getBody();
         
         //visitor getOnMachine
-        Link visitorGetOffMachineLink = restTemplate.exchange(machineResource.getLink(GET_ON_MACHINE).getHref(), HttpMethod.PUT, createHttpEntityWithSessionIdHeaders(), visitorType(), visitorResource.getContent().getId()).getBody().getLink(GET_OFF_MACHINE);
+        Link visitorGetOffMachineLink = restTemplate.exchange(machineResource.getLink(GET_ON_MACHINE).getHref(), HttpMethod.PUT, HttpEntity.EMPTY, visitorType(), visitorResource.getContent().getId()).getBody().getLink(GET_OFF_MACHINE);
         
         //visitor getOffMachine
-        restTemplate.exchange(visitorGetOffMachineLink.getHref(), HttpMethod.PUT, createHttpEntityWithSessionIdHeaders(), visitorType()).getBody();
+        restTemplate.exchange(visitorGetOffMachineLink.getHref(), HttpMethod.PUT, HttpEntity.EMPTY, visitorType()).getBody();
         
         //addRegistry
-        restTemplate.exchange(visitorResource.getLink(ADD_REGISTRY).getHref(), HttpMethod.POST, createHttpEntityWithSessionIdHeaders(OPINION_ON_THE_PARK), guestBookRegistryType(), visitorResource.getContent().getId()).getBody();
+        restTemplate.exchange(visitorResource.getLink(ADD_REGISTRY).getHref(), HttpMethod.POST, createHttpEntity(OPINION_ON_THE_PARK), guestBookRegistryType(), visitorResource.getContent().getId()).getBody();
         
         //visitor leavePark
-        restTemplate.exchange(visitorResource.getLink(VISITOR_LEAVE_PARK).getHref(), HttpMethod.PUT, createHttpEntityWithSessionIdHeaders(), Void.class).getStatusCode();
+        restTemplate.exchange(visitorResource.getLink(VISITOR_LEAVE_PARK).getHref(), HttpMethod.PUT, HttpEntity.EMPTY, Void.class).getStatusCode();
 
         //sell Machine
-        restTemplate.exchange(machineResource.getId().getHref(), HttpMethod.DELETE, createHttpEntityWithSessionIdHeaders(), Void.class);
+        restTemplate.exchange(machineResource.getId().getHref(), HttpMethod.DELETE, HttpEntity.EMPTY, Void.class);
         
         //delete Park
         if (environment.getActiveProfiles().length == 0) {
@@ -114,7 +106,7 @@ public class AmusementParkApplicationTests {
     public void negativeTest() {
     	loginAsAdminAndSetSessionIdInHeaders();
     	
-    	assertThrows(() -> restTemplate.exchange(getAppUrl() + "/amusement-park", HttpMethod.POST, createHttpEntityWithSessionIdHeaders(createAmusementPark()), String.class),
+    	assertThrows(() -> restTemplate.exchange(getAppUrl() + "/amusement-park", HttpMethod.POST, createHttpEntity(createAmusementPark()), String.class),
     			HttpClientErrorException.class, exception -> {
     		assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
     		String errorMessage = exception.getResponseBodyAsString();
@@ -128,7 +120,7 @@ public class AmusementParkApplicationTests {
         Machine machine = createMachine();
         machine.setPrice(4000);
                 
-        assertThrows(() -> restTemplate.exchange(amusementParkResource.getLink(MACHINE).getHref(), HttpMethod.POST, createHttpEntityWithSessionIdHeaders(machine), String.class),
+        assertThrows(() -> restTemplate.exchange(amusementParkResource.getLink(MACHINE).getHref(), HttpMethod.POST, createHttpEntity(machine), String.class),
         		HttpClientErrorException.class, exception -> {
             assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
             assertEquals(MACHINE_IS_TOO_EXPENSIVE, exception.getResponseBodyAsString());
@@ -145,50 +137,39 @@ public class AmusementParkApplicationTests {
     	map.add("username", "admin");
     	map.add("password", "pass");
     	
-    	ResponseEntity<String> response = restTemplate.exchange(getAppUrl() + "/login", HttpMethod.POST, 
-    			new HttpEntity<MultiValueMap<String, String>>(map, headers), String.class);
+    	ResponseEntity<Void> response = restTemplate.exchange(getAppUrl() + "/login", HttpMethod.POST, 
+    			new HttpEntity<MultiValueMap<String, String>>(map, headers), Void.class);
     	
     	assertEquals(HttpStatus.FOUND, response.getStatusCode());
     	
     	HttpHeaders responseHeaders = response.getHeaders();
     	
     	assertTrue(responseHeaders.getLocation().toString().contains("home.html"));
-    	    	
-    	String cookie = response.getHeaders().getFirst("Set-Cookie");
-    	
-    	httpHeaders.add("Cookie", cookie.substring(0, cookie.indexOf(';')));
+    	assertTrue(responseHeaders.getFirst("Set-Cookie").contains("JSESSIONID="));
     }
     
     private void logout() {
-    	ResponseEntity<String> response = restTemplate.exchange(getAppUrl() + "/logout", HttpMethod.POST,
-    			createHttpEntityWithSessionIdHeaders(), String.class);
+    	ResponseEntity<Void> response = restTemplate.exchange(getAppUrl() + "/logout", HttpMethod.POST,
+    			HttpEntity.EMPTY, Void.class);
     	
     	assertEquals(HttpStatus.FOUND, response.getStatusCode());
     	assertTrue(response.getHeaders().getLocation().toString().contains("login?logout"));
     	
-    	response = restTemplate.exchange(getAppUrl() + "/amusement-park", HttpMethod.POST, createHttpEntityWithSessionIdHeaders(), String.class);
+    	response = restTemplate.exchange(getAppUrl() + "/amusement-park", HttpMethod.POST, HttpEntity.EMPTY, Void.class);
         		
     	assertEquals(HttpStatus.FOUND, response.getStatusCode());
     	assertTrue(response.getHeaders().getLocation().toString().endsWith("login"));
     	
-    	response = restTemplate.exchange(getAppUrl() + "/amusement-park", HttpMethod.GET, createHttpEntityWithSessionIdHeaders(), String.class);
+    	ResponseEntity<String> loginPageResponse = restTemplate.exchange(getAppUrl() + "/amusement-park", HttpMethod.GET, HttpEntity.EMPTY, String.class);
     
-    	assertEquals(HttpStatus.OK, response.getStatusCode());
-    	assertTrue(response.getBody().length() > 450);
-    }
-    
-    private <T> HttpEntity<T> createHttpEntityWithSessionIdHeaders(T body) {
-    	return new HttpEntity<T>(body, httpHeaders);
-    }
-    
-    private <T> HttpEntity<T> createHttpEntityWithSessionIdHeaders() {
-    	return new HttpEntity<T>(httpHeaders);
+    	assertEquals(HttpStatus.OK, loginPageResponse.getStatusCode());
+    	assertTrue(loginPageResponse.getBody().length() > 450);
     }
     
     private Resource<AmusementPark> postAmusementParkWithAddress() {
         AmusementPark amusementPark = createAmusementParkWithAddress();
 
-        ResponseEntity<Resource<AmusementPark>> response = restTemplate.exchange(getAppUrl() + "/amusement-park", HttpMethod.POST, createHttpEntityWithSessionIdHeaders(amusementPark), amusementParkType());
+        ResponseEntity<Resource<AmusementPark>> response = restTemplate.exchange(getAppUrl() + "/amusement-park", HttpMethod.POST, createHttpEntity(amusementPark), amusementParkType());
         
         assertEquals(HttpStatus.OK, response.getStatusCode());
         
@@ -206,7 +187,7 @@ public class AmusementParkApplicationTests {
     private Resource<Machine> postMachine(String url) {
         Machine machine = createMachine();
 
-        Resource<Machine> machineResource = restTemplate.exchange(url, HttpMethod.POST, createHttpEntityWithSessionIdHeaders(machine), machineType()).getBody();
+        Resource<Machine> machineResource = restTemplate.exchange(url, HttpMethod.POST, createHttpEntity(machine), machineType()).getBody();
 
         assertEquals(2, machineResource.getLinks().size());
         assertNotNull(machineResource.getId());
@@ -219,7 +200,7 @@ public class AmusementParkApplicationTests {
     private Resource<Visitor> postVisitor(String url) {
         Visitor visitor = createVisitor();
 
-        Resource<Visitor> visitorResource = restTemplate.exchange(url, HttpMethod.POST, createHttpEntityWithSessionIdHeaders(visitor), visitorType()).getBody();
+        Resource<Visitor> visitorResource = restTemplate.exchange(url, HttpMethod.POST, createHttpEntity(visitor), visitorType()).getBody();
         Long visitorId = visitorResource.getContent().getId();
         
         assertEquals(2, visitorResource.getLinks().size());
@@ -230,7 +211,11 @@ public class AmusementParkApplicationTests {
     }
     
     private void deleteAmusementPark(String amusementParkUrl) {
-    	restTemplate.exchange(amusementParkUrl, HttpMethod.DELETE, createHttpEntityWithSessionIdHeaders(), Void.class);
+    	restTemplate.exchange(amusementParkUrl, HttpMethod.DELETE, HttpEntity.EMPTY, Void.class);
+    }
+    
+    private <T> HttpEntity<T> createHttpEntity(T body){
+    	return new HttpEntity<T>(body);
     }
 
     private ParameterizedTypeReference<Resource<AmusementPark>> amusementParkType() {

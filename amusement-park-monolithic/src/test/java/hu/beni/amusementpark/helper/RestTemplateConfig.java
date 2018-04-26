@@ -1,5 +1,6 @@
 package hu.beni.amusementpark.helper;
 
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpRequest;
@@ -7,7 +8,7 @@ import org.springframework.http.client.BufferingClientHttpRequestFactory;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,13 +19,13 @@ import lombok.extern.slf4j.Slf4j;
 public class RestTemplateConfig {
 
     @Bean
-    public RestTemplate restTemplate() {
-        RestTemplate restTemplate = new RestTemplate(new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()));
-        restTemplate.getInterceptors().add(getLoggingInterceptor());
-        return restTemplate;
+    public RestTemplate restTemplate(RestTemplateBuilder builder) {
+    	builder.requestFactory(() -> new BufferingClientHttpRequestFactory(new HttpComponentsClientHttpRequestFactory()));
+        builder.additionalInterceptors(createLoggingInterceptor());
+        return builder.build();
     }
 
-    private ClientHttpRequestInterceptor getLoggingInterceptor() {
+    private ClientHttpRequestInterceptor createLoggingInterceptor() {
         return (HttpRequest request, byte[] body, ClientHttpRequestExecution execution) -> {
             log.info("Request: { URL: {}, Method: {}, Body: {} }", request.getURI(), request.getMethod(), new String(body));
             ClientHttpResponse response = execution.execute(request, body);
