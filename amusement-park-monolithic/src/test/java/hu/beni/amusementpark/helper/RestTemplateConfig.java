@@ -1,6 +1,5 @@
 package hu.beni.amusementpark.helper;
 
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpRequest;
@@ -19,10 +18,10 @@ import lombok.extern.slf4j.Slf4j;
 public class RestTemplateConfig {
 
     @Bean
-    public RestTemplate restTemplate(RestTemplateBuilder builder) {
-    	builder.requestFactory(() -> new BufferingClientHttpRequestFactory(new HttpComponentsClientHttpRequestFactory()));
-        builder.additionalInterceptors(createLoggingInterceptor());
-        return builder.build();
+    public RestTemplate restTemplate() {
+    	RestTemplate restTemplate = new RestTemplate(new BufferingClientHttpRequestFactory(new HttpComponentsClientHttpRequestFactory()));
+        restTemplate.getInterceptors().add(createLoggingInterceptor());
+        return restTemplate;
     }
 
     private ClientHttpRequestInterceptor createLoggingInterceptor() {
