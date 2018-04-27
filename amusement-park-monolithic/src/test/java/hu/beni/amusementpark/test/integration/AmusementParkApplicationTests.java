@@ -30,6 +30,8 @@ import static hu.beni.amusementpark.helper.MyAssert.assertThrows;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.*;
 import static org.junit.Assert.*;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -49,8 +51,9 @@ public class AmusementParkApplicationTests {
     
     private String appUrl;
     
-    private String getAppUrl() {
-        return appUrl == null ? appUrl = "http://localhost:" + port : appUrl;    	
+    @PostConstruct
+    public void init() {
+    	appUrl = "http://localhost:" + port;    	
     }
     
     @Test
@@ -106,7 +109,7 @@ public class AmusementParkApplicationTests {
     public void negativeTest() {
     	loginAsAdminAndSetSessionIdInHeaders();
     	
-    	assertThrows(() -> restTemplate.exchange(getAppUrl() + "/amusement-park", HttpMethod.POST, createHttpEntity(createAmusementPark()), String.class),
+    	assertThrows(() -> restTemplate.exchange(appUrl + "/amusement-park", HttpMethod.POST, createHttpEntity(createAmusementPark()), String.class),
     			HttpClientErrorException.class, exception -> {
     		assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
     		String errorMessage = exception.getResponseBodyAsString();
@@ -137,7 +140,7 @@ public class AmusementParkApplicationTests {
     	map.add("username", "admin");
     	map.add("password", "pass");
     	
-    	ResponseEntity<Void> response = restTemplate.exchange(getAppUrl() + "/login", HttpMethod.POST, 
+    	ResponseEntity<Void> response = restTemplate.exchange(appUrl + "/login", HttpMethod.POST, 
     			new HttpEntity<MultiValueMap<String, String>>(map, headers), Void.class);
     	
     	assertEquals(HttpStatus.FOUND, response.getStatusCode());
@@ -149,18 +152,18 @@ public class AmusementParkApplicationTests {
     }
     
     private void logout() {
-    	ResponseEntity<Void> response = restTemplate.exchange(getAppUrl() + "/logout", HttpMethod.POST,
+    	ResponseEntity<Void> response = restTemplate.exchange(appUrl + "/logout", HttpMethod.POST,
     			HttpEntity.EMPTY, Void.class);
     	
     	assertEquals(HttpStatus.FOUND, response.getStatusCode());
     	assertTrue(response.getHeaders().getLocation().toString().contains("login?logout"));
     	
-    	response = restTemplate.exchange(getAppUrl() + "/amusement-park", HttpMethod.POST, HttpEntity.EMPTY, Void.class);
+    	response = restTemplate.exchange(appUrl + "/amusement-park", HttpMethod.POST, HttpEntity.EMPTY, Void.class);
         		
     	assertEquals(HttpStatus.FOUND, response.getStatusCode());
     	assertTrue(response.getHeaders().getLocation().toString().endsWith("login"));
     	
-    	ResponseEntity<String> loginPageResponse = restTemplate.exchange(getAppUrl() + "/amusement-park", HttpMethod.GET, HttpEntity.EMPTY, String.class);
+    	ResponseEntity<String> loginPageResponse = restTemplate.exchange(appUrl + "/amusement-park", HttpMethod.GET, HttpEntity.EMPTY, String.class);
     
     	assertEquals(HttpStatus.OK, loginPageResponse.getStatusCode());
     	assertTrue(loginPageResponse.getBody().length() > 450);
@@ -169,7 +172,7 @@ public class AmusementParkApplicationTests {
     private Resource<AmusementPark> postAmusementParkWithAddress() {
         AmusementPark amusementPark = createAmusementParkWithAddress();
 
-        ResponseEntity<Resource<AmusementPark>> response = restTemplate.exchange(getAppUrl() + "/amusement-park", HttpMethod.POST, createHttpEntity(amusementPark), amusementParkType());
+        ResponseEntity<Resource<AmusementPark>> response = restTemplate.exchange(appUrl + "/amusement-park", HttpMethod.POST, createHttpEntity(amusementPark), amusementParkType());
         
         assertEquals(HttpStatus.OK, response.getStatusCode());
         
