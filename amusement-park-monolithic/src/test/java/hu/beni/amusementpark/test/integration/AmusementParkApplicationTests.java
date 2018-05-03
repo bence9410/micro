@@ -7,6 +7,7 @@ import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.helper.Client;
 import hu.beni.amusementpark.helper.MyAssert.ExceptionAsserter;
 import hu.beni.amusementpark.helper.ValidEntityFactory;
+import hu.beni.dto.AmusementParkDTO;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,10 +20,12 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
+import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.TypeReferences.ResourceType;
 import org.springframework.http.HttpHeaders;
+
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.*;
 import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
@@ -31,6 +34,7 @@ import static hu.beni.amusementpark.helper.ValidEntityFactory.*;
 import static org.junit.Assert.*;
 
 import java.net.URI;
+import java.util.stream.IntStream;
 
 import javax.annotation.PostConstruct;
 
@@ -38,21 +42,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
+import static hu.beni.amusementpark.helper.ResponseType.*;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class AmusementParkApplicationTests {
-
-	private static final ParameterizedTypeReference<Resource<AmusementPark>> AMUSEMENT_PARK_TYPE = new ParameterizedTypeReference<Resource<AmusementPark>>() {
-	};
-
-	private static final ParameterizedTypeReference<Resource<Machine>> MACHINE_TYPE = new ParameterizedTypeReference<Resource<Machine>>() {
-	};
-
-	private static final ParameterizedTypeReference<Resource<Visitor>> VISITOR_TYPE = new ParameterizedTypeReference<Resource<Visitor>>() {
-	};
-
-	private static final ParameterizedTypeReference<Resource<GuestBookRegistry>> GUEST_BOOK_REGISTRY_TYPE = new ParameterizedTypeReference<Resource<GuestBookRegistry>>() {
-	};
 
 	@Autowired
 	private Environment environment;
@@ -72,6 +66,34 @@ public class AmusementParkApplicationTests {
 		String baseUrl = "http://localhost:" + port;
 		amusementParkUrl = baseUrl + "/amusement-park";
 		logoutUrl = baseUrl + "/logout";
+	}
+	
+	@Test
+	public void pageTest() {
+		
+		login("admin", "pass");
+		
+		ResponseEntity<PagedResources<AmusementParkDTO>> response = client.get(uri(amusementParkUrl), PAGED_AMUSEMENT_PARK_TYPE);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		
+		PagedResources<AmusementParkDTO> page = response.getBody();
+		assertEquals(1, page.getLinks().size());
+		assertNotNull(page.getId());
+		
+		IntStream.range(0, 11).forEach(i -> createAmusementPark());
+		
+		response = client.get(uri(amusementParkUrl), PAGED_AMUSEMENT_PARK_TYPE);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		
+		page = response.getBody();
+		assertEquals(4, page.getLinks().size());
+		assertNotNull(page.getLink("last"));
+		
+		response = client.get(uri(page.getLink("last").getHref()), PAGED_AMUSEMENT_PARK_TYPE);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		
+		page = response.getBody();
+		assertEquals(4, page.getLinks().size());	
 	}
 
 	@Test
@@ -183,12 +205,12 @@ public class AmusementParkApplicationTests {
 		AmusementPark amusementPark = createAmusementParkWithAddress();
 
 		ResponseEntity<Resource<AmusementPark>> response = client.post(uri(amusementParkUrl), amusementPark,
-				AMUSEMENT_PARK_TYPE);
+				new ResourceType<AmusementPark>() {});
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
 		Resource<AmusementPark> amusementParkResource = response.getBody();
-
+		
 		assertNotNull(amusementParkResource);
 		assertEquals(4, amusementParkResource.getLinks().size());
 		assertTrue(amusementParkResource.getId().getHref()
@@ -196,6 +218,10 @@ public class AmusementParkApplicationTests {
 		assertNotNull(amusementParkResource.getLink(MACHINE));
 		assertNotNull(amusementParkResource.getLink(VISITOR_SIGN_UP));
 		assertNotNull(amusementParkResource.getLink(VISITOR_ENTER_PARK));
+		
+		amusementPark.setId(amusementParkResource.getContent().getId());
+		assertEquals(amusementPark, amusementParkResource.getContent());
+
 
 		return amusementParkResource;
 	}
