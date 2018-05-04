@@ -9,7 +9,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ArchiveVisitorDTO implements Serializable{
+public class ArchiveVisitorDTO implements Serializable {
 
 	private static final long serialVersionUID = 7802032004601520550L;
 

@@ -7,20 +7,20 @@ import lombok.Data;
 
 @Data
 @Builder
-public class AddressDTO implements Serializable{
+public class AddressDTO implements Serializable {
 
 	private static final long serialVersionUID = 967545444061352211L;
 
 	private Long identifier;
 
-    private String country;
+	private String country;
 
-    private String zipCode;
-    
-    private String city;
+	private String zipCode;
 
-    private String street;
+	private String city;
 
-    private String houseNumber;
-    
+	private String street;
+
+	private String houseNumber;
+
 }

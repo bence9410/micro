@@ -1,10 +1,11 @@
-package hu.beni.clientsupport.dto;
+package hu.beni.clientsupport.resource;
 
 import java.io.Serializable;
 
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
+import hu.beni.clientsupport.dto.AddressDTO;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -13,7 +14,7 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-public class AmusementParkDTO extends ResourceSupport implements Serializable {
+public class AmusementParkResource extends ResourceSupport implements Serializable {
 
 	private static final long serialVersionUID = -7411398427560874485L;
 
@@ -29,12 +30,12 @@ public class AmusementParkDTO extends ResourceSupport implements Serializable {
 
 	private AddressDTO address;
 
-	public AmusementParkDTO() {
+	public AmusementParkResource() {
 		super();
 	}
 
 	@Builder
-	public AmusementParkDTO(Long identifier, String name, Integer capital, Integer totalArea, Integer entranceFee,
+	public AmusementParkResource(Long identifier, String name, Integer capital, Integer totalArea, Integer entranceFee,
 			AddressDTO address, Link[] links) {
 		super();
 		this.identifier = identifier;

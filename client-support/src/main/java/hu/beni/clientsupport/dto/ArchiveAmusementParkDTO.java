@@ -4,13 +4,16 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+import hu.beni.clientsupport.resource.GuestBookRegistryResource;
+import hu.beni.clientsupport.resource.MachineResource;
+import hu.beni.clientsupport.resource.VisitorResource;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
-public class ArchiveAmusementParkDTO implements Serializable{
-	
+public class ArchiveAmusementParkDTO implements Serializable {
+
 	private static final long serialVersionUID = -8578786392708912052L;
 
 	private Long identifier;
@@ -25,10 +28,10 @@ public class ArchiveAmusementParkDTO implements Serializable{
 
 	private AddressDTO address;
 
-	private List<GuestBookRegistryDTO> guestBookRegistry;
+	private List<GuestBookRegistryResource> guestBookRegistry;
 
-	private List<MachineDTO> machines;
+	private List<MachineResource> machines;
 
-	private Set<VisitorDTO> visitors;
+	private Set<VisitorResource> visitors;
 
 }
