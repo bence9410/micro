@@ -19,7 +19,7 @@ import org.springframework.context.annotation.Profile;
 
 import hu.beni.amusementpark.archive.ArchiveSender;
 import hu.beni.amusementpark.archive.impl.RabbitMQArchiveSender;
-import hu.beni.dto.ArchiveAmusementParkDTO;
+import hu.beni.clientsupport.dto.ArchiveAmusementParkDTO;
 import lombok.Getter;
 
 import static org.junit.Assert.assertNotNull;

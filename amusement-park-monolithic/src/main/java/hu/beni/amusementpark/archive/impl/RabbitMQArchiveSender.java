@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import hu.beni.amusementpark.archive.ArchiveSender;
 import hu.beni.amusementpark.entity.AmusementPark;
-import hu.beni.dto.ArchiveAmusementParkDTO;
+import hu.beni.clientsupport.dto.ArchiveAmusementParkDTO;
 import lombok.RequiredArgsConstructor;
 
 import static hu.beni.amusementpark.constants.RabbitMQConstants.*;

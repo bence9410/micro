@@ -20,9 +20,6 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Range;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -39,8 +36,7 @@ public class AmusementPark implements Serializable {
     private static final long serialVersionUID = -2064262013451563720L;
 
 	@Id
-	@JsonProperty("identifier")
-    private Long id;
+	private Long id;
 
     @NotNull
     @Size(min = 5, max = 20)
@@ -65,22 +61,18 @@ public class AmusementPark implements Serializable {
     private Address address;
 
     @OneToMany(mappedBy = "amusementPark", cascade = CascadeType.REMOVE)
-    @JsonIgnore
     private List<GuestBookRegistry> guestBookRegistry;
 
     @OneToMany(mappedBy = "amusementPark", cascade = CascadeType.REMOVE)
-    @JsonIgnore
     private List<Machine> machines;
 
     @OneToMany(mappedBy = "amusementPark")
-    @JsonIgnore
     private List<Visitor> activeVisitors;
 
     @ManyToMany
     @JoinTable(name = "amusement_park_visitor",
 		joinColumns = @JoinColumn(name = "amusement_park_id"),
 		inverseJoinColumns = @JoinColumn(name = "visitor_id"))
-    @JsonIgnore
     private Set<Visitor> visitors;
     
     @Tolerate
@@ -103,6 +95,6 @@ public class AmusementPark implements Serializable {
     public AmusementPark(Long id, Integer capital, Integer totalArea) {
         this.id = id;
         this.capital = capital;
-        this.totalArea = totalArea;
-    }
+		this.totalArea = totalArea;
+	}
 }

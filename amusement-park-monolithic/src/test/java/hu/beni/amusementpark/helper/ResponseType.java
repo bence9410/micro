@@ -1,24 +1,29 @@
 package hu.beni.amusementpark.helper;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.mvc.TypeReferences.PagedResourcesType;
-import org.springframework.hateoas.mvc.TypeReferences.ResourceType;
-import hu.beni.amusementpark.entity.GuestBookRegistry;
-import hu.beni.amusementpark.entity.Machine;
-import hu.beni.amusementpark.entity.Visitor;
-import hu.beni.dto.AmusementParkDTO;
+import hu.beni.clientsupport.resource.AmusementParkResource;
+import hu.beni.clientsupport.resource.GuestBookRegistryResource;
+import hu.beni.clientsupport.resource.MachineResource;
+import hu.beni.clientsupport.resource.VisitorResource;
 
 public class ResponseType {
 
 	//@formatter:off
-	public static final ResourceType<AmusementParkDTO> AMUSEMENT_PARK_TYPE = new ResourceType<AmusementParkDTO>() {};
+	public static final ParameterizedTypeReference<AmusementParkResource> AMUSEMENT_PARK_TYPE = 
+			new ParameterizedTypeReference<AmusementParkResource>() {};
 			
-	public static final PagedResourcesType<AmusementParkDTO> PAGED_AMUSEMENT_PARK_TYPE = new PagedResourcesType<AmusementParkDTO>() {};
+	public static final PagedResourcesType<AmusementParkResource> PAGED_AMUSEMENT_PARK_TYPE = 
+			new PagedResourcesType<AmusementParkResource>() {};
 	
-	public static final ResourceType<Machine> MACHINE_TYPE = new ResourceType<Machine>() {};
+	public static final ParameterizedTypeReference<MachineResource> MACHINE_TYPE = 
+			new ParameterizedTypeReference<MachineResource>() {};
 
-	public static final ResourceType<Visitor> VISITOR_TYPE = new ResourceType<Visitor>() {};
+	public static final ParameterizedTypeReference<VisitorResource> VISITOR_TYPE = 
+			new ParameterizedTypeReference<VisitorResource>() {};
 
-	public static final ResourceType<GuestBookRegistry> GUEST_BOOK_REGISTRY_TYPE = new ResourceType<GuestBookRegistry>() {};
+	public static final ParameterizedTypeReference<GuestBookRegistryResource> GUEST_BOOK_REGISTRY_TYPE =
+			new ParameterizedTypeReference<GuestBookRegistryResource>() {};
 	//@formatter:on
 
 }

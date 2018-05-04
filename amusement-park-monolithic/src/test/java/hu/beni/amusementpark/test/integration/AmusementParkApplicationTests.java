@@ -1,13 +1,15 @@
 package hu.beni.amusementpark.test.integration;
 
 import hu.beni.amusementpark.entity.AmusementPark;
-import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.entity.Machine;
-import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.helper.Client;
 import hu.beni.amusementpark.helper.MyAssert.ExceptionAsserter;
+import hu.beni.amusementpark.helper.ResponseType;
 import hu.beni.amusementpark.helper.ValidEntityFactory;
-import hu.beni.dto.AmusementParkDTO;
+import hu.beni.clientsupport.resource.AmusementParkResource;
+import hu.beni.clientsupport.resource.GuestBookRegistryResource;
+import hu.beni.clientsupport.resource.MachineResource;
+import hu.beni.clientsupport.resource.VisitorResource;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,8 +24,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.hateoas.PagedResources;
-import org.springframework.hateoas.Resource;
-import org.springframework.hateoas.mvc.TypeReferences.ResourceType;
 import org.springframework.http.HttpHeaders;
 
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
@@ -66,51 +66,53 @@ public class AmusementParkApplicationTests {
 		String baseUrl = "http://localhost:" + port;
 		amusementParkUrl = baseUrl + "/amusement-park";
 		logoutUrl = baseUrl + "/logout";
+		logout();
 	}
-	
+
 	@Test
 	public void pageTest() {
-		
+
 		login("admin", "pass");
-		
-		ResponseEntity<PagedResources<AmusementParkDTO>> response = client.get(uri(amusementParkUrl), PAGED_AMUSEMENT_PARK_TYPE);
+
+		ResponseEntity<PagedResources<AmusementParkResource>> response = client.get(uri(amusementParkUrl),
+				PAGED_AMUSEMENT_PARK_TYPE);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		
-		PagedResources<AmusementParkDTO> page = response.getBody();
+
+		PagedResources<AmusementParkResource> page = response.getBody();
 		assertEquals(1, page.getLinks().size());
 		assertNotNull(page.getId());
-		
+
 		IntStream.range(0, 11).forEach(i -> createAmusementPark());
-		
+
 		response = client.get(uri(amusementParkUrl), PAGED_AMUSEMENT_PARK_TYPE);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		
+
 		page = response.getBody();
 		assertEquals(4, page.getLinks().size());
 		assertNotNull(page.getLink("last"));
-		
+
 		response = client.get(uri(page.getLink("last").getHref()), PAGED_AMUSEMENT_PARK_TYPE);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
-		
+
 		page = response.getBody();
-		assertEquals(4, page.getLinks().size());	
+		assertEquals(4, page.getLinks().size());
 	}
 
 	@Test
 	public void positiveTest() {
 		login("admin", "pass");
 
-		Resource<AmusementPark> amusementParkResource = createAmusementPark();
+		AmusementParkResource amusementParkResource = createAmusementPark();
 
-		Resource<Machine> machineResource = addMachine(amusementParkResource.getLink(MACHINE).getHref());
+		MachineResource machineResource = addMachine(amusementParkResource.getLink(MACHINE).getHref());
 
-		Resource<Visitor> visitorResource = signUp(amusementParkResource.getLink(VISITOR_SIGN_UP).getHref());
+		VisitorResource visitorResource = signUp(amusementParkResource.getLink(VISITOR_SIGN_UP).getHref());
 
 		visitorResource = enterPark(visitorResource.getLink(VISITOR_ENTER_PARK).getHref(),
-				amusementParkResource.getContent().getId());
+				amusementParkResource.getIdentifier());
 
 		visitorResource = getOnMachine(machineResource.getLink(GET_ON_MACHINE).getHref(),
-				visitorResource.getContent().getId());
+				visitorResource.getIdentifier());
 
 		visitorResource = getOffMachine(visitorResource.getLink(GET_OFF_MACHINE).getHref());
 
@@ -132,7 +134,7 @@ public class AmusementParkApplicationTests {
 		assertThrows(() -> client.post(uri(amusementParkUrl), ValidEntityFactory.createAmusementPark(), String.class),
 				HttpClientErrorException.class, teaPotStatusAndAddressNullMessage());
 
-		Resource<AmusementPark> amusementParkResource = createAmusementPark();
+		AmusementParkResource amusementParkResource = createAmusementPark();
 
 		Machine machine = createMachine();
 		machine.setPrice(4000);
@@ -201,71 +203,69 @@ public class AmusementParkApplicationTests {
 		assertTrue(loginPageResponse.getBody().length() > 450);
 	}
 
-	private Resource<AmusementPark> createAmusementPark() {
+	private AmusementParkResource createAmusementPark() {
 		AmusementPark amusementPark = createAmusementParkWithAddress();
 
-		ResponseEntity<Resource<AmusementPark>> response = client.post(uri(amusementParkUrl), amusementPark,
-				new ResourceType<AmusementPark>() {});
+		ResponseEntity<AmusementParkResource> response = client.post(uri(amusementParkUrl), amusementPark,
+				ResponseType.AMUSEMENT_PARK_TYPE);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
-		Resource<AmusementPark> amusementParkResource = response.getBody();
-		
+		AmusementParkResource amusementParkResource = response.getBody();
+
 		assertNotNull(amusementParkResource);
 		assertEquals(4, amusementParkResource.getLinks().size());
-		assertTrue(amusementParkResource.getId().getHref()
-				.endsWith(amusementParkResource.getContent().getId().toString()));
+		assertTrue(amusementParkResource.getId().getHref().endsWith(amusementParkResource.getIdentifier().toString()));
 		assertNotNull(amusementParkResource.getLink(MACHINE));
 		assertNotNull(amusementParkResource.getLink(VISITOR_SIGN_UP));
 		assertNotNull(amusementParkResource.getLink(VISITOR_ENTER_PARK));
-		
-		amusementPark.setId(amusementParkResource.getContent().getId());
-		assertEquals(amusementPark, amusementParkResource.getContent());
 
+		amusementPark.setId(amusementParkResource.getIdentifier());
+		//assertEquals(amusementPark, amusementParkResource);
 
 		return amusementParkResource;
 	}
 
-	private Resource<Machine> addMachine(String url) {
-		ResponseEntity<Resource<Machine>> response = client.post(uri(url), createMachine(), MACHINE_TYPE);
+	private MachineResource addMachine(String url) {
+		ResponseEntity<MachineResource> response = client.post(uri(url), createMachine(), MACHINE_TYPE);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
-		Resource<Machine> machineResource = response.getBody();
+		MachineResource machineResource = response.getBody();
 
 		assertNotNull(machineResource);
 		assertEquals(2, machineResource.getLinks().size());
-		assertTrue(machineResource.getId().getHref().endsWith(machineResource.getContent().getId().toString()));
+		assertTrue(machineResource.getId().getHref().endsWith(machineResource.getIdentifier().toString()));
 		assertNotNull(machineResource.getLink(GET_ON_MACHINE));
 
 		return machineResource;
 	}
 
-	private Resource<Visitor> signUp(String url) {
-		ResponseEntity<Resource<Visitor>> response = client.post(uri(url), createVisitor(), VISITOR_TYPE);
+	private VisitorResource signUp(String url) {
+		ResponseEntity<VisitorResource> response = client.post(uri(url), createVisitor(), VISITOR_TYPE);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
-		Resource<Visitor> visitorResource = response.getBody();
+		VisitorResource visitorResource = response.getBody();
 
 		assertNotNull(visitorResource);
 		assertEquals(2, visitorResource.getLinks().size());
-		assertTrue(visitorResource.getId().getHref().endsWith(visitorResource.getContent().getId().toString()));
+		assertTrue(visitorResource.getId().getHref().endsWith(visitorResource.getIdentifier().toString()));
 		assertNotNull(visitorResource.getLink(VISITOR_ENTER_PARK));
 
 		return visitorResource;
 	}
 
-	private Resource<Visitor> enterPark(String enterParkUrl, Long amusementParkId) {
-		ResponseEntity<Resource<Visitor>> response = client.put(uri(enterParkUrl, amusementParkId), 200, VISITOR_TYPE);
+	private VisitorResource enterPark(String enterParkUrl, Long amusementParkId) {
+		ResponseEntity<VisitorResource> response = client.put(uri(enterParkUrl, amusementParkId), 200, VISITOR_TYPE);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
-		Resource<Visitor> visitorResource = response.getBody();
+		VisitorResource visitorResource = response.getBody();
 
 		assertNotNull(visitorResource);
 		assertEquals(4, visitorResource.getLinks().size());
-		assertTrue(visitorResource.getId().getHref().endsWith(visitorResource.getContent().getId().toString()));
+		assertTrue(visitorResource.getId().getHref().endsWith(visitorResource.getIdentifier().toString()));
 		assertNotNull(visitorResource.getLink(VISITOR_LEAVE_PARK));
 		assertNotNull(visitorResource.getLink(GET_ON_MACHINE));
 		assertNotNull(visitorResource.getLink(ADD_REGISTRY));
@@ -273,31 +273,31 @@ public class AmusementParkApplicationTests {
 		return visitorResource;
 	}
 
-	private Resource<Visitor> getOnMachine(String getOnMachineUrl, Long visitorId) {
-		ResponseEntity<Resource<Visitor>> response = client.put(uri(getOnMachineUrl, visitorId), null, VISITOR_TYPE);
+	private VisitorResource getOnMachine(String getOnMachineUrl, Long visitorId) {
+		ResponseEntity<VisitorResource> response = client.put(uri(getOnMachineUrl, visitorId), null, VISITOR_TYPE);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
-		Resource<Visitor> visitorResource = response.getBody();
+		VisitorResource visitorResource = response.getBody();
 
 		assertNotNull(visitorResource);
 		assertEquals(2, visitorResource.getLinks().size());
-		assertTrue(visitorResource.getId().getHref().endsWith(visitorResource.getContent().getId().toString()));
+		assertTrue(visitorResource.getId().getHref().endsWith(visitorResource.getIdentifier().toString()));
 		assertNotNull(visitorResource.getLink(GET_OFF_MACHINE));
 
 		return visitorResource;
 	}
 
-	private Resource<Visitor> getOffMachine(String getOffMachineUrl) {
-		ResponseEntity<Resource<Visitor>> response = client.put(uri(getOffMachineUrl), null, VISITOR_TYPE);
+	private VisitorResource getOffMachine(String getOffMachineUrl) {
+		ResponseEntity<VisitorResource> response = client.put(uri(getOffMachineUrl), null, VISITOR_TYPE);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
-		Resource<Visitor> visitorResource = response.getBody();
+		VisitorResource visitorResource = response.getBody();
 
 		assertNotNull(visitorResource);
 		assertEquals(4, visitorResource.getLinks().size());
-		assertTrue(visitorResource.getId().getHref().endsWith(visitorResource.getContent().getId().toString()));
+		assertTrue(visitorResource.getId().getHref().endsWith(visitorResource.getIdentifier().toString()));
 		assertNotNull(visitorResource.getLink(VISITOR_LEAVE_PARK));
 		assertNotNull(visitorResource.getLink(GET_ON_MACHINE));
 		assertNotNull(visitorResource.getLink(ADD_REGISTRY));
@@ -306,17 +306,17 @@ public class AmusementParkApplicationTests {
 	}
 
 	private void addRegistry(String addRegistryUrl) {
-		ResponseEntity<Resource<GuestBookRegistry>> response = client.post(uri(addRegistryUrl), OPINION_ON_THE_PARK,
+		ResponseEntity<GuestBookRegistryResource> response = client.post(uri(addRegistryUrl), OPINION_ON_THE_PARK,
 				GUEST_BOOK_REGISTRY_TYPE);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
-		Resource<GuestBookRegistry> guestBookRegistryResource = response.getBody();
+		GuestBookRegistryResource guestBookRegistryResource = response.getBody();
 
 		assertNotNull(guestBookRegistryResource);
 		assertEquals(2, guestBookRegistryResource.getLinks().size());
 		assertTrue(guestBookRegistryResource.getId().getHref()
-				.endsWith(guestBookRegistryResource.getContent().getId().toString()));
+				.endsWith(guestBookRegistryResource.getIdentifier().toString()));
 		assertNotNull(guestBookRegistryResource.getLink(ADD_REGISTRY));
 	}
 

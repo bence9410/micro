@@ -52,7 +52,7 @@
 		</dependency>
 		<dependency>
 			<groupId>hu.beni</groupId>
-			<artifactId>dto</artifactId>
+			<artifactId>client-support</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>

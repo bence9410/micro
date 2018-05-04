@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.mapper.AmusementParkMapper;
 import hu.beni.amusementpark.service.AmusementParkService;
-import hu.beni.dto.AmusementParkDTO;
+import hu.beni.clientsupport.resource.AmusementParkResource;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -32,18 +32,18 @@ public class AmusementParkController {
 	
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public AmusementParkDTO save(@Valid @RequestBody AmusementPark amusementPark) {    	
+    public AmusementParkResource save(@Valid @RequestBody AmusementPark amusementPark) {    	
     	amusementPark.getAddress().setAmusementPark(amusementPark);
         return amusementParkMapper.toResource(amusementParkService.save(amusementPark));
     }
     
     @GetMapping
-    public PagedResources<AmusementParkDTO> findAllPaged(@PageableDefault Pageable pageable){
+    public PagedResources<AmusementParkResource> findAllPaged(@PageableDefault Pageable pageable){
     	return amusementParkMapper.toPagedResources(amusementParkService.findAllFetchAddress(pageable));
     }
 
     @GetMapping("/{amusementParkId}")
-    public AmusementParkDTO findOne(@PathVariable Long amusementParkId) {
+    public AmusementParkResource findOne(@PathVariable Long amusementParkId) {
         return amusementParkMapper.toResource(amusementParkService.findByIdFetchAddress(amusementParkId));
     }
 

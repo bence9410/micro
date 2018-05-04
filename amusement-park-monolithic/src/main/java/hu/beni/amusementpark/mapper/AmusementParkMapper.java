@@ -16,31 +16,31 @@ import hu.beni.amusementpark.controller.MachineController;
 import hu.beni.amusementpark.controller.VisitorController;
 import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
-import hu.beni.dto.AddressDTO;
-import hu.beni.dto.AmusementParkDTO;
+import hu.beni.clientsupport.dto.AddressDTO;
+import hu.beni.clientsupport.resource.AmusementParkResource;
 
 @Component
 @ConditionalOnWebApplication
-public class AmusementParkMapper extends EntityMapper<AmusementPark, AmusementParkDTO> {
+public class AmusementParkMapper extends EntityMapper<AmusementPark, AmusementParkResource> {
 
 	public AmusementParkMapper(PagedResourcesAssembler<AmusementPark> pagedResourcesAssembler) {
-		super(AmusementParkController.class, AmusementParkDTO.class, pagedResourcesAssembler);
+		super(AmusementParkController.class, AmusementParkResource.class, pagedResourcesAssembler);
 	}
 
 	@Override
-	public AmusementParkDTO toResource(AmusementPark entity) {
-		return AmusementParkDTO.builder() //@formatter:off
+	public AmusementParkResource toResource(AmusementPark entity) {
+		return AmusementParkResource.builder() //@formatter:off
 				.identifier(entity.getId())
 				.name(entity.getName())
 				.capital(entity.getCapital())
 				.totalArea(entity.getTotalArea())
 				.entranceFee(entity.getEntranceFee())
-				.address(toResource(entity.getAddress()))
+				.address(toDTO(entity.getAddress()))
 				.links(createLinks(entity)).build(); //@formatter:on
 	}
 
 	@Override
-	public AmusementPark toEntity(AmusementParkDTO resource) {
+	public AmusementPark toEntity(AmusementParkResource resource) {
 		return AmusementPark.builder() //@formatter:off
 				.id(resource.getIdentifier())
 				.name(resource.getName())
@@ -50,7 +50,7 @@ public class AmusementParkMapper extends EntityMapper<AmusementPark, AmusementPa
 				.address(toEntity(resource.getAddress())).build(); //@formatter:on
 	}
 
-	private AddressDTO toResource(Address entity) {
+	private AddressDTO toDTO(Address entity) {
 		return AddressDTO.builder() //@formatter:off
 				.identifier(entity.getId())
 				.country(entity.getCountry())
@@ -60,14 +60,14 @@ public class AmusementParkMapper extends EntityMapper<AmusementPark, AmusementPa
 				.houseNumber(entity.getHouseNumber()).build(); //@formatter:on
 	}
 
-	private Address toEntity(AddressDTO resource) {
+	private Address toEntity(AddressDTO dto) {
 		return Address.builder() //@formatter:off
-				.id(resource.getIdentifier())
-				.country(resource.getCountry())
-				.zipCode(resource.getZipCode())
-				.city(resource.getCity())
-				.street(resource.getStreet())			
-				.houseNumber(resource.getHouseNumber()).build(); //@formatter:on
+				.id(dto.getIdentifier())
+				.country(dto.getCountry())
+				.zipCode(dto.getZipCode())
+				.city(dto.getCity())
+				.street(dto.getStreet())			
+				.houseNumber(dto.getHouseNumber()).build(); //@formatter:on
 	}
 
 	private Link[] createLinks(AmusementPark amusementPark) {

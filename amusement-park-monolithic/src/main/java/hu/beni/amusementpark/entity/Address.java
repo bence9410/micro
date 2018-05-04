@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.Builder;
 import lombok.Data;
@@ -29,8 +28,7 @@ public class Address implements Serializable {
 
 	@Id
 	@GeneratedValue
-	@JsonProperty("identifier")
-    private Long id;
+	private Long id;
 
     @NotNull
     @Size(min = 3, max = 15)
@@ -52,8 +50,8 @@ public class Address implements Serializable {
     @Size(max = 5)
     private String houseNumber;
     
-    @OneToOne(mappedBy = "address", fetch = FetchType.LAZY, optional = false)
     @JsonIgnore
+    @OneToOne(mappedBy = "address", fetch = FetchType.LAZY, optional = false)
     private AmusementPark amusementPark;
 
     @Tolerate
