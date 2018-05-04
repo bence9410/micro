@@ -1,17 +1,15 @@
 package hu.beni.amusementpark.controller;
 
-import hu.beni.amusementpark.entity.Machine;
+import hu.beni.amusementpark.mapper.MachineMapper;
+
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.*;
 import hu.beni.amusementpark.service.MachineService;
+import hu.beni.clientsupport.resource.MachineResource;
 import lombok.RequiredArgsConstructor;
-import org.springframework.hateoas.Resource;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,34 +23,29 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class MachineController {
 
-    private final MachineService machineService;
+	private final MachineService machineService;
+	private final MachineMapper machineMapper;
 
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public Resource<Machine> addMachine(@PathVariable Long amusementParkId, @RequestBody Machine machine) {
-        return createResource(amusementParkId, machineService.addMachine(amusementParkId, machine));
-    }
+	@PostMapping
+	@PreAuthorize("hasRole('ADMIN')")
+	public MachineResource addMachine(@PathVariable Long amusementParkId, @RequestBody MachineResource machine) {
+		return machineMapper.toResource(machineService.addMachine(amusementParkId, machineMapper.toEntity(machine)));
+	}
 
-    @GetMapping("/{machineId}")
-    public Resource<Machine> findOne(@PathVariable Long amusementParkId, @PathVariable Long machineId) {
-        return createResource(amusementParkId, machineService.findOne(amusementParkId, machineId));
-    }
-    
-    @GetMapping
-    public List<Resource<Machine>> findAllByAmusementParkId(@PathVariable Long amusementParkId){
-    	return machineService.findAllByAmusementParkId(amusementParkId).stream()
-    			.map(machine -> createResource(amusementParkId, machine)).collect(Collectors.toList());
-    }
+	@GetMapping("/{machineId}")
+	public MachineResource findOne(@PathVariable Long amusementParkId, @PathVariable Long machineId) {
+		return machineMapper.toResource(machineService.findOne(amusementParkId, machineId));
+	}
 
-    @DeleteMapping("/{machineId}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public void delete(@PathVariable Long amusementParkId, @PathVariable Long machineId) {
-        machineService.removeMachine(amusementParkId, machineId);
-    }
+	@GetMapping
+	public List<MachineResource> findAllByAmusementParkId(@PathVariable Long amusementParkId) {
+		return machineService.findAllByAmusementParkId(amusementParkId).stream().map(machineMapper::toResource)
+				.collect(Collectors.toList());
+	}
 
-    private Resource<Machine> createResource(Long amusementParkId, Machine machine) {
-        return new Resource<>(machine, linkTo(methodOn(MachineController.class).findOne(amusementParkId, machine.getId())).withSelfRel(),
-                linkTo(methodOn(VisitorController.class).getOnMachine(amusementParkId, machine.getId(), null)).withRel(GET_ON_MACHINE));
-    }
-
+	@DeleteMapping("/{machineId}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public void delete(@PathVariable Long amusementParkId, @PathVariable Long machineId) {
+		machineService.removeMachine(amusementParkId, machineId);
+	}
 }
