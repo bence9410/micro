@@ -249,10 +249,11 @@ public class AmusementParkApplicationTests {
 		VisitorResource visitorResource = response.getBody();
 
 		assertNotNull(visitorResource);
-		assertEquals(2, visitorResource.getLinks().size());
+		assertEquals(3, visitorResource.getLinks().size());
 		assertTrue(visitorResource.getId().getHref().endsWith(visitorResource.getIdentifier().toString()));
 		assertNotNull(visitorResource.getLink(VISITOR_ENTER_PARK));
-
+		assertNotNull(visitorResource.getLink(AMUSEMENT_PARK));
+		
 		return visitorResource;
 	}
 

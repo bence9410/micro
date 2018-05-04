@@ -4,6 +4,7 @@ import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.GET_ON_MA
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import hu.beni.amusementpark.enums.MachineType;
 import hu.beni.clientsupport.resource.MachineResource;
 
 @Component
+@ConditionalOnWebApplication
 public class MachineMapper extends EntityMapper<Machine, MachineResource> {
 
 	public MachineMapper(PagedResourcesAssembler<Machine> pagedResourcesAssembler) {

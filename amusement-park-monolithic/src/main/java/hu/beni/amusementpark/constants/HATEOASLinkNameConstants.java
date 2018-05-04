@@ -2,6 +2,7 @@ package hu.beni.amusementpark.constants;
 
 public class HATEOASLinkNameConstants {
 	
+	public static final String AMUSEMENT_PARK = "amusementPark";
 	public static final String MACHINE = "machine";
 	public static final String VISITOR_ENTER_PARK = "visitorEnterPark";
 	public static final String VISITOR_SIGN_UP = "visitorSignUp";
