@@ -1,4 +1,4 @@
-package hu.beni.dto;
+package hu.beni.clientsupport.dto;
 
 import java.io.Serializable;
 import java.time.LocalDate;
