@@ -8,7 +8,6 @@ public class HATEOASLinkNameConstants {
 	public static final String VISITOR_SIGN_UP = "visitorSignUp";
 	public static final String GET_ON_MACHINE = "getOnMachine";
 	public static final String VISITOR_LEAVE_PARK = "leavePark";
-	public static final String VISITOR_GET_ON_MACHINE = "getOnMachine";
 	public static final String GET_OFF_MACHINE = "getOffMachine";
     public static final String ADD_REGISTRY = "addRegistry";
     
