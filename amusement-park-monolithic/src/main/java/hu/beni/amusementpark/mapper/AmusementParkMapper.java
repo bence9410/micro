@@ -1,23 +1,17 @@
 package hu.beni.amusementpark.mapper;
 
-import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.MACHINE;
-import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.VISITOR_ENTER_PARK;
-import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.VISITOR_SIGN_UP;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
 import hu.beni.amusementpark.controller.AmusementParkController;
-import hu.beni.amusementpark.controller.MachineController;
-import hu.beni.amusementpark.controller.VisitorController;
 import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.clientsupport.dto.AddressDTO;
 import hu.beni.clientsupport.resource.AmusementParkResource;
+
+import static hu.beni.amusementpark.factory.LinkFactory.*;
 
 @Component
 @ConditionalOnWebApplication
@@ -71,10 +65,11 @@ public class AmusementParkMapper extends EntityMapper<AmusementPark, AmusementPa
 	}
 
 	private Link[] createLinks(AmusementPark amusementPark) {
-		Long id = amusementPark.getId();
-		return new Link[] { linkTo(methodOn(AmusementParkController.class).findOne(id)).withSelfRel(),
-				linkTo(methodOn(MachineController.class).addMachine(id, null)).withRel(MACHINE),
-				linkTo(methodOn(VisitorController.class).signUp(null, null)).withRel(VISITOR_SIGN_UP),
-				linkTo(methodOn(VisitorController.class).enterPark(id, null)).withRel(VISITOR_ENTER_PARK) };
+		Long amusementParkId = amusementPark.getId();
+		return new Link[] { //@formatter:off
+				createAmusementParkSelfLink(amusementParkId),
+				createMachineLink(amusementParkId),
+				createVisitorSignUpLink(),
+				createVisitorEnterParkLink(amusementParkId)}; //@formatter:on
 	}
 }

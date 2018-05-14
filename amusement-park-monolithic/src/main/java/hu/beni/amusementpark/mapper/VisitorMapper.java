@@ -1,14 +1,5 @@
 package hu.beni.amusementpark.mapper;
 
-import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.ADD_REGISTRY;
-import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.GET_OFF_MACHINE;
-import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.GET_ON_MACHINE;
-import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.VISITOR_ENTER_PARK;
-import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.VISITOR_LEAVE_PARK;
-import static hu.beni.amusementpark.constants.HATEOASLinkNameConstants.AMUSEMENT_PARK;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,12 +8,12 @@ import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
-import hu.beni.amusementpark.controller.AmusementParkController;
-import hu.beni.amusementpark.controller.GuestBookRegistryController;
 import hu.beni.amusementpark.controller.VisitorController;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.enums.VisitorState;
 import hu.beni.clientsupport.resource.VisitorResource;
+
+import static hu.beni.amusementpark.factory.LinkFactory.*;
 
 @Component
 @ConditionalOnWebApplication
@@ -67,25 +58,21 @@ public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 		Long visitorId = visitor.getId();
 		VisitorState state = visitor.getState();
 		List<Link> links = new ArrayList<>();
-		links.add(linkTo(methodOn(VisitorController.class).findOne(visitorId)).withSelfRel());
+		links.add(createVisitorSelfLink(visitorId));
 		if (state == null) {
-			links.add(linkTo(methodOn(VisitorController.class).enterPark(null, visitorId)).withRel(VISITOR_ENTER_PARK));
-			links.add(linkTo(methodOn(AmusementParkController.class).findAllPaged(null)).withRel(AMUSEMENT_PARK));
+			links.add(createVisitorEnterParkLink(visitorId));
+			links.add(createAmusementParkLink());
 		} else {
 			Long amusementParkId = visitor.getAmusementPark().getId();
 			if (VisitorState.REST.equals(state)) {
-				links.add(linkTo(methodOn(VisitorController.class).leavePark(amusementParkId, visitorId))
-						.withRel(VISITOR_LEAVE_PARK));
-				links.add(linkTo(methodOn(VisitorController.class).getOnMachine(amusementParkId, null, visitorId))
-						.withRel(GET_ON_MACHINE));
-				links.add(linkTo(
-						methodOn(GuestBookRegistryController.class).addRegistry(amusementParkId, visitorId, null))
-								.withRel(ADD_REGISTRY));
+				links.add(createVisitorLeavePark(amusementParkId, visitorId));
+				links.add(createGetOnMachineLink(amusementParkId, null, visitorId));
+				links.add(createAddGuestBookRegistryLink(amusementParkId, visitorId));
 			} else if (VisitorState.ON_MACHINE.equals(state)) {
-				links.add(linkTo(methodOn(VisitorController.class).getOffMachine(amusementParkId,
-						visitor.getMachine().getId(), visitorId)).withRel(GET_OFF_MACHINE));
+				links.add(createGetOffMachineLink(amusementParkId, visitor.getMachine().getId(), visitorId));
 			}
 		}
 		return links.toArray(new Link[links.size()]);
 	}
+	
 }
