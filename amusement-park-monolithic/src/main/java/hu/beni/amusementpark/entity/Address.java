@@ -11,8 +11,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,41 +19,40 @@ import lombok.experimental.Tolerate;
 @Entity
 @Data
 @Builder
-@EqualsAndHashCode(of = {"id", "zipCode", "country", "city", "street", "houseNumber"})
+@EqualsAndHashCode(of = { "id", "zipCode", "country", "city", "street", "houseNumber" })
 public class Address implements Serializable {
 
-    private static final long serialVersionUID = 5753682920839496113L;
+	private static final long serialVersionUID = 5753682920839496113L;
 
 	@Id
 	@GeneratedValue
 	private Long id;
 
-    @NotNull
-    @Size(min = 3, max = 15)
-    private String country;
+	@NotNull
+	@Size(min = 3, max = 15)
+	private String country;
 
-    @NotNull
-    @Size(min = 3, max = 10)
-    private String zipCode;
-    
-    @NotNull
-    @Size(min = 3, max = 15)
-    private String city;
+	@NotNull
+	@Size(min = 3, max = 10)
+	private String zipCode;
 
-    @NotNull
-    @Size(min = 5, max = 25)
-    private String street;
+	@NotNull
+	@Size(min = 3, max = 15)
+	private String city;
 
-    @NotEmpty
-    @Size(max = 5)
-    private String houseNumber;
-    
-    @JsonIgnore
-    @OneToOne(mappedBy = "address", fetch = FetchType.LAZY, optional = false)
-    private AmusementPark amusementPark;
+	@NotNull
+	@Size(min = 5, max = 25)
+	private String street;
 
-    @Tolerate
-    protected Address() {
-        super();
-    }
+	@NotEmpty
+	@Size(max = 5)
+	private String houseNumber;
+
+	@OneToOne(mappedBy = "address", fetch = FetchType.LAZY, optional = false)
+	private AmusementPark amusementPark;
+
+	@Tolerate
+	protected Address() {
+		super();
+	}
 }

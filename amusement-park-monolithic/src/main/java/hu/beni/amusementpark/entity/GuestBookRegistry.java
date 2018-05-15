@@ -13,9 +13,6 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -26,36 +23,33 @@ import lombok.experimental.Tolerate;
 @Getter
 @Setter
 @Builder
-@EqualsAndHashCode(of = {"id", "textOfRegistry", "dateOfRegistry"})
-public class GuestBookRegistry implements Serializable{
+@EqualsAndHashCode(of = { "id", "textOfRegistry", "dateOfRegistry" })
+public class GuestBookRegistry implements Serializable {
 
 	private static final long serialVersionUID = 2987327348565883455L;
 
 	@Id
 	@GeneratedValue
-	@JsonProperty("identifier")
 	private Long id;
-	
+
 	@NotNull
 	@Size(min = 5, max = 100)
 	private String textOfRegistry;
-	
+
 	@CreationTimestamp
 	private LocalDateTime dateOfRegistry;
-	
+
 	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JsonIgnore
 	private Visitor visitor;
-	
+
 	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JsonIgnore
 	private AmusementPark amusementPark;
-	
+
 	@Tolerate
 	protected GuestBookRegistry() {
 		super();
 	}
-	
+
 }

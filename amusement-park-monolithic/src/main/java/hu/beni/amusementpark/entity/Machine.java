@@ -17,9 +17,6 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Range;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import hu.beni.amusementpark.enums.MachineType;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -31,56 +28,54 @@ import lombok.experimental.Tolerate;
 @Getter
 @Setter
 @Builder
-@EqualsAndHashCode(of = {"id", "fantasyName", "size", "price", "numberOfSeats", "minimumRequiredAge", "ticketPrice", "type"})
+@EqualsAndHashCode(of = { "id", "fantasyName", "size", "price", "numberOfSeats", "minimumRequiredAge", "ticketPrice",
+		"type" })
 public class Machine implements Serializable {
 
-    private static final long serialVersionUID = 7217409529703853878L;
+	private static final long serialVersionUID = 7217409529703853878L;
 
 	@Id
-    @GeneratedValue
-    @JsonProperty("identifier")
-    private Long id;
+	@GeneratedValue
+	private Long id;
 
-    @NotNull
-    @Size(min = 5, max = 25)
-    private String fantasyName;
+	@NotNull
+	@Size(min = 5, max = 25)
+	private String fantasyName;
 
-    @NotNull
-    @Range(min = 20, max = 200)
-    @Column(name = "Size_Of_Machine")
-    private Integer size;
+	@NotNull
+	@Range(min = 20, max = 200)
+	@Column(name = "Size_Of_Machine")
+	private Integer size;
 
-    @NotNull
-    @Range(min = 50, max = 2000)
-    private Integer price;
+	@NotNull
+	@Range(min = 50, max = 2000)
+	private Integer price;
 
-    @NotNull
-    @Range(min = 5, max = 30)
-    private Integer numberOfSeats;
+	@NotNull
+	@Range(min = 5, max = 30)
+	private Integer numberOfSeats;
 
-    @NotNull
-    @Range(max = 21)
-    private Integer minimumRequiredAge;
+	@NotNull
+	@Range(max = 21)
+	private Integer minimumRequiredAge;
 
-    @NotNull
-    @Range(min = 5, max = 30)
-    private Integer ticketPrice;
+	@NotNull
+	@Range(min = 5, max = 30)
+	private Integer ticketPrice;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private MachineType type;
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	private MachineType type;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JsonIgnore
-    private AmusementPark amusementPark;
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	private AmusementPark amusementPark;
 
-    @OneToMany(mappedBy = "machine")
-    @JsonIgnore
-    private List<Visitor> visitors;
+	@OneToMany(mappedBy = "machine")
+	private List<Visitor> visitors;
 
-    @Tolerate
-    protected Machine() {
-        super();
-    }
+	@Tolerate
+	protected Machine() {
+		super();
+	}
 
 }

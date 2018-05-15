@@ -19,9 +19,6 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import hu.beni.amusementpark.enums.VisitorState;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -40,7 +37,6 @@ public class Visitor implements Serializable {
 
 	@Id
     @GeneratedValue
-    @JsonProperty("identifier")
     private Long id;
     
     private String name;
@@ -59,19 +55,15 @@ public class Visitor implements Serializable {
     private VisitorState state;
 		
     @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
     private AmusementPark amusementPark;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JsonIgnore
-    private Machine machine;
+	private Machine machine;
 	    
     @OneToMany(mappedBy = "visitor")
-    @JsonIgnore
     private List<GuestBookRegistry> guestBookRegistries;
     
     @ManyToMany(mappedBy = "visitors")
-    @JsonIgnore
     private Set<AmusementPark> visitedAmusementParks;
   
     @Tolerate
@@ -81,7 +73,7 @@ public class Visitor implements Serializable {
     
     @Tolerate
     public Visitor(Long id) {
-    	this.id = id;
-    }
+		this.id = id;
+	}
 
 }

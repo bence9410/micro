@@ -30,71 +30,71 @@ import lombok.experimental.Tolerate;
 @Getter
 @Setter
 @Builder
-@EqualsAndHashCode(of = {"id", "name", "capital", "totalArea", "entranceFee"})
+@EqualsAndHashCode(of = { "id", "name", "capital", "totalArea", "entranceFee" })
 public class AmusementPark implements Serializable {
 
-    private static final long serialVersionUID = -2064262013451563720L;
+	private static final long serialVersionUID = -2064262013451563720L;
 
 	@Id
 	private Long id;
 
-    @NotNull
-    @Size(min = 5, max = 20)
-    private String name;
+	@NotNull
+	@Size(min = 5, max = 20)
+	private String name;
 
-    @NotNull
-    @Range(min = 500, max = 50000)
-    private Integer capital;
+	@NotNull
+	@Range(min = 500, max = 50000)
+	private Integer capital;
 
-    @NotNull
-    @Range(min = 50, max = 2000)
-    private Integer totalArea;
+	@NotNull
+	@Range(min = 50, max = 2000)
+	private Integer totalArea;
 
-    @NotNull
-    @Range(min = 5, max = 200)
-    private Integer entranceFee;
-        
-    @Valid
-    @NotNull
-    @MapsId
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
-    private Address address;
+	@NotNull
+	@Range(min = 5, max = 200)
+	private Integer entranceFee;
 
-    @OneToMany(mappedBy = "amusementPark", cascade = CascadeType.REMOVE)
-    private List<GuestBookRegistry> guestBookRegistry;
+	@Valid
+	@NotNull
+	@MapsId
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)
+	private Address address;
 
-    @OneToMany(mappedBy = "amusementPark", cascade = CascadeType.REMOVE)
-    private List<Machine> machines;
+	@OneToMany(mappedBy = "amusementPark", cascade = CascadeType.REMOVE)
+	private List<GuestBookRegistry> guestBookRegistry;
 
-    @OneToMany(mappedBy = "amusementPark")
-    private List<Visitor> activeVisitors;
+	@OneToMany(mappedBy = "amusementPark", cascade = CascadeType.REMOVE)
+	private List<Machine> machines;
 
-    @ManyToMany
-    @JoinTable(name = "amusement_park_visitor",
+	@OneToMany(mappedBy = "amusementPark")
+	private List<Visitor> activeVisitors;
+
+	@ManyToMany
+	@JoinTable(name = "amusement_park_visitor", //@formatter:off
 		joinColumns = @JoinColumn(name = "amusement_park_id"),
-		inverseJoinColumns = @JoinColumn(name = "visitor_id"))
-    private Set<Visitor> visitors;
-    
-    @Tolerate
-    protected AmusementPark() {
-        super();
-    }
-    
-    @Tolerate
-    public AmusementPark(Long id) {
-    	this.id = id;
-    }
+		inverseJoinColumns = @JoinColumn(name = "visitor_id")) //@formatter:on
+	private Set<Visitor> visitors;
 
-    @Tolerate
-    public AmusementPark(Long id, Integer entranceFee) {
-        this.id = id;
-        this.entranceFee = entranceFee;
-    }
+	@Tolerate
+	protected AmusementPark() {
+		super();
+	}
 
-    @Tolerate
-    public AmusementPark(Long id, Integer capital, Integer totalArea) {
-        this.id = id;
-        this.capital = capital;
+	@Tolerate
+	public AmusementPark(Long id) {
+		this.id = id;
+	}
+
+	@Tolerate
+	public AmusementPark(Long id, Integer entranceFee) {
+		this.id = id;
+		this.entranceFee = entranceFee;
+	}
+
+	@Tolerate
+	public AmusementPark(Long id, Integer capital, Integer totalArea) {
+		this.id = id;
+		this.capital = capital;
 		this.totalArea = totalArea;
 	}
 }
