@@ -16,18 +16,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @ConditionalOnWebApplication
 public class GuestBookRegistryController {
-	
+
 	private final GuestBookRegistryService guestBookRegistryService;
 	private final GuestBookRegistryMapper guestBookRegistryMapper;
-	
+
 	@PostMapping("/amusement-park/{amusementParkId}/visitor/{visitorId}/guest-book-registry")
-	public GuestBookRegistryResource addRegistry(@PathVariable Long amusementParkId, 
-			@PathVariable Long visitorId, @RequestBody String textOfRegistry) {
-		return guestBookRegistryMapper.toResource(guestBookRegistryService.addRegistry(amusementParkId, visitorId, textOfRegistry));
+	public GuestBookRegistryResource addRegistry(@PathVariable Long amusementParkId, @PathVariable Long visitorId,
+			@RequestBody String textOfRegistry) {
+		return guestBookRegistryMapper
+				.toResource(guestBookRegistryService.addRegistry(amusementParkId, visitorId, textOfRegistry));
 	}
-	
+
 	@GetMapping("guest-book-registry/{guestBookRegistryId}")
 	public GuestBookRegistryResource findOne(@PathVariable Long guestBookRegistryId) {
 		return guestBookRegistryMapper.toResource(guestBookRegistryService.findOne(guestBookRegistryId));
-	}	
+	}
 }

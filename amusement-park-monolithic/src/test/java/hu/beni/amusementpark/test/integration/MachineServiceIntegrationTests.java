@@ -20,36 +20,37 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class MachineServiceIntegrationTests {
-    
-    @Autowired
-    private AmusementParkService amusementParkService;
-    
-    @Autowired
-    private MachineService machineService;
-    
-    @Autowired
-    private AmusementParkRepository amusementParkRepository;
-    
-    @Test
-    public void test(){
-        AmusementPark amusementPark = createAmusementParkWithAddress();
-        Long amusementParkId = amusementParkService.save(amusementPark).getId();
-        
-        Machine machine = createMachine();
-        Long machineId = machineService.addMachine(amusementParkId, machine).getId();
-        assertNotNull(machineId);
-        assertEquals(amusementPark.getCapital() - machine.getPrice(), amusementParkService.findByIdFetchAddress(amusementParkId).getCapital().longValue());
-        
-        Machine readMachine = machineService.findOne(amusementParkId, machineId);
-        assertEquals(machine, readMachine);
-        
-        machineService.removeMachine(amusementParkId, machineId);
-        assertThatThrownBy(() -> machineService.findOne(amusementParkId, machineId))
-        	.isInstanceOf(AmusementParkException.class)
-        	.hasMessage(NO_MACHINE_IN_PARK_WITH_ID);
-        assertEquals(amusementPark.getCapital().longValue(), amusementParkService.findByIdFetchAddress(amusementParkId).getCapital().longValue());
-    
-        amusementParkRepository.deleteById(amusementParkId);
-    }
+
+	@Autowired
+	private AmusementParkService amusementParkService;
+
+	@Autowired
+	private MachineService machineService;
+
+	@Autowired
+	private AmusementParkRepository amusementParkRepository;
+
+	@Test
+	public void test() {
+		AmusementPark amusementPark = createAmusementParkWithAddress();
+		Long amusementParkId = amusementParkService.save(amusementPark).getId();
+
+		Machine machine = createMachine();
+		Long machineId = machineService.addMachine(amusementParkId, machine).getId();
+		assertNotNull(machineId);
+		assertEquals(amusementPark.getCapital() - machine.getPrice(),
+				amusementParkService.findByIdFetchAddress(amusementParkId).getCapital().longValue());
+
+		Machine readMachine = machineService.findOne(amusementParkId, machineId);
+		assertEquals(machine, readMachine);
+
+		machineService.removeMachine(amusementParkId, machineId);
+		assertThatThrownBy(() -> machineService.findOne(amusementParkId, machineId))
+				.isInstanceOf(AmusementParkException.class).hasMessage(NO_MACHINE_IN_PARK_WITH_ID);
+		assertEquals(amusementPark.getCapital().longValue(),
+				amusementParkService.findByIdFetchAddress(amusementParkId).getCapital().longValue());
+
+		amusementParkRepository.deleteById(amusementParkId);
+	}
 
 }

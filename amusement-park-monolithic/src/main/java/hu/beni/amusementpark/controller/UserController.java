@@ -12,5 +12,5 @@ public class UserController {
 	public Principal getUser(Principal principal) {
 		return principal;
 	}
-	
+
 }

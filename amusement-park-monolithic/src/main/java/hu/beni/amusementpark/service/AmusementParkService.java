@@ -10,18 +10,18 @@ import hu.beni.amusementpark.entity.AmusementPark;
 
 public interface AmusementParkService {
 
-    AmusementPark save(AmusementPark amusementPark);
+	AmusementPark save(AmusementPark amusementPark);
 
-    AmusementPark findByIdFetchAddress(Long amusementParkId);
-    
-    AmusementPark findOne(Specification<AmusementPark> specification);
+	AmusementPark findByIdFetchAddress(Long amusementParkId);
 
-    void delete(Long amusementParkId);
-    
-    List<AmusementPark> findAllFetchAddress();
-    
-    Page<AmusementPark> findAllFetchAddress(Pageable pageable);
-    
-    List<AmusementPark> findAll(Specification<AmusementPark> specification);
-    
+	AmusementPark findOne(Specification<AmusementPark> specification);
+
+	void delete(Long amusementParkId);
+
+	List<AmusementPark> findAllFetchAddress();
+
+	Page<AmusementPark> findAllFetchAddress(Pageable pageable);
+
+	List<AmusementPark> findAll(Specification<AmusementPark> specification);
+
 }

@@ -37,22 +37,22 @@ public class GuestBookServiceIntegrationTests {
 	public void test() {
 		AmusementPark amusementPark = createAmusementParkWithAddress();
 		Long amusementParkId = amusementParkService.save(amusementPark).getId();
-		
+
 		Visitor visitor = createVisitor();
 		Long visitorId = visitorService.signUp(visitor).getId();
-		
+
 		visitorService.enterPark(amusementParkId, visitorId);
 
 		String textOfRegistry = OPINION_ON_THE_PARK;
 
 		Long guestBookRegistryId = guestBookService.addRegistry(amusementParkId, visitorId, textOfRegistry).getId();
 		GuestBookRegistry guestBookRegistry = guestBookService.findOne(guestBookRegistryId);
-		
+
 		assertEquals(textOfRegistry, guestBookRegistry.getTextOfRegistry());
 		assertTrue(guestBookRegistry.getDateOfRegistry().isBefore(LocalDateTime.now()));
-		
+
 		visitorService.leavePark(amusementParkId, visitorId);
-		
+
 		assertNotNull(guestBookService.findOne(guestBookRegistryId));
 	}
 

@@ -26,30 +26,30 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @ConditionalOnWebApplication
 public class AmusementParkController {
-	
+
 	private final AmusementParkService amusementParkService;
 	private final AmusementParkMapper amusementParkMapper;
-	
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public AmusementParkResource save(@Valid @RequestBody AmusementPark amusementPark) {    	
-    	amusementPark.getAddress().setAmusementPark(amusementPark);
-        return amusementParkMapper.toResource(amusementParkService.save(amusementPark));
-    }
-    
-    @GetMapping
-    public PagedResources<AmusementParkResource> findAllPaged(@PageableDefault Pageable pageable){
-    	return amusementParkMapper.toPagedResources(amusementParkService.findAllFetchAddress(pageable));
-    }
 
-    @GetMapping("/{amusementParkId}")
-    public AmusementParkResource findOne(@PathVariable Long amusementParkId) {
-        return amusementParkMapper.toResource(amusementParkService.findByIdFetchAddress(amusementParkId));
-    }
+	@PostMapping
+	@PreAuthorize("hasRole('ADMIN')")
+	public AmusementParkResource save(@Valid @RequestBody AmusementPark amusementPark) {
+		amusementPark.getAddress().setAmusementPark(amusementPark);
+		return amusementParkMapper.toResource(amusementParkService.save(amusementPark));
+	}
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @DeleteMapping("/{amusementParkId}")
-    public void delete(@PathVariable Long amusementParkId) {
-        amusementParkService.delete(amusementParkId);
-    }
+	@GetMapping
+	public PagedResources<AmusementParkResource> findAllPaged(@PageableDefault Pageable pageable) {
+		return amusementParkMapper.toPagedResources(amusementParkService.findAllFetchAddress(pageable));
+	}
+
+	@GetMapping("/{amusementParkId}")
+	public AmusementParkResource findOne(@PathVariable Long amusementParkId) {
+		return amusementParkMapper.toResource(amusementParkService.findByIdFetchAddress(amusementParkId));
+	}
+
+	@PreAuthorize("hasRole('ADMIN')")
+	@DeleteMapping("/{amusementParkId}")
+	public void delete(@PathVariable Long amusementParkId) {
+		amusementParkService.delete(amusementParkId);
+	}
 }

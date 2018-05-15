@@ -4,6 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import hu.beni.amusementpark.entity.GuestBookRegistry;
 
-public interface GuestBookRegistryRepository extends JpaRepository<GuestBookRegistry, Long>{
+public interface GuestBookRegistryRepository extends JpaRepository<GuestBookRegistry, Long> {
 
 }

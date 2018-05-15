@@ -18,15 +18,15 @@ import org.springframework.stereotype.Component;
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-	
+
 	@Bean
 	public NoOpPasswordEncoder noOpPasswordEncoder() {
 		return NoOpPasswordEncoder.class.cast(NoOpPasswordEncoder.getInstance());
 	}
-    
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
+
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http //@formatter:off
             .authorizeRequests()
                 .antMatchers("/", "/docker", "/index.js")
                 .permitAll()
@@ -42,12 +42,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
             .csrf()
-            	.disable();
-    }
+            	.disable(); //@formatter:on
+	}
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
+	@Autowired
+	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+		auth.inMemoryAuthentication() //@formatter:off
         		.withUser("admin").password("pass").roles("ADMIN").and()
         		.withUser("user").password("pass").roles("USER").and()
                 .withUser("admin0").password("pass").roles("ADMIN").and()
@@ -79,21 +79,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("user16").password("pass").roles("USER").and()
                 .withUser("user17").password("pass").roles("USER").and()
                 .withUser("user18").password("pass").roles("USER").and()
-                .withUser("user19").password("pass").roles("USER");
-    }
-    
-    @Component
+                .withUser("user19").password("pass").roles("USER"); //@formatter:on
+	}
+
+	@Component
 	public static class SecurityEvaluationContextExtension extends EvaluationContextExtensionSupport {
-    	
-    	@Override
-    	public String getExtensionId() {
-    		return "security";
-    	}
+
+		@Override
+		public String getExtensionId() {
+			return "security";
+		}
 
 		@Override
 		public SecurityExpressionRoot getRootObject() {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		    return new SecurityExpressionRoot(authentication) {};
+			return new SecurityExpressionRoot(authentication) {
+			};
 		}
-    }
+	}
 }

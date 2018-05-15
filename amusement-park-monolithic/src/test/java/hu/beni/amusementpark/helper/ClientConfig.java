@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Configuration
 public class ClientConfig {
-	
+
 	@Bean
 	public Client client(RestTemplate restTemplate) {
 		return new Client(restTemplate);

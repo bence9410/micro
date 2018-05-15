@@ -23,7 +23,7 @@ public class MyAssert {
     @FunctionalInterface
     public static interface ExceptionAsserter<T extends Throwable>{
     	
-    	public void assertExceptiont(T t);
-    	
-    }
+		public void assertExceptiont(T t);
+
+	}
 }

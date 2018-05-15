@@ -18,15 +18,15 @@ import static hu.beni.amusementpark.constants.SpringProfileConstants.ORACLE_DB;
 public class RabbitMQArchiveSender implements ArchiveSender {
 
 	private final RabbitTemplate rabbitTemplate;
-	
+
 	@Override
 	public void sendToArchive(AmusementPark amusementPark) {
 		rabbitTemplate.convertAndSend(QUEUE_NAME, convert(amusementPark));
-	}	
-	
+	}
+
 	private ArchiveAmusementParkDTO convert(AmusementPark amusementPark) {
-		return ArchiveAmusementParkDTO.builder()
-				.name(amusementPark.getName()).build();
-				
+		return ArchiveAmusementParkDTO.builder() //@formatter:off
+				.name(amusementPark.getName()).build(); //@formatter:on
+
 	}
 }

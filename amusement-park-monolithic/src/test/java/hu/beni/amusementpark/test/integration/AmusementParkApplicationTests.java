@@ -145,7 +145,7 @@ public class AmusementParkApplicationTests {
 
 	private void login(String username, String password) {
 		logout();
-		
+
 		ResponseEntity<Void> response = client.post(uri(getLoginUrl()), MediaType.APPLICATION_FORM_URLENCODED,
 				createMap(username, password), Void.class);
 

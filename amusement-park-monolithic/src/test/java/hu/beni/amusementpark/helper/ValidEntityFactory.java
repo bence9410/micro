@@ -11,46 +11,46 @@ import hu.beni.amusementpark.enums.MachineType;
 public class ValidEntityFactory {
 
 	public static Address createAddress() {
-        return Address.builder()
+		return Address.builder() //@formatter:off
                 .zipCode("1148")
                 .city("Budapest")
                 .country("Magyarország")
                 .street("Fogarasi út")
-                .houseNumber("80/C").build();
-    }
-	
+                .houseNumber("80/C").build(); //@formatter:on
+	}
+
 	public static AmusementPark createAmusementPark() {
-        return AmusementPark.builder()
+		return AmusementPark.builder() //@formatter:off
                 .name("Beni parkja")
                 .capital(3000)
                 .totalArea(1000)
-                .entranceFee(50).build();
-    }
+                .entranceFee(50).build(); //@formatter:on
+	}
 
-    public static Machine createMachine() {
-        return Machine.builder()
+	public static Machine createMachine() {
+		return Machine.builder() //@formatter:off
                 .fantasyName("Nagy hajó")
                 .size(100)
                 .price(250)
                 .numberOfSeats(10)
                 .minimumRequiredAge(18)
                 .ticketPrice(10)
-                .type(MachineType.CAROUSEL).build();
-    }
+                .type(MachineType.CAROUSEL).build(); //@formatter:on
+	}
 
-    public static Visitor createVisitor() {
-    	return Visitor.builder()
+	public static Visitor createVisitor() {
+		return Visitor.builder() //@formatter:off
     			.name("Németh Bence")
         		.dateOfBirth(LocalDate.of(1994, 10, 22))
-        		.spendingMoney(1000).build();
-    }
-    
-    public static AmusementPark createAmusementParkWithAddress(){
-    	Address address = createAddress();
-    	AmusementPark amusementPark = createAmusementPark();
-    	address.setAmusementPark(amusementPark);
-    	amusementPark.setAddress(address);
-    	return amusementPark;
-    }
-    
+        		.spendingMoney(1000).build(); //@formatter:on
+	}
+
+	public static AmusementPark createAmusementParkWithAddress() {
+		Address address = createAddress();
+		AmusementPark amusementPark = createAmusementPark();
+		address.setAmusementPark(amusementPark);
+		amusementPark.setAddress(address);
+		return amusementPark;
+	}
+
 }

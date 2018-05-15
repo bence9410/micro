@@ -44,10 +44,10 @@ public class AmusementParkServiceIntegrationTests {
 
 	@Autowired
 	private Environment environment;
-	
+
 	@Autowired
 	private TransactionTemplate transactionTemplate;
-	
+
 	@Autowired
 	private AmusementParkService amusementParkService;
 
@@ -58,7 +58,7 @@ public class AmusementParkServiceIntegrationTests {
 	public void test() {
 		AmusementPark amusementPark = createAmusementParkWithAddress();
 		Address address = amusementPark.getAddress();
-		
+
 		AmusementPark createdAmusementPark = amusementParkService.save(amusementPark);
 		assertNotNull(createdAmusementPark);
 		Long id = createdAmusementPark.getId();
@@ -72,15 +72,14 @@ public class AmusementParkServiceIntegrationTests {
 		assertEquals(amusementPark, amusementParkService.findByIdFetchAddress(id));
 
 		if (environment.getActiveProfiles().length == 0) {
-			assertThatThrownBy(() -> amusementParkService.delete(id))
-				.isInstanceOf(AmusementParkException.class).hasMessage(NO_ARCHIVE_SEND_TYPE);
+			assertThatThrownBy(() -> amusementParkService.delete(id)).isInstanceOf(AmusementParkException.class)
+					.hasMessage(NO_ARCHIVE_SEND_TYPE);
 			assertNotNull(amusementParkService.findByIdFetchAddress(id));
 		}
-		
+
 		amusementParkRepository.deleteById(id);
-		assertThatThrownBy(() ->amusementParkService.findByIdFetchAddress(id))
-			.isInstanceOf(AmusementParkException.class)
-			.hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
+		assertThatThrownBy(() -> amusementParkService.findByIdFetchAddress(id))
+				.isInstanceOf(AmusementParkException.class).hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
 	}
 
 	@Test
@@ -118,45 +117,46 @@ public class AmusementParkServiceIntegrationTests {
 		amusementPark.setName(name + "123");
 		amusementPark.getAddress().setCity(name + "45");
 		amusementParkService.save(amusementPark);
-		
+
 		amusementPark = createAmusementParkWithAddress();
 		amusementPark.setName(name + "67");
 		amusementPark.getAddress().setCity(name + "89");
 		amusementParkService.save(amusementPark);
 
-		amusementPark = amusementParkService.findOne(fieldLikeParam(AmusementPark.class, "name", name+"1%"));
+		amusementPark = amusementParkService.findOne(fieldLikeParam(AmusementPark.class, "name", name + "1%"));
 		assertNotNull(amusementPark);
-		assertTrue(amusementPark.getName().startsWith(name+"1"));
-		
+		assertTrue(amusementPark.getName().startsWith(name + "1"));
+
 		Specification<AmusementPark> nameLikeAndAddressCityLikeAndCapitalGreaterThan = Specification
 				.where(fieldLikeParam(AmusementPark.class, "name", name + "%"))
 				.and(fieldLikeParam(AmusementPark.class, "address.city", name + "%"))
 				.and(fieldGreaterThanParam(AmusementPark.class, "capital", capital));
 
-		List<AmusementPark> lazyAmusementParks = amusementParkService.findAll(nameLikeAndAddressCityLikeAndCapitalGreaterThan);
+		List<AmusementPark> lazyAmusementParks = amusementParkService
+				.findAll(nameLikeAndAddressCityLikeAndCapitalGreaterThan);
 		assertFalse(lazyAmusementParks.isEmpty());
-		
+
 		AmusementPark lazyAmusementPark = lazyAmusementParks.get(0);
 
 		Address lazyAddress = lazyAmusementPark.getAddress();
-		
+
 		assertNotNull(lazyAddress.getId());
 		assertEquals(lazyAmusementPark.getId(), lazyAddress.getId());
-		
+
 		assertThatThrownBy(() -> lazyAddress.getCity()).isInstanceOf(LazyInitializationException.class);
-		
-		transactionTemplate.execute(status -> {			
-			List<AmusementPark> amusementParks = amusementParkService.findAll(nameLikeAndAddressCityLikeAndCapitalGreaterThan);
+
+		transactionTemplate.execute(status -> {
+			List<AmusementPark> amusementParks = amusementParkService
+					.findAll(nameLikeAndAddressCityLikeAndCapitalGreaterThan);
 			assertFalse(amusementParks.isEmpty());
-		
+
 			for (AmusementPark a : amusementParks) {
-				assertTrue(a.getName().startsWith(name) && 
-						a.getAddress().getCity().startsWith(name) && 
-						a.getCapital() > capital);
+				assertTrue(a.getName().startsWith(name) && a.getAddress().getCity().startsWith(name)
+						&& a.getCapital() > capital);
 			}
 			return null;
 		});
-		
+
 		amusementParkRepository.deleteAll();
 	}
 
@@ -173,21 +173,23 @@ public class AmusementParkServiceIntegrationTests {
 	}
 
 	private <T> Specification<T> fieldLikeParam(Class<T> clazz, String fieldName, String param) {
-		return (Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> cb.like(createPath(root, fieldName), param);
+		return (Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> cb.like(createPath(root, fieldName),
+				param);
 	}
 
 	private <T> Specification<T> fieldGreaterThanParam(Class<T> clazz, String fieldName, int param) {
-		return (Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> cb.greaterThan(createPath(root, fieldName), param);
+		return (Root<T> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> cb.greaterThan(createPath(root, fieldName),
+				param);
 	}
-	
-	private <T,Y> Path<Y> createPath(Root<T> root, String fieldName){
+
+	private <T, Y> Path<Y> createPath(Root<T> root, String fieldName) {
 		Path<Y> path = null;
 		if (fieldName.indexOf('.') == -1) {
 			path = root.get(fieldName);
 		} else {
 			String[] parts = fieldName.split("\\.");
 			path = root.get(parts[0]);
-			for(int i = 1; i < parts.length; i++) {
+			for (int i = 1; i < parts.length; i++) {
 				path = path.get(parts[i]);
 			}
 		}

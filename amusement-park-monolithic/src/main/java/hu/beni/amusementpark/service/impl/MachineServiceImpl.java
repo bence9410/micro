@@ -25,44 +25,50 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class MachineServiceImpl implements MachineService {
 
-    private final AmusementParkRepository amusementParkRepository;
-    private final MachineRepository machineRepository;
-    private final VisitorRepository visitorRepository;
+	private final AmusementParkRepository amusementParkRepository;
+	private final MachineRepository machineRepository;
+	private final VisitorRepository visitorRepository;
 
-    @Override
-    public Machine addMachine(Long amusementParkId, Machine machine) {
-        AmusementPark amusementPark = ifNull(amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId), NO_AMUSEMENT_PARK_WITH_ID);
-        checkForMoneyAndFreeArea(amusementPark, machine);
-        return buyMachine(amusementPark, machine);
-    }
+	@Override
+	public Machine addMachine(Long amusementParkId, Machine machine) {
+		AmusementPark amusementPark = ifNull(
+				amusementParkRepository.findByIdReadOnlyIdAndCapitalAndTotalArea(amusementParkId),
+				NO_AMUSEMENT_PARK_WITH_ID);
+		checkForMoneyAndFreeArea(amusementPark, machine);
+		return buyMachine(amusementPark, machine);
+	}
 
-    private void checkForMoneyAndFreeArea(AmusementPark amusementPark, Machine machine) {
-        ifFirstLessThanSecond(amusementPark.getCapital(), machine.getPrice(), MACHINE_IS_TOO_EXPENSIVE);
-        ifFirstLessThanSecond(amusementPark.getTotalArea(), machineRepository.sumAreaByAmusementParkId(amusementPark.getId()).orElse(0L) + machine.getSize(), MACHINE_IS_TOO_BIG);
-    }
+	private void checkForMoneyAndFreeArea(AmusementPark amusementPark, Machine machine) {
+		ifFirstLessThanSecond(amusementPark.getCapital(), machine.getPrice(), MACHINE_IS_TOO_EXPENSIVE);
+		ifFirstLessThanSecond(amusementPark.getTotalArea(),
+				machineRepository.sumAreaByAmusementParkId(amusementPark.getId()).orElse(0L) + machine.getSize(),
+				MACHINE_IS_TOO_BIG);
+	}
 
-    private Machine buyMachine(AmusementPark amusementPark, Machine machine) {
-        amusementParkRepository.decreaseCapitalById(machine.getPrice(), amusementPark.getId());
-        machine.setAmusementPark(amusementPark);
-        return machineRepository.save(machine);
-    }
+	private Machine buyMachine(AmusementPark amusementPark, Machine machine) {
+		amusementParkRepository.decreaseCapitalById(machine.getPrice(), amusementPark.getId());
+		machine.setAmusementPark(amusementPark);
+		return machineRepository.save(machine);
+	}
 
-    @Override
-    public Machine findOne(Long amusementParkId, Long machineId) {
-        return ifNull(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId), NO_MACHINE_IN_PARK_WITH_ID);
-    }
-    
-    @Override
+	@Override
+	public Machine findOne(Long amusementParkId, Long machineId) {
+		return ifNull(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId),
+				NO_MACHINE_IN_PARK_WITH_ID);
+	}
+
+	@Override
 	public List<Machine> findAllByAmusementParkId(Long amusementParkId) {
 		return machineRepository.findAllByAmusementParkId(amusementParkId);
 	}
 
-    @Override
-    public void removeMachine(Long amusementParkId, Long machineId) {
-        Machine machine = ifNull(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId), NO_MACHINE_IN_PARK_WITH_ID);
-        ifNotZero(visitorRepository.countByMachineId(machineId), VISITORS_ON_MACHINE);
-        amusementParkRepository.incrementCapitalById(machine.getPrice(), amusementParkId);
-        machineRepository.deleteById(machineId);
-    }
+	@Override
+	public void removeMachine(Long amusementParkId, Long machineId) {
+		Machine machine = ifNull(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId),
+				NO_MACHINE_IN_PARK_WITH_ID);
+		ifNotZero(visitorRepository.countByMachineId(machineId), VISITORS_ON_MACHINE);
+		amusementParkRepository.incrementCapitalById(machine.getPrice(), amusementParkId);
+		machineRepository.deleteById(machineId);
+	}
 
 }

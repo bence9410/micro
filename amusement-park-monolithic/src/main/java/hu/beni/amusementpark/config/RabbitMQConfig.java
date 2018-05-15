@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Profile;
 @Configuration
 @Profile(ORACLE_DB)
 public class RabbitMQConfig {
-	
+
 	@Bean
 	public Queue queue() {
 		return new Queue(QUEUE_NAME, false);
@@ -30,5 +30,5 @@ public class RabbitMQConfig {
 	public Binding binding(Queue queue, TopicExchange exchange) {
 		return BindingBuilder.bind(queue).to(exchange).with(QUEUE_NAME);
 	}
-	
+
 }

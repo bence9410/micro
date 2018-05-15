@@ -6,12 +6,12 @@ import hu.beni.amusementpark.entity.Machine;
 
 public interface MachineService {
 
-    Machine addMachine(Long amusementParkId, Machine machine);
+	Machine addMachine(Long amusementParkId, Machine machine);
 
-    Machine findOne(Long amusementParkId, Long machineId);
-    
-    List<Machine> findAllByAmusementParkId(Long amusementParkId);
+	Machine findOne(Long amusementParkId, Long machineId);
 
-    void removeMachine(Long amusementParkId, Long machineId);
+	List<Machine> findAllByAmusementParkId(Long amusementParkId);
+
+	void removeMachine(Long amusementParkId, Long machineId);
 
 }

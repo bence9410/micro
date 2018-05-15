@@ -24,45 +24,46 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT
 @Transactional
 public class AmusementParkServiceImpl implements AmusementParkService {
 
-    private final AmusementParkRepository amusementParkRepository;
-    private final VisitorRepository visitorRepository;
-    private final ArchiveSender amusementParkArchivator;
-	
-    @Override
-    public AmusementPark save(AmusementPark amusementPark) {
-    	return amusementParkRepository.save(amusementPark);
-    }	
+	private final AmusementParkRepository amusementParkRepository;
+	private final VisitorRepository visitorRepository;
+	private final ArchiveSender amusementParkArchivator;
 
-    @Override
-    public AmusementPark findByIdFetchAddress(Long amusementParkId) {
-        return ifNull(amusementParkRepository.findByIdFetchAddress(amusementParkId), NO_AMUSEMENT_PARK_WITH_ID);
-    }
-    
-    @Override
-    public AmusementPark findOne(Specification<AmusementPark> specification) {
-    	return ifNull(amusementParkRepository.findOne(specification), NO_AMUSEMENT_PARK_WITH_ID);
-    }
+	@Override
+	public AmusementPark save(AmusementPark amusementPark) {
+		return amusementParkRepository.save(amusementPark);
+	}
 
-    @Override
-    public void delete(Long amusementParkId) {
-    	ifNotZero(visitorRepository.countByAmusementParkId(amusementParkId), VISITORS_IN_PARK);
-    	AmusementPark amusementPark = ifNull(amusementParkRepository.findById(amusementParkId), NO_AMUSEMENT_PARK_WITH_ID);
-    	amusementParkRepository.delete(amusementPark);
-    	amusementParkArchivator.sendToArchive(amusementPark);
-    }
-    
-    @Override
-    public List<AmusementPark> findAllFetchAddress(){
-    	return amusementParkRepository.findAllFetchAddress();
-    }
-    
-    @Override
-    public Page<AmusementPark> findAllFetchAddress(Pageable pageable){
-    	return amusementParkRepository.findAllFetchAddress(pageable);
-    }
-    
-    @Override
-    public List<AmusementPark> findAll(Specification<AmusementPark> specification) {
-    	return amusementParkRepository.findAll(specification);
-    }    
+	@Override
+	public AmusementPark findByIdFetchAddress(Long amusementParkId) {
+		return ifNull(amusementParkRepository.findByIdFetchAddress(amusementParkId), NO_AMUSEMENT_PARK_WITH_ID);
+	}
+
+	@Override
+	public AmusementPark findOne(Specification<AmusementPark> specification) {
+		return ifNull(amusementParkRepository.findOne(specification), NO_AMUSEMENT_PARK_WITH_ID);
+	}
+
+	@Override
+	public void delete(Long amusementParkId) {
+		ifNotZero(visitorRepository.countByAmusementParkId(amusementParkId), VISITORS_IN_PARK);
+		AmusementPark amusementPark = ifNull(amusementParkRepository.findById(amusementParkId),
+				NO_AMUSEMENT_PARK_WITH_ID);
+		amusementParkRepository.delete(amusementPark);
+		amusementParkArchivator.sendToArchive(amusementPark);
+	}
+
+	@Override
+	public List<AmusementPark> findAllFetchAddress() {
+		return amusementParkRepository.findAllFetchAddress();
+	}
+
+	@Override
+	public Page<AmusementPark> findAllFetchAddress(Pageable pageable) {
+		return amusementParkRepository.findAllFetchAddress(pageable);
+	}
+
+	@Override
+	public List<AmusementPark> findAll(Specification<AmusementPark> specification) {
+		return amusementParkRepository.findAll(specification);
+	}
 }

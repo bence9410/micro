@@ -29,7 +29,7 @@ public class GuestBookServiceUnitTests {
 	private AmusementParkRepository amusementParkRepository;
 	private VisitorRepository visitorRepository;
 	private GuestBookRegistryRepository guestBookRegistryRepository;
-	
+
 	private GuestBookRegistryService guestBookService;
 
 	@Before
@@ -37,21 +37,22 @@ public class GuestBookServiceUnitTests {
 		amusementParkRepository = mock(AmusementParkRepository.class);
 		visitorRepository = mock(VisitorRepository.class);
 		guestBookRegistryRepository = mock(GuestBookRegistryRepository.class);
-		guestBookService = new GuestBookRegistryServiceImpl(amusementParkRepository, visitorRepository, guestBookRegistryRepository);
+		guestBookService = new GuestBookRegistryServiceImpl(amusementParkRepository, visitorRepository,
+				guestBookRegistryRepository);
 	}
 
 	@After
 	public void verifyNoMoreInteractionsOnMocks() {
 		verifyNoMoreInteractions(amusementParkRepository, visitorRepository, guestBookRegistryRepository);
 	}
-	
+
 	@Test
 	public void findOneNegativeNoGuestBook() {
 		Long guestBookRegistryId = 0L;
-		
+
 		assertThatThrownBy(() -> guestBookService.findOne(guestBookRegistryId))
-			.isInstanceOf(AmusementParkException.class).hasMessage(NO_GUEST_BOOK_REGISTRY_WITH_ID);
-		
+				.isInstanceOf(AmusementParkException.class).hasMessage(NO_GUEST_BOOK_REGISTRY_WITH_ID);
+
 		verify(guestBookRegistryRepository).findById(guestBookRegistryId);
 	}
 
@@ -108,9 +109,9 @@ public class GuestBookServiceUnitTests {
 		GuestBookRegistry guestBookRegistry = GuestBookRegistry.builder().amusementPark(amusementPark)
 				.textOfRegistry(textOfRegistry).visitor(visitor).build();
 		when(guestBookRegistryRepository.save(any(GuestBookRegistry.class))).thenReturn(guestBookRegistry);
-		
+
 		assertEquals(guestBookRegistry, guestBookService.addRegistry(amusementParkId, visitorId, textOfRegistry));
-		
+
 		verify(amusementParkRepository).findByIdReadOnlyId(amusementParkId);
 		verify(visitorRepository).findById(visitorId);
 		verify(guestBookRegistryRepository).save(any(GuestBookRegistry.class));

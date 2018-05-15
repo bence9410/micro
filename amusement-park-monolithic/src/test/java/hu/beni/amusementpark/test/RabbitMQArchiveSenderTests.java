@@ -21,13 +21,13 @@ import hu.beni.amusementpark.service.AmusementParkService;
 @ActiveProfiles(RABBIT_MQ_TEST_CONFIG)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 public class RabbitMQArchiveSenderTests {
-		
+
 	@Autowired
 	private AmusementParkService amusementParkService;
-	
+
 	@Autowired
 	private Receiver receiver;
-	
+
 	@Test
 	public void test() throws InterruptedException {
 		amusementParkService.delete(amusementParkService.save(createAmusementParkWithAddress()).getId());

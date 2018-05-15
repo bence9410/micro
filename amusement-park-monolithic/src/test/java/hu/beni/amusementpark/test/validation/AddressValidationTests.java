@@ -1,6 +1,5 @@
 package hu.beni.amusementpark.test.validation;
 
-
 import static hu.beni.amusementpark.constants.StringParamConstants.*;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.*;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAddress;
@@ -94,7 +93,7 @@ public class AddressValidationTests extends AbstractValidation<Address> {
 		address.setHouseNumber(STRING_EMPTY);
 		validateAndAssertViolationsSizeIsOne(address);
 		assertInvalidValueAndPropertyNameAndMessageEquals(address.getHouseNumber(), HOUSE_NUMBER, NOT_EMPTY_MESSAGE);
-		
+
 		address.setHouseNumber(STRING_WITH_6_LENGTH);
 		validateAndAssertViolationsSizeIsOne(address);
 		assertInvalidValueAndPropertyNameAndMessageEquals(address.getHouseNumber(), HOUSE_NUMBER, SIZE_0_5_MESSAGE);

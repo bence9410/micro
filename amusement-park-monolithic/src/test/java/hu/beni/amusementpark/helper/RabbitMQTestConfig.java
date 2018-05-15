@@ -29,12 +29,12 @@ import java.util.concurrent.CountDownLatch;
 @Configuration
 @Profile(RABBIT_MQ_TEST_CONFIG)
 public class RabbitMQTestConfig {
-	
+
 	@Bean
 	public ArchiveSender archiveSender(RabbitTemplate rabbitTemplate) {
 		return new RabbitMQArchiveSender(rabbitTemplate);
 	}
-	
+
 	@Bean
 	public Queue queue() {
 		return new Queue(QUEUE_NAME, false);
@@ -49,12 +49,12 @@ public class RabbitMQTestConfig {
 	public Binding binding(Queue queue, TopicExchange exchange) {
 		return BindingBuilder.bind(queue).to(exchange).with(QUEUE_NAME);
 	}
-	
+
 	@Bean
 	public ConnectionFactory connectionFactory() {
 		return new CachingConnectionFactory();
 	}
-	
+
 	@Bean
 	public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
 		return new RabbitTemplate(connectionFactory);
@@ -82,7 +82,7 @@ public class RabbitMQTestConfig {
 
 	@Getter
 	public static class Receiver {
-		
+
 		private final CountDownLatch countDownLatch = new CountDownLatch(1);
 
 		public void receiveArchiveAmusementParkDTO(ArchiveAmusementParkDTO archiveAmusementParkDTO) {

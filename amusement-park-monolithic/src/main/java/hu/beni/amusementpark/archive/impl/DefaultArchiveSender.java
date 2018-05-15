@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Profile(DEFAULT)
-public class DefaultArchiveSender implements ArchiveSender{
-	
+public class DefaultArchiveSender implements ArchiveSender {
+
 	@Override
 	public void sendToArchive(AmusementPark amusementPark) {
 		throw new AmusementParkException(NO_ARCHIVE_SEND_TYPE);

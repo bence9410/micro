@@ -1,12 +1,12 @@
-$(document).ready(function(){
-    
-    if (authorities.indexOf("ADMIN") != -1){
-        $("#saveDiv").removeClass();
-        $("thead").children("tr").append("<th></th>");
-    }
-    
-    getAmusementParks();
-    
+$(document).ready(function() {
+
+	if (authorities.indexOf("ADMIN") != -1) {
+		$("#saveDiv").removeClass();
+		$("thead").children("tr").append("<th></th>");
+	}
+
+	getAmusementParks();
+
 });
 
 function save() {
@@ -99,32 +99,31 @@ function convertAmusementParkToTableRow(amusementPark) {
 	tr.push('<td>' + amusementPark.entranceFee + '</td>');
 	var address = amusementPark.address;
 	tr.push('<td>' + address.country + ' ' + address.zipCode);
-        tr.push(' ' + address.city + ' ' + address.street);
-        tr.push(' ' + address.houseNumber + '</td>');
-        if (authorities.indexOf("ADMIN") != -1){
-            tr.push("<th><input type='button' onclick='deletePark("+amusementPark.identifier+")' value='Delete'></th>");
-        }
-        tr.push('</tr>');
+	tr.push(' ' + address.city + ' ' + address.street);
+	tr.push(' ' + address.houseNumber + '</td>');
+	if (authorities.indexOf("ADMIN") != -1) {
+		tr.push("<th><input type='button' onclick='deletePark("
+				+ amusementPark.identifier + ")' value='Delete'></th>");
+	}
+	tr.push('</tr>');
 	return tr.join('');
 }
 
-function deletePark(id){
-    $.ajax({
-        url: "/amusement-park/"+id,
-        method : 'DELETE',
-        success: function (data, textStatus, jqXHR) {
-            console.log(data);
-            console.log(textStatus);
-            console.log(jqXHR);
-            
-        },
-        error: function (data, textStatus, jqXHR) {
-             console.log(data);
-            console.log(textStatus);
-            console.log(jqXHR);
-        }
-        
-    });
+function deletePark(id) {
+	$.ajax({
+		url : "/amusement-park/" + id,
+		method : 'DELETE',
+		success : function(data, textStatus, jqXHR) {
+			console.log(data);
+			console.log(textStatus);
+			console.log(jqXHR);
+
+		},
+		error : function(data, textStatus, jqXHR) {
+			console.log(data);
+			console.log(textStatus);
+			console.log(jqXHR);
+		}
+
+	});
 }
-
-

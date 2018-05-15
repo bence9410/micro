@@ -17,23 +17,24 @@ import lombok.RequiredArgsConstructor;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class GuestBookRegistryServiceImpl implements GuestBookRegistryService{
+public class GuestBookRegistryServiceImpl implements GuestBookRegistryService {
 
 	private final AmusementParkRepository amusementParkRepository;
 	private final VisitorRepository visitorRepository;
 	private final GuestBookRegistryRepository guestBookRegistryRepository;
-	
-        @Override
+
+	@Override
 	public GuestBookRegistry findOne(Long guestBookRegistryId) {
 		return ifNull(guestBookRegistryRepository.findById(guestBookRegistryId), NO_GUEST_BOOK_REGISTRY_WITH_ID);
 	}
-	
-        @Override
+
+	@Override
 	public GuestBookRegistry addRegistry(Long amusementParkId, Long visitorId, String textOfRegistry) {
-		AmusementPark amusementPark = ifNull(amusementParkRepository.findByIdReadOnlyId(amusementParkId), NO_AMUSEMENT_PARK_WITH_ID);
+		AmusementPark amusementPark = ifNull(amusementParkRepository.findByIdReadOnlyId(amusementParkId),
+				NO_AMUSEMENT_PARK_WITH_ID);
 		Visitor visitor = ifNull(visitorRepository.findById(visitorId), NO_VISITOR_IN_PARK_WITH_ID);
 		return guestBookRegistryRepository.save(GuestBookRegistry.builder().textOfRegistry(textOfRegistry)
 				.visitor(visitor).amusementPark(amusementPark).build());
 	}
-	
+
 }
