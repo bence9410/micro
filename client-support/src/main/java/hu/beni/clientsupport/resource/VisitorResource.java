@@ -2,6 +2,7 @@ package hu.beni.clientsupport.resource;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
@@ -44,7 +45,7 @@ public class VisitorResource extends ResourceSupport implements Serializable {
 		this.dateOfBirth = dateOfBirth;
 		this.spendingMoney = spendingMoney;
 		this.state = state;
-		add(links);
+		Optional.ofNullable(links).ifPresent(this::add);
 	}
 
 }

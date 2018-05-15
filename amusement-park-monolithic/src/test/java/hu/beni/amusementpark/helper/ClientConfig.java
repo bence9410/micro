@@ -11,11 +11,17 @@ import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.client.RestTemplate;
 
+import hu.beni.clientsupport.Client;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Configuration
-public class RestTemplateConfig {
+public class ClientConfig {
+	
+	@Bean
+	public Client client(RestTemplate restTemplate) {
+		return new Client(restTemplate);
+	}
 
 	@Bean
 	public RestTemplate restTemplate() {

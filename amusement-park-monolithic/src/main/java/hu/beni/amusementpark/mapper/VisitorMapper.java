@@ -74,5 +74,5 @@ public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 		}
 		return links.toArray(new Link[links.size()]);
 	}
-	
+
 }

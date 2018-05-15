@@ -1,6 +1,7 @@
 package hu.beni.clientsupport.resource;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
@@ -49,7 +50,7 @@ public class MachineResource extends ResourceSupport implements Serializable {
 		this.minimumRequiredAge = minimumRequiredAge;
 		this.ticketPrice = ticketPrice;
 		this.type = type;
-		add(links);
+		Optional.ofNullable(links).ifPresent(this::add);
 	}
 
 }

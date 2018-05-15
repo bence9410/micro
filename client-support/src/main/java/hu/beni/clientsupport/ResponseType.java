@@ -1,4 +1,4 @@
-package hu.beni.amusementpark.helper;
+package hu.beni.clientsupport;
 
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.hateoas.mvc.TypeReferences.PagedResourcesType;
@@ -25,5 +25,9 @@ public class ResponseType {
 	public static final ParameterizedTypeReference<GuestBookRegistryResource> GUEST_BOOK_REGISTRY_TYPE =
 			new ParameterizedTypeReference<GuestBookRegistryResource>() {};
 	//@formatter:on
+			
+	private ResponseType() {
+		super();
+	}
 
 }

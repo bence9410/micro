@@ -2,6 +2,7 @@ package hu.beni.clientsupport.resource;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
@@ -38,6 +39,6 @@ public class GuestBookRegistryResource extends ResourceSupport implements Serial
 		this.textOfRegistry = textOfRegistry;
 		this.dateOfRegistry = dateOfRegistry;
 		this.visitorId = visitorId;
-		add(links);
+		Optional.ofNullable(links).ifPresent(this::add);
 	}
 }

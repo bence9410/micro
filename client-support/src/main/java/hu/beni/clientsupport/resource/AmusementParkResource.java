@@ -1,6 +1,7 @@
 package hu.beni.clientsupport.resource;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
@@ -44,7 +45,7 @@ public class AmusementParkResource extends ResourceSupport implements Serializab
 		this.totalArea = totalArea;
 		this.entranceFee = entranceFee;
 		this.address = address;
-		add(links);
+		Optional.ofNullable(links).ifPresent(this::add);
 	}
 
 }
