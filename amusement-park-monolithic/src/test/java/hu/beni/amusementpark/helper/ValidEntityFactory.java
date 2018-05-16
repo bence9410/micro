@@ -41,6 +41,7 @@ public class ValidEntityFactory {
 	public static Visitor createVisitor() {
 		return Visitor.builder() //@formatter:off
     			.name("Németh Bence")
+    			.username("benike")
         		.dateOfBirth(LocalDate.of(1994, 10, 22))
         		.spendingMoney(1000).build(); //@formatter:on
 	}

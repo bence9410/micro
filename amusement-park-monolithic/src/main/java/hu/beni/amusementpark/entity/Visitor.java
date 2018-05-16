@@ -16,8 +16,12 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.validator.constraints.Range;
 
 import hu.beni.amusementpark.enums.VisitorState;
 import lombok.Builder;
@@ -30,49 +34,57 @@ import lombok.experimental.Tolerate;
 @Getter
 @Setter
 @Builder
-@EqualsAndHashCode(of = {"id", "name", "dateOfBirth", "dateOfSignUp", "spendingMoney", "state"})
+@EqualsAndHashCode(of = { "id", "name", "dateOfBirth", "dateOfSignUp", "spendingMoney", "state" })
 public class Visitor implements Serializable {
 
-    private static final long serialVersionUID = -2955989272392888202L;
+	private static final long serialVersionUID = -2955989272392888202L;
 
 	@Id
-    @GeneratedValue
-    private Long id;
-    
-    private String name;
-    
-    private String username;
+	@GeneratedValue
+	private Long id;
 
-    private LocalDate dateOfBirth;
+	@NotNull
+	@Size(min = 5, max = 25)
+	private String name;
 
-    @CreationTimestamp
-    private LocalDateTime dateOfSignUp;   
-    
+	@NotNull
+	@Size(min = 5, max = 25)
+	private String username;
+
+	@NotNull
+	@Past
+	private LocalDate dateOfBirth;
+
+	@CreationTimestamp
+	private LocalDateTime dateOfSignUp;
+
+	@NotNull
+	@Range(min = 50, max = Integer.MAX_VALUE)
 	private Integer spendingMoney;
-	
-    @Enumerated(EnumType.STRING)
-    @Column(name = "Visitor_State")
-    private VisitorState state;
-		
-    @ManyToOne(fetch = FetchType.LAZY)
-    private AmusementPark amusementPark;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "Visitor_State")
+	private VisitorState state;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private AmusementPark amusementPark;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Machine machine;
-	    
-    @OneToMany(mappedBy = "visitor")
-    private List<GuestBookRegistry> guestBookRegistries;
-    
-    @ManyToMany(mappedBy = "visitors")
-    private Set<AmusementPark> visitedAmusementParks;
-  
-    @Tolerate
-    protected Visitor() {
-        super();
-    }
-    
-    @Tolerate
-    public Visitor(Long id) {
+
+	@OneToMany(mappedBy = "visitor")
+	private List<GuestBookRegistry> guestBookRegistries;
+
+	@ManyToMany(mappedBy = "visitors")
+	private Set<AmusementPark> visitedAmusementParks;
+
+	@Tolerate
+	protected Visitor() {
+		super();
+	}
+
+	@Tolerate
+	public Visitor(Long id) {
 		this.id = id;
 	}
 

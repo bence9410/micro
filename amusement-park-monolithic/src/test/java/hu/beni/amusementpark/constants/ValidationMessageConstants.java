@@ -22,5 +22,6 @@ public class ValidationMessageConstants {
 	public static final String RANGE_20_200_MESSAGE = String.format(RANGE_MESSAGE, 20, 200);
 	public static final String RANGE_50_2000_MESSAGE = String.format(RANGE_MESSAGE, 50, 2000);
 	public static final String RANGE_500_50000_MESSAGE = String.format(RANGE_MESSAGE, 500, 50000);
+	public static final String RANGE_50_INTEGER_MAX_VALUE_MESSAGE = String.format(RANGE_MESSAGE, 50, Integer.MAX_VALUE);
 
 }
