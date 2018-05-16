@@ -18,7 +18,7 @@ public class StringParamConstants {
 
 	static {
 		StringBuilder sb = new StringBuilder(STRING_WITH_26_LENGTH);
-		IntStream.range(0, 4).forEach(i -> sb.append(STRING_WITH_21_LENGTH));
+		IntStream.range(0, 3).forEach(i -> sb.append(STRING_WITH_21_LENGTH));
 		sb.append(STRING_WITH_6_LENGTH);
 		sb.append(STRING_WITH_4_LENGTH);
 		sb.append(STRING_WITH_2_LENGTH);
