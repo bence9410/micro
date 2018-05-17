@@ -31,4 +31,8 @@ public class FieldNameConstants {
 	public static final String DATE_OF_BIRTH = "dateOfBirth";
 	public static final String SPENDING_MONEY = "spendingMoney";
 
+	private FieldNameConstants() {
+		super();
+	}
+
 }
