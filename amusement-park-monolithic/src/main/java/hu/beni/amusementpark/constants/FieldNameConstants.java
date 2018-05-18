@@ -13,7 +13,12 @@ public class FieldNameConstants {
 	public static final String TOTAL_AREA = "totalArea";
 	public static final String ENTRANCE_FEE = "entranceFee";
 	public static final String ADDRESS = "address";
+
 	public static final String COUNTRY_IN_ADDRESS = ADDRESS + "." + COUNTRY;
+	public static final String ZIP_CODE_IN_ADDRESS = ADDRESS + "." + ZIP_CODE;
+	public static final String CITY_IN_ADDRESS = ADDRESS + "." + CITY;
+	public static final String STREET_IN_ADDRESS = ADDRESS + "." + STREET;
+	public static final String HOUSE_NUMBER_IN_ADDRESS = ADDRESS + "." + HOUSE_NUMBER;
 
 	public static final String FANTASY_NAME = "fantasyName";
 	public static final String SIZE = "size";

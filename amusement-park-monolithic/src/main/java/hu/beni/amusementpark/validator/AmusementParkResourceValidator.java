@@ -36,15 +36,15 @@ public class AmusementParkResourceValidator implements Validator {
 		if (addressDTO == null) {
 			errors.rejectValue(ADDRESS, null, NOT_NULL_MESSAGE);
 		} else {
-			validateForNotNullAndSize(addressDTO.getCountry(), ADDRESS + "." + COUNTRY, 3, 15, errors);
+			validateForNotNullAndSize(addressDTO.getCountry(), COUNTRY_IN_ADDRESS, 3, 15, errors);
 
-			validateForNotNullAndSize(addressDTO.getZipCode(), ADDRESS + "." + ZIP_CODE, 3, 15, errors);
+			validateForNotNullAndSize(addressDTO.getZipCode(), ZIP_CODE_IN_ADDRESS, 3, 15, errors);
 
-			validateForNotNullAndSize(addressDTO.getCity(), ADDRESS + "." + CITY, 3, 15, errors);
+			validateForNotNullAndSize(addressDTO.getCity(), CITY_IN_ADDRESS, 3, 15, errors);
 
-			validateForNotNullAndSize(addressDTO.getStreet(), ADDRESS + "." + STREET, 5, 25, errors);
+			validateForNotNullAndSize(addressDTO.getStreet(), STREET_IN_ADDRESS, 5, 25, errors);
 
-			validateForNotEmptyAndSize(addressDTO.getHouseNumber(), ADDRESS + "." + HOUSE_NUMBER, 5, errors);
+			validateForNotEmptyAndSize(addressDTO.getHouseNumber(), HOUSE_NUMBER_IN_ADDRESS, 5, errors);
 		}
 	}
 }
