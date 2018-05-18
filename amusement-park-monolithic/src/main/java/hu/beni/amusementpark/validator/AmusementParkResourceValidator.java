@@ -1,7 +1,6 @@
 package hu.beni.amusementpark.validator;
 
 import org.springframework.validation.Errors;
-import org.springframework.validation.Validator;
 
 import hu.beni.clientsupport.dto.AddressDTO;
 import hu.beni.clientsupport.resource.AmusementParkResource;
@@ -10,18 +9,15 @@ import static hu.beni.amusementpark.constants.FieldNameConstants.*;
 import static hu.beni.amusementpark.validator.ValidatorUtil.*;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
 
-public class AmusementParkResourceValidator implements Validator {
+public class AmusementParkResourceValidator extends AbstractValidator<AmusementParkResource> {
 
-	private static final Class<AmusementParkResource> TARGET_CLASS = AmusementParkResource.class;
-
-	@Override
-	public boolean supports(Class<?> clazz) {
-		return TARGET_CLASS.equals(clazz);
+	public AmusementParkResourceValidator() {
+		super(AmusementParkResource.class);
 	}
 
 	@Override
 	public void validate(Object target, Errors errors) {
-		AmusementParkResource amusementParkResource = TARGET_CLASS.cast(target);
+		AmusementParkResource amusementParkResource = cast(target);
 
 		validateForNotNullAndSize(amusementParkResource.getName(), NAME, 5, 20, errors);
 
