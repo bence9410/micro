@@ -8,16 +8,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import hu.beni.amusementpark.service.MachineService;
+import hu.beni.amusementpark.validator.MachineResourceValidator;
 import hu.beni.clientsupport.resource.MachineResource;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 
 @RestController
 @RequestMapping("amusement-park/{amusementParkId}/machine")
@@ -27,10 +32,15 @@ public class MachineController {
 
 	private final MachineService machineService;
 	private final MachineMapper machineMapper;
+	
+	@InitBinder
+	protected void initBinder(WebDataBinder webDataBinder) {
+		webDataBinder.addValidators(new MachineResourceValidator());
+	}
 
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public MachineResource addMachine(@PathVariable Long amusementParkId, @RequestBody MachineResource machine) {
+	public MachineResource addMachine(@PathVariable Long amusementParkId, @Valid @RequestBody MachineResource machine) {
 		return machineMapper.toResource(machineService.addMachine(amusementParkId, machineMapper.toEntity(machine)));
 	}
 
