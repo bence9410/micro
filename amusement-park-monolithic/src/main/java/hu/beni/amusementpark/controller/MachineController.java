@@ -32,16 +32,18 @@ public class MachineController {
 
 	private final MachineService machineService;
 	private final MachineMapper machineMapper;
-	
-	@InitBinder
+
+	@InitBinder("machineResource")
 	protected void initBinder(WebDataBinder webDataBinder) {
 		webDataBinder.addValidators(new MachineResourceValidator());
 	}
 
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public MachineResource addMachine(@PathVariable Long amusementParkId, @Valid @RequestBody MachineResource machine) {
-		return machineMapper.toResource(machineService.addMachine(amusementParkId, machineMapper.toEntity(machine)));
+	public MachineResource addMachine(@PathVariable Long amusementParkId,
+			@Valid @RequestBody MachineResource machineResource) {
+		return machineMapper
+				.toResource(machineService.addMachine(amusementParkId, machineMapper.toEntity(machineResource)));
 	}
 
 	@GetMapping("/{machineId}")

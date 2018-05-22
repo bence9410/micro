@@ -32,7 +32,7 @@ public class AmusementParkController {
 	private final AmusementParkService amusementParkService;
 	private final AmusementParkMapper amusementParkMapper;
 
-	@InitBinder
+	@InitBinder("amusementParkResource")
 	protected void initBinder(WebDataBinder binder) {
 		binder.addValidators(new AmusementParkResourceValidator());
 	}
