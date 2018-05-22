@@ -1,7 +1,20 @@
 package hu.beni.amusementpark.service.impl;
 
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
-import static hu.beni.amusementpark.exception.ExceptionUtil.*;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NOT_ENOUGH_MONEY;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_FREE_SEAT_ON_MACHINE;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_MACHINE_IN_PARK_WITH_ID;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_IN_PARK_WITH_ID;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_ON_MACHINE_WITH_ID;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_IN_A_PARK;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_ON_A_MACHINE;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_TOO_YOUNG;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_NOT_SIGNED_UP;
+import static hu.beni.amusementpark.exception.ExceptionUtil.ifEquals;
+import static hu.beni.amusementpark.exception.ExceptionUtil.ifFirstLessThanSecond;
+import static hu.beni.amusementpark.exception.ExceptionUtil.ifNotNull;
+import static hu.beni.amusementpark.exception.ExceptionUtil.ifNull;
+import static hu.beni.amusementpark.exception.ExceptionUtil.ifPrimitivesEquals;
 
 import java.time.LocalDate;
 import java.time.Period;

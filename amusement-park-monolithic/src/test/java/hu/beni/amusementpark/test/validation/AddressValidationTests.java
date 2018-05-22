@@ -1,9 +1,24 @@
 package hu.beni.amusementpark.test.validation;
 
-import static hu.beni.amusementpark.constants.StringParamConstants.*;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.*;
+import static hu.beni.amusementpark.constants.FieldNameConstants.CITY;
+import static hu.beni.amusementpark.constants.FieldNameConstants.COUNTRY;
+import static hu.beni.amusementpark.constants.FieldNameConstants.HOUSE_NUMBER;
+import static hu.beni.amusementpark.constants.FieldNameConstants.STREET;
+import static hu.beni.amusementpark.constants.FieldNameConstants.ZIP_CODE;
+import static hu.beni.amusementpark.constants.StringParamConstants.STRING_EMPTY;
+import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_11_LENGTH;
+import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_16_LENGTH;
+import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_26_LENGTH;
+import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_2_LENGTH;
+import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4_LENGTH;
+import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_6_LENGTH;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_EMPTY_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.SIZE_0_5_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.SIZE_3_10_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.SIZE_3_15_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.SIZE_5_25_MESSAGE;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAddress;
-import static hu.beni.amusementpark.constants.FieldNameConstants.*;
 
 import org.junit.Before;
 import org.junit.Test;

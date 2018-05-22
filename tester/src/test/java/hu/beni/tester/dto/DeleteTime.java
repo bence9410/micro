@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 public class DeleteTime {
 
 	private final long wholeTime;
-	
+
 	private final List<Long> tenDeleteTimes;
-	
+
 }

@@ -21,18 +21,17 @@ import hu.beni.tester.archive.ArchiveReceiver;
 @Configuration
 @EnableAsync
 public class AsyncConfig {
-	
-	@Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
 
 	@Bean
-    public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {
-        return builder.createXmlMapper(false).build()
-        		.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-    }
-	
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
+
+	@Bean
+	public ObjectMapper objectMapper(Jackson2ObjectMapperBuilder builder) {
+		return builder.createXmlMapper(false).build().configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+	}
+
 	@Bean
 	public Executor asyncExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -41,12 +40,12 @@ public class AsyncConfig {
 		executor.initialize();
 		return executor;
 	}
-	
+
 	@Bean
 	public Queue queue() {
 		return new Queue("archiveAmusementPark", false);
 	}
-	
+
 	@Bean
 	public SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
 			MessageListenerAdapter listenerAdapter) {

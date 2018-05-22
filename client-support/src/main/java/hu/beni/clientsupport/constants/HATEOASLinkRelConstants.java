@@ -9,10 +9,10 @@ public class HATEOASLinkRelConstants {
 	public static final String GET_ON_MACHINE = "getOnMachine";
 	public static final String VISITOR_LEAVE_PARK = "leavePark";
 	public static final String GET_OFF_MACHINE = "getOffMachine";
-    public static final String ADD_REGISTRY = "addRegistry";
-    
-    private HATEOASLinkRelConstants() {
-    	super();
+	public static final String ADD_REGISTRY = "addRegistry";
+
+	private HATEOASLinkRelConstants() {
+		super();
 	}
 
 }

@@ -1,12 +1,14 @@
 package hu.beni.amusementpark.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import static hu.beni.amusementpark.constants.ParameterMappingConstants.*;
+import static hu.beni.amusementpark.constants.ParameterMappingConstants.AMUSEMENT_PARK_ID;
+import static hu.beni.amusementpark.constants.ParameterMappingConstants.MACHINE_ID;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import hu.beni.amusementpark.entity.Machine;
 

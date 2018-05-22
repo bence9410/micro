@@ -1,5 +1,12 @@
 package hu.beni.amusementpark.repository;
 
+import static hu.beni.amusementpark.constants.ParameterMappingConstants.AMMOUNT;
+import static hu.beni.amusementpark.constants.ParameterMappingConstants.AMUSEMENT_PARK_ID;
+import static hu.beni.amusementpark.constants.ParameterMappingConstants.VISITOR_ID;
+
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -9,10 +16,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import static hu.beni.amusementpark.constants.ParameterMappingConstants.*;
-
-import java.util.List;
-import java.util.Optional;
 
 import hu.beni.amusementpark.entity.AmusementPark;
 

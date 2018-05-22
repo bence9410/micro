@@ -1,5 +1,10 @@
 package hu.beni.amusementpark.mapper;
 
+import static hu.beni.amusementpark.factory.LinkFactory.createAmusementParkSelfLink;
+import static hu.beni.amusementpark.factory.LinkFactory.createMachineLink;
+import static hu.beni.amusementpark.factory.LinkFactory.createVisitorEnterParkLink;
+import static hu.beni.amusementpark.factory.LinkFactory.createVisitorSignUpLink;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
@@ -10,8 +15,6 @@ import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.clientsupport.dto.AddressDTO;
 import hu.beni.clientsupport.resource.AmusementParkResource;
-
-import static hu.beni.amusementpark.factory.LinkFactory.*;
 
 @Component
 @ConditionalOnWebApplication

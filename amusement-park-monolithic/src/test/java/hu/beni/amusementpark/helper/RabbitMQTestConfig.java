@@ -3,6 +3,9 @@ package hu.beni.amusementpark.helper;
 import static hu.beni.amusementpark.constants.RabbitMQConstants.EXCHANGE_NAME;
 import static hu.beni.amusementpark.constants.RabbitMQConstants.QUEUE_NAME;
 import static hu.beni.amusementpark.constants.SpringTestProfileConstants.RABBIT_MQ_TEST_CONFIG;
+import static org.junit.Assert.assertNotNull;
+
+import java.util.concurrent.CountDownLatch;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
@@ -21,10 +24,6 @@ import hu.beni.amusementpark.archive.ArchiveSender;
 import hu.beni.amusementpark.archive.impl.RabbitMQArchiveSender;
 import hu.beni.clientsupport.dto.ArchiveAmusementParkDTO;
 import lombok.Getter;
-
-import static org.junit.Assert.assertNotNull;
-
-import java.util.concurrent.CountDownLatch;
 
 @Configuration
 @Profile(RABBIT_MQ_TEST_CONFIG)

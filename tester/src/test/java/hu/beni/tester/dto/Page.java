@@ -8,7 +8,7 @@ import lombok.Data;
 public class Page<T> {
 
 	private List<T> content;
-	
+
 	private boolean last;
-	
+
 }

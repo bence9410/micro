@@ -8,11 +8,11 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public class VisitorStuffTime {
-	
+
 	private final long wholeTime;
-	
+
 	private final List<Long> tenParkTimes;
-	
+
 	private final List<Long> oneParkTimes;
 
 }

@@ -5,7 +5,9 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.MACHINE_IS_T
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_MACHINE_IN_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITORS_ON_MACHINE;
-import static hu.beni.amusementpark.exception.ExceptionUtil.*;
+import static hu.beni.amusementpark.exception.ExceptionUtil.ifFirstLessThanSecond;
+import static hu.beni.amusementpark.exception.ExceptionUtil.ifNotZero;
+import static hu.beni.amusementpark.exception.ExceptionUtil.ifNull;
 
 import java.util.List;
 

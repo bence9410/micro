@@ -1,5 +1,8 @@
 package hu.beni.amusementpark.mapper;
 
+import static hu.beni.amusementpark.factory.LinkFactory.createGetOnMachineLink;
+import static hu.beni.amusementpark.factory.LinkFactory.createMachineSelfLink;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
@@ -9,8 +12,6 @@ import hu.beni.amusementpark.controller.MachineController;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.enums.MachineType;
 import hu.beni.clientsupport.resource.MachineResource;
-
-import static hu.beni.amusementpark.factory.LinkFactory.*;
 
 @Component
 @ConditionalOnWebApplication

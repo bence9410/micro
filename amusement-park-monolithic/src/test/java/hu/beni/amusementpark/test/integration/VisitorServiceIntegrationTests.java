@@ -1,7 +1,12 @@
 package hu.beni.amusementpark.test.integration;
 
-import static hu.beni.amusementpark.helper.ValidEntityFactory.*;
-import static org.junit.Assert.*;
+import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
+import static hu.beni.amusementpark.helper.ValidEntityFactory.createMachine;
+import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
 

@@ -1,5 +1,8 @@
 package hu.beni.amusementpark.mapper;
 
+import static hu.beni.amusementpark.factory.LinkFactory.createAddGuestBookRegistryLink;
+import static hu.beni.amusementpark.factory.LinkFactory.createGuestBookRegistrySelfLink;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
@@ -8,8 +11,6 @@ import org.springframework.stereotype.Component;
 import hu.beni.amusementpark.controller.GuestBookRegistryController;
 import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.clientsupport.resource.GuestBookRegistryResource;
-
-import static hu.beni.amusementpark.factory.LinkFactory.*;
 
 @Component
 @ConditionalOnWebApplication

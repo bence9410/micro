@@ -1,13 +1,24 @@
 package hu.beni.amusementpark.validator;
 
+import static hu.beni.amusementpark.constants.FieldNameConstants.ADDRESS;
+import static hu.beni.amusementpark.constants.FieldNameConstants.CAPITAL;
+import static hu.beni.amusementpark.constants.FieldNameConstants.CITY_IN_ADDRESS;
+import static hu.beni.amusementpark.constants.FieldNameConstants.COUNTRY_IN_ADDRESS;
+import static hu.beni.amusementpark.constants.FieldNameConstants.ENTRANCE_FEE;
+import static hu.beni.amusementpark.constants.FieldNameConstants.HOUSE_NUMBER_IN_ADDRESS;
+import static hu.beni.amusementpark.constants.FieldNameConstants.NAME;
+import static hu.beni.amusementpark.constants.FieldNameConstants.STREET_IN_ADDRESS;
+import static hu.beni.amusementpark.constants.FieldNameConstants.TOTAL_AREA;
+import static hu.beni.amusementpark.constants.FieldNameConstants.ZIP_CODE_IN_ADDRESS;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
+import static hu.beni.amusementpark.validator.ValidatorUtil.validateForNotEmptyAndSize;
+import static hu.beni.amusementpark.validator.ValidatorUtil.validateForNotNullAndRange;
+import static hu.beni.amusementpark.validator.ValidatorUtil.validateForNotNullAndSize;
+
 import org.springframework.validation.Errors;
 
 import hu.beni.clientsupport.dto.AddressDTO;
 import hu.beni.clientsupport.resource.AmusementParkResource;
-
-import static hu.beni.amusementpark.constants.FieldNameConstants.*;
-import static hu.beni.amusementpark.validator.ValidatorUtil.*;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
 
 public class AmusementParkResourceValidator extends AbstractValidator<AmusementParkResource> {
 

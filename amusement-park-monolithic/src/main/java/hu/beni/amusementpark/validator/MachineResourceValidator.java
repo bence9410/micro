@@ -1,19 +1,25 @@
 package hu.beni.amusementpark.validator;
 
-import org.springframework.validation.Errors;
-
-import hu.beni.amusementpark.enums.MachineType;
-import hu.beni.clientsupport.resource.MachineResource;
-
-import static hu.beni.amusementpark.constants.FieldNameConstants.*;
-import static hu.beni.amusementpark.validator.ValidatorUtil.*;
+import static hu.beni.amusementpark.constants.FieldNameConstants.FANTASY_NAME;
+import static hu.beni.amusementpark.constants.FieldNameConstants.MINIMUM_REQUIRED_AGE;
+import static hu.beni.amusementpark.constants.FieldNameConstants.NUMBER_OF_SEATS;
+import static hu.beni.amusementpark.constants.FieldNameConstants.PRICE;
+import static hu.beni.amusementpark.constants.FieldNameConstants.SIZE;
+import static hu.beni.amusementpark.constants.FieldNameConstants.TICKET_PRICE;
+import static hu.beni.amusementpark.constants.FieldNameConstants.TYPE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.MUST_BE_ONE_OF;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
+import static hu.beni.amusementpark.validator.ValidatorUtil.validateForNotNullAndRange;
+import static hu.beni.amusementpark.validator.ValidatorUtil.validateForNotNullAndSize;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.MUST_BE_ONE_OF;
+import org.springframework.validation.Errors;
+
+import hu.beni.amusementpark.enums.MachineType;
+import hu.beni.clientsupport.resource.MachineResource;
 
 public class MachineResourceValidator extends AbstractValidator<MachineResource> {
 

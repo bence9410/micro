@@ -1,5 +1,7 @@
 package hu.beni.amusementpark.test.unit;
 
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITORS_IN_PARK;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -31,8 +33,6 @@ import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.AmusementParkService;
 import hu.beni.amusementpark.service.impl.AmusementParkServiceImpl;
-
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 
 public class AmusementParkServiceUnitTests {
 

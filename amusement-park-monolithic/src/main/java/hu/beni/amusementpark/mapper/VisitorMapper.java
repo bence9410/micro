@@ -1,5 +1,13 @@
 package hu.beni.amusementpark.mapper;
 
+import static hu.beni.amusementpark.factory.LinkFactory.createAddGuestBookRegistryLink;
+import static hu.beni.amusementpark.factory.LinkFactory.createAmusementParkLink;
+import static hu.beni.amusementpark.factory.LinkFactory.createGetOffMachineLink;
+import static hu.beni.amusementpark.factory.LinkFactory.createGetOnMachineLink;
+import static hu.beni.amusementpark.factory.LinkFactory.createVisitorEnterParkLink;
+import static hu.beni.amusementpark.factory.LinkFactory.createVisitorLeavePark;
+import static hu.beni.amusementpark.factory.LinkFactory.createVisitorSelfLink;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +20,6 @@ import hu.beni.amusementpark.controller.VisitorController;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.enums.VisitorState;
 import hu.beni.clientsupport.resource.VisitorResource;
-
-import static hu.beni.amusementpark.factory.LinkFactory.*;
 
 @Component
 @ConditionalOnWebApplication

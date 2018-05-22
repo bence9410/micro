@@ -1,9 +1,12 @@
 package hu.beni.amusementpark.service.impl;
 
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_GUEST_BOOK_REGISTRY_WITH_ID;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_IN_PARK_WITH_ID;
+import static hu.beni.amusementpark.exception.ExceptionUtil.ifNull;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import static hu.beni.amusementpark.exception.ExceptionUtil.*;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
 
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.GuestBookRegistry;

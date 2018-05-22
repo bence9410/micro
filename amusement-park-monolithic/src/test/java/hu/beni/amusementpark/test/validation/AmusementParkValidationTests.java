@@ -1,15 +1,25 @@
 package hu.beni.amusementpark.test.validation;
 
+import static hu.beni.amusementpark.constants.FieldNameConstants.ADDRESS;
+import static hu.beni.amusementpark.constants.FieldNameConstants.CAPITAL;
+import static hu.beni.amusementpark.constants.FieldNameConstants.COUNTRY_IN_ADDRESS;
+import static hu.beni.amusementpark.constants.FieldNameConstants.ENTRANCE_FEE;
+import static hu.beni.amusementpark.constants.FieldNameConstants.NAME;
+import static hu.beni.amusementpark.constants.FieldNameConstants.TOTAL_AREA;
+import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_21_LENGTH;
+import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4_LENGTH;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.RANGE_500_50000_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.RANGE_50_2000_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.RANGE_5_200_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.SIZE_5_20_MESSAGE;
+import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
-
-import static hu.beni.amusementpark.constants.StringParamConstants.*;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.*;
-import static hu.beni.amusementpark.helper.ValidEntityFactory.*;
-import static hu.beni.amusementpark.constants.FieldNameConstants.*;
 
 public class AmusementParkValidationTests extends AbstractValidation<AmusementPark> {
 

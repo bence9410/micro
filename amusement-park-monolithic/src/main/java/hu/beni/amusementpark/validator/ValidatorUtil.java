@@ -1,6 +1,9 @@
 package hu.beni.amusementpark.validator;
 
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.*;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_EMPTY_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.RANGE_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.SIZE_MESSAGE;
 
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;

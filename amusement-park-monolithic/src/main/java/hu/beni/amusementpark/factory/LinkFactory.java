@@ -1,5 +1,13 @@
 package hu.beni.amusementpark.factory;
 
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.ADD_REGISTRY;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.AMUSEMENT_PARK;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_OFF_MACHINE;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_ON_MACHINE;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.MACHINE;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_ENTER_PARK;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_LEAVE_PARK;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_SIGN_UP;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
@@ -9,8 +17,6 @@ import hu.beni.amusementpark.controller.AmusementParkController;
 import hu.beni.amusementpark.controller.GuestBookRegistryController;
 import hu.beni.amusementpark.controller.MachineController;
 import hu.beni.amusementpark.controller.VisitorController;
-
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.*;
 
 public class LinkFactory {
 

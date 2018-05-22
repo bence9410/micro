@@ -1,36 +1,34 @@
 package hu.beni.amusementpark.test.integration;
 
-import hu.beni.clientsupport.Client;
-import hu.beni.amusementpark.enums.MachineType;
-import hu.beni.amusementpark.helper.MyAssert.ExceptionAsserter;
-import hu.beni.clientsupport.resource.AmusementParkResource;
-import hu.beni.clientsupport.resource.GuestBookRegistryResource;
-import hu.beni.clientsupport.resource.MachineResource;
-import hu.beni.clientsupport.resource.VisitorResource;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.hateoas.PagedResources;
-import org.springframework.http.HttpHeaders;
-
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.MACHINE_IS_TOO_EXPENSIVE;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_ARCHIVE_SEND_TYPE;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.validationError;
 import static hu.beni.amusementpark.constants.FieldNameConstants.ADDRESS;
 import static hu.beni.amusementpark.constants.FieldNameConstants.TYPE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.*;
 import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.MUST_BE_ONE_OF;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
 import static hu.beni.amusementpark.helper.MyAssert.assertThrows;
-import static hu.beni.clientsupport.factory.ValidResourceFactory.*;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.*;
-import static org.junit.Assert.*;
+import static hu.beni.clientsupport.Client.uri;
+import static hu.beni.clientsupport.ResponseType.AMUSEMENT_PARK_TYPE;
+import static hu.beni.clientsupport.ResponseType.GUEST_BOOK_REGISTRY_TYPE;
+import static hu.beni.clientsupport.ResponseType.MACHINE_TYPE;
+import static hu.beni.clientsupport.ResponseType.PAGED_AMUSEMENT_PARK_TYPE;
+import static hu.beni.clientsupport.ResponseType.VISITOR_TYPE;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.ADD_REGISTRY;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.AMUSEMENT_PARK;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_OFF_MACHINE;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_ON_MACHINE;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.MACHINE;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_ENTER_PARK;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_LEAVE_PARK;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_SIGN_UP;
+import static hu.beni.clientsupport.factory.ValidResourceFactory.createAmusementParkWithAddress;
+import static hu.beni.clientsupport.factory.ValidResourceFactory.createMachine;
+import static hu.beni.clientsupport.factory.ValidResourceFactory.createVisitor;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.util.stream.Collectors;
@@ -39,12 +37,30 @@ import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.core.env.Environment;
+import org.springframework.hateoas.PagedResources;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 
-import static hu.beni.clientsupport.ResponseType.*;
-import static hu.beni.clientsupport.Client.*;
+import hu.beni.amusementpark.enums.MachineType;
+import hu.beni.amusementpark.helper.MyAssert.ExceptionAsserter;
+import hu.beni.clientsupport.Client;
+import hu.beni.clientsupport.resource.AmusementParkResource;
+import hu.beni.clientsupport.resource.GuestBookRegistryResource;
+import hu.beni.clientsupport.resource.MachineResource;
+import hu.beni.clientsupport.resource.VisitorResource;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)

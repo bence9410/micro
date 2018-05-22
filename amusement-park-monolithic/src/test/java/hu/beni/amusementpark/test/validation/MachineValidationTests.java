@@ -1,15 +1,26 @@
 package hu.beni.amusementpark.test.validation;
 
-import static hu.beni.amusementpark.constants.FieldNameConstants.*;
-import static hu.beni.amusementpark.constants.StringParamConstants.*;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.*;
+import static hu.beni.amusementpark.constants.FieldNameConstants.FANTASY_NAME;
+import static hu.beni.amusementpark.constants.FieldNameConstants.MINIMUM_REQUIRED_AGE;
+import static hu.beni.amusementpark.constants.FieldNameConstants.NUMBER_OF_SEATS;
+import static hu.beni.amusementpark.constants.FieldNameConstants.PRICE;
+import static hu.beni.amusementpark.constants.FieldNameConstants.SIZE;
+import static hu.beni.amusementpark.constants.FieldNameConstants.TICKET_PRICE;
+import static hu.beni.amusementpark.constants.FieldNameConstants.TYPE;
+import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_26_LENGTH;
+import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4_LENGTH;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.RANGE_0_21_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.RANGE_20_200_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.RANGE_50_2000_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.RANGE_5_30_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.SIZE_5_25_MESSAGE;
+import static hu.beni.amusementpark.helper.ValidEntityFactory.createMachine;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import hu.beni.amusementpark.entity.Machine;
-
-import static hu.beni.amusementpark.helper.ValidEntityFactory.createMachine;
 
 public class MachineValidationTests extends AbstractValidation<Machine> {
 

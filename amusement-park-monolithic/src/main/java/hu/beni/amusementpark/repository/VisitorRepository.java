@@ -1,6 +1,8 @@
 package hu.beni.amusementpark.repository;
 
-import static hu.beni.amusementpark.constants.ParameterMappingConstants.*;
+import static hu.beni.amusementpark.constants.ParameterMappingConstants.AMUSEMENT_PARK_ID;
+import static hu.beni.amusementpark.constants.ParameterMappingConstants.MACHINE_ID;
+import static hu.beni.amusementpark.constants.ParameterMappingConstants.VISITOR_ID;
 
 import java.util.Optional;
 

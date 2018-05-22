@@ -1,6 +1,10 @@
 package hu.beni.tester.output;
 
-import static hu.beni.tester.TesterApplicationTests.*;
+import static hu.beni.tester.TesterApplicationTests.NUMBER_OF_ADMINS;
+import static hu.beni.tester.TesterApplicationTests.NUMBER_OF_USERS;
+import static hu.beni.tester.constant.Constants.NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK;
+import static hu.beni.tester.constant.Constants.NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN;
+import static hu.beni.tester.constant.Constants.SEMICOLON;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,15 +17,13 @@ import hu.beni.tester.dto.DeleteTime;
 import hu.beni.tester.dto.TimeTo;
 import lombok.extern.slf4j.Slf4j;
 
-import static hu.beni.tester.constant.Constants.*;
-
 @Slf4j
 public class ResultLogger {
-	
+
 	private static final File RESULT_FILE = new File("results.csv");
 	private static final String NEW_LINE = "\n";
 	private static final String GIT_COMMIT_ID;
-	
+
 	static {
 		String gitCommitId = "";
 		try {
@@ -31,48 +33,34 @@ public class ResultLogger {
 		} catch (Throwable e) {
 			log.error("Error: ", e);
 		}
-		GIT_COMMIT_ID = gitCommitId; 
+		GIT_COMMIT_ID = gitCommitId;
 	}
-	
-	private final String[] header = { "",
-			"fullRun",
-			"createAmusementParksWithMachines", 
-			"findAllParksPagedBeforeVisitorStuff",
-			"wholeVisitorStuff",
-			"tenParkVisitorStuff",
-			"oneParkVisitorStuff", 
-			"findAllParksPagedAfterVisitorStuff",
-			"findAllVisitorsPaged", 
-			"wholeDeleteParks", 
-			"tenDeleteParks",
-			"wholeDeleteVisitors",
-			"tenDeleteVisitors",
-			"gitCommitId" };
-	
+
+	private final String[] header = { "", "fullRun", "createAmusementParksWithMachines",
+			"findAllParksPagedBeforeVisitorStuff", "wholeVisitorStuff", "tenParkVisitorStuff", "oneParkVisitorStuff",
+			"findAllParksPagedAfterVisitorStuff", "findAllVisitorsPaged", "wholeDeleteParks", "tenDeleteParks",
+			"wholeDeleteVisitors", "tenDeleteVisitors", "gitCommitId" };
+
 	private final String[] result;
 
 	public ResultLogger(TimeTo timeTo) {
 		DeleteTime deleteParks = timeTo.getDeleteParks();
 		DeleteTime deleteVisitors = timeTo.getDeleteVisitors();
-		result = new String[] { NUMBER_OF_ADMINS + "a " + NUMBER_OF_USERS + "v " + NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN  + "p/a " + NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK + "m/p ",
-				Long.toString(timeTo.getFullRun()),
-				minAvgMax(timeTo.getCreateAmusementParksWithMachines()),
-				minAvgMax(timeTo.getFindAllParksPagedBeforeVisitorStuff()), 
-				minAvgMax(timeTo.getWholeVisitorStuff()),
-				minAvgMax(timeTo.getTenParkVisitorStuff()),
-				minAvgMax(timeTo.getOneParkVisitorStuff()), 
-				minAvgMax(timeTo.getFindAllParksPagedAfterVisitorStuff()),
-				minAvgMax(timeTo.getFindAllVisitorsPaged()), 
-				Long.toString(deleteParks.getWholeTime()),
-				minAvgMax(deleteParks.getTenDeleteTimes()),
-				Long.toString(deleteVisitors.getWholeTime()),
-				minAvgMax(deleteVisitors.getTenDeleteTimes()),
-				GIT_COMMIT_ID };	
+		result = new String[] {
+				NUMBER_OF_ADMINS + "a " + NUMBER_OF_USERS + "v " + NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN + "p/a "
+						+ NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK + "m/p ",
+				Long.toString(timeTo.getFullRun()), minAvgMax(timeTo.getCreateAmusementParksWithMachines()),
+				minAvgMax(timeTo.getFindAllParksPagedBeforeVisitorStuff()), minAvgMax(timeTo.getWholeVisitorStuff()),
+				minAvgMax(timeTo.getTenParkVisitorStuff()), minAvgMax(timeTo.getOneParkVisitorStuff()),
+				minAvgMax(timeTo.getFindAllParksPagedAfterVisitorStuff()), minAvgMax(timeTo.getFindAllVisitorsPaged()),
+				Long.toString(deleteParks.getWholeTime()), minAvgMax(deleteParks.getTenDeleteTimes()),
+				Long.toString(deleteVisitors.getWholeTime()), minAvgMax(deleteVisitors.getTenDeleteTimes()),
+				GIT_COMMIT_ID };
 	}
 
 	public void logToConsole() {
 		StringBuilder sb = new StringBuilder(NEW_LINE);
-		for(int i = 0; i < header.length; i++) {
+		for (int i = 0; i < header.length; i++) {
 			if (i != 0) {
 				sb.append(header[i]).append(": ");
 			}
@@ -83,19 +71,19 @@ public class ResultLogger {
 		}
 		log.info(sb.toString());
 	}
-	
+
 	public void writeToFile() {
 		boolean firstWrite = !RESULT_FILE.exists();
-		try (PrintWriter printWriter = new PrintWriter(new FileOutputStream(RESULT_FILE, true))){
+		try (PrintWriter printWriter = new PrintWriter(new FileOutputStream(RESULT_FILE, true))) {
 			if (firstWrite) {
 				printWriter.println(String.join(SEMICOLON, header));
 			}
-			printWriter.println(String.join(SEMICOLON, result));	
+			printWriter.println(String.join(SEMICOLON, result));
 		} catch (FileNotFoundException e) {
 			log.error("Could not write results to file", e);
 		}
 	}
-	
+
 	private String minAvgMax(List<Long> list) {
 		long first = list.get(0);
 		int size = list.size();

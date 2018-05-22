@@ -1,13 +1,18 @@
 package hu.beni.amusementpark.exception;
 
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.COULD_NOT_GET_VALIDATION_MESSAGE;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.ERROR;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.UNEXPECTED_ERROR_OCCURED;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.validationError;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
+
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 @Slf4j
 @RestControllerAdvice

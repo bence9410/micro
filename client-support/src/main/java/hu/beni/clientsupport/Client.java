@@ -13,7 +13,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class Client {
-	
+
 	private final RestTemplate restTemplate;
 
 	public <T> ResponseEntity<T> get(URI uri, Class<T> responseType) {
@@ -47,7 +47,7 @@ public class Client {
 	public ResponseEntity<Void> delete(URI uri) {
 		return restTemplate.exchange(RequestEntity.delete(uri).build(), Void.class);
 	}
-	
+
 	public static URI uri(String url, Object... uriVariables) {
 		return UriComponentsBuilder.fromHttpUrl(url).build(uriVariables);
 	}

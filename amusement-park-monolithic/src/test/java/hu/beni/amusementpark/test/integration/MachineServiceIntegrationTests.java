@@ -1,21 +1,24 @@
 package hu.beni.amusementpark.test.integration;
 
-import hu.beni.amusementpark.entity.AmusementPark;
-import hu.beni.amusementpark.entity.Machine;
-import hu.beni.amusementpark.exception.AmusementParkException;
-import hu.beni.amusementpark.repository.AmusementParkRepository;
-import hu.beni.amusementpark.service.AmusementParkService;
-import hu.beni.amusementpark.service.MachineService;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_MACHINE_IN_PARK_WITH_ID;
+import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
+import static hu.beni.amusementpark.helper.ValidEntityFactory.createMachine;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static hu.beni.amusementpark.helper.ValidEntityFactory.*;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.*;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.*;
+import hu.beni.amusementpark.entity.AmusementPark;
+import hu.beni.amusementpark.entity.Machine;
+import hu.beni.amusementpark.exception.AmusementParkException;
+import hu.beni.amusementpark.repository.AmusementParkRepository;
+import hu.beni.amusementpark.service.AmusementParkService;
+import hu.beni.amusementpark.service.MachineService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)

@@ -1,5 +1,18 @@
 package hu.beni.tester;
 
+import static hu.beni.tester.constant.Constants.ADMIN;
+import static hu.beni.tester.constant.Constants.NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK;
+import static hu.beni.tester.constant.Constants.NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN;
+import static hu.beni.tester.constant.Constants.USER;
+import static hu.beni.tester.factory.ValidDTOFactory.AMUSEMENT_PARK_CAPITAL;
+import static hu.beni.tester.factory.ValidDTOFactory.AMUSEMENT_PARK_ENTRANCE_FEE;
+import static hu.beni.tester.factory.ValidDTOFactory.MACHINE_PRICE;
+import static hu.beni.tester.factory.ValidDTOFactory.MACHINE_TICKET_PRICE;
+import static hu.beni.tester.factory.ValidDTOFactory.VISITOR_SPENDING_MONEY;
+import static java.util.stream.Collectors.toList;
+
+import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -27,49 +40,47 @@ import hu.beni.tester.dto.TimeTo;
 import hu.beni.tester.output.ResultLogger;
 import lombok.extern.slf4j.Slf4j;
 
-import static hu.beni.tester.constant.Constants.*;
-import static java.util.stream.Collectors.toList;
-import static hu.beni.tester.factory.ValidDTOFactory.*;
-
-import java.util.LinkedList;
-import java.util.List;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
 @SpringBootApplication
 @Slf4j
 public class TesterApplicationTests {
-	
+
 	public static final int NUMBER_OF_ADMINS = 5;
 	public static final int NUMBER_OF_USERS = 5;
-	
+
 	private static final int EXPECTED_CAPITAL_BEFORE_VISITORS_SUM;
 	private static final int EXPECTED_CAPITAL_AFTER_VISITORS_SUM;
 	private static final int EXPECTED_SPENDING_MONEY_SUM;
-	
+
 	static {
-		EXPECTED_CAPITAL_BEFORE_VISITORS_SUM = NUMBER_OF_ADMINS * NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN * (AMUSEMENT_PARK_CAPITAL - NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK * MACHINE_PRICE);
-		int moneyOneVisitorSpendInAPark = AMUSEMENT_PARK_ENTRANCE_FEE + NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK * MACHINE_TICKET_PRICE;
-		EXPECTED_CAPITAL_AFTER_VISITORS_SUM = EXPECTED_CAPITAL_BEFORE_VISITORS_SUM + NUMBER_OF_USERS * moneyOneVisitorSpendInAPark * NUMBER_OF_ADMINS * NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN;
-		EXPECTED_SPENDING_MONEY_SUM = (VISITOR_SPENDING_MONEY - (moneyOneVisitorSpendInAPark * NUMBER_OF_ADMINS * NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN)) * NUMBER_OF_USERS;
+		EXPECTED_CAPITAL_BEFORE_VISITORS_SUM = NUMBER_OF_ADMINS * NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN
+				* (AMUSEMENT_PARK_CAPITAL - NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK * MACHINE_PRICE);
+		int moneyOneVisitorSpendInAPark = AMUSEMENT_PARK_ENTRANCE_FEE
+				+ NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK * MACHINE_TICKET_PRICE;
+		EXPECTED_CAPITAL_AFTER_VISITORS_SUM = EXPECTED_CAPITAL_BEFORE_VISITORS_SUM + NUMBER_OF_USERS
+				* moneyOneVisitorSpendInAPark * NUMBER_OF_ADMINS * NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN;
+		EXPECTED_SPENDING_MONEY_SUM = (VISITOR_SPENDING_MONEY
+				- (moneyOneVisitorSpendInAPark * NUMBER_OF_ADMINS * NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN))
+				* NUMBER_OF_USERS;
 	}
-	
+
 	@Autowired
 	private AsyncTestSuite async;
-	
+
 	@Autowired
 	private ArchiveReceiver archiveReceiver;
-	
+
 	private List<HttpHeaders> admins;
 	private List<HttpHeaders> users;
-	
+
 	private TimeTo timeTo;
 	private long start;
-	
+
 	private static Stream<String> createUsernameStream(int endExclusive, IntFunction<String> function) {
 		return IntStream.range(0, endExclusive).mapToObj(function);
 	}
-	
+
 	@Before
 	public void setUp() {
 		start = System.currentTimeMillis();
@@ -78,7 +89,7 @@ public class TesterApplicationTests {
 		users = executeAsyncAndGet(createUsernameStream(NUMBER_OF_USERS, this::createUserUsername), async::login);
 		timeTo = new TimeTo();
 	}
-	
+
 	@After
 	public void tearDown() {
 		log.info("logout");
@@ -93,79 +104,75 @@ public class TesterApplicationTests {
 
 	@Test
 	public void test() {
-		
+
 		clearDB();
-		
+
 		createAmusementParksWithMachines();
-		
+
 		sumAmusementParksCapitalBeforeVisitorStuff();
-				
+
 		visitorsVisitSomeStuffInEveryPark();
-		
+
 		sumAmusementParksCapitalAfterVisitorStuff();
-		
+
 		sumVisitorsSpendingMoney();
-		
+
 		deleteParksAndVisitors();
-		
+
 		waitForArchiveAmusementParks();
-		
+
 	}
-	
+
 	private void clearDB() {
 		log.info("clearDB");
 		async.deleteAllPark(admins.get(0)).join();
 		extract(async.deleteAllVisitor(admins.get(0)));
 	}
-	
+
 	private void createAmusementParksWithMachines() {
 		log.info("createAmusementParksWithMachines");
 		timeTo.setCreateAmusementParksWithMachines(executeAsyncAndGet(admins, async::createAmusementParksWithMachines));
 	}
-	
+
 	private void sumAmusementParksCapitalBeforeVisitorStuff() {
 		log.info("sumAmusementParksCapitalBeforeVisitorStuff");
-		timeTo.setFindAllParksPagedBeforeVisitorStuff(
-				map(executeAsyncAndGet(admins, async::sumAmusementParksCapital), 
-						this::checkCapitalSumBeforeVisitorsGetTime));
+		timeTo.setFindAllParksPagedBeforeVisitorStuff(map(executeAsyncAndGet(admins, async::sumAmusementParksCapital),
+				this::checkCapitalSumBeforeVisitorsGetTime));
 	}
-	
+
 	private void visitorsVisitSomeStuffInEveryPark() {
 		log.info("visitorsVisitSomeStuffInEveryPark");
 		List<Long> wholeTimes = new LinkedList<>();
 		List<Long> tenParkTimes = new LinkedList<>();
 		List<Long> oneParkTimes = new LinkedList<>();
-		executeAsyncAndGet(users, async::visitSomeStuffInEveryPark)
-			.forEach(VisitorStuffTime -> {
-				wholeTimes.add(VisitorStuffTime.getWholeTime());
-				tenParkTimes.addAll(VisitorStuffTime.getTenParkTimes());
-				oneParkTimes.addAll(VisitorStuffTime.getOneParkTimes());
-			});
+		executeAsyncAndGet(users, async::visitSomeStuffInEveryPark).forEach(VisitorStuffTime -> {
+			wholeTimes.add(VisitorStuffTime.getWholeTime());
+			tenParkTimes.addAll(VisitorStuffTime.getTenParkTimes());
+			oneParkTimes.addAll(VisitorStuffTime.getOneParkTimes());
+		});
 		timeTo.setWholeVisitorStuff(wholeTimes);
 		timeTo.setTenParkVisitorStuff(tenParkTimes);
 		timeTo.setOneParkVisitorStuff(oneParkTimes);
 	}
-	
+
 	private void sumAmusementParksCapitalAfterVisitorStuff() {
 		log.info("sumAmusementParksCapitalAfterVisitorStuff");
-		timeTo.setFindAllParksPagedAfterVisitorStuff(
-				map(executeAsyncAndGet(admins, async::sumAmusementParksCapital),
-						this::checkCapitalSumAfterVisitorsGetTime));
+		timeTo.setFindAllParksPagedAfterVisitorStuff(map(executeAsyncAndGet(admins, async::sumAmusementParksCapital),
+				this::checkCapitalSumAfterVisitorsGetTime));
 	}
-	
+
 	private void sumVisitorsSpendingMoney() {
 		log.info("sumVisitorsSpendingMoney");
 		timeTo.setFindAllVisitorsPaged(
-				map(executeAsyncAndGet(admins, async::sumVisitorsSpendingMoney),
-						this::checkSpendingMoneySunGetTime));
+				map(executeAsyncAndGet(admins, async::sumVisitorsSpendingMoney), this::checkSpendingMoneySunGetTime));
 	}
-	
+
 	private void deleteParksAndVisitors() {
 		log.info("deleteParksAndVisitors");
 		timeTo.setDeleteParks(extract(async.deleteAllPark(admins.get(0))));
 		timeTo.setDeleteVisitors(extract(async.deleteAllVisitor(admins.get(0))));
 	}
-	
+
 	private void waitForArchiveAmusementParks() {
 		log.info("waitForArchiveAmusementParks");
 		try {
@@ -175,7 +182,7 @@ public class TesterApplicationTests {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	private Long checkCapitalSumBeforeVisitorsGetTime(SumAndTime sumAndTime) {
 		return checkSumAndReturnTime(sumAndTime, EXPECTED_CAPITAL_BEFORE_VISITORS_SUM,
 				"Problem with capital sum before visitors!");
@@ -185,39 +192,38 @@ public class TesterApplicationTests {
 		return checkSumAndReturnTime(sumAndTime, EXPECTED_CAPITAL_AFTER_VISITORS_SUM,
 				"Problem with capital sum after visitors!");
 	}
-	
+
 	private Long checkSpendingMoneySunGetTime(SumAndTime sumAndTime) {
-		return checkSumAndReturnTime(sumAndTime, EXPECTED_SPENDING_MONEY_SUM,
-				"Problem with spending money sum!");
+		return checkSumAndReturnTime(sumAndTime, EXPECTED_SPENDING_MONEY_SUM, "Problem with spending money sum!");
 	}
-	
+
 	private Long checkSumAndReturnTime(SumAndTime sumAndTime, long expectedSum, String errorMessage) {
 		if (sumAndTime.getSum() != expectedSum) {
 			throw new RuntimeException(errorMessage);
 		}
 		return sumAndTime.getTime();
 	}
-	
+
 	private <T, R> List<R> executeAsyncAndGet(List<T> list, Function<T, CompletableFuture<R>> function) {
 		return executeAsyncAndGet(list.stream(), function);
 	}
-	
+
 	private <T, R> List<R> executeAsyncAndGet(Stream<T> stream, Function<T, CompletableFuture<R>> function) {
 		return stream.map(function).collect(toList()).stream().map(CompletableFuture::join).collect(toList());
 	}
-	
-	private <T, R> List<R> map(List<T> list, Function<T, R> function){
+
+	private <T, R> List<R> map(List<T> list, Function<T, R> function) {
 		return list.stream().map(function).collect(toList());
 	}
-	
-	private String createAdminUsername(int usernameIndex){
+
+	private String createAdminUsername(int usernameIndex) {
 		return ADMIN + usernameIndex;
 	}
-	
+
 	private String createUserUsername(int usernameIndex) {
 		return USER + usernameIndex;
 	}
-	
+
 	private <T> T extract(CompletableFuture<T> completableFuture) {
 		T t = null;
 		try {
@@ -225,6 +231,6 @@ public class TesterApplicationTests {
 		} catch (InterruptedException | ExecutionException e) {
 			throw new RuntimeException(e);
 		}
-		return t;	
+		return t;
 	}
 }

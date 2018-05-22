@@ -1,9 +1,14 @@
 package hu.beni.amusementpark.test.validation;
 
+import static hu.beni.amusementpark.constants.FieldNameConstants.DATE_OF_BIRTH;
+import static hu.beni.amusementpark.constants.FieldNameConstants.NAME;
+import static hu.beni.amusementpark.constants.FieldNameConstants.SPENDING_MONEY;
+import static hu.beni.amusementpark.constants.FieldNameConstants.USERNAME;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_26_LENGTH;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4_LENGTH;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.*;
-import static hu.beni.amusementpark.constants.FieldNameConstants.*;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.RANGE_50_INTEGER_MAX_VALUE_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.SIZE_5_25_MESSAGE;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
 
 import java.time.LocalDate;
