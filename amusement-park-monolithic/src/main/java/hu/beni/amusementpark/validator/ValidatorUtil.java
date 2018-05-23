@@ -52,7 +52,7 @@ public class ValidatorUtil {
 		if (value == null) {
 			errors.rejectValue(field, null, NOT_NULL_MESSAGE);
 		} else {
-			if (value.isBefore(LocalDate.now())) {
+			if (!value.isBefore(LocalDate.now())) {
 				errors.rejectValue(field, null, PAST_MESSAGE);
 			}
 		}

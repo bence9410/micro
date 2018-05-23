@@ -1,5 +1,7 @@
 package hu.beni.amusementpark.controller;
 
+import javax.validation.Valid;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -28,13 +30,12 @@ public class VisitorController {
 
 	private final VisitorService visitorService;
 	private final VisitorMapper visitorMapper;
-	private final VisitorResourceValidator visitorResourceValidator;
 
 	@InitBinder("visitorResource")
 	protected void initBinder(WebDataBinder webDataBinder) {
 		VisitorResource.class.cast(webDataBinder.getTarget())
 				.setUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-		webDataBinder.addValidators(visitorResourceValidator);
+		webDataBinder.addValidators(new VisitorResourceValidator());
 	}
 
 	@GetMapping("/visitor/spending-money")
@@ -43,7 +44,7 @@ public class VisitorController {
 	}
 
 	@PostMapping("/visitor")
-	public VisitorResource signUp(@RequestBody VisitorResource visitorResource) {
+	public VisitorResource signUp(@Valid @RequestBody VisitorResource visitorResource) {
 		return visitorMapper.toResource(visitorService.signUp(visitorMapper.toEntity(visitorResource)));
 	}
 

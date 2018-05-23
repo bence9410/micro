@@ -16,13 +16,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import hu.beni.amusementpark.enums.MachineType;
 import hu.beni.clientsupport.resource.MachineResource;
 
-@Component
 public class MachineResourceValidator extends AbstractValidator<MachineResource> {
 
 	private static final Set<String> machineTypes = Stream.of(MachineType.values()).map(value -> value.toString())

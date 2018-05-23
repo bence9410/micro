@@ -31,11 +31,10 @@ public class MachineController {
 
 	private final MachineService machineService;
 	private final MachineMapper machineMapper;
-	private final MachineResourceValidator machineResourceValidator;
 
 	@InitBinder("machineResource")
 	protected void initBinder(WebDataBinder webDataBinder) {
-		webDataBinder.addValidators(machineResourceValidator);
+		webDataBinder.addValidators(new MachineResourceValidator());
 	}
 
 	@PostMapping

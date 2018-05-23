@@ -13,13 +13,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import hu.beni.amusementpark.enums.VisitorState;
 import hu.beni.clientsupport.resource.VisitorResource;
 
-@Component
 public class VisitorResourceValidator extends AbstractValidator<VisitorResource> {
 
 	private static final Set<String> visitorStates = Stream.of(VisitorState.values()).map(VisitorState::toString)
