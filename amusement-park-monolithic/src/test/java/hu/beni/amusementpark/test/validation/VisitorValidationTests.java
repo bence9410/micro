@@ -7,6 +7,7 @@ import static hu.beni.amusementpark.constants.FieldNameConstants.USERNAME;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_26_LENGTH;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4_LENGTH;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.PAST_MESSAGE;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.RANGE_50_INTEGER_MAX_VALUE_MESSAGE;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.SIZE_5_25_MESSAGE;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
@@ -70,8 +71,7 @@ public class VisitorValidationTests extends AbstractValidation<Visitor> {
 
 		visitor.setDateOfBirth(LocalDate.now());
 		validateAndAssertViolationsSizeIsOne(visitor);
-		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getDateOfBirth(), DATE_OF_BIRTH,
-				"must be a past date");
+		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getDateOfBirth(), DATE_OF_BIRTH, PAST_MESSAGE);
 	}
 
 	@Test

@@ -15,11 +15,13 @@ import static hu.beni.amusementpark.validator.ValidatorUtil.validateForNotEmptyA
 import static hu.beni.amusementpark.validator.ValidatorUtil.validateForNotNullAndRange;
 import static hu.beni.amusementpark.validator.ValidatorUtil.validateForNotNullAndSize;
 
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import hu.beni.clientsupport.dto.AddressDTO;
 import hu.beni.clientsupport.resource.AmusementParkResource;
 
+@Component
 public class AmusementParkResourceValidator extends AbstractValidator<AmusementParkResource> {
 
 	public AmusementParkResourceValidator() {
@@ -38,8 +40,10 @@ public class AmusementParkResourceValidator extends AbstractValidator<AmusementP
 
 		validateForNotNullAndRange(amusementParkResource.getEntranceFee(), ENTRANCE_FEE, 5, 200, errors);
 
-		AddressDTO addressDTO = amusementParkResource.getAddress();
+		validateAddressDTO(amusementParkResource.getAddress(), errors);
+	}
 
+	private void validateAddressDTO(AddressDTO addressDTO, Errors errors) {
 		if (addressDTO == null) {
 			errors.rejectValue(ADDRESS, null, NOT_NULL_MESSAGE);
 		} else {

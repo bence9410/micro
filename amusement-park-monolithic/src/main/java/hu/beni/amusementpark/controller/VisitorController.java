@@ -1,13 +1,14 @@
 package hu.beni.amusementpark.controller;
 
-import java.security.Principal;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.PagedResources;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import hu.beni.amusementpark.mapper.VisitorMapper;
 import hu.beni.amusementpark.service.VisitorService;
+import hu.beni.amusementpark.validator.VisitorResourceValidator;
 import hu.beni.clientsupport.resource.VisitorResource;
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +28,14 @@ public class VisitorController {
 
 	private final VisitorService visitorService;
 	private final VisitorMapper visitorMapper;
+	private final VisitorResourceValidator visitorResourceValidator;
+
+	@InitBinder("visitorResource")
+	protected void initBinder(WebDataBinder webDataBinder) {
+		VisitorResource.class.cast(webDataBinder.getTarget())
+				.setUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+		webDataBinder.addValidators(visitorResourceValidator);
+	}
 
 	@GetMapping("/visitor/spending-money")
 	public Integer findSpendingMoneyByUsername() {
@@ -33,8 +43,7 @@ public class VisitorController {
 	}
 
 	@PostMapping("/visitor")
-	public VisitorResource signUp(@RequestBody VisitorResource visitorResource, Principal principal) {
-		visitorResource.setUsername(principal.getName());
+	public VisitorResource signUp(@RequestBody VisitorResource visitorResource) {
 		return visitorMapper.toResource(visitorService.signUp(visitorMapper.toEntity(visitorResource)));
 	}
 

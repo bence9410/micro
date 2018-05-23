@@ -31,10 +31,11 @@ public class AmusementParkController {
 
 	private final AmusementParkService amusementParkService;
 	private final AmusementParkMapper amusementParkMapper;
+	private final AmusementParkResourceValidator amusementParkResourceValidator;
 
 	@InitBinder("amusementParkResource")
-	protected void initBinder(WebDataBinder binder) {
-		binder.addValidators(new AmusementParkResourceValidator());
+	protected void initBinder(WebDataBinder webDataBinder) {
+		webDataBinder.addValidators(amusementParkResourceValidator);
 	}
 
 	@PostMapping

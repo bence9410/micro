@@ -9,6 +9,8 @@ public class ValidationMessageConstants {
 
 	public static final String NOT_EMPTY_MESSAGE = "must not be empty";
 
+	public static final String PAST_MESSAGE = "must be a past date";
+
 	public static final String MUST_BE_ONE_OF = "must be one of %s";
 
 	public static final String SIZE_0_5_MESSAGE = String.format(SIZE_MESSAGE, 0, 5);

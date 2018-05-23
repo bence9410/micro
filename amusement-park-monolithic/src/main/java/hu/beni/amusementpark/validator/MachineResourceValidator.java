@@ -16,11 +16,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
 import hu.beni.amusementpark.enums.MachineType;
 import hu.beni.clientsupport.resource.MachineResource;
 
+@Component
 public class MachineResourceValidator extends AbstractValidator<MachineResource> {
 
 	private static final Set<String> machineTypes = Stream.of(MachineType.values()).map(value -> value.toString())
@@ -46,8 +48,10 @@ public class MachineResourceValidator extends AbstractValidator<MachineResource>
 
 		validateForNotNullAndRange(machineResource.getTicketPrice(), TICKET_PRICE, 5, 30, errors);
 
-		String type = machineResource.getType();
+		validateMachineType(machineResource.getType(), errors);
+	}
 
+	private void validateMachineType(String type, Errors errors) {
 		if (type == null) {
 			errors.rejectValue(TYPE, null, NOT_NULL_MESSAGE);
 		} else if (!machineTypes.contains(type)) {
