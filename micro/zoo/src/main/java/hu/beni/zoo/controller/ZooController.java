@@ -1,5 +1,7 @@
 package hu.beni.zoo.controller;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.List;
 
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -11,20 +13,18 @@ import hu.beni.zoo.entity.Message;
 import hu.beni.zoo.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
 
-import static java.util.stream.Collectors.toList;
-
 @RestController
 @RequestMapping("/zoo")
 @RequiredArgsConstructor
 public class ZooController {
-	
+
 	private final MessageRepository messageRepository;
-	
+
 	@GetMapping("/hello")
 	public String hello() {
 		return "Hello from Zoo!";
 	}
-	
+
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
 	public List<String> getMessages() {

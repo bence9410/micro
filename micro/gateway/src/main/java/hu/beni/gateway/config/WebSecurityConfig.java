@@ -17,43 +17,45 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Configuration
 @EnableOAuth2Sso
-public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
-	
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
 	@Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests() //@formatter:off
                 .antMatchers("/", "/index.js", "/webjars/**", "/uaa/oauth/authorize",
                 		"/uaa/login", "/uaa/oauth/token")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
-            .logout().logoutSuccessUrl("/").and()
-            .csrf().disable();
-    }
-	
+            .logout()
+            	.logoutSuccessUrl("/")
+            	.and()
+            .csrf()
+            	.disable(); //@formatter:on
+	}
+
 	@Bean
 	public OAuth2ClientContextFilter oauth2ClientContextFilter() {
-		return new  OAuth2ClientContextFilter() {
-		    
-		    @Override
-		    protected void redirectUser(UserRedirectRequiredException e, HttpServletRequest request,
-		                                HttpServletResponse response) throws IOException {
-		    
-		    	String redirectUri = e.getRedirectUri();
-		        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(redirectUri);
-		        
-		        for (Entry<String, String> param : e.getRequestParams().entrySet()) {
-		            builder.queryParam(param.getKey(), param.getValue());
-		        }
-	
-		        if (e.getStateKey() != null) {
-		            builder.queryParam("state", e.getStateKey());
-		        }
-	
-		        response.sendRedirect(builder.build().encode().toUriString());
-		    }
-	
+		return new OAuth2ClientContextFilter() {
+
+			@Override
+			protected void redirectUser(UserRedirectRequiredException e, HttpServletRequest request,
+					HttpServletResponse response) throws IOException {
+
+				UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(e.getRedirectUri());
+
+				for (Entry<String, String> param : e.getRequestParams().entrySet()) {
+					builder.queryParam(param.getKey(), param.getValue());
+				}
+
+				if (e.getStateKey() != null) {
+					builder.queryParam("state", e.getStateKey());
+				}
+
+				response.sendRedirect(builder.build().encode().toUriString());
+			}
+
 		};
 	}
 

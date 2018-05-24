@@ -27,7 +27,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 	@Autowired
 	private DataSource dataSource;
-	
+
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer oauthServer) throws Exception {
 		oauthServer.checkTokenAccess("isAuthenticated()");
@@ -37,17 +37,15 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients.jdbc(dataSource);
 	}
-	
+
 	@Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 		endpoints.tokenStore(new JdbcTokenStore(dataSource));
 		endpoints.addInterceptor(new HandlerInterceptorAdapter() {
 			@Override
-			public void postHandle(HttpServletRequest request,
-					HttpServletResponse response, Object handler,
+			public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
 					ModelAndView modelAndView) throws Exception {
-				if (modelAndView != null
-						&& modelAndView.getView() instanceof RedirectView) {
+				if (modelAndView != null && modelAndView.getView() instanceof RedirectView) {
 					RedirectView redirect = (RedirectView) modelAndView.getView();
 					String url = redirect.getUrl();
 					if (url.contains("code=") || url.contains("error=")) {
@@ -60,13 +58,13 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 			}
 		});
 	}
-	
+
 	@Bean
-    public FilterRegistrationBean forwardedHeaderFilter() {
-        FilterRegistrationBean filterRegBean = new FilterRegistrationBean();
-        filterRegBean.setFilter(new ForwardedHeaderFilter());
-        filterRegBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        return filterRegBean;
+	public FilterRegistrationBean forwardedHeaderFilter() {
+		FilterRegistrationBean filterRegBean = new FilterRegistrationBean();
+		filterRegBean.setFilter(new ForwardedHeaderFilter());
+		filterRegBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+		return filterRegBean;
 	}
 
 }

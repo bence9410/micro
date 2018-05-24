@@ -26,5 +26,5 @@ public class ResourceServerConfig {
 		remoteTokenServices.setClientSecret("benisecret");
 		return remoteTokenServices;
 	}
-	
+
 }
