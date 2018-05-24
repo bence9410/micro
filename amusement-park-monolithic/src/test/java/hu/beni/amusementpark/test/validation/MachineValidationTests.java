@@ -10,11 +10,8 @@ import static hu.beni.amusementpark.constants.FieldNameConstants.TYPE;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_26_LENGTH;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4_LENGTH;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.RANGE_0_21_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.RANGE_20_200_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.RANGE_50_2000_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.RANGE_5_30_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.SIZE_5_25_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.rangeMessage;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.sizeMessage;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createMachine;
 
 import org.junit.Before;
@@ -44,11 +41,11 @@ public class MachineValidationTests extends AbstractValidation<Machine> {
 
 		machine.setFantasyName(STRING_WITH_4_LENGTH);
 		validateAndAssertViolationsSizeIsOne(machine);
-		assertInvalidValueAndPropertyNameAndMessageEquals(machine.getFantasyName(), FANTASY_NAME, SIZE_5_25_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(machine.getFantasyName(), FANTASY_NAME, sizeMessage(5, 25));
 
 		machine.setFantasyName(STRING_WITH_26_LENGTH);
 		validateAndAssertViolationsSizeIsOne(machine);
-		assertInvalidValueAndPropertyNameAndMessageEquals(machine.getFantasyName(), FANTASY_NAME, SIZE_5_25_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(machine.getFantasyName(), FANTASY_NAME, sizeMessage(5, 25));
 	}
 
 	@Test
@@ -59,11 +56,11 @@ public class MachineValidationTests extends AbstractValidation<Machine> {
 
 		machine.setSize(19);
 		validateAndAssertViolationsSizeIsOne(machine);
-		assertInvalidValueAndPropertyNameAndMessageEquals(machine.getSize(), SIZE, RANGE_20_200_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(machine.getSize(), SIZE, rangeMessage(20, 200));
 
 		machine.setSize(201);
 		validateAndAssertViolationsSizeIsOne(machine);
-		assertInvalidValueAndPropertyNameAndMessageEquals(machine.getSize(), SIZE, RANGE_20_200_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(machine.getSize(), SIZE, rangeMessage(20, 200));
 	}
 
 	@Test
@@ -74,11 +71,11 @@ public class MachineValidationTests extends AbstractValidation<Machine> {
 
 		machine.setPrice(49);
 		validateAndAssertViolationsSizeIsOne(machine);
-		assertInvalidValueAndPropertyNameAndMessageEquals(machine.getPrice(), PRICE, RANGE_50_2000_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(machine.getPrice(), PRICE, rangeMessage(50, 2000));
 
 		machine.setPrice(2001);
 		validateAndAssertViolationsSizeIsOne(machine);
-		assertInvalidValueAndPropertyNameAndMessageEquals(machine.getPrice(), PRICE, RANGE_50_2000_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(machine.getPrice(), PRICE, rangeMessage(50, 2000));
 	}
 
 	@Test
@@ -91,12 +88,12 @@ public class MachineValidationTests extends AbstractValidation<Machine> {
 		machine.setNumberOfSeats(4);
 		validateAndAssertViolationsSizeIsOne(machine);
 		assertInvalidValueAndPropertyNameAndMessageEquals(machine.getNumberOfSeats(), NUMBER_OF_SEATS,
-				RANGE_5_30_MESSAGE);
+				rangeMessage(5, 30));
 
 		machine.setNumberOfSeats(31);
 		validateAndAssertViolationsSizeIsOne(machine);
 		assertInvalidValueAndPropertyNameAndMessageEquals(machine.getNumberOfSeats(), NUMBER_OF_SEATS,
-				RANGE_5_30_MESSAGE);
+				rangeMessage(5, 30));
 	}
 
 	@Test
@@ -109,12 +106,12 @@ public class MachineValidationTests extends AbstractValidation<Machine> {
 		machine.setMinimumRequiredAge(-1);
 		validateAndAssertViolationsSizeIsOne(machine);
 		assertInvalidValueAndPropertyNameAndMessageEquals(machine.getMinimumRequiredAge(), MINIMUM_REQUIRED_AGE,
-				RANGE_0_21_MESSAGE);
+				rangeMessage(0, 21));
 
 		machine.setMinimumRequiredAge(22);
 		validateAndAssertViolationsSizeIsOne(machine);
 		assertInvalidValueAndPropertyNameAndMessageEquals(machine.getMinimumRequiredAge(), MINIMUM_REQUIRED_AGE,
-				RANGE_0_21_MESSAGE);
+				rangeMessage(0, 21));
 	}
 
 	@Test
@@ -125,11 +122,11 @@ public class MachineValidationTests extends AbstractValidation<Machine> {
 
 		machine.setTicketPrice(4);
 		validateAndAssertViolationsSizeIsOne(machine);
-		assertInvalidValueAndPropertyNameAndMessageEquals(machine.getTicketPrice(), TICKET_PRICE, RANGE_5_30_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(machine.getTicketPrice(), TICKET_PRICE, rangeMessage(5, 30));
 
 		machine.setTicketPrice(31);
 		validateAndAssertViolationsSizeIsOne(machine);
-		assertInvalidValueAndPropertyNameAndMessageEquals(machine.getTicketPrice(), TICKET_PRICE, RANGE_5_30_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(machine.getTicketPrice(), TICKET_PRICE, rangeMessage(5, 30));
 	}
 
 	@Test

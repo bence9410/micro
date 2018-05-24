@@ -3,8 +3,8 @@ package hu.beni.amusementpark.validator;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_EMPTY_MESSAGE;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.PAST_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.RANGE_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.SIZE_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.rangeMessage;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.sizeMessage;
 
 import java.time.LocalDate;
 
@@ -23,7 +23,7 @@ public class ValidatorUtil {
 		} else {
 			int length = value.length();
 			if (length < min || length > max) {
-				errors.rejectValue(field, null, String.format(SIZE_MESSAGE, min, max));
+				errors.rejectValue(field, null, sizeMessage(min, max));
 			}
 		}
 	}
@@ -33,7 +33,7 @@ public class ValidatorUtil {
 			errors.rejectValue(field, null, NOT_EMPTY_MESSAGE);
 		} else {
 			if (value.length() > max) {
-				errors.rejectValue(field, null, String.format(SIZE_MESSAGE, 0, max));
+				errors.rejectValue(field, null, sizeMessage(0, max));
 			}
 		}
 	}
@@ -43,7 +43,7 @@ public class ValidatorUtil {
 			errors.rejectValue(field, null, NOT_NULL_MESSAGE);
 		} else {
 			if (value < min || value > max) {
-				errors.rejectValue(field, null, String.format(RANGE_MESSAGE, min, max));
+				errors.rejectValue(field, null, rangeMessage(min, max));
 			}
 		}
 	}

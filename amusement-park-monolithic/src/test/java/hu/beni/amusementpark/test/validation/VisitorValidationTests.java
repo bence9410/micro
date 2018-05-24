@@ -8,8 +8,8 @@ import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_2
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4_LENGTH;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.PAST_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.RANGE_50_INTEGER_MAX_VALUE_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.SIZE_5_25_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.rangeMessage;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.sizeMessage;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
 
 import java.time.LocalDate;
@@ -41,11 +41,11 @@ public class VisitorValidationTests extends AbstractValidation<Visitor> {
 
 		visitor.setName(STRING_WITH_4_LENGTH);
 		validateAndAssertViolationsSizeIsOne(visitor);
-		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getName(), NAME, SIZE_5_25_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getName(), NAME, sizeMessage(5, 25));
 
 		visitor.setName(STRING_WITH_26_LENGTH);
 		validateAndAssertViolationsSizeIsOne(visitor);
-		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getName(), NAME, SIZE_5_25_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getName(), NAME, sizeMessage(5, 25));
 	}
 
 	@Test
@@ -56,11 +56,11 @@ public class VisitorValidationTests extends AbstractValidation<Visitor> {
 
 		visitor.setUsername(STRING_WITH_4_LENGTH);
 		validateAndAssertViolationsSizeIsOne(visitor);
-		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getUsername(), USERNAME, SIZE_5_25_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getUsername(), USERNAME, sizeMessage(5, 25));
 
 		visitor.setUsername(STRING_WITH_26_LENGTH);
 		validateAndAssertViolationsSizeIsOne(visitor);
-		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getUsername(), USERNAME, SIZE_5_25_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getUsername(), USERNAME, sizeMessage(5, 25));
 	}
 
 	@Test
@@ -83,6 +83,6 @@ public class VisitorValidationTests extends AbstractValidation<Visitor> {
 		visitor.setSpendingMoney(49);
 		validateAndAssertViolationsSizeIsOne(visitor);
 		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getSpendingMoney(), SPENDING_MONEY,
-				RANGE_50_INTEGER_MAX_VALUE_MESSAGE);
+				rangeMessage(50, Integer.MAX_VALUE));
 	}
 }

@@ -6,8 +6,8 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.validationEr
 import static hu.beni.amusementpark.constants.FieldNameConstants.ADDRESS;
 import static hu.beni.amusementpark.constants.FieldNameConstants.TYPE;
 import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.MUST_BE_ONE_OF;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.oneOfMessage;
 import static hu.beni.amusementpark.helper.MyAssert.assertThrows;
 import static hu.beni.clientsupport.Client.uri;
 import static hu.beni.clientsupport.ResponseType.AMUSEMENT_PARK_TYPE;
@@ -390,9 +390,8 @@ public class AmusementParkApplicationTests {
 	private ExceptionAsserter<HttpClientErrorException> teaPotStatusAndMachineTypeMustBeOneOf() {
 		return exception -> {
 			assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
-			assertEquals(
-					validationError(TYPE, String.format(MUST_BE_ONE_OF, Stream.of(MachineType.values())
-							.map(value -> value.toString()).collect(Collectors.toSet()))),
+			assertEquals(validationError(TYPE, oneOfMessage(Stream.of(MachineType.values())
+					.map(value -> value.toString()).collect(Collectors.toSet()).toString())),
 					exception.getResponseBodyAsString());
 		};
 	}

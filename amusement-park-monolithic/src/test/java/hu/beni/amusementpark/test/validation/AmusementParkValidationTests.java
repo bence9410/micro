@@ -9,10 +9,8 @@ import static hu.beni.amusementpark.constants.FieldNameConstants.TOTAL_AREA;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_21_LENGTH;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4_LENGTH;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.RANGE_500_50000_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.RANGE_50_2000_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.RANGE_5_200_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.SIZE_5_20_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.rangeMessage;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.sizeMessage;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
 
 import org.junit.Before;
@@ -43,11 +41,11 @@ public class AmusementParkValidationTests extends AbstractValidation<AmusementPa
 
 		amusementPark.setName(STRING_WITH_4_LENGTH);
 		validateAndAssertViolationsSizeIsOne(amusementPark);
-		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getName(), NAME, SIZE_5_20_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getName(), NAME, sizeMessage(5, 20));
 
 		amusementPark.setName(STRING_WITH_21_LENGTH);
 		validateAndAssertViolationsSizeIsOne(amusementPark);
-		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getName(), NAME, SIZE_5_20_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getName(), NAME, sizeMessage(5, 20));
 	}
 
 	@Test
@@ -58,11 +56,13 @@ public class AmusementParkValidationTests extends AbstractValidation<AmusementPa
 
 		amusementPark.setCapital(99);
 		validateAndAssertViolationsSizeIsOne(amusementPark);
-		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getCapital(), CAPITAL, RANGE_500_50000_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getCapital(), CAPITAL,
+				rangeMessage(500, 50000));
 
 		amusementPark.setCapital(50001);
 		validateAndAssertViolationsSizeIsOne(amusementPark);
-		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getCapital(), CAPITAL, RANGE_500_50000_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getCapital(), CAPITAL,
+				rangeMessage(500, 50000));
 	}
 
 	@Test
@@ -74,12 +74,12 @@ public class AmusementParkValidationTests extends AbstractValidation<AmusementPa
 		amusementPark.setTotalArea(49);
 		validateAndAssertViolationsSizeIsOne(amusementPark);
 		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getTotalArea(), TOTAL_AREA,
-				RANGE_50_2000_MESSAGE);
+				rangeMessage(50, 2000));
 
 		amusementPark.setTotalArea(2001);
 		validateAndAssertViolationsSizeIsOne(amusementPark);
 		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getTotalArea(), TOTAL_AREA,
-				RANGE_50_2000_MESSAGE);
+				rangeMessage(50, 2000));
 	}
 
 	@Test
@@ -92,12 +92,12 @@ public class AmusementParkValidationTests extends AbstractValidation<AmusementPa
 		amusementPark.setEntranceFee(4);
 		validateAndAssertViolationsSizeIsOne(amusementPark);
 		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getEntranceFee(), ENTRANCE_FEE,
-				RANGE_5_200_MESSAGE);
+				rangeMessage(5, 200));
 
 		amusementPark.setEntranceFee(201);
 		validateAndAssertViolationsSizeIsOne(amusementPark);
 		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getEntranceFee(), ENTRANCE_FEE,
-				RANGE_5_200_MESSAGE);
+				rangeMessage(5, 200));
 	}
 
 	@Test

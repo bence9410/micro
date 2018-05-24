@@ -14,10 +14,7 @@ import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_6_LENGTH;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_EMPTY_MESSAGE;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.SIZE_0_5_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.SIZE_3_10_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.SIZE_3_15_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.SIZE_5_25_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.*;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAddress;
 
 import org.junit.Before;
@@ -47,11 +44,11 @@ public class AddressValidationTests extends AbstractValidation<Address> {
 
 		address.setCountry(STRING_WITH_2_LENGTH);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(address.getCountry(), COUNTRY, SIZE_3_15_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getCountry(), COUNTRY, sizeMessage(3, 15));
 
 		address.setCountry(STRING_WITH_16_LENGTH);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(address.getCountry(), COUNTRY, SIZE_3_15_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getCountry(), COUNTRY, sizeMessage(3, 15));
 	}
 
 	@Test
@@ -62,11 +59,11 @@ public class AddressValidationTests extends AbstractValidation<Address> {
 
 		address.setZipCode(STRING_WITH_2_LENGTH);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(address.getZipCode(), ZIP_CODE, SIZE_3_10_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getZipCode(), ZIP_CODE, sizeMessage(3, 10));
 
 		address.setZipCode(STRING_WITH_11_LENGTH);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(address.getZipCode(), ZIP_CODE, SIZE_3_10_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getZipCode(), ZIP_CODE, sizeMessage(3, 10));
 	}
 
 	@Test
@@ -77,11 +74,11 @@ public class AddressValidationTests extends AbstractValidation<Address> {
 
 		address.setCity(STRING_WITH_2_LENGTH);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(address.getCity(), CITY, SIZE_3_15_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getCity(), CITY, sizeMessage(3, 15));
 
 		address.setCity(STRING_WITH_16_LENGTH);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(address.getCity(), CITY, SIZE_3_15_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getCity(), CITY, sizeMessage(3, 15));
 	}
 
 	@Test
@@ -92,11 +89,11 @@ public class AddressValidationTests extends AbstractValidation<Address> {
 
 		address.setStreet(STRING_WITH_4_LENGTH);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(address.getStreet(), STREET, SIZE_5_25_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getStreet(), STREET, sizeMessage(5, 25));
 
 		address.setStreet(STRING_WITH_26_LENGTH);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(address.getStreet(), STREET, SIZE_5_25_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getStreet(), STREET, sizeMessage(5, 25));
 	}
 
 	@Test
@@ -111,7 +108,7 @@ public class AddressValidationTests extends AbstractValidation<Address> {
 
 		address.setHouseNumber(STRING_WITH_6_LENGTH);
 		validateAndAssertViolationsSizeIsOne(address);
-		assertInvalidValueAndPropertyNameAndMessageEquals(address.getHouseNumber(), HOUSE_NUMBER, SIZE_0_5_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(address.getHouseNumber(), HOUSE_NUMBER, sizeMessage(0, 5));
 	}
 
 }

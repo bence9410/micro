@@ -4,7 +4,7 @@ import static hu.beni.amusementpark.constants.FieldNameConstants.DATE_OF_BIRTH;
 import static hu.beni.amusementpark.constants.FieldNameConstants.NAME;
 import static hu.beni.amusementpark.constants.FieldNameConstants.SPENDING_MONEY;
 import static hu.beni.amusementpark.constants.FieldNameConstants.STATE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.MUST_BE_ONE_OF;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.oneOfMessage;
 import static hu.beni.amusementpark.validator.ValidatorUtil.validateForNotNullAndPast;
 import static hu.beni.amusementpark.validator.ValidatorUtil.validateForNotNullAndRange;
 import static hu.beni.amusementpark.validator.ValidatorUtil.validateForNotNullAndSize;
@@ -42,7 +42,7 @@ public class VisitorResourceValidator extends AbstractValidator<VisitorResource>
 
 	private void validateVisitorState(String state, Errors errors) {
 		if (state != null && !visitorStates.contains(state)) {
-			errors.rejectValue(STATE, null, String.format(MUST_BE_ONE_OF, visitorStates));
+			errors.rejectValue(STATE, null, oneOfMessage(visitorStates.toString()));
 		}
 	}
 

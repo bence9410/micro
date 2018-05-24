@@ -7,8 +7,8 @@ import static hu.beni.amusementpark.constants.FieldNameConstants.PRICE;
 import static hu.beni.amusementpark.constants.FieldNameConstants.SIZE;
 import static hu.beni.amusementpark.constants.FieldNameConstants.TICKET_PRICE;
 import static hu.beni.amusementpark.constants.FieldNameConstants.TYPE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.MUST_BE_ONE_OF;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.oneOfMessage;
 import static hu.beni.amusementpark.validator.ValidatorUtil.validateForNotNullAndRange;
 import static hu.beni.amusementpark.validator.ValidatorUtil.validateForNotNullAndSize;
 
@@ -53,7 +53,7 @@ public class MachineResourceValidator extends AbstractValidator<MachineResource>
 		if (type == null) {
 			errors.rejectValue(TYPE, null, NOT_NULL_MESSAGE);
 		} else if (!machineTypes.contains(type)) {
-			errors.rejectValue(TYPE, null, String.format(MUST_BE_ONE_OF, machineTypes));
+			errors.rejectValue(TYPE, null, oneOfMessage(machineTypes.toString()));
 		}
 	}
 }

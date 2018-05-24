@@ -7,7 +7,7 @@ import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_TH
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_101_LENGTH;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4_LENGTH;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.SIZE_5_100_MESSAGE;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.sizeMessage;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -42,12 +42,12 @@ public class GuestBookRegistryValidationTests extends AbstractValidation<GuestBo
 		guestBookRegistry.setTextOfRegistry(STRING_WITH_4_LENGTH);
 		validateAndAssertViolationsSizeIsOne(guestBookRegistry);
 		assertInvalidValueAndPropertyNameAndMessageEquals(guestBookRegistry.getTextOfRegistry(), TEXT_OF_REGISTRY,
-				SIZE_5_100_MESSAGE);
+				sizeMessage(5, 100));
 
 		guestBookRegistry.setTextOfRegistry(STRING_WITH_101_LENGTH);
 		validateAndAssertViolationsSizeIsOne(guestBookRegistry);
 		assertInvalidValueAndPropertyNameAndMessageEquals(guestBookRegistry.getTextOfRegistry(), TEXT_OF_REGISTRY,
-				SIZE_5_100_MESSAGE);
+				sizeMessage(5, 100));
 	}
 
 	@Test
