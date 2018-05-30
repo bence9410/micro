@@ -1,11 +1,12 @@
 package hu.beni.amusementpark.controller;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resources;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -51,9 +52,9 @@ public class MachineController {
 	}
 
 	@GetMapping
-	public List<MachineResource> findAllByAmusementParkId(@PathVariable Long amusementParkId) {
-		return machineService.findAllByAmusementParkId(amusementParkId).stream().map(machineMapper::toResource)
-				.collect(Collectors.toList());
+	public Resources<MachineResource> findAllByAmusementParkId(@PathVariable Long amusementParkId) {
+		return new Resources<>(machineService.findAllByAmusementParkId(amusementParkId).stream()
+				.map(machineMapper::toResource).collect(Collectors.toList()), new Link[] {});
 	}
 
 	@DeleteMapping("/{machineId}")

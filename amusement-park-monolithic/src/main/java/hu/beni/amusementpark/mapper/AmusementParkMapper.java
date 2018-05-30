@@ -73,6 +73,6 @@ public class AmusementParkMapper extends EntityMapper<AmusementPark, AmusementPa
 				createAmusementParkSelfLink(amusementParkId),
 				createMachineLink(amusementParkId),
 				createVisitorSignUpLink(),
-				createVisitorEnterParkLink(amusementParkId)}; //@formatter:on
+				createVisitorEnterParkLink(amusementParkId, null)}; //@formatter:on
 	}
 }

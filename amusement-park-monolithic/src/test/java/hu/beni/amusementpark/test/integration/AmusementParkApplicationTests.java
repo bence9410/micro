@@ -304,11 +304,12 @@ public class AmusementParkApplicationTests {
 		VisitorResource visitorResource = response.getBody();
 
 		assertNotNull(visitorResource);
-		assertEquals(4, visitorResource.getLinks().size());
+		assertEquals(5, visitorResource.getLinks().size());
 		assertTrue(visitorResource.getId().getHref().endsWith(visitorResource.getIdentifier().toString()));
 		assertNotNull(visitorResource.getLink(VISITOR_LEAVE_PARK));
 		assertNotNull(visitorResource.getLink(GET_ON_MACHINE));
 		assertNotNull(visitorResource.getLink(ADD_REGISTRY));
+		assertNotNull(visitorResource.getLink(MACHINE));
 
 		return visitorResource;
 	}
@@ -336,11 +337,12 @@ public class AmusementParkApplicationTests {
 		VisitorResource visitorResource = response.getBody();
 
 		assertNotNull(visitorResource);
-		assertEquals(4, visitorResource.getLinks().size());
+		assertEquals(5, visitorResource.getLinks().size());
 		assertTrue(visitorResource.getId().getHref().endsWith(visitorResource.getIdentifier().toString()));
 		assertNotNull(visitorResource.getLink(VISITOR_LEAVE_PARK));
 		assertNotNull(visitorResource.getLink(GET_ON_MACHINE));
 		assertNotNull(visitorResource.getLink(ADD_REGISTRY));
+		assertNotNull(visitorResource.getLink(MACHINE));
 
 		return visitorResource;
 	}

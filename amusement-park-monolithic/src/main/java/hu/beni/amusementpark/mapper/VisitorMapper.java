@@ -4,6 +4,7 @@ import static hu.beni.amusementpark.factory.LinkFactory.createAddGuestBookRegist
 import static hu.beni.amusementpark.factory.LinkFactory.createAmusementParkLink;
 import static hu.beni.amusementpark.factory.LinkFactory.createGetOffMachineLink;
 import static hu.beni.amusementpark.factory.LinkFactory.createGetOnMachineLink;
+import static hu.beni.amusementpark.factory.LinkFactory.createMachineLink;
 import static hu.beni.amusementpark.factory.LinkFactory.createVisitorEnterParkLink;
 import static hu.beni.amusementpark.factory.LinkFactory.createVisitorLeavePark;
 import static hu.beni.amusementpark.factory.LinkFactory.createVisitorSelfLink;
@@ -66,11 +67,12 @@ public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 		List<Link> links = new ArrayList<>();
 		links.add(createVisitorSelfLink(visitorId));
 		if (state == null) {
-			links.add(createVisitorEnterParkLink(visitorId));
+			links.add(createVisitorEnterParkLink(null, visitorId));
 			links.add(createAmusementParkLink());
 		} else {
 			Long amusementParkId = visitor.getAmusementPark().getId();
 			if (VisitorState.REST.equals(state)) {
+				links.add(createMachineLink(amusementParkId));
 				links.add(createVisitorLeavePark(amusementParkId, visitorId));
 				links.add(createGetOnMachineLink(amusementParkId, null, visitorId));
 				links.add(createAddGuestBookRegistryLink(amusementParkId, visitorId));
