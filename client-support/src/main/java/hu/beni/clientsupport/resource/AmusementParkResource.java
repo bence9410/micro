@@ -10,11 +10,13 @@ import hu.beni.clientsupport.dto.AddressDTO;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 public class AmusementParkResource extends ResourceSupport implements Serializable {
 
 	private static final long serialVersionUID = -7411398427560874485L;
@@ -30,10 +32,6 @@ public class AmusementParkResource extends ResourceSupport implements Serializab
 	private Integer entranceFee;
 
 	private AddressDTO address;
-
-	public AmusementParkResource() {
-		super();
-	}
 
 	@Builder
 	public AmusementParkResource(Long identifier, String name, Integer capital, Integer totalArea, Integer entranceFee,

@@ -10,11 +10,13 @@ import org.springframework.hateoas.ResourceSupport;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 public class GuestBookRegistryResource extends ResourceSupport implements Serializable {
 
 	private static final long serialVersionUID = -5588641314911131702L;
@@ -26,10 +28,6 @@ public class GuestBookRegistryResource extends ResourceSupport implements Serial
 	private LocalDateTime dateOfRegistry;
 
 	private Long visitorId;
-
-	public GuestBookRegistryResource() {
-		super();
-	}
 
 	@Builder
 	public GuestBookRegistryResource(Long identifier, String textOfRegistry, LocalDateTime dateOfRegistry,

@@ -9,11 +9,13 @@ import org.springframework.hateoas.ResourceSupport;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 public class MachineResource extends ResourceSupport implements Serializable {
 
 	private static final long serialVersionUID = 1009869702988779913L;
@@ -33,10 +35,6 @@ public class MachineResource extends ResourceSupport implements Serializable {
 	private Integer ticketPrice;
 
 	private String type;
-
-	public MachineResource() {
-		super();
-	}
 
 	@Builder
 	public MachineResource(Long identifier, String fantasyName, Integer size, Integer price, Integer numberOfSeats,

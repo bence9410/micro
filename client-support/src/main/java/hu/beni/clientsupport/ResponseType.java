@@ -1,6 +1,7 @@
 package hu.beni.clientsupport;
 
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.hateoas.Resources;
 import org.springframework.hateoas.mvc.TypeReferences.PagedResourcesType;
 
 import hu.beni.clientsupport.resource.AmusementParkResource;
@@ -20,8 +21,14 @@ public class ResponseType {
 	public static final ParameterizedTypeReference<MachineResource> MACHINE_TYPE = 
 			new ParameterizedTypeReference<MachineResource>() {};
 
+	public static final ParameterizedTypeReference<Resources<MachineResource>> RESOURCES_MACHINE_TYPE = 
+			new ParameterizedTypeReference<Resources<MachineResource>>() {};
+		
 	public static final ParameterizedTypeReference<VisitorResource> VISITOR_TYPE = 
 			new ParameterizedTypeReference<VisitorResource>() {};
+
+	public static final PagedResourcesType<VisitorResource> PAGED_VISITOR_TYPE =
+			new PagedResourcesType<VisitorResource>() {};
 
 	public static final ParameterizedTypeReference<GuestBookRegistryResource> GUEST_BOOK_REGISTRY_TYPE =
 			new ParameterizedTypeReference<GuestBookRegistryResource>() {};

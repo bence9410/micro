@@ -10,11 +10,13 @@ import org.springframework.hateoas.ResourceSupport;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
+@NoArgsConstructor
 public class VisitorResource extends ResourceSupport implements Serializable {
 
 	private static final long serialVersionUID = -426306691990271010L;
@@ -30,10 +32,6 @@ public class VisitorResource extends ResourceSupport implements Serializable {
 	private Integer spendingMoney;
 
 	private String state;
-
-	public VisitorResource() {
-		super();
-	}
 
 	@Builder
 	public VisitorResource(Long identifier, String name, String username, LocalDate dateOfBirth, Integer spendingMoney,
