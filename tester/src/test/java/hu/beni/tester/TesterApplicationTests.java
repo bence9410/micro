@@ -4,11 +4,11 @@ import static hu.beni.tester.constant.Constants.ADMIN;
 import static hu.beni.tester.constant.Constants.NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK;
 import static hu.beni.tester.constant.Constants.NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN;
 import static hu.beni.tester.constant.Constants.USER;
-import static hu.beni.tester.factory.ValidDTOFactory.AMUSEMENT_PARK_CAPITAL;
-import static hu.beni.tester.factory.ValidDTOFactory.AMUSEMENT_PARK_ENTRANCE_FEE;
-import static hu.beni.tester.factory.ValidDTOFactory.MACHINE_PRICE;
-import static hu.beni.tester.factory.ValidDTOFactory.MACHINE_TICKET_PRICE;
-import static hu.beni.tester.factory.ValidDTOFactory.VISITOR_SPENDING_MONEY;
+import static hu.beni.tester.factory.ResourceFactory.AMUSEMENT_PARK_CAPITAL;
+import static hu.beni.tester.factory.ResourceFactory.AMUSEMENT_PARK_ENTRANCE_FEE;
+import static hu.beni.tester.factory.ResourceFactory.MACHINE_PRICE;
+import static hu.beni.tester.factory.ResourceFactory.MACHINE_TICKET_PRICE;
+import static hu.beni.tester.factory.ResourceFactory.VISITOR_SPENDING_MONEY;
 import static java.util.stream.Collectors.toList;
 
 import java.util.LinkedList;
@@ -30,11 +30,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.http.HttpHeaders;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import hu.beni.clientsupport.Client;
 import hu.beni.tester.archive.ArchiveReceiver;
-import hu.beni.tester.async.AsyncTestSuite;
+import hu.beni.tester.async.AsyncService;
 import hu.beni.tester.dto.SumAndTime;
 import hu.beni.tester.dto.TimeTo;
 import hu.beni.tester.output.ResultLogger;
@@ -66,13 +67,16 @@ public class TesterApplicationTests {
 	}
 
 	@Autowired
-	private AsyncTestSuite async;
+	private AsyncService async;
+
+	@Autowired
+	private ApplicationContext ctx;
 
 	@Autowired
 	private ArchiveReceiver archiveReceiver;
 
-	private List<HttpHeaders> admins;
-	private List<HttpHeaders> users;
+	private List<Client> admins;
+	private List<Client> users;
 
 	private TimeTo timeTo;
 	private long start;
@@ -85,8 +89,18 @@ public class TesterApplicationTests {
 	public void setUp() {
 		start = System.currentTimeMillis();
 		log.info("login");
-		admins = executeAsyncAndGet(createUsernameStream(NUMBER_OF_ADMINS, this::createAdminUsername), async::login);
-		users = executeAsyncAndGet(createUsernameStream(NUMBER_OF_USERS, this::createUserUsername), async::login);
+		admins = executeAsyncAndGet(createUsernameStream(NUMBER_OF_ADMINS, this::createAdminUsername), username -> {
+			Client client = ctx.getBean(Client.class);
+			async.login(client, username).join();
+			return CompletableFuture.completedFuture(client);
+		});
+
+		users = executeAsyncAndGet(createUsernameStream(NUMBER_OF_USERS, this::createUserUsername), username -> {
+			Client client = ctx.getBean(Client.class);
+			async.login(client, username).join();
+			return CompletableFuture.completedFuture(client);
+		});
+
 		timeTo = new TimeTo();
 	}
 

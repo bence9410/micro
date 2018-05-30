@@ -7,7 +7,7 @@ import java.util.concurrent.CountDownLatch;
 
 import org.springframework.stereotype.Component;
 
-import hu.beni.dto.ArchiveAmusementParkDTO;
+import hu.beni.clientsupport.dto.ArchiveAmusementParkDTO;
 import lombok.Getter;
 
 @Getter
