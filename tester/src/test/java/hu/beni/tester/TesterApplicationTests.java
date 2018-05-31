@@ -125,7 +125,7 @@ public class TesterApplicationTests {
 
 		sumAmusementParksCapitalBeforeVisitorStuff();
 
-		visitorsVisitSomeStuffInEveryPark();
+		visitorsVisitAllStuffInEveryPark();
 
 		sumAmusementParksCapitalAfterVisitorStuff();
 
@@ -154,12 +154,12 @@ public class TesterApplicationTests {
 				this::checkCapitalSumBeforeVisitorsGetTime));
 	}
 
-	private void visitorsVisitSomeStuffInEveryPark() {
-		log.info("visitorsVisitSomeStuffInEveryPark");
+	private void visitorsVisitAllStuffInEveryPark() {
+		log.info("visitorsVisitAllStuffInEveryPark");
 		List<Long> wholeTimes = new LinkedList<>();
 		List<Long> tenParkTimes = new LinkedList<>();
 		List<Long> oneParkTimes = new LinkedList<>();
-		executeAsyncAndGet(users, async::visitSomeStuffInEveryPark).forEach(VisitorStuffTime -> {
+		executeAsyncAndGet(users, async::visitAllStuffInEveryPark).forEach(VisitorStuffTime -> {
 			wholeTimes.add(VisitorStuffTime.getWholeTime());
 			tenParkTimes.addAll(VisitorStuffTime.getTenParkTimes());
 			oneParkTimes.addAll(VisitorStuffTime.getOneParkTimes());

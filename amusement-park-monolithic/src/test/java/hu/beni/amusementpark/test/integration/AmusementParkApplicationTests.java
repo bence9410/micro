@@ -13,8 +13,8 @@ import static hu.beni.clientsupport.Client.uri;
 import static hu.beni.clientsupport.ResponseType.AMUSEMENT_PARK_TYPE;
 import static hu.beni.clientsupport.ResponseType.GUEST_BOOK_REGISTRY_TYPE;
 import static hu.beni.clientsupport.ResponseType.MACHINE_TYPE;
-import static hu.beni.clientsupport.ResponseType.PAGED_AMUSEMENT_PARK_TYPE;
 import static hu.beni.clientsupport.ResponseType.VISITOR_TYPE;
+import static hu.beni.clientsupport.ResponseType.getPagedType;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.ADD_REGISTRY;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.AMUSEMENT_PARK;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_OFF_MACHINE;
@@ -45,6 +45,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.env.Environment;
 import org.springframework.hateoas.PagedResources;
+import org.springframework.hateoas.mvc.TypeReferences.PagedResourcesType;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -91,8 +92,10 @@ public class AmusementParkApplicationTests {
 
 		login("admin", "pass");
 
+		PagedResourcesType<AmusementParkResource> responseType = getPagedType(AmusementParkResource.class);
+
 		ResponseEntity<PagedResources<AmusementParkResource>> response = client.get(uri(amusementParkUrl),
-				PAGED_AMUSEMENT_PARK_TYPE);
+				responseType);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
 		PagedResources<AmusementParkResource> page = response.getBody();
@@ -101,14 +104,14 @@ public class AmusementParkApplicationTests {
 
 		IntStream.range(0, 11).forEach(i -> createAmusementPark());
 
-		response = client.get(uri(amusementParkUrl), PAGED_AMUSEMENT_PARK_TYPE);
+		response = client.get(uri(amusementParkUrl), responseType);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
 		page = response.getBody();
 		assertEquals(4, page.getLinks().size());
 		assertNotNull(page.getLink("last"));
 
-		response = client.get(uri(page.getLink("last").getHref()), PAGED_AMUSEMENT_PARK_TYPE);
+		response = client.get(uri(page.getLink("last").getHref()), responseType);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
 		page = response.getBody();
