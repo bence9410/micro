@@ -4,7 +4,6 @@ import static org.springframework.beans.factory.config.ConfigurableBeanFactory.S
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -24,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ClientConfig {
 
-	@Autowired
 	private final ObjectMapper mapper;
 
 	@PostConstruct
