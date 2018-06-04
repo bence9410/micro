@@ -1,4 +1,4 @@
-package hu.beni.tester.async;
+package hu.beni.tester.service;
 
 import static hu.beni.clientsupport.Client.uri;
 import static hu.beni.clientsupport.ResponseType.AMUSEMENT_PARK_TYPE;

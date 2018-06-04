@@ -35,10 +35,10 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import hu.beni.clientsupport.Client;
 import hu.beni.tester.archive.ArchiveReceiver;
-import hu.beni.tester.async.AsyncService;
 import hu.beni.tester.dto.SumAndTime;
 import hu.beni.tester.dto.TimeTo;
 import hu.beni.tester.output.ResultLogger;
+import hu.beni.tester.service.AsyncService;
 import lombok.extern.slf4j.Slf4j;
 
 @RunWith(SpringRunner.class)
