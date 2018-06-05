@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.stream.IntStream;
@@ -67,16 +68,15 @@ public class TesterApplicationTests {
 	}
 
 	@Autowired
-	private AsyncService async;
-
-	@Autowired
 	private ApplicationContext ctx;
 
 	@Autowired
 	private ArchiveReceiver archiveReceiver;
 
-	private List<Client> admins;
-	private List<Client> users;
+	private List<AsyncService> admins;
+	private List<AsyncService> users;
+
+	private AsyncService admin;
 
 	private TimeTo timeTo;
 	private long start;
@@ -89,17 +89,18 @@ public class TesterApplicationTests {
 	public void setUp() {
 		start = System.currentTimeMillis();
 		log.info("login");
-		admins = executeAsyncAndGet(createUsernameStream(NUMBER_OF_ADMINS, this::createAdminUsername), username -> {
-			Client client = ctx.getBean(Client.class);
-			async.login(client, username).join();
-			return CompletableFuture.completedFuture(client);
-		});
 
-		users = executeAsyncAndGet(createUsernameStream(NUMBER_OF_USERS, this::createUserUsername), username -> {
-			Client client = ctx.getBean(Client.class);
-			async.login(client, username).join();
-			return CompletableFuture.completedFuture(client);
-		});
+		admins = createUsernameStream(NUMBER_OF_ADMINS, this::createAdminUsername).map(this::createAsyncService)
+				.collect(toList());
+
+		users = createUsernameStream(NUMBER_OF_USERS, this::createUserUsername).map(this::createAsyncService)
+				.collect(toList());
+
+		admin = admins.get(0);
+
+		executeAdminsAsyncAndJoin(AsyncService::login);
+
+		executeUsersAsyncAndJoin(AsyncService::login);
 
 		timeTo = new TimeTo();
 	}
@@ -107,8 +108,8 @@ public class TesterApplicationTests {
 	@After
 	public void tearDown() {
 		log.info("logout");
-		admins.stream().forEach(async::logout);
-		users.stream().forEach(async::logout);
+		executeAdminsAsyncAndJoin(AsyncService::logout);
+		executeUsersAsyncAndJoin(AsyncService::logout);
 		log.info("log");
 		timeTo.setFullRun(System.currentTimeMillis() - start);
 		ResultLogger resultLogger = new ResultLogger(timeTo);
@@ -139,19 +140,20 @@ public class TesterApplicationTests {
 
 	private void clearDB() {
 		log.info("clearDB");
-		async.deleteAllPark(admins.get(0)).join();
-		extract(async.deleteAllVisitor(admins.get(0)));
+		admin.deleteAllPark().join();
+		admin.deleteAllVisitor().join();
 	}
 
 	private void createAmusementParksWithMachines() {
 		log.info("createAmusementParksWithMachines");
-		timeTo.setCreateAmusementParksWithMachines(executeAsyncAndGet(admins, async::createAmusementParksWithMachines));
+		timeTo.setCreateAmusementParksWithMachines(
+				executeAdminsAsyncAndJoin(AsyncService::createAmusementParksWithMachines));
 	}
 
 	private void sumAmusementParksCapitalBeforeVisitorStuff() {
 		log.info("sumAmusementParksCapitalBeforeVisitorStuff");
-		timeTo.setFindAllParksPagedBeforeVisitorStuff(map(executeAsyncAndGet(admins, async::sumAmusementParksCapital),
-				this::checkCapitalSumBeforeVisitorsGetTime));
+		timeTo.setFindAllParksPagedBeforeVisitorStuff(executeAdminsAsyncJoinAndMap(
+				AsyncService::sumAmusementParksCapital, this::checkCapitalSumBeforeVisitorsGetTime));
 	}
 
 	private void visitorsVisitAllStuffInEveryPark() {
@@ -159,10 +161,10 @@ public class TesterApplicationTests {
 		List<Long> wholeTimes = new LinkedList<>();
 		List<Long> tenParkTimes = new LinkedList<>();
 		List<Long> oneParkTimes = new LinkedList<>();
-		executeAsyncAndGet(users, async::visitAllStuffInEveryPark).forEach(VisitorStuffTime -> {
-			wholeTimes.add(VisitorStuffTime.getWholeTime());
-			tenParkTimes.addAll(VisitorStuffTime.getTenParkTimes());
-			oneParkTimes.addAll(VisitorStuffTime.getOneParkTimes());
+		executeUsersAsyncJoinAndForEach(AsyncService::visitAllStuffInEveryPark, visitorStuffTime -> {
+			wholeTimes.add(visitorStuffTime.getWholeTime());
+			tenParkTimes.addAll(visitorStuffTime.getTenParkTimes());
+			oneParkTimes.addAll(visitorStuffTime.getOneParkTimes());
 		});
 		timeTo.setWholeVisitorStuff(wholeTimes);
 		timeTo.setTenParkVisitorStuff(tenParkTimes);
@@ -171,20 +173,20 @@ public class TesterApplicationTests {
 
 	private void sumAmusementParksCapitalAfterVisitorStuff() {
 		log.info("sumAmusementParksCapitalAfterVisitorStuff");
-		timeTo.setFindAllParksPagedAfterVisitorStuff(map(executeAsyncAndGet(admins, async::sumAmusementParksCapital),
-				this::checkCapitalSumAfterVisitorsGetTime));
+		timeTo.setFindAllParksPagedAfterVisitorStuff(executeAdminsAsyncJoinAndMap(
+				AsyncService::sumAmusementParksCapital, this::checkCapitalSumAfterVisitorsGetTime));
 	}
 
 	private void sumVisitorsSpendingMoney() {
 		log.info("sumVisitorsSpendingMoney");
-		timeTo.setFindAllVisitorsPaged(
-				map(executeAsyncAndGet(admins, async::sumVisitorsSpendingMoney), this::checkSpendingMoneySunGetTime));
+		timeTo.setFindAllVisitorsPaged(executeAdminsAsyncJoinAndMap(AsyncService::sumVisitorsSpendingMoney,
+				this::checkSpendingMoneySunGetTime));
 	}
 
 	private void deleteParksAndVisitors() {
 		log.info("deleteParksAndVisitors");
-		timeTo.setDeleteParks(extract(async.deleteAllPark(admins.get(0))));
-		timeTo.setDeleteVisitors(extract(async.deleteAllVisitor(admins.get(0))));
+		timeTo.setDeleteParks(extract(admin.deleteAllPark()));
+		timeTo.setDeleteVisitors(extract(admin.deleteAllVisitor()));
 	}
 
 	private void waitForArchiveAmusementParks() {
@@ -218,18 +220,6 @@ public class TesterApplicationTests {
 		return sumAndTime.getTime();
 	}
 
-	private <T, R> List<R> executeAsyncAndGet(List<T> list, Function<T, CompletableFuture<R>> function) {
-		return executeAsyncAndGet(list.stream(), function);
-	}
-
-	private <T, R> List<R> executeAsyncAndGet(Stream<T> stream, Function<T, CompletableFuture<R>> function) {
-		return stream.map(function).collect(toList()).stream().map(CompletableFuture::join).collect(toList());
-	}
-
-	private <T, R> List<R> map(List<T> list, Function<T, R> function) {
-		return list.stream().map(function).collect(toList());
-	}
-
 	private String createAdminUsername(int usernameIndex) {
 		return ADMIN + usernameIndex;
 	}
@@ -247,4 +237,30 @@ public class TesterApplicationTests {
 		}
 		return t;
 	}
+
+	private AsyncService createAsyncService(String username) {
+		return ctx.getBean(AsyncService.class, ctx.getBean(Client.class), username);
+	}
+
+	private <R> List<R> executeAdminsAsyncAndJoin(Function<AsyncService, CompletableFuture<R>> asyncMethod) {
+		return admins.stream().map(asyncMethod).collect(toList()).stream().map(CompletableFuture::join)
+				.collect(toList());
+	}
+
+	private <R, T> List<T> executeAdminsAsyncJoinAndMap(Function<AsyncService, CompletableFuture<R>> asyncMethod,
+			Function<R, T> asyncResultMapper) {
+		return admins.stream().map(asyncMethod).collect(toList()).stream().map(CompletableFuture::join)
+				.map(asyncResultMapper).collect(toList());
+	}
+
+	private <R> void executeUsersAsyncAndJoin(Function<AsyncService, CompletableFuture<R>> asyncMethod) {
+		users.stream().map(asyncMethod).collect(toList()).stream().map(CompletableFuture::join).collect(toList());
+	}
+
+	private <R> void executeUsersAsyncJoinAndForEach(Function<AsyncService, CompletableFuture<R>> asyncMethod,
+			Consumer<R> asyncResultConsumer) {
+		users.stream().map(asyncMethod).collect(toList()).stream().map(CompletableFuture::join)
+				.forEach(asyncResultConsumer);
+	}
+
 }

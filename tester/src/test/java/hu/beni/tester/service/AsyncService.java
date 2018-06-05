@@ -24,6 +24,7 @@ import static hu.beni.tester.constant.Constants.VISITOR_URL;
 import static hu.beni.tester.factory.ResourceFactory.createAmusementParkWithAddress;
 import static hu.beni.tester.factory.ResourceFactory.createMachine;
 import static hu.beni.tester.factory.ResourceFactory.createVisitor;
+import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 import java.net.URI;
 import java.util.Collection;
@@ -35,6 +36,7 @@ import java.util.function.ToIntFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import org.springframework.context.annotation.Scope;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.ResourceSupport;
@@ -52,67 +54,72 @@ import hu.beni.clientsupport.resource.VisitorResource;
 import hu.beni.tester.dto.DeleteTime;
 import hu.beni.tester.dto.SumAndTime;
 import hu.beni.tester.dto.VisitorStuffTime;
+import lombok.RequiredArgsConstructor;
 
 @Async
 @Service
+@Scope(SCOPE_PROTOTYPE)
+@RequiredArgsConstructor
 public class AsyncService {
 
 	public static final PagedResourcesType<ResourceSupport> PAGED_TYPE = new PagedResourcesType<ResourceSupport>() {
 	};
 
-	public CompletableFuture<Void> login(Client client, String username) {
-		client.post(uri(LOGIN_URL), MediaType.APPLICATION_FORM_URLENCODED, createMap(username, PASS), Void.class);
+	private final Client client;
+	private final String username;
+
+	public CompletableFuture<Void> login() {
+		client.post(uri(LOGIN_URL), MediaType.APPLICATION_FORM_URLENCODED, createMapWithUsernameAndPass(), Void.class);
 		return CompletableFuture.completedFuture(null);
 	}
 
-	private MultiValueMap<String, String> createMap(String username, String password) {
+	private MultiValueMap<String, String> createMapWithUsernameAndPass() {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
 		map.add(USERNAME, username);
-		map.add(PASSWORD, password);
+		map.add(PASSWORD, PASS);
 		return map;
 	}
 
-	public CompletableFuture<?> logout(Client client) {
+	public CompletableFuture<?> logout() {
 		client.post(uri(LOGOUT_URL), null, Void.class);
 		return CompletableFuture.completedFuture(null);
 	}
 
-	public CompletableFuture<DeleteTime> deleteAllPark(Client client) {
+	public CompletableFuture<DeleteTime> deleteAllPark() {
 		List<Long> tenParkTimes = new LinkedList<>();
 		long start = now();
-		deleteAllOnUrl(client, AMUSEMENT_PARK_URL, tenParkTimes);
+		deleteAllOnUrl(AMUSEMENT_PARK_URL, tenParkTimes);
 		return CompletableFuture.completedFuture(new DeleteTime(millisFrom(start), tenParkTimes));
 	}
 
-	private void deleteAllOnUrl(Client client, String url, List<Long> tenTimes) {
+	private void deleteAllOnUrl(String url, List<Long> tenTimes) {
 		boolean thereIsStillData;
 		do {
 			long tenStart = now();
-			thereIsStillData = getPageDeleteAllFalseIfNoMore(client, url);
+			thereIsStillData = getPageDeleteAllFalseIfNoMore(url);
 			if (thereIsStillData) {
 				tenTimes.add(millisFrom(tenStart));
 			}
 		} while (thereIsStillData);
 	}
 
-	private boolean getPageDeleteAllFalseIfNoMore(Client client, String url) {
+	private boolean getPageDeleteAllFalseIfNoMore(String url) {
 		Collection<ResourceSupport> data = client.get(uri(url), PAGED_TYPE).getBody().getContent();
 		data.stream().map(ResourceSupport::getId).map(Link::getHref).forEach(href -> client.delete(uri(href)));
 		return !data.isEmpty();
 	}
 
-	public CompletableFuture<Long> createAmusementParksWithMachines(Client client) {
+	public CompletableFuture<Long> createAmusementParksWithMachines() {
 		long start = now();
-		createAmusementParks(client).map(this::mapToMachineLinkHref)
-				.forEach(machineUrl -> createMachines(client, machineUrl));
+		createAmusementParks().map(this::mapToMachineLinkHref).forEach(this::createMachines);
 		return CompletableFuture.completedFuture(millisFrom(start));
 	}
 
-	private Stream<AmusementParkResource> createAmusementParks(Client client) {
-		return IntStream.range(0, NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN).mapToObj(i -> createAmusementPark(client));
+	private Stream<AmusementParkResource> createAmusementParks() {
+		return IntStream.range(0, NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN).mapToObj(i -> createAmusementPark());
 	}
 
-	private AmusementParkResource createAmusementPark(Client client) {
+	private AmusementParkResource createAmusementPark() {
 		return client.post(uri(AMUSEMENT_PARK_URL), createAmusementParkWithAddress(), AMUSEMENT_PARK_TYPE).getBody();
 	}
 
@@ -120,21 +127,21 @@ public class AsyncService {
 		return amusementParkResource.getLink(MACHINE).getHref();
 	}
 
-	private void createMachines(Client client, String machineUrl) {
-		IntStream.range(0, NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK).forEach(i -> addMachine(client, machineUrl));
+	private void createMachines(String machineUrl) {
+		IntStream.range(0, NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK).forEach(i -> addMachine(machineUrl));
 	}
 
-	private void addMachine(Client client, String machineUrl) {
+	private void addMachine(String machineUrl) {
 		client.post(uri(machineUrl), createMachine(), MACHINE_TYPE);
 	}
 
-	public CompletableFuture<SumAndTime> sumAmusementParksCapital(Client client) {
+	public CompletableFuture<SumAndTime> sumAmusementParksCapital() {
 		long start = now();
-		long sum = sum(client, AMUSEMENT_PARK_URL, AmusementParkResource.class, AmusementParkResource::getCapital);
+		long sum = sum(AMUSEMENT_PARK_URL, AmusementParkResource.class, AmusementParkResource::getCapital);
 		return CompletableFuture.completedFuture(new SumAndTime(sum, millisFrom(start)));
 	}
 
-	private <T> long sum(Client client, String url, Class<T> clazz, ToIntFunction<T> toIntFunction) {
+	private <T> long sum(String url, Class<T> clazz, ToIntFunction<T> toIntFunction) {
 		Optional<String> nextPageUrl = Optional.of(url);
 		long sum = 0;
 		do {
@@ -146,15 +153,15 @@ public class AsyncService {
 		return sum;
 	}
 
-	public CompletableFuture<VisitorStuffTime> visitAllStuffInEveryPark(Client client) {
+	public CompletableFuture<VisitorStuffTime> visitAllStuffInEveryPark() {
 		List<Long> oneParkTimes = new LinkedList<>();
 		List<Long> tenParkTimes = new LinkedList<>();
 		long start = now();
-		visitAllStuffInEveryPark(client, oneParkTimes, tenParkTimes);
+		visitAllStuffInEveryPark(oneParkTimes, tenParkTimes);
 		return CompletableFuture.completedFuture(new VisitorStuffTime(millisFrom(start), tenParkTimes, oneParkTimes));
 	}
 
-	private void visitAllStuffInEveryPark(Client client, List<Long> oneParkTimes, List<Long> tenParkTimes) {
+	private void visitAllStuffInEveryPark(List<Long> oneParkTimes, List<Long> tenParkTimes) {
 		Optional<String> nextPageUrl = Optional.of(AMUSEMENT_PARK_URL);
 		VisitorResource visitorResource = client.post(uri(VISITOR_URL), createVisitor(), VISITOR_TYPE).getBody();
 		do {
@@ -162,55 +169,56 @@ public class AsyncService {
 			PagedResources<AmusementParkResource> page = client
 					.get(uri(nextPageUrl.get()), ResponseType.getPagedType(AmusementParkResource.class)).getBody();
 			nextPageUrl = Optional.ofNullable(page.getNextLink()).map(Link::getHref);
-			visitEverythingInParks(client, page.getContent(), visitorResource.getIdentifier(), oneParkTimes);
+			visitEverythingInParks(page.getContent(), visitorResource.getIdentifier(), oneParkTimes);
 			tenParkTimes.add(millisFrom(tenParkStart));
 		} while (nextPageUrl.isPresent());
 	}
 
-	private void visitEverythingInParks(Client client, Collection<AmusementParkResource> amusementParkResources,
-			Long visitorId, List<Long> oneParkTimes) {
+	private void visitEverythingInParks(Collection<AmusementParkResource> amusementParkResources, Long visitorId,
+			List<Long> oneParkTimes) {
 		amusementParkResources.stream().map(this::mapToEnterParkUrl)
-				.forEach(enterParkUrl -> visitEverythingInAPark(client, uri(enterParkUrl, visitorId), oneParkTimes));
+				.forEach(enterParkUrl -> visitEverythingInAPark(uri(enterParkUrl, visitorId), oneParkTimes));
 	}
 
 	private String mapToEnterParkUrl(AmusementParkResource amusementParkResource) {
 		return amusementParkResource.getLink(VISITOR_ENTER_PARK).getHref();
 	}
 
-	private void visitEverythingInAPark(Client client, URI enterParkUrl, List<Long> oneParkTimes) {
+	private void visitEverythingInAPark(URI enterParkUrl, List<Long> oneParkTimes) {
 		long startPark = now();
 		VisitorResource visitorResource = client.put(enterParkUrl, null, VISITOR_TYPE).getBody();
-		getMachinesAndGetOnAndOff(client, visitorResource);
-		addRegistryAndLeave(client, visitorResource);
+		getMachinesAndGetOnAndOff(visitorResource);
+		addRegistryAndLeave(visitorResource);
 		oneParkTimes.add(millisFrom(startPark));
 	}
 
-	private void getMachinesAndGetOnAndOff(Client client, VisitorResource visitorResource) {
+	private void getMachinesAndGetOnAndOff(VisitorResource visitorResource) {
 		client.get(uri(visitorResource.getLink(MACHINE).getHref()), RESOURCES_MACHINE_TYPE).getBody().getContent()
-				.stream().forEach(machineResource -> getOnAndOffMachine(client,
-						machineResource.getLink(GET_ON_MACHINE).getHref(), visitorResource.getIdentifier()));
+				.stream()
+				.forEach(machineResource -> getOnAndOffMachine(machineResource.getLink(GET_ON_MACHINE).getHref(),
+						visitorResource.getIdentifier()));
 	}
 
-	private void getOnAndOffMachine(Client client, String getOnMachineUrl, Long visitorId) {
+	private void getOnAndOffMachine(String getOnMachineUrl, Long visitorId) {
 		VisitorResource onMachineVisitor = client.put(uri(getOnMachineUrl, visitorId), null, VISITOR_TYPE).getBody();
 		client.put(uri(onMachineVisitor.getLink(GET_OFF_MACHINE).getHref()), null, Void.class);
 	}
 
-	private void addRegistryAndLeave(Client client, VisitorResource visitorResource) {
+	private void addRegistryAndLeave(VisitorResource visitorResource) {
 		client.post(uri(visitorResource.getLink(ADD_REGISTRY).getHref()), GUEST_BOOK_REGISTRY_TEXT, Void.class);
 		client.put(uri(visitorResource.getLink(VISITOR_LEAVE_PARK).getHref()), null, Void.class);
 	}
 
-	public CompletableFuture<SumAndTime> sumVisitorsSpendingMoney(Client client) {
+	public CompletableFuture<SumAndTime> sumVisitorsSpendingMoney() {
 		long start = now();
-		long sum = sum(client, VISITOR_URL, VisitorResource.class, VisitorResource::getSpendingMoney);
+		long sum = sum(VISITOR_URL, VisitorResource.class, VisitorResource::getSpendingMoney);
 		return CompletableFuture.completedFuture(new SumAndTime(sum, millisFrom(start)));
 	}
 
-	public CompletableFuture<DeleteTime> deleteAllVisitor(Client client) {
+	public CompletableFuture<DeleteTime> deleteAllVisitor() {
 		List<Long> tenVisitorTimes = new LinkedList<>();
 		long start = now();
-		deleteAllOnUrl(client, VISITOR_URL, tenVisitorTimes);
+		deleteAllOnUrl(VISITOR_URL, tenVisitorTimes);
 		return CompletableFuture.completedFuture(new DeleteTime(millisFrom(start), tenVisitorTimes));
 	}
 
