@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @Configuration
 @EnableHypermediaSupport(type = HypermediaType.HAL)
 @RequiredArgsConstructor
-public class ClientConfig {
+public class ClientAndRestTemplateConfig {
 
 	private final ObjectMapper mapper;
 
