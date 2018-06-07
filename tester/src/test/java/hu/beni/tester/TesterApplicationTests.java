@@ -16,9 +16,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import org.junit.After;
+import javax.annotation.PostConstruct;
+
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,39 +73,21 @@ public class TesterApplicationTests {
 
 	private AsyncService admin;
 
-	private TimeTo timeTo;
-	private long start;
+	private TimeTo timeTo = new TimeTo();
 
-	@Before
-	public void setUp() {
-		start = System.currentTimeMillis();
-		log.info("login");
-
+	@PostConstruct
+	public void init() {
 		admin = admins.get(0);
-
-		executeAdminsAsyncAndJoin(AsyncService::login);
-
-		executeUsersAsyncAndJoin(AsyncService::login);
-
-		timeTo = new TimeTo();
-	}
-
-	@After
-	public void tearDown() {
-		log.info("logout");
-		executeAdminsAsyncAndJoin(AsyncService::logout);
-		executeUsersAsyncAndJoin(AsyncService::logout);
-		log.info("log");
-		timeTo.setFullRun(System.currentTimeMillis() - start);
-		ResultLogger resultLogger = new ResultLogger(timeTo);
-		resultLogger.logToConsole();
-		resultLogger.writeToFile();
 	}
 
 	@Test
 	public void test() {
 
+		login();
+
 		clearDB();
+
+		long start = System.currentTimeMillis();
 
 		createAmusementParksWithMachines();
 
@@ -121,6 +103,18 @@ public class TesterApplicationTests {
 
 		waitForArchiveAmusementParks();
 
+		timeTo.setFullRun(System.currentTimeMillis() - start);
+
+		logout();
+
+		log();
+
+	}
+
+	private void login() {
+		log.info("login");
+		executeAdminsAsyncAndJoin(AsyncService::login);
+		executeUsersAsyncAndJoin(AsyncService::login);
 	}
 
 	private void clearDB() {
@@ -182,6 +176,19 @@ public class TesterApplicationTests {
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	private void logout() {
+		log.info("logout");
+		executeAdminsAsyncAndJoin(AsyncService::logout);
+		executeUsersAsyncAndJoin(AsyncService::logout);
+	}
+
+	private void log() {
+		log.info("log");
+		ResultLogger resultLogger = new ResultLogger(timeTo);
+		resultLogger.logToConsole();
+		resultLogger.writeToFile();
 	}
 
 	private Long checkCapitalSumBeforeVisitorsGetTime(SumAndTime sumAndTime) {
