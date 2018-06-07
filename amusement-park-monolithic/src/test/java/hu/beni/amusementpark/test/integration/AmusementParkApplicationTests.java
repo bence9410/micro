@@ -1,5 +1,7 @@
 package hu.beni.amusementpark.test.integration;
 
+import static hu.beni.amusementpark.constants.AuthenticationConstants.ADMIN_LOWER_CASE;
+import static hu.beni.amusementpark.constants.AuthenticationConstants.PASS;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.MACHINE_IS_TOO_EXPENSIVE;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_ARCHIVE_SEND_TYPE;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.validationError;
@@ -90,7 +92,7 @@ public class AmusementParkApplicationTests {
 	@Test
 	public void pageTest() {
 
-		login("admin", "pass");
+		login(ADMIN_LOWER_CASE, PASS);
 
 		PagedResourcesType<AmusementParkResource> responseType = getPagedType(AmusementParkResource.class);
 
@@ -120,7 +122,7 @@ public class AmusementParkApplicationTests {
 
 	@Test
 	public void positiveTest() {
-		login("admin", "pass");
+		login(ADMIN_LOWER_CASE, PASS);
 
 		AmusementParkResource amusementParkResource = createAmusementPark();
 
@@ -149,7 +151,7 @@ public class AmusementParkApplicationTests {
 
 	@Test
 	public void negativeTest() {
-		login("admin", "pass");
+		login(ADMIN_LOWER_CASE, PASS);
 
 		AmusementParkResource amusementParkResource = createAmusementParkWithAddress();
 		amusementParkResource.setAddress(null);

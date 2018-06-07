@@ -1,9 +1,9 @@
 package hu.beni.tester.config;
 
 import static hu.beni.tester.TesterApplicationTests.NUMBER_OF_ADMINS;
-import static hu.beni.tester.TesterApplicationTests.NUMBER_OF_USERS;
+import static hu.beni.tester.TesterApplicationTests.NUMBER_OF_VISITORS;
 import static hu.beni.tester.constant.Constants.ADMIN;
-import static hu.beni.tester.constant.Constants.USER;
+import static hu.beni.tester.constant.Constants.VISITOR;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
@@ -31,16 +31,16 @@ public class AsyncServiceConfig {
 	}
 
 	@Bean
-	public List<AsyncService> users() {
-		return createAsyncServices(NUMBER_OF_USERS, this::createUserUsername);
+	public List<AsyncService> visitors() {
+		return createAsyncServices(NUMBER_OF_VISITORS, this::createVisitorUsername);
 	}
 
 	private String createAdminUsername(int usernameIndex) {
 		return ADMIN + usernameIndex;
 	}
 
-	private String createUserUsername(int usernameIndex) {
-		return USER + usernameIndex;
+	private String createVisitorUsername(int usernameIndex) {
+		return VISITOR + usernameIndex;
 	}
 
 	private List<AsyncService> createAsyncServices(int numberOfInstance, IntFunction<String> usernameProducer) {

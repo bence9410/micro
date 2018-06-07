@@ -42,7 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TesterApplicationTests {
 
 	public static final int NUMBER_OF_ADMINS = 5;
-	public static final int NUMBER_OF_USERS = 5;
+	public static final int NUMBER_OF_VISITORS = 5;
 
 	private static final int EXPECTED_CAPITAL_BEFORE_VISITORS_SUM;
 	private static final int EXPECTED_CAPITAL_AFTER_VISITORS_SUM;
@@ -53,11 +53,11 @@ public class TesterApplicationTests {
 				* (AMUSEMENT_PARK_CAPITAL - NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK * MACHINE_PRICE);
 		int moneyOneVisitorSpendInAPark = AMUSEMENT_PARK_ENTRANCE_FEE
 				+ NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK * MACHINE_TICKET_PRICE;
-		EXPECTED_CAPITAL_AFTER_VISITORS_SUM = EXPECTED_CAPITAL_BEFORE_VISITORS_SUM + NUMBER_OF_USERS
+		EXPECTED_CAPITAL_AFTER_VISITORS_SUM = EXPECTED_CAPITAL_BEFORE_VISITORS_SUM + NUMBER_OF_VISITORS
 				* moneyOneVisitorSpendInAPark * NUMBER_OF_ADMINS * NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN;
 		EXPECTED_SPENDING_MONEY_SUM = (VISITOR_SPENDING_MONEY
 				- (moneyOneVisitorSpendInAPark * NUMBER_OF_ADMINS * NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN))
-				* NUMBER_OF_USERS;
+				* NUMBER_OF_VISITORS;
 	}
 
 	@Autowired
@@ -68,8 +68,8 @@ public class TesterApplicationTests {
 	private List<AsyncService> admins;
 
 	@Autowired
-	@Qualifier("users")
-	private List<AsyncService> users;
+	@Qualifier("visitors")
+	private List<AsyncService> visitors;
 
 	private AsyncService admin;
 
@@ -114,7 +114,7 @@ public class TesterApplicationTests {
 	private void login() {
 		log.info("login");
 		executeAdminsAsyncAndJoin(AsyncService::login);
-		executeUsersAsyncAndJoin(AsyncService::login);
+		executeVisitorsAsyncAndJoin(AsyncService::login);
 	}
 
 	private void clearDB() {
@@ -140,7 +140,7 @@ public class TesterApplicationTests {
 		List<Long> wholeTimes = new LinkedList<>();
 		List<Long> tenParkTimes = new LinkedList<>();
 		List<Long> oneParkTimes = new LinkedList<>();
-		executeUsersAsyncJoinAndForEach(AsyncService::visitAllStuffInEveryPark, visitorStuffTime -> {
+		executeVisitorsAsyncJoinAndForEach(AsyncService::visitAllStuffInEveryPark, visitorStuffTime -> {
 			wholeTimes.add(visitorStuffTime.getWholeTime());
 			tenParkTimes.addAll(visitorStuffTime.getTenParkTimes());
 			oneParkTimes.addAll(visitorStuffTime.getOneParkTimes());
@@ -181,7 +181,7 @@ public class TesterApplicationTests {
 	private void logout() {
 		log.info("logout");
 		executeAdminsAsyncAndJoin(AsyncService::logout);
-		executeUsersAsyncAndJoin(AsyncService::logout);
+		executeVisitorsAsyncAndJoin(AsyncService::logout);
 	}
 
 	private void log() {
@@ -227,13 +227,13 @@ public class TesterApplicationTests {
 				.map(asyncResultMapper).collect(toList());
 	}
 
-	private <R> void executeUsersAsyncAndJoin(Function<AsyncService, CompletableFuture<R>> asyncMethod) {
-		users.stream().map(asyncMethod).collect(toList()).stream().map(CompletableFuture::join).collect(toList());
+	private <R> void executeVisitorsAsyncAndJoin(Function<AsyncService, CompletableFuture<R>> asyncMethod) {
+		visitors.stream().map(asyncMethod).collect(toList()).stream().map(CompletableFuture::join).collect(toList());
 	}
 
-	private <R> void executeUsersAsyncJoinAndForEach(Function<AsyncService, CompletableFuture<R>> asyncMethod,
+	private <R> void executeVisitorsAsyncJoinAndForEach(Function<AsyncService, CompletableFuture<R>> asyncMethod,
 			Consumer<R> asyncResultConsumer) {
-		users.stream().map(asyncMethod).collect(toList()).stream().map(CompletableFuture::join)
+		visitors.stream().map(asyncMethod).collect(toList()).stream().map(CompletableFuture::join)
 				.forEach(asyncResultConsumer);
 	}
 

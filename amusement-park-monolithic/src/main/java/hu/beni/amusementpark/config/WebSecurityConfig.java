@@ -1,11 +1,20 @@
 package hu.beni.amusementpark.config;
 
+import static hu.beni.amusementpark.constants.AuthenticationConstants.ADMIN;
+import static hu.beni.amusementpark.constants.AuthenticationConstants.ADMIN_LOWER_CASE;
+import static hu.beni.amusementpark.constants.AuthenticationConstants.PASS;
+import static hu.beni.amusementpark.constants.AuthenticationConstants.VISITOR;
+import static hu.beni.amusementpark.constants.AuthenticationConstants.VISITOR_LOWER_CASE;
+
+import java.util.stream.IntStream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.repository.query.spi.EvaluationContextExtensionSupport;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configurers.provisioning.InMemoryUserDetailsManagerConfigurer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -28,8 +37,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http //@formatter:off
             .authorizeRequests()
-                .antMatchers("/", "/docker", "/index.js")
-                .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -47,39 +54,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication() //@formatter:off
-        		.withUser("admin").password("pass").roles("ADMIN").and()
-        		.withUser("user").password("pass").roles("USER").and()
-                .withUser("admin0").password("pass").roles("ADMIN").and()
-                .withUser("admin1").password("pass").roles("ADMIN").and()
-                .withUser("admin2").password("pass").roles("ADMIN").and()
-                .withUser("admin3").password("pass").roles("ADMIN").and()
-                .withUser("admin4").password("pass").roles("ADMIN").and()
-                .withUser("admin5").password("pass").roles("ADMIN").and()
-                .withUser("admin6").password("pass").roles("ADMIN").and()
-                .withUser("admin7").password("pass").roles("ADMIN").and()
-                .withUser("admin8").password("pass").roles("ADMIN").and()
-                .withUser("admin9").password("pass").roles("ADMIN").and()
-                .withUser("user0").password("pass").roles("USER").and()
-                .withUser("user1").password("pass").roles("USER").and()
-                .withUser("user2").password("pass").roles("USER").and()
-                .withUser("user3").password("pass").roles("USER").and()
-                .withUser("user4").password("pass").roles("USER").and()
-                .withUser("user5").password("pass").roles("USER").and()
-                .withUser("user6").password("pass").roles("USER").and()
-                .withUser("user7").password("pass").roles("USER").and()
-                .withUser("user8").password("pass").roles("USER").and()
-                .withUser("user9").password("pass").roles("USER").and()
-                .withUser("user10").password("pass").roles("USER").and()
-                .withUser("user11").password("pass").roles("USER").and()
-                .withUser("user12").password("pass").roles("USER").and()
-                .withUser("user13").password("pass").roles("USER").and()
-                .withUser("user14").password("pass").roles("USER").and()
-                .withUser("user15").password("pass").roles("USER").and()
-                .withUser("user16").password("pass").roles("USER").and()
-                .withUser("user17").password("pass").roles("USER").and()
-                .withUser("user18").password("pass").roles("USER").and()
-                .withUser("user19").password("pass").roles("USER"); //@formatter:on
+		InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> inMemoryUserDetails = auth
+				.inMemoryAuthentication();
+		createUser(inMemoryUserDetails, ADMIN_LOWER_CASE, ADMIN);
+		createUser(inMemoryUserDetails, VISITOR_LOWER_CASE, VISITOR);
+		IntStream.range(0, 10).forEach(i -> {
+			createUser(inMemoryUserDetails, ADMIN_LOWER_CASE + i, ADMIN);
+			createUser(inMemoryUserDetails, VISITOR_LOWER_CASE + i, VISITOR);
+		});
+		IntStream.range(10, 20).forEach(i -> createUser(inMemoryUserDetails, VISITOR_LOWER_CASE + i, VISITOR));
+	}
+
+	private void createUser(InMemoryUserDetailsManagerConfigurer<AuthenticationManagerBuilder> inMemoryUserDetails,
+			String username, String role) {
+		inMemoryUserDetails.withUser(username).password(PASS).roles(role);
 	}
 
 	@Component
