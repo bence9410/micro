@@ -1,9 +1,7 @@
 package hu.beni.tester;
 
-import static hu.beni.tester.constant.Constants.ADMIN;
 import static hu.beni.tester.constant.Constants.NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK;
 import static hu.beni.tester.constant.Constants.NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN;
-import static hu.beni.tester.constant.Constants.USER;
 import static hu.beni.tester.factory.ResourceFactory.AMUSEMENT_PARK_CAPITAL;
 import static hu.beni.tester.factory.ResourceFactory.AMUSEMENT_PARK_ENTRANCE_FEE;
 import static hu.beni.tester.factory.ResourceFactory.MACHINE_PRICE;
@@ -14,13 +12,9 @@ import static java.util.stream.Collectors.toList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -28,13 +22,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import hu.beni.clientsupport.Client;
 import hu.beni.tester.archive.ArchiveReceiver;
 import hu.beni.tester.dto.SumAndTime;
 import hu.beni.tester.dto.TimeTo;
@@ -68,12 +61,14 @@ public class TesterApplicationTests {
 	}
 
 	@Autowired
-	private ApplicationContext ctx;
-
-	@Autowired
 	private ArchiveReceiver archiveReceiver;
 
+	@Autowired
+	@Qualifier("admins")
 	private List<AsyncService> admins;
+
+	@Autowired
+	@Qualifier("users")
 	private List<AsyncService> users;
 
 	private AsyncService admin;
@@ -81,20 +76,10 @@ public class TesterApplicationTests {
 	private TimeTo timeTo;
 	private long start;
 
-	private static Stream<String> createUsernameStream(int endExclusive, IntFunction<String> function) {
-		return IntStream.range(0, endExclusive).mapToObj(function);
-	}
-
 	@Before
 	public void setUp() {
 		start = System.currentTimeMillis();
 		log.info("login");
-
-		admins = createUsernameStream(NUMBER_OF_ADMINS, this::createAdminUsername).map(this::createAsyncService)
-				.collect(toList());
-
-		users = createUsernameStream(NUMBER_OF_USERS, this::createUserUsername).map(this::createAsyncService)
-				.collect(toList());
 
 		admin = admins.get(0);
 
@@ -140,8 +125,8 @@ public class TesterApplicationTests {
 
 	private void clearDB() {
 		log.info("clearDB");
-		admin.deleteAllPark().join();
-		admin.deleteAllVisitor().join();
+		executeAdminAndJoin(AsyncService::deleteAllPark);
+		executeAdminAndJoin(AsyncService::deleteAllVisitor);
 	}
 
 	private void createAmusementParksWithMachines() {
@@ -185,8 +170,8 @@ public class TesterApplicationTests {
 
 	private void deleteParksAndVisitors() {
 		log.info("deleteParksAndVisitors");
-		timeTo.setDeleteParks(extract(admin.deleteAllPark()));
-		timeTo.setDeleteVisitors(extract(admin.deleteAllVisitor()));
+		timeTo.setDeleteParks(executeAdminAndJoin(AsyncService::deleteAllPark));
+		timeTo.setDeleteVisitors(executeAdminAndJoin(AsyncService::deleteAllVisitor));
 	}
 
 	private void waitForArchiveAmusementParks() {
@@ -220,26 +205,8 @@ public class TesterApplicationTests {
 		return sumAndTime.getTime();
 	}
 
-	private String createAdminUsername(int usernameIndex) {
-		return ADMIN + usernameIndex;
-	}
-
-	private String createUserUsername(int usernameIndex) {
-		return USER + usernameIndex;
-	}
-
-	private <T> T extract(CompletableFuture<T> completableFuture) {
-		T t = null;
-		try {
-			t = completableFuture.get();
-		} catch (InterruptedException | ExecutionException e) {
-			throw new RuntimeException(e);
-		}
-		return t;
-	}
-
-	private AsyncService createAsyncService(String username) {
-		return ctx.getBean(AsyncService.class, ctx.getBean(Client.class), username);
+	private <R> R executeAdminAndJoin(Function<AsyncService, CompletableFuture<R>> asyncMethod) {
+		return asyncMethod.apply(admin).join();
 	}
 
 	private <R> List<R> executeAdminsAsyncAndJoin(Function<AsyncService, CompletableFuture<R>> asyncMethod) {
