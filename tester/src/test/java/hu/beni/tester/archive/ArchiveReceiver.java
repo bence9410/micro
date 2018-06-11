@@ -1,21 +1,22 @@
 package hu.beni.tester.archive;
 
-import static hu.beni.tester.TesterApplicationTests.NUMBER_OF_ADMINS;
-import static hu.beni.tester.constant.Constants.NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN;
-
 import java.util.concurrent.CountDownLatch;
 
 import org.springframework.stereotype.Component;
 
 import hu.beni.clientsupport.dto.ArchiveAmusementParkDTO;
+import hu.beni.tester.properties.ApplicationProperties;
 import lombok.Getter;
 
 @Getter
 @Component
 public class ArchiveReceiver {
 
-	private final CountDownLatch countDownLatch = new CountDownLatch(
-			NUMBER_OF_ADMINS * NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN);
+	private final CountDownLatch countDownLatch;
+
+	public ArchiveReceiver(ApplicationProperties properties) {
+		countDownLatch = new CountDownLatch(properties.getNumberOf().getAmusementParks());
+	}
 
 	public void receive(ArchiveAmusementParkDTO archiveAmusementParkDTO) {
 		countDownLatch.countDown();

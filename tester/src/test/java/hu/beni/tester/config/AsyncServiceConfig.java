@@ -1,7 +1,5 @@
 package hu.beni.tester.config;
 
-import static hu.beni.tester.TesterApplicationTests.NUMBER_OF_ADMINS;
-import static hu.beni.tester.TesterApplicationTests.NUMBER_OF_VISITORS;
 import static hu.beni.tester.constant.Constants.ADMIN;
 import static hu.beni.tester.constant.Constants.VISITOR;
 import static java.util.stream.Collectors.toList;
@@ -16,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import hu.beni.clientsupport.Client;
+import hu.beni.tester.factory.ResourceFactory;
+import hu.beni.tester.properties.ApplicationProperties;
 import hu.beni.tester.service.AsyncService;
 import lombok.RequiredArgsConstructor;
 
@@ -24,15 +24,17 @@ import lombok.RequiredArgsConstructor;
 public class AsyncServiceConfig {
 
 	private final ApplicationContext ctx;
+	private final ApplicationProperties properties;
+	private final ResourceFactory resourceFactory;
 
 	@Bean
 	public List<AsyncService> admins() {
-		return createAsyncServices(NUMBER_OF_ADMINS, this::createAdminUsername);
+		return createAsyncServices(properties.getNumberOf().getAdmins(), this::createAdminUsername);
 	}
 
 	@Bean
 	public List<AsyncService> visitors() {
-		return createAsyncServices(NUMBER_OF_VISITORS, this::createVisitorUsername);
+		return createAsyncServices(properties.getNumberOf().getAdmins(), this::createVisitorUsername);
 	}
 
 	private String createAdminUsername(int usernameIndex) {
@@ -53,7 +55,7 @@ public class AsyncServiceConfig {
 	}
 
 	private AsyncService createAsyncService(String username) {
-		return ctx.getBean(AsyncService.class, ctx.getBean(Client.class), username);
+		return ctx.getBean(AsyncService.class, ctx.getBean(Client.class), username, resourceFactory, properties);
 	}
 
 }

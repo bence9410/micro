@@ -11,9 +11,6 @@ public class Constants {
 
 	public static final String SEMICOLON = ";";
 
-	public static final int NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN = 10;
-	public static final int NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK = 10;
-
 	public static final String GUEST_BOOK_REGISTRY_TEXT = "nice park";
 
 	public static final String BASE_URL = "http://localhost:8080";

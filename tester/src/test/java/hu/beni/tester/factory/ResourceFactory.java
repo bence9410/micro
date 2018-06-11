@@ -1,35 +1,48 @@
 package hu.beni.tester.factory;
 
+import org.springframework.stereotype.Component;
+
 import hu.beni.clientsupport.factory.ValidResourceFactory;
 import hu.beni.clientsupport.resource.AmusementParkResource;
 import hu.beni.clientsupport.resource.MachineResource;
 import hu.beni.clientsupport.resource.VisitorResource;
+import hu.beni.tester.properties.AmusementParkDataProperties;
+import hu.beni.tester.properties.ApplicationProperties;
+import hu.beni.tester.properties.DataProperties;
+import hu.beni.tester.properties.MachineDataProperties;
+import hu.beni.tester.properties.VisitorDataProperties;
 
+@Component
 public class ResourceFactory {
 
-	public static final int AMUSEMENT_PARK_CAPITAL = 3000;
-	public static final int AMUSEMENT_PARK_ENTRANCE_FEE = 50;
-	public static final int MACHINE_PRICE = 250;
-	public static final int MACHINE_TICKET_PRICE = 10;
-	public static final int VISITOR_SPENDING_MONEY = 1000000;
+	private final AmusementParkDataProperties amusementPark;
+	private final MachineDataProperties machine;
+	private final VisitorDataProperties visitor;
 
-	public static AmusementParkResource createAmusementParkWithAddress() {
+	public ResourceFactory(ApplicationProperties applicationProperties) {
+		DataProperties data = applicationProperties.getData();
+		amusementPark = data.getAmusementPark();
+		machine = data.getMachine();
+		visitor = data.getVisitor();
+	}
+
+	public AmusementParkResource createAmusementParkWithAddress() {
 		AmusementParkResource amusementParkResource = ValidResourceFactory.createAmusementParkWithAddress();
-		amusementParkResource.setCapital(AMUSEMENT_PARK_CAPITAL);
-		amusementParkResource.setEntranceFee(AMUSEMENT_PARK_ENTRANCE_FEE);
+		amusementParkResource.setCapital(amusementPark.getCapital());
+		amusementParkResource.setEntranceFee(amusementPark.getEntranceFee());
 		return amusementParkResource;
 	}
 
-	public static MachineResource createMachine() {
+	public MachineResource createMachine() {
 		MachineResource machineResource = ValidResourceFactory.createMachine();
-		machineResource.setPrice(MACHINE_PRICE);
-		machineResource.setTicketPrice(MACHINE_TICKET_PRICE);
+		machineResource.setPrice(machine.getPrice());
+		machineResource.setTicketPrice(machine.getTicketPrice());
 		return machineResource;
 	}
 
-	public static VisitorResource createVisitor() {
+	public VisitorResource createVisitor() {
 		VisitorResource visitorResource = ValidResourceFactory.createVisitor();
-		visitorResource.setSpendingMoney(VISITOR_SPENDING_MONEY);
+		visitorResource.setSpendingMoney(visitor.getSpendingMoney());
 		return visitorResource;
 	}
 }

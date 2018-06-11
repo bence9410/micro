@@ -1,9 +1,5 @@
 package hu.beni.tester.output;
 
-import static hu.beni.tester.TesterApplicationTests.NUMBER_OF_ADMINS;
-import static hu.beni.tester.TesterApplicationTests.NUMBER_OF_VISITORS;
-import static hu.beni.tester.constant.Constants.NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK;
-import static hu.beni.tester.constant.Constants.NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN;
 import static hu.beni.tester.constant.Constants.SEMICOLON;
 
 import java.io.File;
@@ -15,6 +11,8 @@ import java.util.Properties;
 
 import hu.beni.tester.dto.DeleteTime;
 import hu.beni.tester.dto.TimeTo;
+import hu.beni.tester.properties.ApplicationProperties;
+import hu.beni.tester.properties.NumberOfProperties;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -43,12 +41,13 @@ public class ResultLogger {
 
 	private final String[] result;
 
-	public ResultLogger(TimeTo timeTo) {
+	public ResultLogger(TimeTo timeTo, ApplicationProperties properties) {
+		NumberOfProperties numberOf = properties.getNumberOf();
 		DeleteTime deleteParks = timeTo.getDeleteParks();
 		DeleteTime deleteVisitors = timeTo.getDeleteVisitors();
 		result = new String[] {
-				NUMBER_OF_ADMINS + "a " + NUMBER_OF_VISITORS + "v " + NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN + "p/a "
-						+ NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK + "m/p ",
+				numberOf.getAdmins() + "a " + numberOf.getVisitors() + "v " + numberOf.getAmusementParksPerAdmin()
+						+ "p/a " + numberOf.getMachinesPerPark() + "m/p ",
 				Long.toString(timeTo.getFullRun()), minAvgMax(timeTo.getCreateAmusementParksWithMachines()),
 				minAvgMax(timeTo.getFindAllParksPagedBeforeVisitorStuff()), minAvgMax(timeTo.getWholeVisitorStuff()),
 				minAvgMax(timeTo.getTenParkVisitorStuff()), minAvgMax(timeTo.getOneParkVisitorStuff()),

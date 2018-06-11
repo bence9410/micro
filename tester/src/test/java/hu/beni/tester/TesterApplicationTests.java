@@ -1,12 +1,5 @@
 package hu.beni.tester;
 
-import static hu.beni.tester.constant.Constants.NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK;
-import static hu.beni.tester.constant.Constants.NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN;
-import static hu.beni.tester.factory.ResourceFactory.AMUSEMENT_PARK_CAPITAL;
-import static hu.beni.tester.factory.ResourceFactory.AMUSEMENT_PARK_ENTRANCE_FEE;
-import static hu.beni.tester.factory.ResourceFactory.MACHINE_PRICE;
-import static hu.beni.tester.factory.ResourceFactory.MACHINE_TICKET_PRICE;
-import static hu.beni.tester.factory.ResourceFactory.VISITOR_SPENDING_MONEY;
 import static java.util.stream.Collectors.toList;
 
 import java.util.LinkedList;
@@ -32,6 +25,9 @@ import hu.beni.tester.archive.ArchiveReceiver;
 import hu.beni.tester.dto.SumAndTime;
 import hu.beni.tester.dto.TimeTo;
 import hu.beni.tester.output.ResultLogger;
+import hu.beni.tester.properties.ApplicationProperties;
+import hu.beni.tester.properties.DataProperties;
+import hu.beni.tester.properties.NumberOfProperties;
 import hu.beni.tester.service.AsyncService;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,24 +37,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TesterApplicationTests {
 
-	public static final int NUMBER_OF_ADMINS = 5;
-	public static final int NUMBER_OF_VISITORS = 5;
+	private int expectedCapitalBeforeVisitorsSum;
+	private int expectedCapitalAfterVisitorsSum;
+	private int expectedSpendingMoneySum;
 
-	private static final int EXPECTED_CAPITAL_BEFORE_VISITORS_SUM;
-	private static final int EXPECTED_CAPITAL_AFTER_VISITORS_SUM;
-	private static final int EXPECTED_SPENDING_MONEY_SUM;
-
-	static {
-		EXPECTED_CAPITAL_BEFORE_VISITORS_SUM = NUMBER_OF_ADMINS * NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN
-				* (AMUSEMENT_PARK_CAPITAL - NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK * MACHINE_PRICE);
-		int moneyOneVisitorSpendInAPark = AMUSEMENT_PARK_ENTRANCE_FEE
-				+ NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK * MACHINE_TICKET_PRICE;
-		EXPECTED_CAPITAL_AFTER_VISITORS_SUM = EXPECTED_CAPITAL_BEFORE_VISITORS_SUM + NUMBER_OF_VISITORS
-				* moneyOneVisitorSpendInAPark * NUMBER_OF_ADMINS * NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN;
-		EXPECTED_SPENDING_MONEY_SUM = (VISITOR_SPENDING_MONEY
-				- (moneyOneVisitorSpendInAPark * NUMBER_OF_ADMINS * NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN))
-				* NUMBER_OF_VISITORS;
-	}
+	@Autowired
+	private ApplicationProperties properties;
 
 	@Autowired
 	private ArchiveReceiver archiveReceiver;
@@ -78,6 +62,25 @@ public class TesterApplicationTests {
 	@PostConstruct
 	public void init() {
 		admin = admins.get(0);
+
+		NumberOfProperties numberOf = properties.getNumberOf();
+
+		DataProperties data = properties.getData();
+
+		int numberOfAdmins = numberOf.getAdmins();
+		int numberOfVisitors = numberOf.getVisitors();
+		int numberOfParksPerAdmin = numberOf.getAmusementParksPerAdmin();
+		int numberOfMachinesPerPark = numberOf.getMachinesPerPark();
+
+		expectedCapitalBeforeVisitorsSum = numberOf.getAdmins() * numberOfParksPerAdmin
+				* (data.getAmusementPark().getCapital() - numberOf.getMachinesPerPark() * data.getMachine().getPrice());
+		int moneyOneVisitorSpendInAPark = data.getAmusementPark().getEntranceFee()
+				+ numberOfMachinesPerPark * data.getMachine().getTicketPrice();
+		expectedCapitalAfterVisitorsSum = expectedCapitalBeforeVisitorsSum
+				+ numberOfAdmins * moneyOneVisitorSpendInAPark * numberOfAdmins * numberOfParksPerAdmin;
+		expectedSpendingMoneySum = (data.getVisitor().getSpendingMoney()
+				- (moneyOneVisitorSpendInAPark * numberOfAdmins * numberOfParksPerAdmin)) * numberOfVisitors;
+
 	}
 
 	@Test
@@ -186,23 +189,23 @@ public class TesterApplicationTests {
 
 	private void log() {
 		log.info("log");
-		ResultLogger resultLogger = new ResultLogger(timeTo);
+		ResultLogger resultLogger = new ResultLogger(timeTo, properties);
 		resultLogger.logToConsole();
 		resultLogger.writeToFile();
 	}
 
 	private Long checkCapitalSumBeforeVisitorsGetTime(SumAndTime sumAndTime) {
-		return checkSumAndReturnTime(sumAndTime, EXPECTED_CAPITAL_BEFORE_VISITORS_SUM,
+		return checkSumAndReturnTime(sumAndTime, expectedCapitalBeforeVisitorsSum,
 				"Problem with capital sum before visitors!");
 	}
 
 	private Long checkCapitalSumAfterVisitorsGetTime(SumAndTime sumAndTime) {
-		return checkSumAndReturnTime(sumAndTime, EXPECTED_CAPITAL_AFTER_VISITORS_SUM,
+		return checkSumAndReturnTime(sumAndTime, expectedCapitalAfterVisitorsSum,
 				"Problem with capital sum after visitors!");
 	}
 
 	private Long checkSpendingMoneySunGetTime(SumAndTime sumAndTime) {
-		return checkSumAndReturnTime(sumAndTime, EXPECTED_SPENDING_MONEY_SUM, "Problem with spending money sum!");
+		return checkSumAndReturnTime(sumAndTime, expectedSpendingMoneySum, "Problem with spending money sum!");
 	}
 
 	private Long checkSumAndReturnTime(SumAndTime sumAndTime, long expectedSum, String errorMessage) {

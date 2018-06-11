@@ -1,0 +1,15 @@
+tester:
+  number-of:
+    admins: 5
+    visitors: 5
+    amusement-parks-per-admin: 10
+    machines-per-park: 10
+  data:
+    amusement-park:
+      capital: 3000
+      entrance-fee: 50
+    machine:
+      price: 250
+      ticket-price: 10
+    visitor:
+      spending-money: 1000000

@@ -15,15 +15,10 @@ import static hu.beni.tester.constant.Constants.AMUSEMENT_PARK_URL;
 import static hu.beni.tester.constant.Constants.GUEST_BOOK_REGISTRY_TEXT;
 import static hu.beni.tester.constant.Constants.LOGIN_URL;
 import static hu.beni.tester.constant.Constants.LOGOUT_URL;
-import static hu.beni.tester.constant.Constants.NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK;
-import static hu.beni.tester.constant.Constants.NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN;
 import static hu.beni.tester.constant.Constants.PASS;
 import static hu.beni.tester.constant.Constants.PASSWORD;
 import static hu.beni.tester.constant.Constants.USERNAME;
 import static hu.beni.tester.constant.Constants.VISITOR_URL;
-import static hu.beni.tester.factory.ResourceFactory.createAmusementParkWithAddress;
-import static hu.beni.tester.factory.ResourceFactory.createMachine;
-import static hu.beni.tester.factory.ResourceFactory.createVisitor;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 import java.net.URI;
@@ -54,6 +49,8 @@ import hu.beni.clientsupport.resource.VisitorResource;
 import hu.beni.tester.dto.DeleteTime;
 import hu.beni.tester.dto.SumAndTime;
 import hu.beni.tester.dto.VisitorStuffTime;
+import hu.beni.tester.factory.ResourceFactory;
+import hu.beni.tester.properties.ApplicationProperties;
 import lombok.RequiredArgsConstructor;
 
 @Async
@@ -67,6 +64,8 @@ public class AsyncService {
 
 	private final Client client;
 	private final String username;
+	private final ResourceFactory resourceFactory;
+	private final ApplicationProperties properties;
 
 	public CompletableFuture<Void> login() {
 		client.post(uri(LOGIN_URL), MediaType.APPLICATION_FORM_URLENCODED, createMapWithUsernameAndPass(), Void.class);
@@ -116,11 +115,14 @@ public class AsyncService {
 	}
 
 	private Stream<AmusementParkResource> createAmusementParks() {
-		return IntStream.range(0, NUMBER_OF_PARKS_TO_CREATE_PER_ADMIN).mapToObj(i -> createAmusementPark());
+		return IntStream.range(0, properties.getNumberOf().getAmusementParksPerAdmin())
+				.mapToObj(i -> createAmusementPark());
 	}
 
 	private AmusementParkResource createAmusementPark() {
-		return client.post(uri(AMUSEMENT_PARK_URL), createAmusementParkWithAddress(), AMUSEMENT_PARK_TYPE).getBody();
+		return client
+				.post(uri(AMUSEMENT_PARK_URL), resourceFactory.createAmusementParkWithAddress(), AMUSEMENT_PARK_TYPE)
+				.getBody();
 	}
 
 	private String mapToMachineLinkHref(AmusementParkResource amusementParkResource) {
@@ -128,11 +130,11 @@ public class AsyncService {
 	}
 
 	private void createMachines(String machineUrl) {
-		IntStream.range(0, NUMBER_OF_MACHINES_TO_CREATE_FOR_EACH_PARK).forEach(i -> addMachine(machineUrl));
+		IntStream.range(0, properties.getNumberOf().getMachinesPerPark()).forEach(i -> addMachine(machineUrl));
 	}
 
 	private void addMachine(String machineUrl) {
-		client.post(uri(machineUrl), createMachine(), MACHINE_TYPE);
+		client.post(uri(machineUrl), resourceFactory.createMachine(), MACHINE_TYPE);
 	}
 
 	public CompletableFuture<SumAndTime> sumAmusementParksCapital() {
@@ -163,7 +165,8 @@ public class AsyncService {
 
 	private void visitAllStuffInEveryPark(List<Long> oneParkTimes, List<Long> tenParkTimes) {
 		Optional<String> nextPageUrl = Optional.of(AMUSEMENT_PARK_URL);
-		VisitorResource visitorResource = client.post(uri(VISITOR_URL), createVisitor(), VISITOR_TYPE).getBody();
+		VisitorResource visitorResource = client.post(uri(VISITOR_URL), resourceFactory.createVisitor(), VISITOR_TYPE)
+				.getBody();
 		do {
 			long tenParkStart = now();
 			PagedResources<AmusementParkResource> page = client
