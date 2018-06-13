@@ -22,13 +22,11 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import hu.beni.tester.archive.ArchiveReceiver;
-import hu.beni.tester.dto.SumAndTime;
 import hu.beni.tester.dto.TimeTo;
 import hu.beni.tester.output.ResultLogger;
 import hu.beni.tester.properties.ApplicationProperties;
-import hu.beni.tester.properties.DataProperties;
-import hu.beni.tester.properties.NumberOfProperties;
 import hu.beni.tester.service.AsyncService;
+import hu.beni.tester.validator.CapitalAndSpendingMoneySumValidator;
 import lombok.extern.slf4j.Slf4j;
 
 @RunWith(SpringRunner.class)
@@ -37,15 +35,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TesterApplicationTests {
 
-	private int expectedCapitalBeforeVisitorsSum;
-	private int expectedCapitalAfterVisitorsSum;
-	private int expectedSpendingMoneySum;
-
 	@Autowired
 	private ApplicationProperties properties;
 
 	@Autowired
 	private ArchiveReceiver archiveReceiver;
+
+	@Autowired
+	private CapitalAndSpendingMoneySumValidator validator;
 
 	@Autowired
 	@Qualifier("admins")
@@ -62,25 +59,6 @@ public class TesterApplicationTests {
 	@PostConstruct
 	public void init() {
 		admin = admins.get(0);
-
-		NumberOfProperties numberOf = properties.getNumberOf();
-
-		DataProperties data = properties.getData();
-
-		int numberOfAdmins = numberOf.getAdmins();
-		int numberOfVisitors = numberOf.getVisitors();
-		int numberOfParksPerAdmin = numberOf.getAmusementParksPerAdmin();
-		int numberOfMachinesPerPark = numberOf.getMachinesPerPark();
-
-		expectedCapitalBeforeVisitorsSum = numberOf.getAdmins() * numberOfParksPerAdmin
-				* (data.getAmusementPark().getCapital() - numberOf.getMachinesPerPark() * data.getMachine().getPrice());
-		int moneyOneVisitorSpendInAPark = data.getAmusementPark().getEntranceFee()
-				+ numberOfMachinesPerPark * data.getMachine().getTicketPrice();
-		expectedCapitalAfterVisitorsSum = expectedCapitalBeforeVisitorsSum
-				+ numberOfAdmins * moneyOneVisitorSpendInAPark * numberOfAdmins * numberOfParksPerAdmin;
-		expectedSpendingMoneySum = (data.getVisitor().getSpendingMoney()
-				- (moneyOneVisitorSpendInAPark * numberOfAdmins * numberOfParksPerAdmin)) * numberOfVisitors;
-
 	}
 
 	@Test
@@ -135,7 +113,7 @@ public class TesterApplicationTests {
 	private void sumAmusementParksCapitalBeforeVisitorStuff() {
 		log.info("sumAmusementParksCapitalBeforeVisitorStuff");
 		timeTo.setFindAllParksPagedBeforeVisitorStuff(executeAdminsAsyncJoinAndMap(
-				AsyncService::sumAmusementParksCapital, this::checkCapitalSumBeforeVisitorsGetTime));
+				AsyncService::sumAmusementParksCapital, validator::checkCapitalSumBeforeVisitorsGetTime));
 	}
 
 	private void visitorsVisitAllStuffInEveryPark() {
@@ -156,13 +134,13 @@ public class TesterApplicationTests {
 	private void sumAmusementParksCapitalAfterVisitorStuff() {
 		log.info("sumAmusementParksCapitalAfterVisitorStuff");
 		timeTo.setFindAllParksPagedAfterVisitorStuff(executeAdminsAsyncJoinAndMap(
-				AsyncService::sumAmusementParksCapital, this::checkCapitalSumAfterVisitorsGetTime));
+				AsyncService::sumAmusementParksCapital, validator::checkCapitalSumAfterVisitorsGetTime));
 	}
 
 	private void sumVisitorsSpendingMoney() {
 		log.info("sumVisitorsSpendingMoney");
 		timeTo.setFindAllVisitorsPaged(executeAdminsAsyncJoinAndMap(AsyncService::sumVisitorsSpendingMoney,
-				this::checkSpendingMoneySunGetTime));
+				validator::checkSpendingMoneySunGetTime));
 	}
 
 	private void deleteParksAndVisitors() {
@@ -192,27 +170,6 @@ public class TesterApplicationTests {
 		ResultLogger resultLogger = new ResultLogger(timeTo, properties);
 		resultLogger.logToConsole();
 		resultLogger.writeToFile();
-	}
-
-	private Long checkCapitalSumBeforeVisitorsGetTime(SumAndTime sumAndTime) {
-		return checkSumAndReturnTime(sumAndTime, expectedCapitalBeforeVisitorsSum,
-				"Problem with capital sum before visitors!");
-	}
-
-	private Long checkCapitalSumAfterVisitorsGetTime(SumAndTime sumAndTime) {
-		return checkSumAndReturnTime(sumAndTime, expectedCapitalAfterVisitorsSum,
-				"Problem with capital sum after visitors!");
-	}
-
-	private Long checkSpendingMoneySunGetTime(SumAndTime sumAndTime) {
-		return checkSumAndReturnTime(sumAndTime, expectedSpendingMoneySum, "Problem with spending money sum!");
-	}
-
-	private Long checkSumAndReturnTime(SumAndTime sumAndTime, long expectedSum, String errorMessage) {
-		if (sumAndTime.getSum() != expectedSum) {
-			throw new RuntimeException(errorMessage);
-		}
-		return sumAndTime.getTime();
 	}
 
 	private <R> R executeAdminAndJoin(Function<AsyncService, CompletableFuture<R>> asyncMethod) {
