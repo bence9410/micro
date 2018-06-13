@@ -23,23 +23,40 @@ public class CapitalAndSpendingMoneySumValidator {
 	@PostConstruct
 	public void init() {
 
+		DataProperties data = properties.getData();
 		NumberOfProperties numberOf = properties.getNumberOf();
 
-		DataProperties data = properties.getData();
+		int visitors = numberOf.getVisitors();
+		int machinesPerPark = numberOf.getMachinesPerPark();
+		int totalNumberOfParks = numberOf.getAmusementParks();
 
-		int numberOfAdmins = numberOf.getAdmins();
-		int numberOfVisitors = numberOf.getVisitors();
-		int numberOfParksPerAdmin = numberOf.getAmusementParksPerAdmin();
-		int numberOfMachinesPerPark = numberOf.getMachinesPerPark();
+		calculateAndSetExpectedCapitalBeforeVisitorsSum(totalNumberOfParks, data.getAmusementPark().getCapital(),
+				machinesPerPark * data.getMachine().getPrice());
 
-		expectedCapitalBeforeVisitorsSum = numberOf.getAdmins() * numberOfParksPerAdmin
-				* (data.getAmusementPark().getCapital() - numberOf.getMachinesPerPark() * data.getMachine().getPrice());
 		int moneyOneVisitorSpendInAPark = data.getAmusementPark().getEntranceFee()
-				+ numberOfMachinesPerPark * data.getMachine().getTicketPrice();
-		expectedCapitalAfterVisitorsSum = expectedCapitalBeforeVisitorsSum
-				+ numberOfAdmins * moneyOneVisitorSpendInAPark * numberOfAdmins * numberOfParksPerAdmin;
-		expectedSpendingMoneySum = (data.getVisitor().getSpendingMoney()
-				- (moneyOneVisitorSpendInAPark * numberOfAdmins * numberOfParksPerAdmin)) * numberOfVisitors;
+				+ machinesPerPark * data.getMachine().getTicketPrice();
+
+		int totalMoneyAllVisitorsSpend = moneyOneVisitorSpendInAPark * totalNumberOfParks * visitors;
+
+		calculateAndSetExpectedCapitalAfterVisitorsSum(totalMoneyAllVisitorsSpend);
+
+		calculateAndSetExpectedSpendingMoneySum(data.getVisitor().getSpendingMoney(), visitors,
+				totalMoneyAllVisitorsSpend);
+
+	}
+
+	private void calculateAndSetExpectedCapitalBeforeVisitorsSum(int totalNumberOfParks, int oneParkCapital,
+			int machinesPriceForOnePark) {
+		expectedCapitalBeforeVisitorsSum = totalNumberOfParks * (oneParkCapital - machinesPriceForOnePark);
+	}
+
+	private void calculateAndSetExpectedCapitalAfterVisitorsSum(int moneyVisitorsSpend) {
+		expectedCapitalAfterVisitorsSum = expectedCapitalBeforeVisitorsSum + moneyVisitorsSpend;
+	}
+
+	private void calculateAndSetExpectedSpendingMoneySum(int oneVisitorSpendingMoney, int numberOfVisitors,
+			int totalMoneyAllVisitorsSpend) {
+		expectedSpendingMoneySum = oneVisitorSpendingMoney * numberOfVisitors - totalMoneyAllVisitorsSpend;
 	}
 
 	public Long checkCapitalSumBeforeVisitorsGetTime(SumAndTime sumAndTime) {
