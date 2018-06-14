@@ -64,8 +64,6 @@ public class TesterApplicationTests {
 	@Test
 	public void test() {
 
-		log.info(properties.toString());
-
 		login();
 
 		clearDB();
