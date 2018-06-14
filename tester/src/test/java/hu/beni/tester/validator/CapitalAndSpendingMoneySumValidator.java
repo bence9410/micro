@@ -74,8 +74,9 @@ public class CapitalAndSpendingMoneySumValidator {
 	}
 
 	private Long checkSumAndReturnTime(SumAndTime sumAndTime, long expectedSum, String errorMessage) {
-		if (sumAndTime.getSum() != expectedSum) {
-			throw new RuntimeException(errorMessage);
+		long sum = sumAndTime.getSum();
+		if (sum != expectedSum) {
+			throw new RuntimeException(errorMessage + " Expected: " + expectedSum + ". Actual: " + sum + ".");
 		}
 		return sumAndTime.getTime();
 	}
