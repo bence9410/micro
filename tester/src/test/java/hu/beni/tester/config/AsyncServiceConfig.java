@@ -34,7 +34,7 @@ public class AsyncServiceConfig {
 
 	@Bean
 	public List<AsyncService> visitors() {
-		return createAsyncServices(properties.getNumberOf().getAdmins(), this::createVisitorUsername);
+		return createAsyncServices(properties.getNumberOf().getVisitors(), this::createVisitorUsername);
 	}
 
 	private String createAdminUsername(int usernameIndex) {
