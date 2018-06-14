@@ -36,7 +36,6 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.ResourceSupport;
 import org.springframework.hateoas.mvc.TypeReferences.PagedResourcesType;
-import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -68,7 +67,7 @@ public class AsyncService {
 	private final ApplicationProperties properties;
 
 	public CompletableFuture<Void> login() {
-		client.post(uri(LOGIN_URL), MediaType.APPLICATION_FORM_URLENCODED, createMapWithUsernameAndPass(), Void.class);
+		client.post(uri(LOGIN_URL), createMapWithUsernameAndPass());
 		return CompletableFuture.completedFuture(null);
 	}
 
@@ -80,7 +79,7 @@ public class AsyncService {
 	}
 
 	public CompletableFuture<?> logout() {
-		client.post(uri(LOGOUT_URL), null, Void.class);
+		client.post(uri(LOGOUT_URL));
 		return CompletableFuture.completedFuture(null);
 	}
 
@@ -189,7 +188,7 @@ public class AsyncService {
 
 	private void visitEverythingInAPark(URI enterParkUrl, List<Long> oneParkTimes) {
 		long startPark = now();
-		VisitorResource visitorResource = client.put(enterParkUrl, null, VISITOR_TYPE).getBody();
+		VisitorResource visitorResource = client.put(enterParkUrl, VISITOR_TYPE).getBody();
 		getMachinesAndGetOnAndOff(visitorResource);
 		addRegistryAndLeave(visitorResource);
 		oneParkTimes.add(millisFrom(startPark));
@@ -203,13 +202,13 @@ public class AsyncService {
 	}
 
 	private void getOnAndOffMachine(String getOnMachineUrl, Long visitorId) {
-		VisitorResource onMachineVisitor = client.put(uri(getOnMachineUrl, visitorId), null, VISITOR_TYPE).getBody();
-		client.put(uri(onMachineVisitor.getLink(GET_OFF_MACHINE).getHref()), null, Void.class);
+		VisitorResource onMachineVisitor = client.put(uri(getOnMachineUrl, visitorId), VISITOR_TYPE).getBody();
+		client.put(uri(onMachineVisitor.getLink(GET_OFF_MACHINE).getHref()));
 	}
 
 	private void addRegistryAndLeave(VisitorResource visitorResource) {
-		client.post(uri(visitorResource.getLink(ADD_REGISTRY).getHref()), GUEST_BOOK_REGISTRY_TEXT, Void.class);
-		client.put(uri(visitorResource.getLink(VISITOR_LEAVE_PARK).getHref()), null, Void.class);
+		client.post(uri(visitorResource.getLink(ADD_REGISTRY).getHref()), GUEST_BOOK_REGISTRY_TEXT);
+		client.put(uri(visitorResource.getLink(VISITOR_LEAVE_PARK).getHref()));
 	}
 
 	public CompletableFuture<SumAndTime> sumVisitorsSpendingMoney() {

@@ -50,7 +50,6 @@ import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.mvc.TypeReferences.PagedResourcesType;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
@@ -187,8 +186,7 @@ public class AmusementParkApplicationTests {
 	private void login(String username, String password) {
 		logout();
 
-		ResponseEntity<Void> response = client.post(uri(getLoginUrl()), MediaType.APPLICATION_FORM_URLENCODED,
-				createMap(username, password), Void.class);
+		ResponseEntity<Void> response = client.post(uri(getLoginUrl()), createMap(username, password));
 
 		assertEquals(HttpStatus.FOUND, response.getStatusCode());
 
@@ -206,7 +204,7 @@ public class AmusementParkApplicationTests {
 	}
 
 	private String getLoginUrl() {
-		ResponseEntity<Void> response = client.post(uri(amusementParkUrl), null, Void.class);
+		ResponseEntity<Void> response = client.post(uri(amusementParkUrl));
 
 		assertEquals(HttpStatus.FOUND, response.getStatusCode());
 
@@ -220,7 +218,7 @@ public class AmusementParkApplicationTests {
 	}
 
 	private void logout() {
-		ResponseEntity<Void> response = client.post(uri(logoutUrl), null, Void.class);
+		ResponseEntity<Void> response = client.post(uri(logoutUrl));
 
 		assertEquals(HttpStatus.FOUND, response.getStatusCode());
 		assertTrue(response.getHeaders().getLocation().toString().contains("login?logout"));
@@ -231,7 +229,7 @@ public class AmusementParkApplicationTests {
 	}
 
 	private void testRedirectToLoginPage() {
-		ResponseEntity<Void> response = client.post(uri(amusementParkUrl), null, Void.class);
+		ResponseEntity<Void> response = client.post(uri(amusementParkUrl));
 
 		assertEquals(HttpStatus.FOUND, response.getStatusCode());
 		assertTrue(response.getHeaders().getLocation().toString().endsWith("login"));
@@ -320,7 +318,7 @@ public class AmusementParkApplicationTests {
 	}
 
 	private VisitorResource getOnMachine(String getOnMachineUrl, Long visitorId) {
-		ResponseEntity<VisitorResource> response = client.put(uri(getOnMachineUrl, visitorId), null, VISITOR_TYPE);
+		ResponseEntity<VisitorResource> response = client.put(uri(getOnMachineUrl, visitorId), VISITOR_TYPE);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -335,7 +333,7 @@ public class AmusementParkApplicationTests {
 	}
 
 	private VisitorResource getOffMachine(String getOffMachineUrl) {
-		ResponseEntity<VisitorResource> response = client.put(uri(getOffMachineUrl), null, VISITOR_TYPE);
+		ResponseEntity<VisitorResource> response = client.put(uri(getOffMachineUrl), VISITOR_TYPE);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -368,7 +366,7 @@ public class AmusementParkApplicationTests {
 	}
 
 	private void leavePark(String leaveParkUrl) {
-		ResponseEntity<Void> response = client.put(uri(leaveParkUrl), null, Void.class);
+		ResponseEntity<Void> response = client.put(uri(leaveParkUrl));
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 
