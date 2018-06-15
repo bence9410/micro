@@ -7,6 +7,8 @@ import lombok.Setter;
 @Setter
 public class NumberOfProperties {
 
+	private Integer runs;
+
 	private Integer admins;
 
 	private Integer visitors;

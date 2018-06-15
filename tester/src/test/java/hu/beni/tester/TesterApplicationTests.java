@@ -8,6 +8,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 
 import javax.annotation.PostConstruct;
 
@@ -54,7 +55,7 @@ public class TesterApplicationTests {
 
 	private AsyncService admin;
 
-	private TimeTo timeTo = new TimeTo();
+	private TimeTo timeTo;
 
 	@PostConstruct
 	public void init() {
@@ -66,8 +67,15 @@ public class TesterApplicationTests {
 
 		login();
 
+		IntStream.range(0, properties.getNumberOf().getRuns()).forEach(i -> actualTestWithClearBeforeAndLogAfter());
+
+		logout();
+	}
+
+	private void actualTestWithClearBeforeAndLogAfter() {
 		clearDB();
 
+		timeTo = new TimeTo();
 		long start = System.currentTimeMillis();
 
 		createAmusementParksWithMachines();
@@ -86,10 +94,7 @@ public class TesterApplicationTests {
 
 		timeTo.setFullRun(System.currentTimeMillis() - start);
 
-		logout();
-
 		log();
-
 	}
 
 	private void login() {

@@ -1,8 +1,9 @@
 tester:
   number-of:
+    runs: 10
     admins: 5
-    visitors: 5
-    amusement-parks-per-admin: 10
+    visitors: 10
+    amusement-parks-per-admin: 25
     machines-per-park: 10
   data:
     amusement-park:
