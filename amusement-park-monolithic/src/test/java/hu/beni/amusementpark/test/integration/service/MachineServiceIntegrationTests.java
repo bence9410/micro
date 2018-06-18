@@ -1,4 +1,4 @@
-package hu.beni.amusementpark.test.integration;
+package hu.beni.amusementpark.test.integration.service;
 
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_MACHINE_IN_PARK_WITH_ID;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;

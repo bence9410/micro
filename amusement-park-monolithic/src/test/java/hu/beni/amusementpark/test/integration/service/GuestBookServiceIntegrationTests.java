@@ -1,4 +1,4 @@
-package hu.beni.amusementpark.test.integration;
+package hu.beni.amusementpark.test.integration.service;
 
 import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;

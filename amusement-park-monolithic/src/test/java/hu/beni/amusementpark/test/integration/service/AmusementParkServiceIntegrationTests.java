@@ -1,4 +1,4 @@
-package hu.beni.amusementpark.test.integration;
+package hu.beni.amusementpark.test.integration.service;
 
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_ARCHIVE_SEND_TYPE;
