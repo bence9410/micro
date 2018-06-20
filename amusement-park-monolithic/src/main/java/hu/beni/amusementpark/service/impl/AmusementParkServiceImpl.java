@@ -54,11 +54,6 @@ public class AmusementParkServiceImpl implements AmusementParkService {
 	}
 
 	@Override
-	public List<AmusementPark> findAllFetchAddress() {
-		return amusementParkRepository.findAllFetchAddress();
-	}
-
-	@Override
 	public Page<AmusementPark> findAllFetchAddress(Pageable pageable) {
 		return amusementParkRepository.findAllFetchAddress(pageable);
 	}

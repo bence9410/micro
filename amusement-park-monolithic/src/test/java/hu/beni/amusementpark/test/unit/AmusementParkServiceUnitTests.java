@@ -157,18 +157,6 @@ public class AmusementParkServiceUnitTests {
 	}
 
 	@Test
-	public void findAllFetchAddressPositive() {
-		List<AmusementPark> amusementParks = Arrays.asList(AmusementPark.builder().id(0L).build(),
-				AmusementPark.builder().id(1L).build());
-
-		when(amusementParkRepository.findAllFetchAddress()).thenReturn(amusementParks);
-
-		assertEquals(amusementParks, amusementParkService.findAllFetchAddress());
-
-		verify(amusementParkRepository).findAllFetchAddress();
-	}
-
-	@Test
 	public void findAllFetchAddressByPageablePositive() {
 		Page<AmusementPark> page = new PageImpl<>(
 				Arrays.asList(AmusementPark.builder().id(0L).build(), AmusementPark.builder().id(1L).build()));

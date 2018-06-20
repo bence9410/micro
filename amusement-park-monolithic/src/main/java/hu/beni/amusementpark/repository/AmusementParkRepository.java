@@ -4,13 +4,11 @@ import static hu.beni.amusementpark.constants.ParameterMappingConstants.AMMOUNT;
 import static hu.beni.amusementpark.constants.ParameterMappingConstants.AMUSEMENT_PARK_ID;
 import static hu.beni.amusementpark.constants.ParameterMappingConstants.VISITOR_ID;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.EntityGraph.EntityGraphType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -22,16 +20,11 @@ import hu.beni.amusementpark.entity.AmusementPark;
 public interface AmusementParkRepository
 		extends JpaRepository<AmusementPark, Long>, JpaSpecificationExecutor<AmusementPark> {
 
-	@Query("Select a from AmusementPark a where a.id = :amusementParkId")
-	@EntityGraph(attributePaths = "address", type = EntityGraphType.FETCH)
+	@Query("Select a from AmusementPark a join fetch a.address where a.id = :amusementParkId")
 	public Optional<AmusementPark> findByIdFetchAddress(@Param(AMUSEMENT_PARK_ID) Long amusementParkId);
 
 	@Query("Select a from AmusementPark a")
-	@EntityGraph(attributePaths = "address", type = EntityGraphType.FETCH)
-	public List<AmusementPark> findAllFetchAddress();
-
-	@Query("Select a from AmusementPark a")
-	@EntityGraph(attributePaths = "address", type = EntityGraphType.FETCH)
+	@EntityGraph(attributePaths = "address")
 	public Page<AmusementPark> findAllFetchAddress(Pageable pageable);
 
 	@Modifying

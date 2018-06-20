@@ -38,13 +38,16 @@ public class AmusementParkMapper extends EntityMapper<AmusementPark, AmusementPa
 
 	@Override
 	public AmusementPark toEntity(AmusementParkResource resource) {
-		return AmusementPark.builder() //@formatter:off
+		AmusementPark amusementPark = AmusementPark.builder() //@formatter:off
 				.id(resource.getIdentifier())
 				.name(resource.getName())
 				.capital(resource.getCapital())
 				.totalArea(resource.getTotalArea())
 				.entranceFee(resource.getEntranceFee())
 				.address(toEntity(resource.getAddress())).build(); //@formatter:on
+		amusementPark.getAddress().setAmusementPark(amusementPark);
+		return amusementPark;
+
 	}
 
 	private AddressDTO toDTO(Address entity) {

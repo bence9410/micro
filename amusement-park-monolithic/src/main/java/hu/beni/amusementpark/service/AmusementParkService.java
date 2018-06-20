@@ -18,8 +18,6 @@ public interface AmusementParkService {
 
 	void delete(Long amusementParkId);
 
-	List<AmusementPark> findAllFetchAddress();
-
 	Page<AmusementPark> findAllFetchAddress(Pageable pageable);
 
 	List<AmusementPark> findAll(Specification<AmusementPark> specification);
