@@ -16,7 +16,6 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor
 public class GuestBookRegistryResource extends ResourceSupport implements Serializable {
 
 	private static final long serialVersionUID = -5588641314911131702L;

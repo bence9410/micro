@@ -16,7 +16,6 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor
 public class AmusementParkResource extends ResourceSupport implements Serializable {
 
 	private static final long serialVersionUID = -7411398427560874485L;

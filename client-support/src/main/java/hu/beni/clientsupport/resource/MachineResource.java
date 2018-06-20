@@ -15,7 +15,6 @@ import lombok.ToString;
 @Data
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
-@NoArgsConstructor
 public class MachineResource extends ResourceSupport implements Serializable {
 
 	private static final long serialVersionUID = 1009869702988779913L;
