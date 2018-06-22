@@ -94,6 +94,7 @@
 					<testFailureIgnore>true</testFailureIgnore>
 					<includes>
 						<include>**/validation/**.java</include>
+						<include>**/RabbitMQArchiveSenderTests.java</include>
 					</includes>
 				</configuration>
 			</plugin>
@@ -111,9 +112,12 @@
 				</executions>
 				<configuration>
 					<includes>
-						<include>**/integration/**.java</include>
-						<include>**/unit/**.java</include>
+						<include>**/**.java</include>
 					</includes>
+					<excludes>
+						<exclude>**/validation/**.java</exclude>
+						<exclude>**/RabbitMQArchiveSenderTests.java</exclude>
+					</excludes>
 				</configuration>
 			</plugin>
 		</plugins>
