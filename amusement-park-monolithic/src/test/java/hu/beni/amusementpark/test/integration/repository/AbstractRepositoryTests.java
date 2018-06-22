@@ -12,8 +12,12 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import hu.beni.amusementpark.AmusementParkApplication;
+import hu.beni.amusementpark.helper.DataSourceConfig;
+
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.NONE)
+@SpringBootTest(webEnvironment = WebEnvironment.NONE, classes = { AmusementParkApplication.class,
+		DataSourceConfig.class })
 public abstract class AbstractRepositoryTests {
 
 	@Autowired
