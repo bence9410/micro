@@ -71,9 +71,11 @@ public class AmusementParkRepositoryTests extends AbstractStatementCounterTests 
 	}
 
 	private void save() {
-		amusementPark = amusementParkRepository.save(createAmusementParkWithAddress());
+		AmusementPark amusementParkBeforeSave = createAmusementParkWithAddress();
+		amusementPark = amusementParkRepository.save(amusementParkBeforeSave);
 		amusementParkId = amusementPark.getId();
-		assertNotNull(amusementParkId);
+		assertEquals(amusementParkBeforeSave, amusementPark);
+		assertEquals(amusementParkBeforeSave.getAddress(), amusementParkBeforeSave.getAddress());
 		insert += 2;
 		incrementSelectIfOracleDBProfileActive();
 		assertStatements();

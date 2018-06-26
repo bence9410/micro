@@ -2,7 +2,6 @@ package hu.beni.amusementpark.test.integration.repository;
 
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
@@ -77,9 +76,10 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 	}
 
 	private void save() {
-		visitor = visitorRepository.save(createVisitorSetAmusementParkAndMachine());
+		Visitor visitorBeforeSave = createVisitorSetAmusementParkAndMachine();
+		visitor = visitorRepository.save(visitorBeforeSave);
 		visitorId = visitor.getId();
-		assertNotNull(visitorId);
+		assertEquals(visitorBeforeSave, visitor);
 		assertTrue(visitor.getDateOfSignUp().isBefore(LocalDateTime.now()));
 		insert++;
 		incrementSelectIfOracleDBProfileActive();

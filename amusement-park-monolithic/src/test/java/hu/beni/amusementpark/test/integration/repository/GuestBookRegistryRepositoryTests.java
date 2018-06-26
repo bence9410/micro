@@ -4,7 +4,6 @@ import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_TH
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
@@ -65,8 +64,9 @@ public class GuestBookRegistryRepositoryTests extends AbstractStatementCounterTe
 	}
 
 	private void save() {
-		guestBookRegistry = guestBookRegistryRepository.save(createGuestBookRegistrySetAmusementParkAndVisitor());
-		assertNotNull(guestBookRegistry.getId());
+		GuestBookRegistry guestBookRegistryBeforeSave = createGuestBookRegistrySetAmusementParkAndVisitor();
+		guestBookRegistry = guestBookRegistryRepository.save(guestBookRegistryBeforeSave);
+		assertEquals(guestBookRegistryBeforeSave, guestBookRegistry);
 		assertTrue(guestBookRegistry.getDateOfRegistry().isBefore(LocalDateTime.now()));
 		insert++;
 		incrementSelectIfOracleDBProfileActive();
