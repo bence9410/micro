@@ -46,4 +46,10 @@ public abstract class AbstractStatementCounterTests {
 		}
 	}
 
+	protected void incrementSelectIfOracleDBProfileActive(int val) {
+		if (Arrays.asList(environment.getActiveProfiles()).contains(ORACLE_DB)) {
+			select += val;
+		}
+	}
+
 }

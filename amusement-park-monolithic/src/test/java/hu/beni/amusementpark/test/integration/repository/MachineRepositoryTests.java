@@ -3,6 +3,9 @@ package hu.beni.amusementpark.test.integration.repository;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createMachine;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -40,6 +43,8 @@ public class MachineRepositoryTests extends AbstractStatementCounterTests {
 
 		save();
 
+		saveAll();
+
 		sumAreaByAmusementParkId();
 
 		findByAmusementParkIdAndMachineId();
@@ -51,19 +56,33 @@ public class MachineRepositoryTests extends AbstractStatementCounterTests {
 		findAll();
 
 		deleteById();
+
+		deleteAll();
 	}
 
 	private void save() {
-		machine = createMachine();
-		machine.setAmusementPark(amusementPark);
-		machine = machineRepository.save(machine);
+		machine = machineRepository.save(createMachineSetAmusementPark());
 		insert++;
 		incrementSelectIfOracleDBProfileActive();
 		assertStatements();
 	}
 
+	private Machine createMachineSetAmusementPark() {
+		Machine machine = createMachine();
+		machine.setAmusementPark(amusementPark);
+		return machine;
+	}
+
+	private void saveAll() {
+		machineRepository
+				.saveAll(Arrays.asList(createMachineSetAmusementPark(), createMachineSetAmusementPark()));
+		insert += 2;
+		incrementSelectIfOracleDBProfileActive(2);
+		assertStatements();
+	}
+
 	private void sumAreaByAmusementParkId() {
-		assertEquals(machine.getSize().intValue(),
+		assertEquals(machine.getSize().intValue() * 3,
 				machineRepository.sumAreaByAmusementParkId(amusementParkId).get().intValue());
 		select++;
 		assertStatements();
@@ -77,7 +96,7 @@ public class MachineRepositoryTests extends AbstractStatementCounterTests {
 	}
 
 	private void findAllByAmusementParkId() {
-		assertEquals(machine, machineRepository.findAllByAmusementParkId(amusementParkId).get(0));
+		assertTrue(machineRepository.findAllByAmusementParkId(amusementParkId).contains(machine));
 		select++;
 		assertStatements();
 	}
@@ -89,7 +108,7 @@ public class MachineRepositoryTests extends AbstractStatementCounterTests {
 	}
 
 	private void findAll() {
-		assertEquals(machine, machineRepository.findAll().get(0));
+		assertTrue(machineRepository.findAll().contains(machine));
 		select++;
 		assertStatements();
 	}
@@ -98,6 +117,13 @@ public class MachineRepositoryTests extends AbstractStatementCounterTests {
 		machineRepository.deleteById(machine.getId());
 		select++;
 		delete++;
+		assertStatements();
+	}
+
+	private void deleteAll() {
+		machineRepository.deleteAll();
+		select++;
+		delete += 2;
 		assertStatements();
 	}
 

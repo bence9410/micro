@@ -3,6 +3,10 @@ package hu.beni.amusementpark.test.integration.repository;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -43,6 +47,8 @@ public class AmusementParkRepositoryTests extends AbstractStatementCounterTests 
 
 		save();
 
+		saveAll();
+
 		incrementCapitalById();
 
 		decreaseCapitalById();
@@ -60,6 +66,8 @@ public class AmusementParkRepositoryTests extends AbstractStatementCounterTests 
 		findAllFetchAddress();
 
 		deleteById();
+
+		deleteAll();
 	}
 
 	private void save() {
@@ -67,6 +75,14 @@ public class AmusementParkRepositoryTests extends AbstractStatementCounterTests 
 		amusementParkId = amusementPark.getId();
 		insert += 2;
 		incrementSelectIfOracleDBProfileActive();
+		assertStatements();
+	}
+
+	private void saveAll() {
+		amusementParkRepository
+				.saveAll(Arrays.asList(createAmusementParkWithAddress(), createAmusementParkWithAddress()));
+		insert += 4;
+		incrementSelectIfOracleDBProfileActive(2);
 		assertStatements();
 	}
 
@@ -129,10 +145,10 @@ public class AmusementParkRepositoryTests extends AbstractStatementCounterTests 
 	}
 
 	private void findAllFetchAddress() {
-		AmusementPark foundAmusementPark = amusementParkRepository.findAllFetchAddress(PageRequest.of(0, 10))
-				.getContent().get(0);
-		assertEquals(amusementPark, foundAmusementPark);
-		assertAddressCityNotNull(foundAmusementPark);
+		List<AmusementPark> amusementParks = amusementParkRepository.findAllFetchAddress(PageRequest.of(0, 10))
+				.getContent();
+		assertTrue(amusementParks.contains(amusementPark));
+		assertAddressCityNotNull(amusementParks.get(amusementParks.indexOf(amusementPark)));
 		select++;
 		assertStatements();
 	}
@@ -145,6 +161,13 @@ public class AmusementParkRepositoryTests extends AbstractStatementCounterTests 
 		amusementParkRepository.deleteById(amusementParkId);
 		select += 4;
 		delete += 3;
+		assertStatements();
+	}
+
+	private void deleteAll() {
+		amusementParkRepository.deleteAll();
+		select += 7;
+		delete += 6;
 		assertStatements();
 	}
 

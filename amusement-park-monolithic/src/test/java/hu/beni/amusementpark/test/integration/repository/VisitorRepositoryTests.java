@@ -2,6 +2,9 @@ package hu.beni.amusementpark.test.integration.repository;
 
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -50,6 +53,8 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 
 		save();
 
+		saveAll();
+
 		findSpendingMoneyByUserName();
 
 		countByMachineId();
@@ -65,16 +70,31 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 		findAll();
 
 		deleteById();
+
+		deleteAll();
 	}
 
 	private void save() {
-		visitor = createVisitor();
-		visitor.setAmusementPark(amusementPark);
-		visitor.setMachine(machine);
-		visitor = visitorRepository.save(visitor);
+		visitor = visitorRepository.save(createVisitorSetAmusementParkAndMachine());
 		visitorId = visitor.getId();
 		insert++;
 		incrementSelectIfOracleDBProfileActive();
+		assertStatements();
+	}
+
+	private Visitor createVisitorSetAmusementParkAndMachine() {
+		Visitor visitor = createVisitor();
+		visitor.setAmusementPark(amusementPark);
+		visitor.setMachine(machine);
+		visitor.setUsername(visitor.getUsername() + Math.random());
+		return visitor;
+	}
+
+	private void saveAll() {
+		visitorRepository.saveAll(
+				Arrays.asList(createVisitorSetAmusementParkAndMachine(), createVisitorSetAmusementParkAndMachine()));
+		insert += 2;
+		incrementSelectIfOracleDBProfileActive(2);
 		assertStatements();
 	}
 
@@ -87,13 +107,13 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 	}
 
 	private void countByMachineId() {
-		assertEquals(1, visitorRepository.countByMachineId(machine.getId()).longValue());
+		assertEquals(3, visitorRepository.countByMachineId(machine.getId()).longValue());
 		select++;
 		assertStatements();
 	}
 
 	private void countByAmusementParkId() {
-		assertEquals(1, visitorRepository.countByAmusementParkId(amusementPark.getId()).longValue());
+		assertEquals(3, visitorRepository.countByAmusementParkId(amusementPark.getId()).longValue());
 		select++;
 		assertStatements();
 	}
@@ -118,7 +138,7 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 	}
 
 	private void findAll() {
-		assertEquals(visitor, visitorRepository.findAll().get(0));
+		assertTrue(visitorRepository.findAll().contains(visitor));
 		select++;
 		assertStatements();
 	}
@@ -127,6 +147,13 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 		visitorRepository.deleteById(visitorId);
 		select++;
 		delete++;
+		assertStatements();
+	}
+
+	private void deleteAll() {
+		visitorRepository.deleteAll();
+		select++;
+		delete += 2;
 		assertStatements();
 	}
 
