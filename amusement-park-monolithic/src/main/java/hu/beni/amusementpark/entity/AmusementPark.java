@@ -61,7 +61,7 @@ public class AmusementPark implements Serializable {
 	private Address address;
 
 	@OneToMany(mappedBy = "amusementPark", cascade = CascadeType.REMOVE)
-	private List<GuestBookRegistry> guestBookRegistry;
+	private List<GuestBookRegistry> guestBookRegistries;
 
 	@OneToMany(mappedBy = "amusementPark", cascade = CascadeType.REMOVE)
 	private List<Machine> machines;
@@ -73,7 +73,7 @@ public class AmusementPark implements Serializable {
 	@JoinTable(name = "amusement_park_visitor", //@formatter:off
 		joinColumns = @JoinColumn(name = "amusement_park_id"),
 		inverseJoinColumns = @JoinColumn(name = "visitor_id")) //@formatter:on
-	private Set<Visitor> visitors;
+	private Set<Visitor> knownVisitors;
 
 	@Tolerate
 	protected AmusementPark() {

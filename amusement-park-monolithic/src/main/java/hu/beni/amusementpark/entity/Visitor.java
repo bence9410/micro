@@ -75,7 +75,7 @@ public class Visitor implements Serializable {
 	@OneToMany(mappedBy = "visitor")
 	private List<GuestBookRegistry> guestBookRegistries;
 
-	@ManyToMany(mappedBy = "visitors")
+	@ManyToMany(mappedBy = "knownVisitors")
 	private Set<AmusementPark> visitedAmusementParks;
 
 	@Tolerate
