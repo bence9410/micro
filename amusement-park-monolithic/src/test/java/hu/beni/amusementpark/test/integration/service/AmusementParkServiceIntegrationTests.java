@@ -19,10 +19,12 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.LazyInitializationException;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -39,7 +41,7 @@ import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.service.AmusementParkService;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(webEnvironment = WebEnvironment.NONE)
 public class AmusementParkServiceIntegrationTests {
 
 	@Autowired
@@ -54,37 +56,34 @@ public class AmusementParkServiceIntegrationTests {
 	@Autowired
 	private AmusementParkRepository amusementParkRepository;
 
+	@Before
+	public void setUp() {
+		amusementParkRepository.deleteAll();
+	}
+
 	@Test
 	public void test() {
-		AmusementPark amusementPark = createAmusementParkWithAddress();
-		Address address = amusementPark.getAddress();
+		AmusementPark amusementPark = amusementParkService.save(createAmusementParkWithAddress());
+		Long amusementParkId = amusementPark.getId();
 
-		AmusementPark createdAmusementPark = amusementParkService.save(amusementPark);
-		assertNotNull(createdAmusementPark);
-		Long id = createdAmusementPark.getId();
-		amusementPark.setId(id);
-		address.setId(createdAmusementPark.getAddress().getId());
+		AmusementPark foundAmusementPark = amusementParkService.findByIdFetchAddress(amusementParkId);
 
-		assertNotNull(id);
-		assertNotNull(address.getId());
-
-		assertEquals(amusementPark, createdAmusementPark);
-		assertEquals(amusementPark, amusementParkService.findByIdFetchAddress(id));
+		assertEquals(amusementPark, foundAmusementPark);
+		assertEquals(amusementPark.getAddress(), foundAmusementPark.getAddress());
 
 		if (environment.getActiveProfiles().length == 0) {
-			assertThatThrownBy(() -> amusementParkService.delete(id)).isInstanceOf(AmusementParkException.class)
-					.hasMessage(NO_ARCHIVE_SEND_TYPE);
-			assertNotNull(amusementParkService.findByIdFetchAddress(id));
+			assertThatThrownBy(() -> amusementParkService.delete(amusementParkId))
+					.isInstanceOf(AmusementParkException.class).hasMessage(NO_ARCHIVE_SEND_TYPE);
+			amusementParkService.findByIdFetchAddress(amusementParkId);
 		}
 
-		amusementParkRepository.deleteById(id);
-		assertThatThrownBy(() -> amusementParkService.findByIdFetchAddress(id))
+		amusementParkRepository.deleteById(amusementParkId);
+		assertThatThrownBy(() -> amusementParkService.findByIdFetchAddress(amusementParkId))
 				.isInstanceOf(AmusementParkException.class).hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
 	}
 
 	@Test
 	public void pageAndSortTest() {
-		amusementParkRepository.deleteAll();
 		createNineAmusementParkWithAscendantCapital();
 
 		Pageable pageable = PageRequest.of(0, 5, Sort.by("capital"));
@@ -101,13 +100,10 @@ public class AmusementParkServiceIntegrationTests {
 
 		firstPage.forEach(minMaxCapitalAsserter);
 		lastPage.forEach(minMaxCapitalAsserter);
-
-		amusementParkRepository.deleteAll();
 	}
 
 	@Test
 	public void specificationTest() {
-		amusementParkRepository.deleteAll();
 		createNineAmusementParkWithAscendantCapital();
 
 		String name = "asd";
@@ -156,8 +152,6 @@ public class AmusementParkServiceIntegrationTests {
 			}
 			return null;
 		});
-
-		amusementParkRepository.deleteAll();
 	}
 
 	private void createNineAmusementParkWithAscendantCapital() {

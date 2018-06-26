@@ -9,6 +9,7 @@ import static org.junit.Assert.assertTrue;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,11 @@ public class GuestBookRegistryRepositoryTests extends AbstractStatementCounterTe
 		visitor.setAmusementPark(amusementPark);
 		visitor = visitorRepository.save(visitor);
 		reset();
+	}
+
+	@After
+	public void tearDown() {
+		visitorRepository.deleteAll();
 	}
 
 	@Test
