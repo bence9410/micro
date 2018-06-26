@@ -23,6 +23,4 @@ public class ArchiveVisitorDTO implements Serializable {
 
 	private LocalDateTime dateOfSignUp;
 
-	private String state;
-
 }

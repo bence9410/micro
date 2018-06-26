@@ -4,9 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
-import hu.beni.clientsupport.resource.GuestBookRegistryResource;
-import hu.beni.clientsupport.resource.MachineResource;
-import hu.beni.clientsupport.resource.VisitorResource;
 import lombok.Builder;
 import lombok.Data;
 
@@ -28,10 +25,10 @@ public class ArchiveAmusementParkDTO implements Serializable {
 
 	private AddressDTO address;
 
-	private List<GuestBookRegistryResource> guestBookRegistry;
+	private List<ArchiveGuestBookRegistryDTO> guestBookRegistries;
 
-	private List<MachineResource> machines;
+	private List<ArchiveMachineDTO> machines;
 
-	private Set<VisitorResource> visitors;
+	private Set<ArchiveVisitorDTO> knownVisitors;
 
 }
