@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 import org.junit.Before;
@@ -79,6 +80,7 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 		visitor = visitorRepository.save(createVisitorSetAmusementParkAndMachine());
 		visitorId = visitor.getId();
 		assertNotNull(visitorId);
+		assertTrue(visitor.getDateOfSignUp().isBefore(LocalDateTime.now()));
 		insert++;
 		incrementSelectIfOracleDBProfileActive();
 		assertStatements();
