@@ -1,6 +1,5 @@
 package hu.beni.amusementpark.test.integration.repository;
 
-import static hu.beni.amusementpark.helper.MySQLStatementCountValidator.reset;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createMachine;
 import static org.junit.Assert.assertEquals;
@@ -13,8 +12,9 @@ import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
+import hu.beni.amusementpark.test.integration.AbstractStatementCounterTests;
 
-public class MachineRepositoryTests extends AbstractRepositoryTests {
+public class MachineRepositoryTests extends AbstractStatementCounterTests {
 
 	@Autowired
 	private AmusementParkRepository amusementParkRepository;

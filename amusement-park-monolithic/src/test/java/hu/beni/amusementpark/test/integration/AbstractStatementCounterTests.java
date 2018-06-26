@@ -1,7 +1,6 @@
-package hu.beni.amusementpark.test.integration.repository;
+package hu.beni.amusementpark.test.integration;
 
 import static hu.beni.amusementpark.constants.SpringProfileConstants.ORACLE_DB;
-import static hu.beni.amusementpark.helper.MySQLStatementCountValidator.assertSQLStatements;
 
 import java.util.Arrays;
 
@@ -12,13 +11,15 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.vladmihalcea.sql.SQLStatementCountValidator;
+
 import hu.beni.amusementpark.AmusementParkApplication;
 import hu.beni.amusementpark.config.DataSourceConfig;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE, classes = { AmusementParkApplication.class,
 		DataSourceConfig.class })
-public abstract class AbstractRepositoryTests {
+public abstract class AbstractStatementCounterTests {
 
 	@Autowired
 	private Environment environment;
@@ -28,8 +29,15 @@ public abstract class AbstractRepositoryTests {
 	protected long update;
 	protected long delete;
 
+	protected void reset() {
+		SQLStatementCountValidator.reset();
+	}
+
 	protected void assertStatements() {
-		assertSQLStatements(select, insert, update, delete);
+		SQLStatementCountValidator.assertSelectCount(select);
+		SQLStatementCountValidator.assertInsertCount(insert);
+		SQLStatementCountValidator.assertUpdateCount(update);
+		SQLStatementCountValidator.assertDeleteCount(delete);
 	}
 
 	protected void incrementSelectIfOracleDBProfileActive() {

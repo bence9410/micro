@@ -1,6 +1,5 @@
 package hu.beni.amusementpark.test.integration.repository;
 
-import static hu.beni.amusementpark.helper.MySQLStatementCountValidator.reset;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -14,8 +13,9 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
+import hu.beni.amusementpark.test.integration.AbstractStatementCounterTests;
 
-public class AmusementParkRepositoryTests extends AbstractRepositoryTests {
+public class AmusementParkRepositoryTests extends AbstractStatementCounterTests {
 
 	@Autowired
 	private TransactionTemplate transactionTemplate;

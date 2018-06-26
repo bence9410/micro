@@ -1,6 +1,5 @@
 package hu.beni.amusementpark.test.integration.repository;
 
-import static hu.beni.amusementpark.helper.MySQLStatementCountValidator.reset;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
 import static org.junit.Assert.assertEquals;
 
@@ -17,8 +16,9 @@ import hu.beni.amusementpark.helper.ValidEntityFactory;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
+import hu.beni.amusementpark.test.integration.AbstractStatementCounterTests;
 
-public class VisitorRepositoryTests extends AbstractRepositoryTests {
+public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 
 	@Autowired
 	private AmusementParkRepository amusementParkRepository;
