@@ -1,4 +1,4 @@
-package hu.beni.amusementpark.helper;
+package hu.beni.amusementpark.config;
 
 import javax.sql.DataSource;
 

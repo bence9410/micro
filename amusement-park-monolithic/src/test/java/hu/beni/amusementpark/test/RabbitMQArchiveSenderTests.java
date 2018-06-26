@@ -21,13 +21,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import hu.beni.amusementpark.AmusementParkApplication;
+import hu.beni.amusementpark.config.RabbitMQTestConfig;
+import hu.beni.amusementpark.config.RabbitMQTestConfig.Receiver;
 import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
-import hu.beni.amusementpark.helper.RabbitMQTestConfig;
-import hu.beni.amusementpark.helper.RabbitMQTestConfig.Receiver;
 import hu.beni.amusementpark.service.AmusementParkService;
 import hu.beni.amusementpark.service.GuestBookRegistryService;
 import hu.beni.amusementpark.service.MachineService;

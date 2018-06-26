@@ -13,7 +13,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import hu.beni.amusementpark.AmusementParkApplication;
-import hu.beni.amusementpark.helper.DataSourceConfig;
+import hu.beni.amusementpark.config.DataSourceConfig;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE, classes = { AmusementParkApplication.class,

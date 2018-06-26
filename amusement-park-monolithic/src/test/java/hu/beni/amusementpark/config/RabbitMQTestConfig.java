@@ -1,4 +1,4 @@
-package hu.beni.amusementpark.helper;
+package hu.beni.amusementpark.config;
 
 import static hu.beni.amusementpark.constants.RabbitMQConstants.EXCHANGE_NAME;
 import static hu.beni.amusementpark.constants.RabbitMQConstants.QUEUE_NAME;

@@ -1,4 +1,4 @@
-package hu.beni.amusementpark.helper;
+package hu.beni.amusementpark.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpRequest;
