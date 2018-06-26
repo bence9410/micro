@@ -56,7 +56,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 
+import hu.beni.amusementpark.AmusementParkApplication;
 import hu.beni.amusementpark.enums.MachineType;
+import hu.beni.amusementpark.helper.ClientConfig;
 import hu.beni.amusementpark.helper.MyAssert.ExceptionAsserter;
 import hu.beni.clientsupport.Client;
 import hu.beni.clientsupport.resource.AmusementParkResource;
@@ -65,7 +67,8 @@ import hu.beni.clientsupport.resource.MachineResource;
 import hu.beni.clientsupport.resource.VisitorResource;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = { AmusementParkApplication.class,
+		ClientConfig.class })
 public class AmusementParkApplicationTests {
 
 	@Autowired
