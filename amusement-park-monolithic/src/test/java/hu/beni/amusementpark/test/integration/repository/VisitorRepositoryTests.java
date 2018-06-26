@@ -2,6 +2,7 @@ package hu.beni.amusementpark.test.integration.repository;
 
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -77,6 +78,7 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 	private void save() {
 		visitor = visitorRepository.save(createVisitorSetAmusementParkAndMachine());
 		visitorId = visitor.getId();
+		assertNotNull(visitorId);
 		insert++;
 		incrementSelectIfOracleDBProfileActive();
 		assertStatements();
