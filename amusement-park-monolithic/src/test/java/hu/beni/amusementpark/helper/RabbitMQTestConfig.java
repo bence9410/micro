@@ -3,7 +3,6 @@ package hu.beni.amusementpark.helper;
 import static hu.beni.amusementpark.constants.RabbitMQConstants.EXCHANGE_NAME;
 import static hu.beni.amusementpark.constants.RabbitMQConstants.QUEUE_NAME;
 import static hu.beni.amusementpark.constants.SpringProfileConstants.DEFAULT;
-import static org.junit.Assert.assertNotNull;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -17,6 +16,7 @@ import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
 import hu.beni.amusementpark.archive.ArchiveSender;
 import hu.beni.amusementpark.archive.impl.RabbitMQArchiveSender;
@@ -57,24 +57,22 @@ public class RabbitMQTestConfig {
 	}
 
 	@Bean
-	public Receiver receiver() {
-		return new Receiver();
-	}
-
-	@Bean
 	public MessageListenerAdapter listenerAdapter(Receiver receiver) {
 		return new MessageListenerAdapter(receiver, "receiveArchiveAmusementParkDTO");
 	}
 
 	@Getter
+	@Component
 	public static class Receiver {
 
 		private final CountDownLatch countDownLatch = new CountDownLatch(1);
+		private ArchiveAmusementParkDTO receivedArchiveAmusementParkDTO;
 
 		public void receiveArchiveAmusementParkDTO(ArchiveAmusementParkDTO archiveAmusementParkDTO) {
-			assertNotNull(archiveAmusementParkDTO);
+			receivedArchiveAmusementParkDTO = archiveAmusementParkDTO;
 			countDownLatch.countDown();
 		}
 
 	}
+
 }
