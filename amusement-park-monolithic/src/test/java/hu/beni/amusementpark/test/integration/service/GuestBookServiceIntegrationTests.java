@@ -4,59 +4,75 @@ import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_TH
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
-import java.time.LocalDateTime;
-
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.entity.Visitor;
-import hu.beni.amusementpark.service.AmusementParkService;
+import hu.beni.amusementpark.repository.AmusementParkRepository;
+import hu.beni.amusementpark.repository.GuestBookRegistryRepository;
+import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.GuestBookRegistryService;
-import hu.beni.amusementpark.service.VisitorService;
+import hu.beni.amusementpark.test.integration.AbstractStatementCounterTests;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.NONE)
-public class GuestBookServiceIntegrationTests {
-
-	@Autowired
-	private AmusementParkService amusementParkService;
-
-	@Autowired
-	private VisitorService visitorService;
+public class GuestBookServiceIntegrationTests extends AbstractStatementCounterTests {
 
 	@Autowired
 	private GuestBookRegistryService guestBookService;
 
+	@Autowired
+	private AmusementParkRepository amusementParkRepository;
+
+	@Autowired
+	private VisitorRepository visitorRepository;
+
+	@Autowired
+	private GuestBookRegistryRepository guestBookRegistryRepository;
+
+	private AmusementPark amusementPark;
+	private Visitor visitor;
+	private GuestBookRegistry guestBookRegistry;
+
+	@Before
+	public void setUp() {
+		amusementPark = amusementParkRepository.save(createAmusementParkWithAddress());
+		visitor = createVisitor();
+		visitor.setAmusementPark(amusementPark);
+		visitor = visitorRepository.save(visitor);
+		reset();
+		assertStatements();
+	}
+
+	@After
+	public void tearDown() {
+		guestBookRegistryRepository.deleteAll();
+		visitorRepository.deleteAll();
+		amusementParkRepository.deleteAll();
+	}
+
 	@Test
 	public void test() {
-		AmusementPark amusementPark = createAmusementParkWithAddress();
-		Long amusementParkId = amusementParkService.save(amusementPark).getId();
+		addRegistry();
 
-		Visitor visitor = createVisitor();
-		Long visitorId = visitorService.signUp(visitor).getId();
+		findOne();
+	}
 
-		visitorService.enterPark(amusementParkId, visitorId);
+	private void addRegistry() {
+		guestBookRegistry = guestBookService.addRegistry(amusementPark.getId(), visitor.getId(), OPINION_ON_THE_PARK);
+		select += 2;
+		insert++;
+		incrementSelectIfOracleDBProfileActive();
+		assertStatements();
+	}
 
-		String textOfRegistry = OPINION_ON_THE_PARK;
-
-		Long guestBookRegistryId = guestBookService.addRegistry(amusementParkId, visitorId, textOfRegistry).getId();
-		GuestBookRegistry guestBookRegistry = guestBookService.findOne(guestBookRegistryId);
-
-		assertEquals(textOfRegistry, guestBookRegistry.getTextOfRegistry());
-		assertTrue(guestBookRegistry.getDateOfRegistry().isBefore(LocalDateTime.now()));
-
-		visitorService.leavePark(amusementParkId, visitorId);
-
-		assertNotNull(guestBookService.findOne(guestBookRegistryId));
+	private void findOne() {
+		assertEquals(guestBookRegistry, guestBookService.findOne(guestBookRegistry.getId()));
+		select++;
+		assertStatements();
 	}
 
 }
