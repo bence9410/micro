@@ -1,7 +1,5 @@
 package hu.beni.amusementpark.test.integration.service;
 
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_ARCHIVE_SEND_TYPE;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
@@ -19,33 +17,24 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 
 import org.hibernate.LazyInitializationException;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
-import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.service.AmusementParkService;
+import hu.beni.amusementpark.test.integration.AbstractStatementCounterTests;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.NONE)
-public class AmusementParkServiceIntegrationTests {
-
-	@Autowired
-	private Environment environment;
+public class AmusementParkServiceIntegrationTests extends AbstractStatementCounterTests {
 
 	@Autowired
 	private TransactionTemplate transactionTemplate;
@@ -56,41 +45,56 @@ public class AmusementParkServiceIntegrationTests {
 	@Autowired
 	private AmusementParkRepository amusementParkRepository;
 
+	private AmusementPark amusementPark;
+	private Long amusementParkId;
+
 	@Before
 	public void setUp() {
+		amusementParkRepository.deleteAll();
+		createNineAmusementParkWithAscendantCapital();
+		reset();
+		assertStatements();
+	}
+
+	@After
+	public void tearDown() {
 		amusementParkRepository.deleteAll();
 	}
 
 	@Test
 	public void test() {
-		AmusementPark amusementPark = amusementParkService.save(createAmusementParkWithAddress());
-		Long amusementParkId = amusementPark.getId();
+		save();
 
+		findByIdFetchAddress();
+	}
+
+	private void save() {
+		AmusementPark amusementParkBeforeSave = createAmusementParkWithAddress();
+		amusementPark = amusementParkService.save(amusementParkBeforeSave);
+		amusementParkId = amusementPark.getId();
+		assertNotNull(amusementParkId);
+		assertEquals(amusementParkBeforeSave, amusementPark);
+		assertNotNull(amusementPark.getAddress().getId());
+		assertEquals(amusementParkBeforeSave.getAddress(), amusementPark.getAddress());
+		insert += 2;
+		incrementSelectIfOracleDBProfileActive();
+		assertStatements();
+	}
+
+	private void findByIdFetchAddress() {
 		AmusementPark foundAmusementPark = amusementParkService.findByIdFetchAddress(amusementParkId);
-
 		assertEquals(amusementPark, foundAmusementPark);
 		assertEquals(amusementPark.getAddress(), foundAmusementPark.getAddress());
-
-		if (environment.getActiveProfiles().length == 0) {
-			assertThatThrownBy(() -> amusementParkService.delete(amusementParkId))
-					.isInstanceOf(AmusementParkException.class).hasMessage(NO_ARCHIVE_SEND_TYPE);
-			amusementParkService.findByIdFetchAddress(amusementParkId);
-		}
-
-		amusementParkRepository.deleteById(amusementParkId);
-		assertThatThrownBy(() -> amusementParkService.findByIdFetchAddress(amusementParkId))
-				.isInstanceOf(AmusementParkException.class).hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
+		select++;
+		assertStatements();
 	}
 
 	@Test
 	public void pageAndSortTest() {
-		createNineAmusementParkWithAscendantCapital();
+		assertStatements();
 
-		Pageable pageable = PageRequest.of(0, 5, Sort.by("capital"));
-
-		Page<AmusementPark> firstPage = amusementParkService.findAllFetchAddress(pageable);
-		Page<AmusementPark> lastPage = amusementParkService.findAllFetchAddress(firstPage.nextPageable());
-
+		Page<AmusementPark> firstPage = findAllFetchAddress(PageRequest.of(0, 5, Sort.by("capital")));
+		Page<AmusementPark> lastPage = findAllFetchAddress(firstPage.nextPageable());
 		assertTrue(lastPage.isLast());
 
 		int minCapital = firstPage.getContent().get(0).getCapital();
@@ -102,24 +106,32 @@ public class AmusementParkServiceIntegrationTests {
 		lastPage.forEach(minMaxCapitalAsserter);
 	}
 
+	private Page<AmusementPark> findAllFetchAddress(Pageable pageable) {
+		Page<AmusementPark> page = amusementParkService.findAllFetchAddress(pageable);
+		if (page.isLast()) {
+			select++;
+		} else {
+			select += 2;
+		}
+		assertStatements();
+		return page;
+	}
+
 	@Test
 	public void specificationTest() {
-		createNineAmusementParkWithAscendantCapital();
-
 		String name = "asd";
 		int capital = 2000;
 
-		AmusementPark amusementPark = createAmusementParkWithAddress();
-		amusementPark.setName(name + "123");
-		amusementPark.getAddress().setCity(name + "45");
-		amusementParkService.save(amusementPark);
+		createAmusementParkWithAddressSetParam(name + "123", name + "45");
 
-		amusementPark = createAmusementParkWithAddress();
-		amusementPark.setName(name + "67");
-		amusementPark.getAddress().setCity(name + "89");
-		amusementParkService.save(amusementPark);
+		createAmusementParkWithAddressSetParam(name + "67", name + "89");
 
-		amusementPark = amusementParkService.findOne(fieldLikeParam(AmusementPark.class, "name", name + "1%"));
+		reset();
+
+		findOne(fieldLikeParam(AmusementPark.class, "name", name + "1%"));
+
+		select++;
+		assertStatements();
 		assertNotNull(amusementPark);
 		assertTrue(amusementPark.getName().startsWith(name + "1"));
 
@@ -131,6 +143,9 @@ public class AmusementParkServiceIntegrationTests {
 		List<AmusementPark> lazyAmusementParks = amusementParkService
 				.findAll(nameLikeAndAddressCityLikeAndCapitalGreaterThan);
 		assertFalse(lazyAmusementParks.isEmpty());
+
+		select++;
+		assertStatements();
 
 		AmusementPark lazyAmusementPark = lazyAmusementParks.get(0);
 
@@ -152,6 +167,19 @@ public class AmusementParkServiceIntegrationTests {
 			}
 			return null;
 		});
+		select += 3;
+		assertStatements();
+	}
+
+	private void createAmusementParkWithAddressSetParam(String name, String addressCity) {
+		AmusementPark amusementPark = createAmusementParkWithAddress();
+		amusementPark.setName(name);
+		amusementPark.getAddress().setCity(name);
+		amusementParkService.save(amusementPark);
+	}
+
+	private void findOne(Specification<AmusementPark> specification) {
+		amusementPark = amusementParkService.findOne(specification);
 	}
 
 	private void createNineAmusementParkWithAscendantCapital() {

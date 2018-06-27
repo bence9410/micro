@@ -1,31 +1,25 @@
 package hu.beni.amusementpark.test.integration.service;
 
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_MACHINE_IN_PARK_WITH_ID;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createMachine;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
-import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
-import hu.beni.amusementpark.service.AmusementParkService;
 import hu.beni.amusementpark.service.MachineService;
+import hu.beni.amusementpark.test.integration.AbstractStatementCounterTests;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class MachineServiceIntegrationTests {
-
-	@Autowired
-	private AmusementParkService amusementParkService;
+public class MachineServiceIntegrationTests extends AbstractStatementCounterTests {
 
 	@Autowired
 	private MachineService machineService;
@@ -33,27 +27,82 @@ public class MachineServiceIntegrationTests {
 	@Autowired
 	private AmusementParkRepository amusementParkRepository;
 
+	private AmusementPark amusementPark;
+	private Long amusementParkId;
+
+	private Machine machine;
+	private List<Long> machineIds = new ArrayList<>();
+
+	@Before
+	public void setUp() {
+		amusementPark = amusementParkRepository.save(createAmusementParkWithAddress());
+		amusementParkId = amusementPark.getId();
+		reset();
+	}
+
+	@After
+	public void tearDown() {
+		amusementParkRepository.deleteAll();
+	}
+
 	@Test
 	public void test() {
-		AmusementPark amusementPark = createAmusementParkWithAddress();
-		Long amusementParkId = amusementParkService.save(amusementPark).getId();
+		addMachine();
+		addMachine();
 
-		Machine machine = createMachine();
-		Long machineId = machineService.addMachine(amusementParkId, machine).getId();
-		assertNotNull(machineId);
-		assertEquals(amusementPark.getCapital() - machine.getPrice(),
-				amusementParkService.findByIdFetchAddress(amusementParkId).getCapital().longValue());
+		assertCapitalDecreased();
 
-		Machine readMachine = machineService.findOne(amusementParkId, machineId);
-		assertEquals(machine, readMachine);
+		findOne();
 
+		findAllByAmusementParkId();
+
+		machineIds.forEach(this::removeMachine);
+
+		assertCapitalIncremented();
+	}
+
+	private void addMachine() {
+		machine = machineService.addMachine(amusementParkId, createMachine());
+		machineIds.add(machine.getId());
+		select += 2;
+		update++;
+		insert++;
+		incrementSelectIfOracleDBProfileActive();
+		assertStatements();
+	}
+
+	private void assertCapitalDecreased() {
+		assertEquals(amusementPark.getCapital() - machine.getPrice() * 2,
+				amusementParkRepository.findById(amusementParkId).get().getCapital().longValue());
+		select++;
+		assertStatements();
+	}
+
+	private void findOne() {
+		assertEquals(machine, machineService.findOne(amusementParkId, machine.getId()));
+		select++;
+		assertStatements();
+	}
+
+	private void findAllByAmusementParkId() {
+		assertTrue(machineService.findAllByAmusementParkId(amusementParkId).contains(machine));
+		select++;
+		assertStatements();
+	}
+
+	private void removeMachine(Long machineId) {
 		machineService.removeMachine(amusementParkId, machineId);
-		assertThatThrownBy(() -> machineService.findOne(amusementParkId, machineId))
-				.isInstanceOf(AmusementParkException.class).hasMessage(NO_MACHINE_IN_PARK_WITH_ID);
-		assertEquals(amusementPark.getCapital().longValue(),
-				amusementParkService.findByIdFetchAddress(amusementParkId).getCapital().longValue());
+		select += 2;
+		update++;
+		delete++;
+		assertStatements();
+	}
 
-		amusementParkRepository.deleteById(amusementParkId);
+	private void assertCapitalIncremented() {
+		assertEquals(amusementPark.getCapital().longValue(),
+				amusementParkRepository.findById(amusementParkId).get().getCapital().longValue());
+		select++;
+		assertStatements();
 	}
 
 }
