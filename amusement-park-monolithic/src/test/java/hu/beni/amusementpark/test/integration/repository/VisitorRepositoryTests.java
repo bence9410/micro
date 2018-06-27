@@ -2,11 +2,13 @@ package hu.beni.amusementpark.test.integration.repository;
 
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,12 +48,16 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 		machine.setAmusementPark(amusementPark);
 		machine = machineRepository.save(machine);
 		reset();
+		assertStatements();
+	}
+
+	@After
+	public void tearDown() {
+		amusementParkRepository.deleteAll();
 	}
 
 	@Test
 	public void test() {
-		assertStatements();
-
 		save();
 
 		saveAll();
@@ -79,6 +85,7 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 		Visitor visitorBeforeSave = createVisitorSetAmusementParkAndMachine();
 		visitor = visitorRepository.save(visitorBeforeSave);
 		visitorId = visitor.getId();
+		assertNotNull(visitor.getId());
 		assertEquals(visitorBeforeSave, visitor);
 		assertTrue(visitor.getDateOfSignUp().isBefore(LocalDateTime.now()));
 		insert++;
@@ -90,7 +97,8 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 		Visitor visitor = createVisitor();
 		visitor.setAmusementPark(amusementPark);
 		visitor.setMachine(machine);
-		visitor.setUsername(visitor.getUsername() + Math.random());
+		String username = visitor.getUsername() + Math.random();
+		visitor.setUsername(username.substring(0, username.length() > 25 ? 25 : username.length()));
 		return visitor;
 	}
 

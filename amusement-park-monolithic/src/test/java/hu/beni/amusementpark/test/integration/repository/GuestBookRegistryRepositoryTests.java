@@ -4,6 +4,7 @@ import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_TH
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
@@ -39,23 +40,24 @@ public class GuestBookRegistryRepositoryTests extends AbstractStatementCounterTe
 
 	@Before
 	public void setUp() {
+		amusementParkRepository.deleteAll();
 		guestBookRegistryRepository.deleteAll();
 		amusementPark = amusementParkRepository.save(createAmusementParkWithAddress());
 		visitor = createVisitor();
 		visitor.setAmusementPark(amusementPark);
 		visitor = visitorRepository.save(visitor);
 		reset();
+		assertStatements();
 	}
 
 	@After
 	public void tearDown() {
 		visitorRepository.deleteAll();
+		amusementParkRepository.deleteAll();
 	}
 
 	@Test
 	public void test() {
-		assertStatements();
-
 		save();
 
 		saveAll();
@@ -72,6 +74,7 @@ public class GuestBookRegistryRepositoryTests extends AbstractStatementCounterTe
 	private void save() {
 		GuestBookRegistry guestBookRegistryBeforeSave = createGuestBookRegistrySetAmusementParkAndVisitor();
 		guestBookRegistry = guestBookRegistryRepository.save(guestBookRegistryBeforeSave);
+		assertNotNull(guestBookRegistry.getId());
 		assertEquals(guestBookRegistryBeforeSave, guestBookRegistry);
 		assertTrue(guestBookRegistry.getDateOfRegistry().isBefore(LocalDateTime.now()));
 		insert++;

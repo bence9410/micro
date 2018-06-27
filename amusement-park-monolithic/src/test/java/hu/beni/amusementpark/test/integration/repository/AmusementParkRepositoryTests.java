@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,12 +40,16 @@ public class AmusementParkRepositoryTests extends AbstractStatementCounterTests 
 	public void setUp() {
 		amusementParkRepository.deleteAll();
 		reset();
+		assertStatements();
+	}
+
+	@After
+	public void tearDown() {
+		amusementParkRepository.deleteAll();
 	}
 
 	@Test
 	public void test() {
-		assertStatements();
-
 		save();
 
 		saveAll();
@@ -74,8 +79,10 @@ public class AmusementParkRepositoryTests extends AbstractStatementCounterTests 
 		AmusementPark amusementParkBeforeSave = createAmusementParkWithAddress();
 		amusementPark = amusementParkRepository.save(amusementParkBeforeSave);
 		amusementParkId = amusementPark.getId();
+		assertNotNull(amusementParkId);
 		assertEquals(amusementParkBeforeSave, amusementPark);
-		assertEquals(amusementParkBeforeSave.getAddress(), amusementParkBeforeSave.getAddress());
+		assertNotNull(amusementPark.getAddress().getId());
+		assertEquals(amusementParkBeforeSave.getAddress(), amusementPark.getAddress());
 		insert += 2;
 		incrementSelectIfOracleDBProfileActive();
 		assertStatements();

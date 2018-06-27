@@ -3,10 +3,12 @@ package hu.beni.amusementpark.test.integration.repository;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createMachine;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,12 +37,16 @@ public class MachineRepositoryTests extends AbstractStatementCounterTests {
 		amusementPark = amusementParkRepository.save(createAmusementParkWithAddress());
 		amusementParkId = amusementPark.getId();
 		reset();
+		assertStatements();
+	}
+
+	@After
+	public void tearDown() {
+		amusementParkRepository.deleteAll();
 	}
 
 	@Test
 	public void test() {
-		assertStatements();
-
 		save();
 
 		saveAll();
@@ -63,6 +69,7 @@ public class MachineRepositoryTests extends AbstractStatementCounterTests {
 	private void save() {
 		Machine machineBeforeSave = createMachineSetAmusementPark();
 		machine = machineRepository.save(machineBeforeSave);
+		assertNotNull(machine.getId());
 		assertEquals(machineBeforeSave, machine);
 		insert++;
 		incrementSelectIfOracleDBProfileActive();
