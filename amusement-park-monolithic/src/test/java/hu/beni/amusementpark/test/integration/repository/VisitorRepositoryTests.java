@@ -85,7 +85,7 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 		Visitor visitorBeforeSave = createVisitorSetAmusementParkAndMachine();
 		visitor = visitorRepository.save(visitorBeforeSave);
 		visitorId = visitor.getId();
-		assertNotNull(visitor.getId());
+		assertNotNull(visitorId);
 		assertEquals(visitorBeforeSave, visitor);
 		assertTrue(visitor.getDateOfSignUp().isBefore(LocalDateTime.now()));
 		insert++;

@@ -10,30 +10,24 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.enums.VisitorState;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
-import hu.beni.amusementpark.service.AmusementParkService;
-import hu.beni.amusementpark.service.MachineService;
+import hu.beni.amusementpark.repository.MachineRepository;
 import hu.beni.amusementpark.service.VisitorService;
+import hu.beni.amusementpark.test.integration.AbstractStatementCounterTests;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
-public class VisitorServiceIntegrationTests {
-
-	@Autowired
-	private AmusementParkService amusementParkService;
-
-	@Autowired
-	private MachineService machineService;
+public class VisitorServiceIntegrationTests extends AbstractStatementCounterTests {
 
 	@Autowired
 	private VisitorService visitorService;
@@ -41,53 +35,143 @@ public class VisitorServiceIntegrationTests {
 	@Autowired
 	private AmusementParkRepository amusementParkRepository;
 
+	@Autowired
+	private MachineRepository machineRepository;
+
+	private AmusementPark amusementPark;
+	private Long amusementParkId;
+
+	private Machine machine;
+	private Long machineId;
+
+	private Visitor visitor;
+	private Long visitorId;
+
+	@Before
+	public void setUp() {
+		amusementPark = amusementParkRepository.save(createAmusementParkWithAddress());
+		amusementParkId = amusementPark.getId();
+		machine = createMachine();
+		machine.setAmusementPark(amusementPark);
+		machine = machineRepository.save(machine);
+		machineId = machine.getId();
+		reset();
+		assertStatements();
+	}
+
+	@After
+	public void tearDown() {
+		amusementParkRepository.deleteAll();
+		visitorService.delete(visitorId);
+	}
+
 	@Test
 	public void test() {
-		AmusementPark amusementPark = createAmusementParkWithAddress();
-		Long amusementParkId = amusementParkService.save(amusementPark).getId();
-		Integer capital = amusementPark.getCapital();
-		Integer entranceFee = amusementPark.getEntranceFee();
+		signUp();
 
-		Machine machine = createMachine();
-		Integer ticketPrice = machine.getTicketPrice();
-		Long machineId = machineService.addMachine(amusementParkId, machine).getId();
-		capital -= machine.getPrice();
+		findSpendingMoneyByUsername();
 
-		Visitor visitor = createVisitor();
-		visitor = visitorService.signUp(visitor);
-		Long visitorId = visitor.getId();
+		findOne();
+
+		findAll();
+
+		enterPark();
+
+		getOnMachine();
+
+		getOffMachine();
+
+		leavePark();
+
+		assertSpendingMoneyChangedCorrectly();
+	}
+
+	private void signUp() {
+		Visitor visitorBeforeSignUp = createVisitor();
+		visitor = visitorService.signUp(visitorBeforeSignUp);
+		visitorId = visitor.getId();
 		assertNotNull(visitorId);
+		assertEquals(visitorBeforeSignUp, visitor);
 		assertTrue(visitor.getDateOfSignUp().isBefore(LocalDateTime.now()));
+		insert++;
+		incrementSelectIfOracleDBProfileActive();
+		assertStatements();
+	}
 
-		Integer spendingMoney = visitor.getSpendingMoney();
+	private void findSpendingMoneyByUsername() {
+		SecurityContextHolder.getContext()
+				.setAuthentication(new UsernamePasswordAuthenticationToken(visitor, "visitor"));
+		assertEquals(visitor.getSpendingMoney(), visitorService.findSpendingMoneyByUsername());
+		select++;
+		assertStatements();
+	}
 
-		visitorService.enterPark(amusementParkId, visitorId);
-		capital += entranceFee;
-		spendingMoney -= entranceFee;
-		assertEquals(capital, amusementParkService.findByIdFetchAddress(amusementParkId).getCapital());
+	private void findOne() {
+		assertEquals(visitor, visitorService.findOne(visitorId));
+		select++;
+		assertStatements();
+	}
 
-		visitor = visitorService.findOne(visitorId);
-		assertNotNull(visitor.getAmusementPark());
-		assertEquals(spendingMoney, visitor.getSpendingMoney());
-		assertEquals(VisitorState.REST, visitor.getState());
+	private void findAll() {
+		assertTrue(visitorService.findAll(Pageable.unpaged()).getContent().contains(visitor));
+		select++;
+		assertStatements();
+	}
 
-		visitorService.getOnMachine(amusementParkId, machineId, visitorId);
-		capital += ticketPrice;
-		spendingMoney -= ticketPrice;
-		assertEquals(capital, amusementParkService.findByIdFetchAddress(amusementParkId).getCapital());
+	private void enterPark() {
+		Visitor inParkVisitor = visitorService.enterPark(amusementParkId, visitorId);
+		assertEquals(visitor.getSpendingMoney() - amusementPark.getEntranceFee(),
+				inParkVisitor.getSpendingMoney().longValue());
+		assertEquals(VisitorState.REST, inParkVisitor.getState());
+		assertEquals(amusementParkId, inParkVisitor.getAmusementPark().getId());
+		select += 3;
+		update += 2;
+		insert++;
+		assertStatements();
+		assertEquals(amusementPark.getCapital() + amusementPark.getEntranceFee(),
+				amusementParkRepository.findById(amusementParkId).get().getCapital().longValue());
+		select++;
+		assertStatements();
+	}
 
-		visitor = visitorService.findOne(visitorId);
-		assertEquals(spendingMoney, visitor.getSpendingMoney());
-		assertEquals(VisitorState.ON_MACHINE, visitor.getState());
+	private void getOnMachine() {
+		Visitor onMachineVisitor = visitorService.getOnMachine(amusementParkId, machineId, visitorId);
+		assertEquals(visitor.getSpendingMoney() - amusementPark.getEntranceFee() - machine.getTicketPrice(),
+				onMachineVisitor.getSpendingMoney().longValue());
+		assertEquals(VisitorState.ON_MACHINE, onMachineVisitor.getState());
+		assertEquals(machineId, onMachineVisitor.getMachine().getId());
+		select += 3;
+		update += 2;
+		assertStatements();
+		assertEquals(amusementPark.getCapital() + amusementPark.getEntranceFee() + machine.getTicketPrice(),
+				amusementParkRepository.findById(amusementParkId).get().getCapital().longValue());
+		select++;
+		assertStatements();
+	}
 
-		visitorService.getOffMachine(machineId, visitorId);
-		assertEquals(VisitorState.REST, visitorService.findOne(visitorId).getState());
+	private void getOffMachine() {
+		Visitor offMachineVisitor = visitorService.getOffMachine(machineId, visitorId);
+		assertNull(offMachineVisitor.getMachine());
+		assertEquals(VisitorState.REST, offMachineVisitor.getState());
+		select++;
+		update++;
+		assertStatements();
+	}
 
-		visitorService.leavePark(amusementParkId, visitorId);
-		assertNull(visitorService.findOne(visitorId).getAmusementPark());
+	private void leavePark() {
+		Visitor leftParkVisitor = visitorService.leavePark(amusementParkId, visitorId);
+		assertNull(leftParkVisitor.getAmusementPark());
+		assertNull(leftParkVisitor.getState());
+		select++;
+		update++;
+		assertStatements();
+	}
 
-		amusementParkRepository.deleteById(amusementParkId);
-		assertNotNull(visitorService.findOne(visitorId));
+	private void assertSpendingMoneyChangedCorrectly() {
+		assertEquals(visitor.getSpendingMoney() - amusementPark.getEntranceFee() - machine.getTicketPrice(),
+				visitorService.findOne(visitorId).getSpendingMoney().longValue());
+		select++;
+		assertStatements();
 	}
 
 }
