@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.PagedResources;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -53,6 +54,7 @@ public class VisitorController {
 		return visitorMapper.toPagedResources(visitorService.findAll(pageable));
 	}
 
+	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/visitor/{visitorId}")
 	public void delete(@PathVariable Long visitorId) {
 		visitorService.delete(visitorId);

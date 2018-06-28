@@ -17,6 +17,8 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -81,7 +83,10 @@ public class RabbitMQArchiveSenderTests {
 	private void createSampleAmusementPark() {
 		amusementParkId = amusementParkService.save(createAmusementParkWithAddress()).getId();
 		machineService.addMachine(amusementParkId, createMachine());
-		Long visitorId = visitorService.signUp(createVisitor()).getId();
+		Visitor visitor = visitorService.signUp(createVisitor());
+		SecurityContextHolder.getContext()
+				.setAuthentication(new UsernamePasswordAuthenticationToken(visitor, "visitor"));
+		Long visitorId = visitor.getId();
 		visitorService.enterPark(amusementParkId, visitorId);
 		guestBookRegistryService.addRegistry(amusementParkId, visitorId, OPINION_ON_THE_PARK);
 		visitorService.leavePark(amusementParkId, visitorId);
