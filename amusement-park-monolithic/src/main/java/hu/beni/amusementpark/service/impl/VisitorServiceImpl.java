@@ -62,25 +62,30 @@ public class VisitorServiceImpl implements VisitorService {
 	public Visitor enterPark(Long amusementParkId, Long visitorId) {
 		AmusementPark amusementPark = ifNull(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId),
 				NO_AMUSEMENT_PARK_WITH_ID);
-
 		Visitor visitor = ifNull(visitorRepository.findById(visitorId), VISITOR_NOT_SIGNED_UP);
+		checkIfVisitorAbleToEnterPark(amusementPark.getEntranceFee(), visitor);
+		addToKnownVisitorsIfFirstEnter(amusementParkId, visitorId);
+		incrementCaitalAndDecreaseSpendingMoneyAndSetPark(amusementPark, visitor);
+		return visitor;
+	}
 
-		Integer entranceFee = amusementPark.getEntranceFee();
+	private void checkIfVisitorAbleToEnterPark(Integer entranceFee, Visitor visitor) {
 		Integer spendingMoney = visitor.getSpendingMoney();
 		ifFirstLessThanSecond(spendingMoney, entranceFee, NOT_ENOUGH_MONEY);
-
 		ifNotNull(visitor.getAmusementPark(), VISITOR_IS_IN_A_PARK);
+	}
 
+	private void addToKnownVisitorsIfFirstEnter(Long amusementParkId, Long visitorId) {
 		if (amusementParkRepository.countKnownVisitor(amusementParkId, visitorId) == 0) {
 			amusementParkRepository.addKnownVisitor(amusementParkId, visitorId);
 		}
+	}
 
-		visitor.setSpendingMoney(spendingMoney - entranceFee);
+	private void incrementCaitalAndDecreaseSpendingMoneyAndSetPark(AmusementPark amusementPark, Visitor visitor) {
+		visitor.setSpendingMoney(visitor.getSpendingMoney() - amusementPark.getEntranceFee());
 		visitor.setState(VisitorState.REST);
 		visitor.setAmusementPark(amusementPark);
-
-		amusementParkRepository.incrementCapitalById(entranceFee, amusementParkId);
-		return visitor;
+		amusementParkRepository.incrementCapitalById(amusementPark.getEntranceFee(), amusementPark.getId());
 	}
 
 	@Override
@@ -89,11 +94,8 @@ public class VisitorServiceImpl implements VisitorService {
 				NO_MACHINE_IN_PARK_WITH_ID);
 		Visitor visitor = ifNull(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId),
 				NO_VISITOR_IN_PARK_WITH_ID);
-
 		checkIfVisitorAbleToGetOnMachine(machine, visitor);
-
-		incrementCapitalAndDecraiseSpendingMoney(amusementParkId, machine, visitor);
-
+		incrementCapitalAndDecreaseSpendingMoneyAndSetMachine(amusementParkId, machine, visitor);
 		return visitor;
 	}
 
@@ -106,7 +108,8 @@ public class VisitorServiceImpl implements VisitorService {
 				NO_FREE_SEAT_ON_MACHINE);
 	}
 
-	private void incrementCapitalAndDecraiseSpendingMoney(Long amusementParkId, Machine machine, Visitor visitor) {
+	private void incrementCapitalAndDecreaseSpendingMoneyAndSetMachine(Long amusementParkId, Machine machine,
+			Visitor visitor) {
 		amusementParkRepository.incrementCapitalById(machine.getTicketPrice(), amusementParkId);
 		visitor.setSpendingMoney(visitor.getSpendingMoney() - machine.getTicketPrice());
 		visitor.setMachine(machine);
