@@ -189,7 +189,6 @@ public class VisitorServiceUnitTests {
 		when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId))
 				.thenReturn(Optional.of(amusementPark));
 		when(visitorRepository.findById(visitorId)).thenReturn(Optional.of(visitor));
-		when(visitorRepository.save(visitor)).thenReturn(visitor);
 
 		assertEquals(visitor, visitorService.enterPark(amusementParkId, visitorId));
 
@@ -202,7 +201,6 @@ public class VisitorServiceUnitTests {
 		verify(amusementParkRepository).countKnownVisitor(amusementParkId, visitorId);
 		verify(amusementParkRepository).addKnownVisitor(amusementParkId, visitorId);
 		verify(amusementParkRepository).incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
-		verify(visitorRepository).save(visitor);
 	}
 
 	@Test
@@ -219,7 +217,6 @@ public class VisitorServiceUnitTests {
 		when(visitorRepository.findById(visitorId)).thenReturn(Optional.of(visitor));
 		when(amusementParkRepository.countKnownVisitor(amusementParkId, visitorId))
 				.thenReturn(numberOfKnowsVisitorsById);
-		when(visitorRepository.save(visitor)).thenReturn(visitor);
 
 		assertEquals(visitor, visitorService.enterPark(amusementParkId, visitorId));
 
@@ -231,7 +228,6 @@ public class VisitorServiceUnitTests {
 		verify(visitorRepository).findById(visitorId);
 		verify(amusementParkRepository).countKnownVisitor(amusementParkId, visitorId);
 		verify(amusementParkRepository).incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
-		verify(visitorRepository).save(visitor);
 	}
 
 	@Test
@@ -359,7 +355,6 @@ public class VisitorServiceUnitTests {
 		when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId))
 				.thenReturn(Optional.of(visitor));
 		when(visitorRepository.countByMachineId(machineId)).thenReturn(1L);
-		when(visitorRepository.save(visitor)).thenReturn(visitor);
 
 		assertEquals(visitor, visitorService.getOnMachine(amusementParkId, machineId, visitorId));
 
@@ -371,7 +366,6 @@ public class VisitorServiceUnitTests {
 		verify(visitorRepository).findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
 		verify(visitorRepository).countByMachineId(machineId);
 		verify(amusementParkRepository).incrementCapitalById(machine.getTicketPrice(), amusementParkId);
-		verify(visitorRepository).save(visitor);
 	}
 
 	@Test
@@ -393,7 +387,6 @@ public class VisitorServiceUnitTests {
 		Long visitorId = visitor.getId();
 
 		when(visitorRepository.findByMachineIdAndVisitorId(machineId, visitorId)).thenReturn(Optional.of(visitor));
-		when(visitorRepository.save(visitor)).thenReturn(visitor);
 
 		assertEquals(visitor, visitorService.getOffMachine(machineId, visitorId));
 
@@ -401,7 +394,6 @@ public class VisitorServiceUnitTests {
 		assertEquals(VisitorState.REST, visitor.getState());
 
 		verify(visitorRepository).findByMachineIdAndVisitorId(machineId, visitorId);
-		verify(visitorRepository).save(visitor);
 	}
 
 	@Test
@@ -432,7 +424,6 @@ public class VisitorServiceUnitTests {
 		assertNotNull(visitor.getSpendingMoney());
 
 		verify(visitorRepository).findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
-		verify(visitorRepository).save(visitor);
 	}
 
 	@Test

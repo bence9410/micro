@@ -80,7 +80,7 @@ public class VisitorServiceImpl implements VisitorService {
 		visitor.setAmusementPark(amusementPark);
 
 		amusementParkRepository.incrementCapitalById(entranceFee, amusementParkId);
-		return visitorRepository.save(visitor);
+		return visitor;
 	}
 
 	@Override
@@ -92,7 +92,9 @@ public class VisitorServiceImpl implements VisitorService {
 
 		checkIfVisitorAbleToGetOnMachine(machine, visitor);
 
-		return incrementCapitalAndDecraiseSpendingMoneyAndSave(amusementParkId, machine, visitor);
+		incrementCapitalAndDecraiseSpendingMoney(amusementParkId, machine, visitor);
+
+		return visitor;
 	}
 
 	private void checkIfVisitorAbleToGetOnMachine(Machine machine, Visitor visitor) {
@@ -104,13 +106,11 @@ public class VisitorServiceImpl implements VisitorService {
 				NO_FREE_SEAT_ON_MACHINE);
 	}
 
-	private Visitor incrementCapitalAndDecraiseSpendingMoneyAndSave(Long amusementParkId, Machine machine,
-			Visitor visitor) {
+	private void incrementCapitalAndDecraiseSpendingMoney(Long amusementParkId, Machine machine, Visitor visitor) {
 		amusementParkRepository.incrementCapitalById(machine.getTicketPrice(), amusementParkId);
 		visitor.setSpendingMoney(visitor.getSpendingMoney() - machine.getTicketPrice());
 		visitor.setMachine(machine);
 		visitor.setState(VisitorState.ON_MACHINE);
-		return visitorRepository.save(visitor);
 	}
 
 	@Override
@@ -119,7 +119,7 @@ public class VisitorServiceImpl implements VisitorService {
 				NO_VISITOR_ON_MACHINE_WITH_ID);
 		visitor.setMachine(null);
 		visitor.setState(VisitorState.REST);
-		return visitorRepository.save(visitor);
+		return visitor;
 	}
 
 	@Override
@@ -128,7 +128,7 @@ public class VisitorServiceImpl implements VisitorService {
 				NO_VISITOR_IN_PARK_WITH_ID);
 		visitor.setAmusementPark(null);
 		visitor.setState(null);
-		return visitorRepository.save(visitor);
+		return visitor;
 	}
 
 	@Override
