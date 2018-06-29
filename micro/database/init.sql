@@ -66,3 +66,10 @@ create table zoo.message (id number(19,0) not null, content varchar2(255 char), 
 
 insert into zoo.message (id, content) values (0, '1. Zoo message');
 insert into zoo.message (id, content) values (1, '2. Zoo message');
+
+grant all privileges to visitor identified by pass;
+
+create table visitor.message (id number(19,0) not null, content varchar2(255 char), primary key (id));
+
+insert into visitor.message (id, content) values (0, '1. Visitor %d message');
+insert into visitor.message (id, content) values (1, '2. Visitor %d message');
