@@ -18,8 +18,19 @@ function init() {
             $("#header").show();
             $("#content").show();
             
+            getSpendingMoney();
             appSelector();
         }
+    });
+    
+}
+
+function getSpendingMoney(){
+	$.ajax({
+    	url: "/visitor/hello",
+    	success: function (data) {
+    		$("#spendingMoney").html(data);
+    	}
     });
 }
 

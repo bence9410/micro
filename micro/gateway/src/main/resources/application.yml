@@ -16,6 +16,9 @@ zuul:
     zoo:
       path: /zoo/**
       strip-prefix: false
+    visitor:
+      path: /visitor/**
+      strip-prefix: false
     welcome-app-selector:
       path: /app-selector.html
       service-id: welcome
