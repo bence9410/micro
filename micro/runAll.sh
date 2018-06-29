@@ -7,4 +7,4 @@ gnome-terminal --maximize \
 --tab -e "bash -c 'cd zoo-ui/; mvn clean spring-boot:run; exec bash'" \
 --tab -e "bash -c 'cd amusement-park/; mvn clean spring-boot:run; exec bash'" \
 --tab -e "bash -c 'cd zoo/; mvn clean spring-boot:run; exec bash'"  \
---tab -e "bash -c 'docker run -d -p 1521:1521 benike/database-oracle-xe-11g'"
+--tab -e "bash -c 'docker run -d -p 1521:1521 benike/database-oracle-xe-11g; exec bash'"
