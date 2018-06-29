@@ -1,11 +1,14 @@
 package hu.beni.amusementpark.config;
 
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @EnableResourceServer
@@ -13,15 +16,19 @@ import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 public class ResourceServerConfig {
 
 	@Bean
+	@Profile("default")
+	@LoadBalanced
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
+
+	@Bean
 	public RemoteTokenServices remoteTokenServices(Environment environment) {
-		String tokenUrl;
-		if (environment.getActiveProfiles().length == 0) {
-			tokenUrl = "localhost:9999";
-		} else {
-			tokenUrl = "oauth2";
-		}
 		RemoteTokenServices remoteTokenServices = new RemoteTokenServices();
-		remoteTokenServices.setCheckTokenEndpointUrl("http://" + tokenUrl + "/uaa/oauth/check_token");
+		if (environment.getActiveProfiles().length == 0) {
+			remoteTokenServices.setRestTemplate(restTemplate());
+		}
+		remoteTokenServices.setCheckTokenEndpointUrl("http://oauth2/uaa/oauth/check_token");
 		remoteTokenServices.setClientId("beni");
 		remoteTokenServices.setClientSecret("benisecret");
 		return remoteTokenServices;

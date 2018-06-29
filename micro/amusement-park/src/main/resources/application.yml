@@ -1,5 +1,6 @@
 server.port: 9000
 spring:
+  application.name: amusement-park
   datasource:
     url: jdbc:oracle:thin:@localhost:1521:xe
     username: amusementpark
@@ -8,7 +9,7 @@ spring:
   jpa:
     open-in-view: false
     database-platform: org.hibernate.dialect.Oracle10gDialect
-    
+      
 ---
 
 spring.profiles: docker
