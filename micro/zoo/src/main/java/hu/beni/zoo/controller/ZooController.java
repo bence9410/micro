@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import hu.beni.zoo.client.VisitorClient;
 import hu.beni.zoo.entity.Message;
 import hu.beni.zoo.repository.MessageRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class ZooController {
 
 	private final MessageRepository messageRepository;
+	private final VisitorClient visitorClient;
 
 	@GetMapping("/hello")
 	public String hello() {
@@ -28,7 +30,9 @@ public class ZooController {
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
 	public List<String> getMessages() {
-		return messageRepository.findAll().stream().map(Message::getContent).collect(toList());
+		List<String> results = messageRepository.findAll().stream().map(Message::getContent).collect(toList());
+		results.addAll(visitorClient.getMessages());
+		return results;
 	}
 
 }
