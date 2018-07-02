@@ -31,7 +31,10 @@ public class AmusementParkController {
 	@PreAuthorize("hasRole('ADMIN')")
 	public List<String> getMessages() {
 		List<String> results = messageRepository.findAll().stream().map(Message::getContent).collect(toList());
-		results.addAll(visitorClient.getMessages());
+		try {
+			results.addAll(visitorClient.getMessages());
+		} catch (Exception e) {
+		}
 		return results;
 	}
 
