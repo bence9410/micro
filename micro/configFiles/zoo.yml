@@ -1,6 +1,5 @@
 server.port: 9010
 spring:
-  application.name: zoo 
   datasource:
     url: jdbc:oracle:thin:@localhost:1521:xe
     username: zoo

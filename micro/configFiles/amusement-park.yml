@@ -1,6 +1,5 @@
 server.port: 9000
 spring:
-  application.name: amusement-park
   datasource:
     url: jdbc:oracle:thin:@localhost:1521:xe
     username: amusementpark
