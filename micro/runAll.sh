@@ -1,4 +1,7 @@
 gnome-terminal --maximize \
+--tab -e "bash -c 'cd config/; mvn clean spring-boot:run; exec bash'"
+sleep 10
+gnome-terminal --maximize \
 --tab -e "bash -c 'cd gateway/; mvn clean spring-boot:run; exec bash'" \
 --tab -e "bash -c 'cd oauth2/; mvn clean spring-boot:run; exec bash'" \
 --tab -e "bash -c 'cd discovery/; mvn clean spring-boot:run; exec bash'" \
