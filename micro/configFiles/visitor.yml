@@ -8,3 +8,7 @@ spring:
   jpa:
     open-in-view: false
     database-platform: org.hibernate.dialect.Oracle10gDialect
+  cloud:
+    config:
+      allowOverride: true
+      overrideSystemProperties: false
