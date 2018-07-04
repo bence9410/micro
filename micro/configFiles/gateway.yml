@@ -29,47 +29,4 @@ zuul:
     oauth:
       path: /uaa/**
       url: http://localhost:9999/uaa
-      sensitive-headers:
-
----
-
-spring.profiles: docker
-server.port: 80
-eureka.client.enabled: false
-
-security:
-  oauth2:
-    client.access-token-uri: http://oauth2/uaa/oauth/token
-    resource.user-info-uri: http://oauth2/uaa/user
-zuul:
-  routes:
-    amusement-park:
-      path: /amusement-park/**
-      url: http://amusement-park
-    zoo:
-      path: /zoo/**
-      url: http://zoo
-    amusement-park-ui:
-      path: /amusement-park-ui/**
-      url: http://amusement-park-ui
-    zoo-ui:
-      path: /zoo-ui/**
-      url: http://zoo-ui
-    welcome-app-selector:
-      path: /app-selector.html
-      url: http://welcome
-    welcome:
-      path: /
-      url: http://welcome
-    welcome-js:
-      path: /index.js
-      url: http://welcome
-    user:
-      path: /user/**
-      url: http://oauth2/uaa/user
-    oauth:
-      path: /uaa/**
-      url: http://oauth2/uaa
-      sensitive-headers:
-      
-
+      sensitive-headers: 

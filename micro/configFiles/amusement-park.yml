@@ -8,10 +8,3 @@ spring:
   jpa:
     open-in-view: false
     database-platform: org.hibernate.dialect.Oracle10gDialect
-      
----
-
-spring.profiles: docker
-server.port: 80
-eureka.client.enabled: false
-spring.datasource.url: jdbc:oracle:thin:@database:1521:xe
