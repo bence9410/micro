@@ -1,0 +1,17 @@
+version: '3'
+services:
+  rabbit:
+    image: rabbitmq:management
+    ports:
+      - 5672:5672
+      - 15672:15672
+  db:
+    image: benike/database-oracle-xe-11g
+    ports:
+      - 1521:1521
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - 9411:9411
+    environment:
+      - RABBIT_ADDRESSES=rabbit

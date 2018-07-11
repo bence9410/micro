@@ -2,6 +2,7 @@ server:
   port: 9999
   context-path: /uaa
 spring:
+  sleuth.sampler.percentage: 1
   datasource:
     url: jdbc:oracle:thin:@localhost:1521:xe
     username: oauth2

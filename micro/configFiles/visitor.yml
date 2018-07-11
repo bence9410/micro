@@ -1,5 +1,6 @@
 server.port: 22222
 spring:
+  sleuth.sampler.percentage: 1
   datasource:
     url: jdbc:oracle:thin:@localhost:1521:xe
     username: visitor

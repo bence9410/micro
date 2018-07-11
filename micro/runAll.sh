@@ -12,4 +12,4 @@ gnome-terminal --maximize \
 --tab -e "bash -c 'cd zoo/; mvn clean spring-boot:run; exec bash'"  \
 --tab -e "bash -c 'cd visitor/; mvn clean spring-boot:run; exec bash'" \
 --tab -e "bash -c 'cd visitor/; sleep 20; mvn spring-boot:run -Drun.jvmArguments='-Dserver.port=33333'; exec bash'" \
---tab -e "bash -c 'docker run -d -p 1521:1521 benike/database-oracle-xe-11g; exec bash'"
+--tab -e "bash -c 'docker stack deploy -c docker-compose-oraclexe11g-rabbitmq-zipkin.yml services; exec bash'"
