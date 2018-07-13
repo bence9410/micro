@@ -1,78 +1,56 @@
 package hu.beni.amusementpark.config;
 
-import static hu.beni.amusementpark.constants.RabbitMQConstants.EXCHANGE_NAME;
-import static hu.beni.amusementpark.constants.RabbitMQConstants.QUEUE_NAME;
-import static hu.beni.amusementpark.constants.SpringProfileConstants.DEFAULT;
+import static hu.beni.amusementpark.constants.RabbitMQConstants.ARCHIVE_QUEUE_NAME;
+import static hu.beni.amusementpark.constants.RabbitMQConstants.STATISTICS_QUEUE_NAME;
 
 import java.util.concurrent.CountDownLatch;
 
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
-import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Profile;
+import org.springframework.amqp.rabbit.annotation.RabbitHandler;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
-import hu.beni.amusementpark.archive.ArchiveSender;
-import hu.beni.amusementpark.archive.impl.RabbitMQArchiveSender;
 import hu.beni.clientsupport.dto.ArchiveAmusementParkDTO;
+import hu.beni.clientsupport.dto.VisitorEnterParkEventDTO;
+import hu.beni.clientsupport.dto.VisitorGetOnMachineEventDTO;
 import lombok.Getter;
 
 public class RabbitMQTestConfig {
 
-	@Bean
-	@Profile(DEFAULT)
-	public ArchiveSender defaultArchiveSender(RabbitTemplate rabbitTemplate) {
-		return new RabbitMQArchiveSender(rabbitTemplate);
-	}
+	@Getter
+	@Component
+	public static class ArchiveReceiver {
 
-	@Bean
-	public Queue queue() {
-		return new Queue(QUEUE_NAME, false);
-	}
+		private final CountDownLatch archiveCountDownLatch = new CountDownLatch(1);
+		private ArchiveAmusementParkDTO receivedArchiveAmusementParkDTO;
 
-	@Bean
-	public TopicExchange exchange() {
-		return new TopicExchange(EXCHANGE_NAME);
-	}
-
-	@Bean
-	public Binding binding(Queue queue, TopicExchange exchange) {
-		return BindingBuilder.bind(queue).to(exchange).with(QUEUE_NAME);
-	}
-
-	@Bean
-	public SimpleMessageListenerContainer container(ConnectionFactory connectionFactory,
-			MessageListenerAdapter listenerAdapter) {
-		SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
-		container.setConnectionFactory(connectionFactory);
-		container.setQueueNames(QUEUE_NAME);
-		container.setMessageListener(listenerAdapter);
-		return container;
-	}
-
-	@Bean
-	public MessageListenerAdapter listenerAdapter(Receiver receiver) {
-		return new MessageListenerAdapter(receiver, "receiveArchiveAmusementParkDTO");
+		@RabbitListener(queues = ARCHIVE_QUEUE_NAME)
+		public void receiveArchiveAmusementParkDTO(ArchiveAmusementParkDTO dto) {
+			receivedArchiveAmusementParkDTO = dto;
+			archiveCountDownLatch.countDown();
+		}
 	}
 
 	@Getter
 	@Component
-	public static class Receiver {
+	@RabbitListener(queues = STATISTICS_QUEUE_NAME)
+	public static class StatisticsReceiver {
 
-		private final CountDownLatch countDownLatch = new CountDownLatch(1);
-		private ArchiveAmusementParkDTO receivedArchiveAmusementParkDTO;
+		private final CountDownLatch enterParkCountDownLatch = new CountDownLatch(1);
+		private final CountDownLatch getOnMachineCountDownLatch = new CountDownLatch(1);
+		private VisitorEnterParkEventDTO visitorEnterParkEventDTO;
+		private VisitorGetOnMachineEventDTO visitorGetOnMachineEventDTO;
 
-		public void receiveArchiveAmusementParkDTO(ArchiveAmusementParkDTO archiveAmusementParkDTO) {
-			receivedArchiveAmusementParkDTO = archiveAmusementParkDTO;
-			countDownLatch.countDown();
+		@RabbitHandler
+		public void reveiveVisitorStatistics(VisitorEnterParkEventDTO dto) {
+			visitorEnterParkEventDTO = dto;
+			enterParkCountDownLatch.countDown();
+		}
+
+		@RabbitHandler
+		public void reveiVisitorStatistics(VisitorGetOnMachineEventDTO dto) {
+			visitorGetOnMachineEventDTO = dto;
+			getOnMachineCountDownLatch.countDown();
 		}
 
 	}
-
 }

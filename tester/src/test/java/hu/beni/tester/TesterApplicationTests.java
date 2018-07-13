@@ -5,14 +5,12 @@ import static java.util.stream.Collectors.toList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import javax.annotation.PostConstruct;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import hu.beni.tester.archive.ArchiveReceiver;
 import hu.beni.tester.dto.TimeTo;
 import hu.beni.tester.output.ResultLogger;
 import hu.beni.tester.properties.ApplicationProperties;
@@ -38,9 +35,6 @@ public class TesterApplicationTests {
 
 	@Autowired
 	private ApplicationProperties properties;
-
-	@Autowired
-	private ArchiveReceiver archiveReceiver;
 
 	@Autowired
 	private CapitalAndSpendingMoneySumValidator validator;
@@ -89,8 +83,6 @@ public class TesterApplicationTests {
 		sumVisitorsSpendingMoney();
 
 		deleteParksAndVisitors();
-
-		waitForArchiveAmusementParks();
 
 		timeTo.setFullRun(System.currentTimeMillis() - start);
 
@@ -152,16 +144,6 @@ public class TesterApplicationTests {
 		log.info("deleteParksAndVisitors");
 		timeTo.setDeleteParks(executeAdminAndJoin(AsyncService::deleteAllPark));
 		timeTo.setDeleteVisitors(executeAdminAndJoin(AsyncService::deleteAllVisitor));
-	}
-
-	private void waitForArchiveAmusementParks() {
-		log.info("waitForArchiveAmusementParks");
-		try {
-			Assert.assertTrue("ArchiveReceiver CountDownLatch timeout before reaching zero.",
-					archiveReceiver.getCountDownLatch().await(10, TimeUnit.SECONDS));
-		} catch (InterruptedException e) {
-			throw new RuntimeException(e);
-		}
 	}
 
 	private void logout() {

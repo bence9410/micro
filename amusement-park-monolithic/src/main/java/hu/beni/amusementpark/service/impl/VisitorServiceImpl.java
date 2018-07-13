@@ -19,6 +19,7 @@ import static hu.beni.amusementpark.exception.ExceptionUtil.ifPrimitivesEquals;
 import java.time.LocalDate;
 import java.time.Period;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,8 @@ import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.VisitorService;
+import hu.beni.clientsupport.dto.VisitorEnterParkEventDTO;
+import hu.beni.clientsupport.dto.VisitorGetOnMachineEventDTO;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -42,6 +45,7 @@ public class VisitorServiceImpl implements VisitorService {
 	private final AmusementParkRepository amusementParkRepository;
 	private final MachineRepository machineRepository;
 	private final VisitorRepository visitorRepository;
+	private final ApplicationEventPublisher eventPublisher;
 
 	@Override
 	public Integer findSpendingMoneyByUsername() {
@@ -66,6 +70,8 @@ public class VisitorServiceImpl implements VisitorService {
 		checkIfVisitorAbleToEnterPark(amusementPark.getEntranceFee(), visitor);
 		addToKnownVisitorsIfFirstEnter(amusementParkId, visitorId);
 		incrementCaitalAndDecreaseSpendingMoneyAndSetPark(amusementPark, visitor);
+		eventPublisher
+				.publishEvent(new VisitorEnterParkEventDTO(amusementParkId, visitorId, amusementPark.getEntranceFee()));
 		return visitor;
 	}
 
@@ -96,6 +102,8 @@ public class VisitorServiceImpl implements VisitorService {
 				NO_VISITOR_IN_PARK_WITH_ID);
 		checkIfVisitorAbleToGetOnMachine(machine, visitor);
 		incrementCapitalAndDecreaseSpendingMoneyAndSetMachine(amusementParkId, machine, visitor);
+		eventPublisher.publishEvent(
+				new VisitorGetOnMachineEventDTO(amusementParkId, visitorId, machine.getTicketPrice(), machineId));
 		return visitor;
 	}
 

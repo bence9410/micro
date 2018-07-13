@@ -26,6 +26,7 @@ import java.util.Optional;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -41,12 +42,15 @@ import hu.beni.amusementpark.repository.MachineRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.VisitorService;
 import hu.beni.amusementpark.service.impl.VisitorServiceImpl;
+import hu.beni.clientsupport.dto.VisitorEnterParkEventDTO;
+import hu.beni.clientsupport.dto.VisitorGetOnMachineEventDTO;
 
 public class VisitorServiceUnitTests {
 
 	private AmusementParkRepository amusementParkRepository;
 	private MachineRepository machineRepository;
 	private VisitorRepository visitorRepository;
+	private ApplicationEventPublisher eventPublisher;
 
 	private VisitorService visitorService;
 
@@ -55,12 +59,14 @@ public class VisitorServiceUnitTests {
 		amusementParkRepository = mock(AmusementParkRepository.class);
 		machineRepository = mock(MachineRepository.class);
 		visitorRepository = mock(VisitorRepository.class);
-		visitorService = new VisitorServiceImpl(amusementParkRepository, machineRepository, visitorRepository);
+		eventPublisher = mock(ApplicationEventPublisher.class);
+		visitorService = new VisitorServiceImpl(amusementParkRepository, machineRepository, visitorRepository,
+				eventPublisher);
 	}
 
 	@After
 	public void verifyNoMoreInteractionsOnMocks() {
-		verifyNoMoreInteractions(amusementParkRepository, machineRepository, visitorRepository);
+		verifyNoMoreInteractions(amusementParkRepository, machineRepository, visitorRepository, eventPublisher);
 	}
 
 	@Test
@@ -201,6 +207,8 @@ public class VisitorServiceUnitTests {
 		verify(amusementParkRepository).countKnownVisitor(amusementParkId, visitorId);
 		verify(amusementParkRepository).addKnownVisitor(amusementParkId, visitorId);
 		verify(amusementParkRepository).incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
+		verify(eventPublisher)
+				.publishEvent(new VisitorEnterParkEventDTO(amusementParkId, visitorId, amusementPark.getEntranceFee()));
 	}
 
 	@Test
@@ -228,6 +236,8 @@ public class VisitorServiceUnitTests {
 		verify(visitorRepository).findById(visitorId);
 		verify(amusementParkRepository).countKnownVisitor(amusementParkId, visitorId);
 		verify(amusementParkRepository).incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
+		verify(eventPublisher)
+				.publishEvent(new VisitorEnterParkEventDTO(amusementParkId, visitorId, amusementPark.getEntranceFee()));
 	}
 
 	@Test
@@ -366,6 +376,8 @@ public class VisitorServiceUnitTests {
 		verify(visitorRepository).findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
 		verify(visitorRepository).countByMachineId(machineId);
 		verify(amusementParkRepository).incrementCapitalById(machine.getTicketPrice(), amusementParkId);
+		verify(eventPublisher).publishEvent(
+				new VisitorGetOnMachineEventDTO(amusementParkId, visitorId, machine.getTicketPrice(), machineId));
 	}
 
 	@Test

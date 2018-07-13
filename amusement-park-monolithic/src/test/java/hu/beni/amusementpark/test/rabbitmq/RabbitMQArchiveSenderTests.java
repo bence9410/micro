@@ -1,4 +1,4 @@
-package hu.beni.amusementpark.test;
+package hu.beni.amusementpark.test.rabbitmq;
 
 import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
@@ -13,46 +13,27 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import hu.beni.amusementpark.AmusementParkApplication;
-import hu.beni.amusementpark.config.RabbitMQTestConfig;
-import hu.beni.amusementpark.config.RabbitMQTestConfig.Receiver;
+import hu.beni.amusementpark.config.RabbitMQTestConfig.ArchiveReceiver;
 import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
-import hu.beni.amusementpark.service.AmusementParkService;
 import hu.beni.amusementpark.service.GuestBookRegistryService;
-import hu.beni.amusementpark.service.MachineService;
-import hu.beni.amusementpark.service.VisitorService;
 import hu.beni.clientsupport.dto.AddressDTO;
 import hu.beni.clientsupport.dto.ArchiveAmusementParkDTO;
 import hu.beni.clientsupport.dto.ArchiveGuestBookRegistryDTO;
 import hu.beni.clientsupport.dto.ArchiveMachineDTO;
 import hu.beni.clientsupport.dto.ArchiveVisitorDTO;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.NONE, classes = { AmusementParkApplication.class,
-		RabbitMQTestConfig.class })
-public class RabbitMQArchiveSenderTests {
-
-	@Autowired
-	private AmusementParkService amusementParkService;
-
-	@Autowired
-	private MachineService machineService;
-
-	@Autowired
-	private VisitorService visitorService;
+@DirtiesContext
+public class RabbitMQArchiveSenderTests extends AbstractRabbitMQTests {
 
 	@Autowired
 	private GuestBookRegistryService guestBookRegistryService;
@@ -61,7 +42,7 @@ public class RabbitMQArchiveSenderTests {
 	private TransactionTemplate transactionTemplate;
 
 	@Autowired
-	private Receiver receiver;
+	private ArchiveReceiver receiver;
 
 	private Long amusementParkId;
 	private AmusementPark amusementPark;
@@ -74,7 +55,7 @@ public class RabbitMQArchiveSenderTests {
 		amusementPark = findAmusementParkWithoutActiveVisitors();
 
 		amusementParkService.delete(amusementParkId);
-		assertTrue(receiver.getCountDownLatch().await(10000, TimeUnit.MILLISECONDS));
+		assertTrue(receiver.getArchiveCountDownLatch().await(5, TimeUnit.SECONDS));
 		receivedArchiveAmusementPark = receiver.getReceivedArchiveAmusementParkDTO();
 
 		assertCreatedAndReceivedAmusementParksEquals();
