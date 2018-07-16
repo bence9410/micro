@@ -1,12 +1,10 @@
 package hu.beni.amusementpark.config;
 
-import static hu.beni.amusementpark.constants.RabbitMQConstants.ARCHIVE_QUEUE_NAME;
-import static hu.beni.amusementpark.constants.RabbitMQConstants.STATISTICS_QUEUE_NAME;
-
 import java.util.concurrent.CountDownLatch;
 
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
 import hu.beni.clientsupport.dto.ArchiveAmusementParkDTO;
@@ -14,6 +12,7 @@ import hu.beni.clientsupport.dto.VisitorEnterParkEventDTO;
 import hu.beni.clientsupport.dto.VisitorGetOnMachineEventDTO;
 import lombok.Getter;
 
+@Configuration
 public class RabbitMQTestConfig {
 
 	@Getter
@@ -23,7 +22,7 @@ public class RabbitMQTestConfig {
 		private final CountDownLatch archiveCountDownLatch = new CountDownLatch(1);
 		private ArchiveAmusementParkDTO receivedArchiveAmusementParkDTO;
 
-		@RabbitListener(queues = ARCHIVE_QUEUE_NAME)
+		@RabbitListener(queues = "#{archiveQueue.name}")
 		public void receiveArchiveAmusementParkDTO(ArchiveAmusementParkDTO dto) {
 			receivedArchiveAmusementParkDTO = dto;
 			archiveCountDownLatch.countDown();
@@ -32,7 +31,7 @@ public class RabbitMQTestConfig {
 
 	@Getter
 	@Component
-	@RabbitListener(queues = STATISTICS_QUEUE_NAME)
+	@RabbitListener(queues = "#{statisticsQueue.name}")
 	public static class StatisticsReceiver {
 
 		private final CountDownLatch enterParkCountDownLatch = new CountDownLatch(1);

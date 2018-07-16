@@ -1,10 +1,10 @@
 package hu.beni.amusementpark.archive.impl;
 
-import static hu.beni.amusementpark.constants.RabbitMQConstants.ARCHIVE_QUEUE_NAME;
 import static hu.beni.amusementpark.constants.SpringProfileConstants.RABBIT_MQ;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -28,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 public class RabbitMQArchiveSender implements ArchiveSender {
 
 	private final RabbitTemplate rabbitTemplate;
+	private final Queue archiveQueue;
 
 	@Override
 	public void sendToArchive(AmusementPark amusementPark) {
@@ -39,7 +40,7 @@ public class RabbitMQArchiveSender implements ArchiveSender {
 				amusementPark.getKnownVisitors().stream().map(this::convertToArchiveVisitor).collect(toSet()));
 		archiveAmusementParkDTO.setGuestBookRegistries(amusementPark.getGuestBookRegistries().stream()
 				.map(this::convertToArchiveGuestBookRegistry).collect(toList()));
-		rabbitTemplate.convertAndSend(ARCHIVE_QUEUE_NAME, archiveAmusementParkDTO);
+		rabbitTemplate.convertAndSend(archiveQueue.getName(), archiveAmusementParkDTO);
 	}
 
 	private ArchiveAmusementParkDTO convertToArchiveAmusementPark(AmusementPark amusementPark) {
