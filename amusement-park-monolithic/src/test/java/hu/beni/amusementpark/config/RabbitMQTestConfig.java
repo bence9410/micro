@@ -4,19 +4,26 @@ import java.util.concurrent.CountDownLatch;
 
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Bean;
 
 import hu.beni.clientsupport.dto.ArchiveAmusementParkDTO;
 import hu.beni.clientsupport.dto.VisitorEnterParkEventDTO;
 import hu.beni.clientsupport.dto.VisitorGetOnMachineEventDTO;
 import lombok.Getter;
 
-@Configuration
 public class RabbitMQTestConfig {
 
+	@Bean
+	public ArchiveReceiver archiveReceiver() {
+		return new ArchiveReceiver();
+	}
+
+	@Bean
+	public StatisticsReceiver statisticsReceiver() {
+		return new StatisticsReceiver();
+	}
+
 	@Getter
-	@Component
 	public static class ArchiveReceiver {
 
 		private final CountDownLatch archiveCountDownLatch = new CountDownLatch(1);
@@ -30,7 +37,6 @@ public class RabbitMQTestConfig {
 	}
 
 	@Getter
-	@Component
 	@RabbitListener(queues = "#{statisticsQueue.name}")
 	public static class StatisticsReceiver {
 
