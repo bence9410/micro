@@ -96,6 +96,7 @@
 						<include>**/validation/**.java</include>
 						<include>**/RabbitMQArchiveSenderTests.java</include>
 						<include>**/RabbitMQStatisticsSenderTests.java</include>
+						<include>**/OracleRowNumberPartitionTests.java</include>
 					</includes>
 				</configuration>
 			</plugin>
@@ -118,6 +119,7 @@
 					<excludes>
 						<exclude>**/validation/**.java</exclude>
 						<exclude>**/rabbitmq/**.java</exclude>
+						<exclude>**/OracleRowNumberPartitionTests.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>
