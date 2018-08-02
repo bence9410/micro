@@ -7,11 +7,11 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.Valid;
@@ -36,7 +36,6 @@ public class AmusementPark implements Serializable {
 	private static final long serialVersionUID = -2064262013451563720L;
 
 	@Id
-	@GeneratedValue
 	private Long id;
 
 	@NotNull
@@ -55,6 +54,7 @@ public class AmusementPark implements Serializable {
 	@Range(min = 5, max = 200)
 	private Integer entranceFee;
 
+	@MapsId
 	@Valid
 	@NotNull
 	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, optional = false)

@@ -49,7 +49,6 @@ public class ValidEntityFactory {
 	public static AmusementPark createAmusementParkWithAddress() {
 		Address address = createAddress();
 		AmusementPark amusementPark = createAmusementPark();
-		address.setAmusementPark(amusementPark);
 		amusementPark.setAddress(address);
 		return amusementPark;
 	}

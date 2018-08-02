@@ -2,12 +2,10 @@ package hu.beni.amusementpark.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -27,7 +25,7 @@ public class Address implements Serializable {
 	private static final long serialVersionUID = 5753682920839496113L;
 
 	@Id
-	@Column(name = "id")
+	@GeneratedValue
 	private Long id;
 
 	@NotNull
@@ -50,8 +48,6 @@ public class Address implements Serializable {
 	@Size(max = 5)
 	private String houseNumber;
 
-	@MapsId
-	@JoinColumn(name = "id")
 	@OneToOne(mappedBy = "address", fetch = FetchType.LAZY, optional = false)
 	private AmusementPark amusementPark;
 
