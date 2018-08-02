@@ -121,8 +121,7 @@
 					<testFailureIgnore>true</testFailureIgnore>
 					<includes>
 						<include>**/validation/**.java</include>
-						<include>**/RabbitMQArchiveSenderTests.java</include>
-						<include>**/RabbitMQStatisticsSenderTests.java</include>
+						<include>**/rabbitmq/**.java</include>
 						<include>**/OracleRowNumberPartitionTests.java</include>
 					</includes>
 				</configuration>

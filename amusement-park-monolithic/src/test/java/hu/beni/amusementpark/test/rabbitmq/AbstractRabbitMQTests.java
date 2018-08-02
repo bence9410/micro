@@ -19,7 +19,7 @@ import hu.beni.amusementpark.service.VisitorService;
 @ActiveProfiles(RABBIT_MQ)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE, classes = { AmusementParkApplication.class,
 		RabbitMQTestConfig.class })
-public class AbstractRabbitMQTests {
+public abstract class AbstractRabbitMQTests {
 
 	@Autowired
 	protected AmusementParkService amusementParkService;
