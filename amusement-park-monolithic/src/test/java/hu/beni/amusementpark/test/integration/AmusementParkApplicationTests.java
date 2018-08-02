@@ -195,7 +195,7 @@ public class AmusementParkApplicationTests {
 
 		HttpHeaders responseHeaders = response.getHeaders();
 
-		assertTrue(responseHeaders.getLocation().toString().contains("home.html"));
+		assertTrue(responseHeaders.getLocation().toString().endsWith(port + "/"));
 		assertTrue(responseHeaders.getFirst("Set-Cookie").contains("JSESSIONID="));
 	}
 
