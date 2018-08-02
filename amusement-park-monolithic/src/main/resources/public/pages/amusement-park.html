@@ -1,42 +1,40 @@
 <div class="jumbotron text-center">
 	<h1>Amusement Parks</h1>
 </div>
-<div id="saveDiv" class="hidden">
-	Name: <input id='parkName' type='text'> <br> Capital: <input
-		id='capital' type='text'> <br> Total area: <input
-		id='totalArea' type='text'> <br> Entrance fee: <input
-		id='entranceFee' type='text'> <br> Country: <input
-		id='country' type=text> <br> ZIP code: <input
-		id='zipCode' type=text> <br> City: <input id='city'
-		type=text> <br> Street: <input id='street' type=text>
-	<br> House number: <input id='houseNumber' type='text'> <br>
-	<input id='save' type='button' onclick='save();' value='Save'>
-	<input type='button' onclick='parkFillWithSampleData();'
-		value='Fill with sample data'>
-	<p id='result'></p>
-</div>
-<div>
-	<table style="width: 100%">
-		<thead>
-			<tr>
-				<th>Name</th>
-				<th>Capital</th>
-				<th>Total area</th>
-				<th>Entrance fee</th>
-				<th>Address</th>
-			</tr>
-		</thead>
-		<tfoot>
-			<tr>
-				<td><input type="button" onclick="getAmusementParks();"
-					value="Refresh"></td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-		</tfoot>
-		<tbody id="tableBody">
-		</tbody>
-	</table>
+<div class="container-fluid">
+	<div id="saveDiv" class="text-center" style="display: none">
+		Name: <input id="parkName" type="text"> <br> Capital: <input
+			id="capital" type="text"> <br> Total area: <input
+			id="totalArea" type="text"> <br> Entrance fee: <input
+			id="entranceFee" type="text"> <br> Country: <input
+			id="country" type=text> <br> ZIP code: <input
+			id="zipCode" type=text> <br> City: <input id="city"
+			type=text> <br> Street: <input id="street" type=text>
+		<br> House number: <input id="houseNumber" type="text"> <br>
+		<input id="save" type="button" onclick="save()" value="Save">
+		<input type="button" onclick="parkFillWithSampleData()"
+			value="Fill with sample data">
+		<p id="result" style="display: none"></p>
+	</div>
+	<div>
+		<table class="table table-bordered">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Capital</th>
+					<th>Total area</th>
+					<th>Entrance fee</th>
+					<th>Address</th>
+				</tr>
+			</thead>
+			<tfoot>
+				<tr>
+					<td colspan="10" class="text-center"><input type="button" onclick="getAmusementParks()"
+						value="Refresh"></td>
+				</tr>
+			</tfoot>
+			<tbody id="tableBody">
+			</tbody>
+		</table>
+	</div>
 </div>

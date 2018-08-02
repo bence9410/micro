@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Beni</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css"
+	href="/webjars/bootstrap/css/bootstrap.min.css" />
+<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+<script type="text/javascript"
+	src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/index.js"></script>
+</head>
+<body onload="init()">
+<div class="container-fluid">
+	<div id="header" class="row"
+			style="background-color: Lime">
+			<div class="col-md-2"></div>
+			<div class="col-md-6 row">
+				<div class="col-md-4 row">
+					Username:
+					<p id="username"></p>
+				</div>
+				<div id="spendingMoneyDiv" class="col-md-4 row" style="display: none">
+					Spending money:
+					<p id="spendingMoney"></p>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<form action="/logout" method="post">
+					<input type="submit" value="logout">
+				</form>
+			</div>
+		</div>
+	<div id="signUp" class="text-center" style="display: none">
+		Name: <input id="name" type="text"> <br> 
+		Date of birth: <input id="dateOfBirth" type="text"> <br> 
+		Spending money: <input id="signUpSpendingMoney" type="text"> <br> 
+		<input id="singUp" type="button" onclick="signUp()" value="Sign up"> 
+		<input type="button" onclick="fillWithSampleData()" value="Fill with sample data">
+	</div>
+</div>
+<div id="content"></div>
+</body>
+</html>
