@@ -83,8 +83,6 @@ function getAmusementParks() {
 function fillTableWithData(data) {
 	var tableBody = []
 	
-	console.log(data)
-	
 	$.each(data._embedded.amusementParkResourceList, function(i, e) {
 		tableBody.push(convertAmusementParkToTableRow(e))
 	})
