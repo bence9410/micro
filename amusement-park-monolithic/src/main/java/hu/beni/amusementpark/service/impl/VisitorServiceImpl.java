@@ -49,7 +49,7 @@ public class VisitorServiceImpl implements VisitorService {
 
 	@Override
 	public Integer findSpendingMoneyByUsername() {
-		return ifNull(visitorRepository.findSpendingMoneyByUsername(), VISITOR_NOT_SIGNED_UP);
+		return visitorRepository.findSpendingMoneyByUsername();
 	}
 
 	@Override

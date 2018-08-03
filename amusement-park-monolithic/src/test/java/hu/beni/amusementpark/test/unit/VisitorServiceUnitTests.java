@@ -71,8 +71,9 @@ public class VisitorServiceUnitTests {
 
 	@Test
 	public void findSpendingMoneyByUsernameNegativeNotSignedUp() {
-		assertThatThrownBy(() -> visitorService.findSpendingMoneyByUsername())
-				.isInstanceOf(AmusementParkException.class).hasMessage(VISITOR_NOT_SIGNED_UP);
+		when(visitorRepository.findSpendingMoneyByUsername()).thenReturn(null);
+
+		assertNull(visitorService.findSpendingMoneyByUsername());
 
 		verify(visitorRepository).findSpendingMoneyByUsername();
 	}
@@ -81,7 +82,7 @@ public class VisitorServiceUnitTests {
 	public void findSpendingMoneyByUsernamePositive() {
 		Integer spendingMoney = 1000;
 
-		when(visitorRepository.findSpendingMoneyByUsername()).thenReturn(Optional.of(spendingMoney));
+		when(visitorRepository.findSpendingMoneyByUsername()).thenReturn(spendingMoney);
 
 		assertEquals(spendingMoney, visitorService.findSpendingMoneyByUsername());
 

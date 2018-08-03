@@ -113,7 +113,7 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 	private void findSpendingMoneyByUserName() {
 		SecurityContextHolder.getContext()
 				.setAuthentication(new UsernamePasswordAuthenticationToken(visitor, "visitor"));
-		assertEquals(visitor.getSpendingMoney(), visitorRepository.findSpendingMoneyByUsername().get());
+		assertEquals(visitor.getSpendingMoney(), visitorRepository.findSpendingMoneyByUsername());
 		select++;
 		assertStatements();
 	}

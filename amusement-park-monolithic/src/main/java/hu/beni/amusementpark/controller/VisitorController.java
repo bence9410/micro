@@ -39,11 +39,6 @@ public class VisitorController {
 		webDataBinder.addValidators(new VisitorResourceValidator());
 	}
 
-	@GetMapping("/visitor/spending-money")
-	public Integer findSpendingMoneyByUsername() {
-		return visitorService.findSpendingMoneyByUsername();
-	}
-
 	@PostMapping("/visitor")
 	public VisitorResource signUp(@Valid @RequestBody VisitorResource visitorResource) {
 		return visitorMapper.toResource(visitorService.signUp(visitorMapper.toEntity(visitorResource)));

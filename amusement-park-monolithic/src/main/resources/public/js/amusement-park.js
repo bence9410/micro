@@ -12,7 +12,7 @@ $(document).ready(function() {
 function save() {
 	$("#save").attr("disabled", true)
 	$.ajax({
-		url : "/amusement-park",
+		url : links.amusementPark,
 		method : "POST",
 		contentType : "application/json",
 		data : JSON.stringify(parkCollectData()),
@@ -73,7 +73,7 @@ function parkFillWithSampleData() {
 
 function getAmusementParks() {
 	$.ajax({
-		url : "/amusement-park",
+		url : links.amusementPark,
 		success : function(response) {
 			fillTableWithData(response)
 		}
@@ -83,9 +83,11 @@ function getAmusementParks() {
 function fillTableWithData(data) {
 	var tableBody = []
 	
-	$.each(data._embedded.amusementParkResourceList, function(i, e) {
-		tableBody.push(convertAmusementParkToTableRow(e))
-	})
+	if (data._embedded !== undefined){
+		$.each(data._embedded.amusementParkResourceList, function(i, e) {
+			tableBody.push(convertAmusementParkToTableRow(e))
+		})
+	}
 
 	$("#tableBody").html(tableBody.join())
 }

@@ -1,4 +1,6 @@
 var links
+var pages
+var jses
 var username
 var authorities
 
@@ -11,8 +13,15 @@ function init() {
 				links[e.rel] = e.href
 			})
 			getUserData()
+			$("#logout").attr("action", links.logout)
 		}
 	}) 
+	pages = {
+		amusementPark: "/pages/amusement-park.html"
+	}
+	jses = {
+		amusementPark: "js/amusement-park.js"
+	}
 }
 
 function getUserData(){
@@ -20,7 +29,7 @@ function getUserData(){
         url: links.user,
         success: function (data) {
         	setUsernameAndAuthirities(data)
-        	getSpendingMoneyShowSignUpIfCanNot()
+        	setSpendingMoneyOrShowSingUpDiv(data.spendingMoney)
         }
     })
 }
@@ -37,26 +46,19 @@ function setUsernameAndAuthirities(data){
      $("#authorities").html(authorities)
 }
 
-function getSpendingMoneyShowSignUpIfCanNot(){
-	$.ajax({
-		url : "/visitor/spending-money/",
-		success : function(data) {
-			$("#spendingMoney").html(data)
-			$("#spendingMoneyDiv").show()
-			getAmusementParkPage()
-		},
-		error : function(response) {
-			if (response.status == 418) {
-				$("#signUp").show()
-			}
-		}
-	})
-
+function setSpendingMoneyOrShowSingUpDiv(spendingMoney){
+	if (spendingMoney === undefined) {
+		$("#signUp").show()
+	} else {
+		$("#spendingMoney").html(spendingMoney)
+		$("#spendingMoneyDiv").show()
+		getAmusementParkPage()
+	}
 }
 
 function signUp() {
 	$.ajax({
-		url : "/visitor",
+		url : links.visitorSignUp,
 		method : "POST",
 		contentType : "application/json",
 		data : JSON.stringify(collectData()),
@@ -85,9 +87,9 @@ function fillWithSampleData() {
 
 function getAmusementParkPage() {
 	$.ajax({
-		url : "/pages/amusement-park.html",
+		url : pages.amusementPark,
 		success : function(data) {
-			$("#content").html("<script src=\"js/amusement-park.js\"></script>" + data)
+			$("#content").html("<script src=\"" + jses.amusementPark + "\"></script>" + data)
 		}
 	})
 }
