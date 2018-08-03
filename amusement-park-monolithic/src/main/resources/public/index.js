@@ -1,14 +1,28 @@
+var links
 var username
 var authorities
 
 function init() {
-    $.ajax({
-        url: "/user",
+	$.ajax({
+		url: "/links",
+		success: function (data) {
+			links = {}
+			$.each(data, function (i, e) {
+				links[e.rel] = e.href
+			})
+			getUserData()
+		}
+	}) 
+}
+
+function getUserData(){
+	$.ajax({
+        url: links.user,
         success: function (data) {
         	setUsernameAndAuthirities(data)
         	getSpendingMoneyShowSignUpIfCanNot()
         }
-    }) 
+    })
 }
 
 function setUsernameAndAuthirities(data){

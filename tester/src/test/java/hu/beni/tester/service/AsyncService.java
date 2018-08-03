@@ -6,25 +6,28 @@ import static hu.beni.clientsupport.ResponseType.MACHINE_TYPE;
 import static hu.beni.clientsupport.ResponseType.RESOURCES_MACHINE_TYPE;
 import static hu.beni.clientsupport.ResponseType.VISITOR_TYPE;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.ADD_REGISTRY;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.AMUSEMENT_PARK;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_OFF_MACHINE;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_ON_MACHINE;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.LOGIN;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.LOGOUT;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.MACHINE;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_ENTER_PARK;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_LEAVE_PARK;
-import static hu.beni.tester.constant.Constants.AMUSEMENT_PARK_URL;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_SIGN_UP;
 import static hu.beni.tester.constant.Constants.GUEST_BOOK_REGISTRY_TEXT;
-import static hu.beni.tester.constant.Constants.LOGIN_URL;
-import static hu.beni.tester.constant.Constants.LOGOUT_URL;
+import static hu.beni.tester.constant.Constants.LINKS_URL;
 import static hu.beni.tester.constant.Constants.PASS;
 import static hu.beni.tester.constant.Constants.PASSWORD;
 import static hu.beni.tester.constant.Constants.USERNAME;
-import static hu.beni.tester.constant.Constants.VISITOR_URL;
+import static java.util.stream.Collectors.toMap;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
 import java.net.URI;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.ToIntFunction;
@@ -50,12 +53,10 @@ import hu.beni.tester.dto.SumAndTime;
 import hu.beni.tester.dto.VisitorStuffTime;
 import hu.beni.tester.factory.ResourceFactory;
 import hu.beni.tester.properties.ApplicationProperties;
-import lombok.RequiredArgsConstructor;
 
 @Async
 @Service
 @Scope(SCOPE_PROTOTYPE)
-@RequiredArgsConstructor
 public class AsyncService {
 
 	public static final PagedResourcesType<ResourceSupport> PAGED_TYPE = new PagedResourcesType<ResourceSupport>() {
@@ -65,9 +66,25 @@ public class AsyncService {
 	private final String username;
 	private final ResourceFactory resourceFactory;
 	private final ApplicationProperties properties;
+	private final Map<String, String> links;
+
+	public AsyncService(Client client, String username, ResourceFactory resourceFactory,
+			ApplicationProperties properties) {
+		super();
+		this.client = client;
+		this.username = username;
+		this.resourceFactory = resourceFactory;
+		this.properties = properties;
+		links = getBaseLinks();
+	}
+
+	private Map<String, String> getBaseLinks() {
+		return Stream.of(client.get(uri(LINKS_URL), Link[].class).getBody())
+				.collect(toMap(Link::getRel, Link::getHref));
+	}
 
 	public CompletableFuture<Void> login() {
-		client.post(uri(LOGIN_URL), createMapWithUsernameAndPass());
+		client.post(uri(links.get(LOGIN)), createMapWithUsernameAndPass());
 		return CompletableFuture.completedFuture(null);
 	}
 
@@ -79,14 +96,14 @@ public class AsyncService {
 	}
 
 	public CompletableFuture<?> logout() {
-		client.post(uri(LOGOUT_URL));
+		client.post(uri(links.get(LOGOUT)));
 		return CompletableFuture.completedFuture(null);
 	}
 
 	public CompletableFuture<DeleteTime> deleteAllPark() {
 		List<Long> tenParkTimes = new LinkedList<>();
 		long start = now();
-		deleteAllOnUrl(AMUSEMENT_PARK_URL, tenParkTimes);
+		deleteAllOnUrl(links.get(AMUSEMENT_PARK), tenParkTimes);
 		return CompletableFuture.completedFuture(new DeleteTime(millisFrom(start), tenParkTimes));
 	}
 
@@ -119,9 +136,8 @@ public class AsyncService {
 	}
 
 	private AmusementParkResource createAmusementPark() {
-		return client
-				.post(uri(AMUSEMENT_PARK_URL), resourceFactory.createAmusementParkWithAddress(), AMUSEMENT_PARK_TYPE)
-				.getBody();
+		return client.post(uri(links.get(AMUSEMENT_PARK)), resourceFactory.createAmusementParkWithAddress(),
+				AMUSEMENT_PARK_TYPE).getBody();
 	}
 
 	private String mapToMachineLinkHref(AmusementParkResource amusementParkResource) {
@@ -138,7 +154,7 @@ public class AsyncService {
 
 	public CompletableFuture<SumAndTime> sumAmusementParksCapital() {
 		long start = now();
-		long sum = sum(AMUSEMENT_PARK_URL, AmusementParkResource.class, AmusementParkResource::getCapital);
+		long sum = sum(links.get(AMUSEMENT_PARK), AmusementParkResource.class, AmusementParkResource::getCapital);
 		return CompletableFuture.completedFuture(new SumAndTime(sum, millisFrom(start)));
 	}
 
@@ -163,9 +179,9 @@ public class AsyncService {
 	}
 
 	private void visitAllStuffInEveryPark(List<Long> oneParkTimes, List<Long> tenParkTimes) {
-		Optional<String> nextPageUrl = Optional.of(AMUSEMENT_PARK_URL);
-		VisitorResource visitorResource = client.post(uri(VISITOR_URL), resourceFactory.createVisitor(), VISITOR_TYPE)
-				.getBody();
+		Optional<String> nextPageUrl = Optional.of(links.get(AMUSEMENT_PARK));
+		VisitorResource visitorResource = client
+				.post(uri(links.get(VISITOR_SIGN_UP)), resourceFactory.createVisitor(), VISITOR_TYPE).getBody();
 		do {
 			long tenParkStart = now();
 			PagedResources<AmusementParkResource> page = client
@@ -213,14 +229,14 @@ public class AsyncService {
 
 	public CompletableFuture<SumAndTime> sumVisitorsSpendingMoney() {
 		long start = now();
-		long sum = sum(VISITOR_URL, VisitorResource.class, VisitorResource::getSpendingMoney);
+		long sum = sum(links.get(VISITOR_SIGN_UP), VisitorResource.class, VisitorResource::getSpendingMoney);
 		return CompletableFuture.completedFuture(new SumAndTime(sum, millisFrom(start)));
 	}
 
 	public CompletableFuture<DeleteTime> deleteAllVisitor() {
 		List<Long> tenVisitorTimes = new LinkedList<>();
 		long start = now();
-		deleteAllOnUrl(VISITOR_URL, tenVisitorTimes);
+		deleteAllOnUrl(links.get(VISITOR_SIGN_UP), tenVisitorTimes);
 		return CompletableFuture.completedFuture(new DeleteTime(millisFrom(start), tenVisitorTimes));
 	}
 

@@ -4,7 +4,10 @@ import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.ADD_REGIST
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.AMUSEMENT_PARK;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_OFF_MACHINE;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_ON_MACHINE;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.LOGIN;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.LOGOUT;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.MACHINE;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.USER;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_ENTER_PARK;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_LEAVE_PARK;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_SIGN_UP;
@@ -14,16 +17,32 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 import org.springframework.hateoas.Link;
 
 import hu.beni.amusementpark.controller.AmusementParkController;
+import hu.beni.amusementpark.controller.BaseLinksController;
 import hu.beni.amusementpark.controller.GuestBookRegistryController;
 import hu.beni.amusementpark.controller.MachineController;
+import hu.beni.amusementpark.controller.UserController;
 import hu.beni.amusementpark.controller.VisitorController;
 
 public class LinkFactory {
 
+	private static final Class<BaseLinksController> baseLinksControllerClass = BaseLinksController.class;
+	private static final Class<UserController> userControllerClass = UserController.class;
 	private static final Class<AmusementParkController> amusementParkControllerClass = AmusementParkController.class;
 	private static final Class<MachineController> machineControllerClass = MachineController.class;
 	private static final Class<VisitorController> visitorControllerClass = VisitorController.class;
 	private static final Class<GuestBookRegistryController> guestBookRegistryControllerClass = GuestBookRegistryController.class;
+
+	public static Link createLoginLink() {
+		return linkTo(baseLinksControllerClass).slash(LOGIN).withRel(LOGIN);
+	}
+
+	public static Link createLogoutLink() {
+		return linkTo(baseLinksControllerClass).slash(LOGOUT).withRel(LOGOUT);
+	}
+
+	public static Link createUserLink() {
+		return linkTo(methodOn(userControllerClass).getUser(null)).withRel(USER);
+	}
 
 	public static Link createAmusementParkLink() {
 		return linkTo(methodOn(amusementParkControllerClass).findAllPaged(null)).withRel(AMUSEMENT_PARK);

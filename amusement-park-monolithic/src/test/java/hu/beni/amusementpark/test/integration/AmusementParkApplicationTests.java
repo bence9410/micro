@@ -21,6 +21,7 @@ import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.ADD_REGIST
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.AMUSEMENT_PARK;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_OFF_MACHINE;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_ON_MACHINE;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.LOGOUT;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.MACHINE;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_ENTER_PARK;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_LEAVE_PARK;
@@ -28,12 +29,14 @@ import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_SI
 import static hu.beni.clientsupport.factory.ValidResourceFactory.createAmusementParkWithAddress;
 import static hu.beni.clientsupport.factory.ValidResourceFactory.createMachine;
 import static hu.beni.clientsupport.factory.ValidResourceFactory.createVisitor;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
-import java.util.stream.Collectors;
+import java.util.Map;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -46,6 +49,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.env.Environment;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.mvc.TypeReferences.PagedResourcesType;
 import org.springframework.http.HttpHeaders;
@@ -71,6 +75,8 @@ import hu.beni.clientsupport.resource.VisitorResource;
 		ClientConfig.class })
 public class AmusementParkApplicationTests {
 
+	private static Map<String, String> links;
+
 	@Autowired
 	private Environment environment;
 
@@ -80,25 +86,23 @@ public class AmusementParkApplicationTests {
 	@LocalServerPort
 	private int port;
 
-	private String amusementParkUrl;
-
-	private String logoutUrl;
-
 	@PostConstruct
 	public void init() {
-		String baseUrl = "http://localhost:" + port;
-		amusementParkUrl = baseUrl + "/amusement-park";
-		logoutUrl = baseUrl + "/logout";
+		links = links == null ? getBaseLinks() : links;
+	}
+
+	private Map<String, String> getBaseLinks() {
+		return Stream.of(client.get(uri("http://localhost:" + port + "/links"), Link[].class).getBody())
+				.collect(toMap(Link::getRel, Link::getHref));
 	}
 
 	@Test
 	public void pageTest() {
-
 		login(ADMIN_LOWER_CASE, PASS);
 
 		PagedResourcesType<AmusementParkResource> responseType = getPagedType(AmusementParkResource.class);
 
-		ResponseEntity<PagedResources<AmusementParkResource>> response = client.get(uri(amusementParkUrl),
+		ResponseEntity<PagedResources<AmusementParkResource>> response = client.get(uri(links.get(AMUSEMENT_PARK)),
 				responseType);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -108,7 +112,7 @@ public class AmusementParkApplicationTests {
 
 		IntStream.range(0, 11).forEach(i -> createAmusementPark());
 
-		response = client.get(uri(amusementParkUrl), responseType);
+		response = client.get(uri(links.get(AMUSEMENT_PARK)), responseType);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
 		page = response.getBody();
@@ -158,13 +162,13 @@ public class AmusementParkApplicationTests {
 		AmusementParkResource amusementParkResource = createAmusementParkWithAddress();
 		amusementParkResource.setAddress(null);
 
-		assertThrows(() -> client.post(uri(amusementParkUrl), amusementParkResource, String.class),
+		assertThrows(() -> client.post(uri(links.get(AMUSEMENT_PARK)), amusementParkResource, String.class),
 				HttpClientErrorException.class, teaPotStatusAndAddressNullMessage());
 
 		AmusementParkResource createdAmusementParkResource = createAmusementParkWithAddress();
 		createdAmusementParkResource.setCapital(500);
 
-		ResponseEntity<AmusementParkResource> response = client.post(uri(amusementParkUrl),
+		ResponseEntity<AmusementParkResource> response = client.post(uri(links.get(AMUSEMENT_PARK)),
 				createdAmusementParkResource, AMUSEMENT_PARK_TYPE);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -207,7 +211,7 @@ public class AmusementParkApplicationTests {
 	}
 
 	private String getLoginUrl() {
-		ResponseEntity<Void> response = client.post(uri(amusementParkUrl));
+		ResponseEntity<Void> response = client.post(uri(links.get(AMUSEMENT_PARK)));
 
 		assertEquals(HttpStatus.FOUND, response.getStatusCode());
 
@@ -221,7 +225,7 @@ public class AmusementParkApplicationTests {
 	}
 
 	private void logout() {
-		ResponseEntity<Void> response = client.post(uri(logoutUrl));
+		ResponseEntity<Void> response = client.post(uri(links.get(LOGOUT)));
 
 		assertEquals(HttpStatus.FOUND, response.getStatusCode());
 		assertTrue(response.getHeaders().getLocation().toString().contains("login?logout"));
@@ -232,14 +236,14 @@ public class AmusementParkApplicationTests {
 	}
 
 	private void testRedirectToLoginPage() {
-		ResponseEntity<Void> response = client.post(uri(amusementParkUrl));
+		ResponseEntity<Void> response = client.post(uri(links.get(AMUSEMENT_PARK)));
 
 		assertEquals(HttpStatus.FOUND, response.getStatusCode());
 		assertTrue(response.getHeaders().getLocation().toString().endsWith("login"));
 	}
 
 	private void restTemplateFollowsRedirectOnGet() {
-		ResponseEntity<String> loginPageResponse = client.get(uri(amusementParkUrl), String.class);
+		ResponseEntity<String> loginPageResponse = client.get(uri(links.get(AMUSEMENT_PARK)), String.class);
 
 		assertEquals(HttpStatus.OK, loginPageResponse.getStatusCode());
 		assertTrue(loginPageResponse.getBody().length() > 450);
@@ -248,8 +252,8 @@ public class AmusementParkApplicationTests {
 	private AmusementParkResource createAmusementPark() {
 		AmusementParkResource amusementParkResource = createAmusementParkWithAddress();
 
-		ResponseEntity<AmusementParkResource> response = client.post(uri(amusementParkUrl), amusementParkResource,
-				AMUSEMENT_PARK_TYPE);
+		ResponseEntity<AmusementParkResource> response = client.post(uri(links.get(AMUSEMENT_PARK)),
+				amusementParkResource, AMUSEMENT_PARK_TYPE);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -398,8 +402,8 @@ public class AmusementParkApplicationTests {
 	private ExceptionAsserter<HttpClientErrorException> teaPotStatusAndMachineTypeMustBeOneOf() {
 		return exception -> {
 			assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
-			assertEquals(validationError(TYPE, oneOfMessage(Stream.of(MachineType.values())
-					.map(value -> value.toString()).collect(Collectors.toSet()).toString())),
+			assertEquals(validationError(TYPE, oneOfMessage(
+					Stream.of(MachineType.values()).map(value -> value.toString()).collect(toSet()).toString())),
 					exception.getResponseBodyAsString());
 		};
 	}

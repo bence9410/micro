@@ -23,10 +23,17 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @SuppressWarnings("deprecation")
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+	public WebSecurityConfig(ObjectMapper objectMapper) {
+		objectMapper.setSerializationInclusion(Include.NON_NULL);
+	}
 
 	@Bean
 	public NoOpPasswordEncoder noOpPasswordEncoder() {
@@ -37,6 +44,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http //@formatter:off
             .authorizeRequests()
+            	.antMatchers("/links")
+            	.permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
