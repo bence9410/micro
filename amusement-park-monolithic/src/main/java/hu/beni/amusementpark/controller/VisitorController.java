@@ -1,5 +1,12 @@
 package hu.beni.amusementpark.controller;
 
+import static hu.beni.amusementpark.constants.RequestMappingConstants.A_VISITOR;
+import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_A_VISITOR_ENTER_PARK;
+import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_A_VISITOR_LEAVE_PARK;
+import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_ON_A_MACHINE_A_VISITOR_GET_OFF;
+import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_ON_A_MACHINE_A_VISITOR_GET_ON;
+import static hu.beni.amusementpark.constants.RequestMappingConstants.VISITORS;
+
 import javax.validation.Valid;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -39,44 +46,44 @@ public class VisitorController {
 		webDataBinder.addValidators(new VisitorResourceValidator());
 	}
 
-	@PostMapping("/visitors")
+	@PostMapping(VISITORS)
 	public VisitorResource signUp(@Valid @RequestBody VisitorResource visitorResource) {
 		return visitorMapper.toResource(visitorService.signUp(visitorMapper.toEntity(visitorResource)));
 	}
 
-	@GetMapping("/visitors")
+	@GetMapping(VISITORS)
 	public PagedResources<VisitorResource> findAllPaged(@PageableDefault Pageable pageable) {
 		return visitorMapper.toPagedResources(visitorService.findAll(pageable));
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
-	@DeleteMapping("/visitors/{visitorId}")
+	@DeleteMapping(A_VISITOR)
 	public void delete(@PathVariable Long visitorId) {
 		visitorService.delete(visitorId);
 	}
 
-	@GetMapping("/visitors/{visitorId}")
+	@GetMapping(A_VISITOR)
 	public VisitorResource findOne(@PathVariable Long visitorId) {
 		return visitorMapper.toResource(visitorService.findOne(visitorId));
 	}
 
-	@PutMapping("amusement-parks/{amusementParkId}/visitors/{visitorId}/enter-park")
+	@PutMapping(IN_A_PARK_A_VISITOR_ENTER_PARK)
 	public VisitorResource enterPark(@PathVariable Long amusementParkId, @PathVariable Long visitorId) {
 		return visitorMapper.toResource(visitorService.enterPark(amusementParkId, visitorId));
 	}
 
-	@PutMapping("amusement-parks/{amusementParkId}/visitors/{visitorId}/leave-park")
+	@PutMapping(IN_A_PARK_A_VISITOR_LEAVE_PARK)
 	public VisitorResource leavePark(@PathVariable Long amusementParkId, @PathVariable Long visitorId) {
 		return visitorMapper.toResource(visitorService.leavePark(amusementParkId, visitorId));
 	}
 
-	@PutMapping("amusement-parks/{amusementParkId}/machines/{machineId}/visitors/{visitorId}/get-on-machine")
+	@PutMapping(IN_A_PARK_ON_A_MACHINE_A_VISITOR_GET_ON)
 	public VisitorResource getOnMachine(@PathVariable Long amusementParkId, @PathVariable Long machineId,
 			@PathVariable Long visitorId) {
 		return visitorMapper.toResource(visitorService.getOnMachine(amusementParkId, machineId, visitorId));
 	}
 
-	@PutMapping("amusement-parks/{amusementParkId}/machines/{machineId}/visitors/{visitorId}/get-off-machine")
+	@PutMapping(IN_A_PARK_ON_A_MACHINE_A_VISITOR_GET_OFF)
 	public VisitorResource getOffMachine(@PathVariable Long amusementParkId, @PathVariable Long machineId,
 			@PathVariable Long visitorId) {
 		return visitorMapper.toResource(visitorService.getOffMachine(machineId, visitorId));

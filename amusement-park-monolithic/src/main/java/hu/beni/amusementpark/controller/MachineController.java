@@ -1,11 +1,13 @@
 package hu.beni.amusementpark.controller;
 
+import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_AN_AMUSEMENT_PARK_MACHINES;
+import static hu.beni.amusementpark.constants.RequestMappingConstants.MACHINE_ID;
+
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.hateoas.Link;
 import org.springframework.hateoas.Resources;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.WebDataBinder;
@@ -25,7 +27,7 @@ import hu.beni.clientsupport.resource.MachineResource;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("amusement-parks/{amusementParkId}/machines")
+@RequestMapping(IN_AN_AMUSEMENT_PARK_MACHINES)
 @RequiredArgsConstructor
 @ConditionalOnWebApplication
 public class MachineController {
@@ -46,7 +48,7 @@ public class MachineController {
 				.toResource(machineService.addMachine(amusementParkId, machineMapper.toEntity(machineResource)));
 	}
 
-	@GetMapping("/{machineId}")
+	@GetMapping(MACHINE_ID)
 	public MachineResource findOne(@PathVariable Long amusementParkId, @PathVariable Long machineId) {
 		return machineMapper.toResource(machineService.findOne(amusementParkId, machineId));
 	}
@@ -54,10 +56,10 @@ public class MachineController {
 	@GetMapping
 	public Resources<MachineResource> findAllByAmusementParkId(@PathVariable Long amusementParkId) {
 		return new Resources<>(machineService.findAllByAmusementParkId(amusementParkId).stream()
-				.map(machineMapper::toResource).collect(Collectors.toList()), new Link[] {});
+				.map(machineMapper::toResource).collect(Collectors.toList()));
 	}
 
-	@DeleteMapping("/{machineId}")
+	@DeleteMapping(MACHINE_ID)
 	@PreAuthorize("hasRole('ADMIN')")
 	public void delete(@PathVariable Long amusementParkId, @PathVariable Long machineId) {
 		machineService.removeMachine(amusementParkId, machineId);

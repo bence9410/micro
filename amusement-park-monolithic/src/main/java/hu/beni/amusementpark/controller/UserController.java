@@ -1,5 +1,7 @@
 package hu.beni.amusementpark.controller;
 
+import static hu.beni.amusementpark.constants.RequestMappingConstants.USER;
+
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +19,7 @@ public class UserController {
 
 	private final VisitorService visitorService;
 
-	@GetMapping("/user")
+	@GetMapping(USER)
 	public Map<String, Object> getUser(Principal principal) {
 		UsernamePasswordAuthenticationToken user = UsernamePasswordAuthenticationToken.class.cast(principal);
 		Map<String, Object> map = new HashMap<>();

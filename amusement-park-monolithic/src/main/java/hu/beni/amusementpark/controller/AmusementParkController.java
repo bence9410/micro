@@ -1,5 +1,8 @@
 package hu.beni.amusementpark.controller;
 
+import static hu.beni.amusementpark.constants.RequestMappingConstants.AMUSEMENT_PARKS;
+import static hu.beni.amusementpark.constants.RequestMappingConstants.AN_AMUSEMENT_PARK;
+
 import javax.validation.Valid;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -24,7 +27,7 @@ import hu.beni.clientsupport.resource.AmusementParkResource;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/amusement-parks")
+@RequestMapping(AMUSEMENT_PARKS)
 @RequiredArgsConstructor
 @ConditionalOnWebApplication
 public class AmusementParkController {
@@ -49,13 +52,13 @@ public class AmusementParkController {
 		return amusementParkMapper.toPagedResources(amusementParkService.findAllFetchAddress(pageable));
 	}
 
-	@GetMapping("/{amusementParkId}")
+	@GetMapping(AN_AMUSEMENT_PARK)
 	public AmusementParkResource findOne(@PathVariable Long amusementParkId) {
 		return amusementParkMapper.toResource(amusementParkService.findByIdFetchAddress(amusementParkId));
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
-	@DeleteMapping("/{amusementParkId}")
+	@DeleteMapping(AN_AMUSEMENT_PARK)
 	public void delete(@PathVariable Long amusementParkId) {
 		amusementParkService.delete(amusementParkId);
 	}
