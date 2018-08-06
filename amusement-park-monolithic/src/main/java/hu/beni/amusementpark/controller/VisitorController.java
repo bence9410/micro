@@ -39,44 +39,44 @@ public class VisitorController {
 		webDataBinder.addValidators(new VisitorResourceValidator());
 	}
 
-	@PostMapping("/visitor")
+	@PostMapping("/visitors")
 	public VisitorResource signUp(@Valid @RequestBody VisitorResource visitorResource) {
 		return visitorMapper.toResource(visitorService.signUp(visitorMapper.toEntity(visitorResource)));
 	}
 
-	@GetMapping("/visitor")
+	@GetMapping("/visitors")
 	public PagedResources<VisitorResource> findAllPaged(@PageableDefault Pageable pageable) {
 		return visitorMapper.toPagedResources(visitorService.findAll(pageable));
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
-	@DeleteMapping("/visitor/{visitorId}")
+	@DeleteMapping("/visitors/{visitorId}")
 	public void delete(@PathVariable Long visitorId) {
 		visitorService.delete(visitorId);
 	}
 
-	@GetMapping("/visitor/{visitorId}")
+	@GetMapping("/visitors/{visitorId}")
 	public VisitorResource findOne(@PathVariable Long visitorId) {
 		return visitorMapper.toResource(visitorService.findOne(visitorId));
 	}
 
-	@PutMapping("amusement-park/{amusementParkId}/visitor/{visitorId}/enter-park")
+	@PutMapping("amusement-parks/{amusementParkId}/visitors/{visitorId}/enter-park")
 	public VisitorResource enterPark(@PathVariable Long amusementParkId, @PathVariable Long visitorId) {
 		return visitorMapper.toResource(visitorService.enterPark(amusementParkId, visitorId));
 	}
 
-	@PutMapping("amusement-park/{amusementParkId}/visitor/{visitorId}/leave-park")
+	@PutMapping("amusement-parks/{amusementParkId}/visitors/{visitorId}/leave-park")
 	public VisitorResource leavePark(@PathVariable Long amusementParkId, @PathVariable Long visitorId) {
 		return visitorMapper.toResource(visitorService.leavePark(amusementParkId, visitorId));
 	}
 
-	@PutMapping("amusement-park/{amusementParkId}/machine/{machineId}/visitor/{visitorId}/get-on-machine")
+	@PutMapping("amusement-parks/{amusementParkId}/machines/{machineId}/visitors/{visitorId}/get-on-machine")
 	public VisitorResource getOnMachine(@PathVariable Long amusementParkId, @PathVariable Long machineId,
 			@PathVariable Long visitorId) {
 		return visitorMapper.toResource(visitorService.getOnMachine(amusementParkId, machineId, visitorId));
 	}
 
-	@PutMapping("amusement-park/{amusementParkId}/machine/{machineId}/visitor/{visitorId}/get-off-machine")
+	@PutMapping("amusement-parks/{amusementParkId}/machines/{machineId}/visitors/{visitorId}/get-off-machine")
 	public VisitorResource getOffMachine(@PathVariable Long amusementParkId, @PathVariable Long machineId,
 			@PathVariable Long visitorId) {
 		return visitorMapper.toResource(visitorService.getOffMachine(machineId, visitorId));

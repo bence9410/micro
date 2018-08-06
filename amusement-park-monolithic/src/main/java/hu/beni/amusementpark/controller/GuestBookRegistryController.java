@@ -20,14 +20,14 @@ public class GuestBookRegistryController {
 	private final GuestBookRegistryService guestBookRegistryService;
 	private final GuestBookRegistryMapper guestBookRegistryMapper;
 
-	@PostMapping("/amusement-park/{amusementParkId}/visitor/{visitorId}/guest-book-registry")
+	@PostMapping("/amusement-parks/{amusementParkId}/visitors/{visitorId}/guest-book-registries")
 	public GuestBookRegistryResource addRegistry(@PathVariable Long amusementParkId, @PathVariable Long visitorId,
 			@RequestBody String textOfRegistry) {
 		return guestBookRegistryMapper
 				.toResource(guestBookRegistryService.addRegistry(amusementParkId, visitorId, textOfRegistry));
 	}
 
-	@GetMapping("guest-book-registry/{guestBookRegistryId}")
+	@GetMapping("guest-book-registries/{guestBookRegistryId}")
 	public GuestBookRegistryResource findOne(@PathVariable Long guestBookRegistryId) {
 		return guestBookRegistryMapper.toResource(guestBookRegistryService.findOne(guestBookRegistryId));
 	}
