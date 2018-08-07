@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -37,6 +38,7 @@ import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.enums.VisitorState;
 import hu.beni.amusementpark.exception.AmusementParkException;
+import hu.beni.amusementpark.repository.AmusementParkKnowVisitorRepository;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
@@ -50,6 +52,7 @@ public class VisitorServiceUnitTests {
 	private AmusementParkRepository amusementParkRepository;
 	private MachineRepository machineRepository;
 	private VisitorRepository visitorRepository;
+	private AmusementParkKnowVisitorRepository amusementParkKnowVisitorRepository;
 	private ApplicationEventPublisher eventPublisher;
 
 	private VisitorService visitorService;
@@ -59,14 +62,16 @@ public class VisitorServiceUnitTests {
 		amusementParkRepository = mock(AmusementParkRepository.class);
 		machineRepository = mock(MachineRepository.class);
 		visitorRepository = mock(VisitorRepository.class);
+		amusementParkKnowVisitorRepository = mock(AmusementParkKnowVisitorRepository.class);
 		eventPublisher = mock(ApplicationEventPublisher.class);
 		visitorService = new VisitorServiceImpl(amusementParkRepository, machineRepository, visitorRepository,
-				eventPublisher);
+				amusementParkKnowVisitorRepository, eventPublisher);
 	}
 
 	@After
 	public void verifyNoMoreInteractionsOnMocks() {
-		verifyNoMoreInteractions(amusementParkRepository, machineRepository, visitorRepository, eventPublisher);
+		verifyNoMoreInteractions(amusementParkRepository, machineRepository, visitorRepository,
+				amusementParkKnowVisitorRepository, eventPublisher);
 	}
 
 	@Test
@@ -205,8 +210,8 @@ public class VisitorServiceUnitTests {
 
 		verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
 		verify(visitorRepository).findById(visitorId);
-		verify(amusementParkRepository).countKnownVisitor(amusementParkId, visitorId);
-		verify(amusementParkRepository).addKnownVisitor(amusementParkId, visitorId);
+		verify(amusementParkKnowVisitorRepository).countByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
+		verify(amusementParkKnowVisitorRepository).save(any());
 		verify(amusementParkRepository).incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
 		verify(eventPublisher)
 				.publishEvent(new VisitorEnterParkEventDTO(amusementParkId, visitorId, amusementPark.getEntranceFee()));
@@ -224,7 +229,7 @@ public class VisitorServiceUnitTests {
 		when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId))
 				.thenReturn(Optional.of(amusementPark));
 		when(visitorRepository.findById(visitorId)).thenReturn(Optional.of(visitor));
-		when(amusementParkRepository.countKnownVisitor(amusementParkId, visitorId))
+		when(amusementParkKnowVisitorRepository.countByAmusementParkIdAndVisitorId(amusementParkId, visitorId))
 				.thenReturn(numberOfKnowsVisitorsById);
 
 		assertEquals(visitor, visitorService.enterPark(amusementParkId, visitorId));
@@ -235,7 +240,7 @@ public class VisitorServiceUnitTests {
 
 		verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
 		verify(visitorRepository).findById(visitorId);
-		verify(amusementParkRepository).countKnownVisitor(amusementParkId, visitorId);
+		verify(amusementParkKnowVisitorRepository).countByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
 		verify(amusementParkRepository).incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
 		verify(eventPublisher)
 				.publishEvent(new VisitorEnterParkEventDTO(amusementParkId, visitorId, amusementPark.getEntranceFee()));

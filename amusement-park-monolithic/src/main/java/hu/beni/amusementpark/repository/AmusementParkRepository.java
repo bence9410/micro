@@ -29,11 +29,4 @@ public interface AmusementParkRepository
 	@Query("Select new hu.beni.amusementpark.entity.AmusementPark(a.id, a.capital, a.totalArea) from AmusementPark a where a.id = :amusementParkId")
 	Optional<AmusementPark> findByIdReadOnlyIdAndCapitalAndTotalArea(Long amusementParkId);
 
-	@Query(nativeQuery = true, value = "Select count(*) from amusement_park_visitor where amusement_park_id = :amusementParkId and visitor_id = :visitorId")
-	Long countKnownVisitor(Long amusementParkId, Long visitorId);
-
-	@Modifying
-	@Query(nativeQuery = true, value = "Insert into amusement_park_visitor(amusement_park_id, visitor_id) values(:amusementParkId, :visitorId)")
-	void addKnownVisitor(Long amusementParkId, Long visitorId);
-
 }

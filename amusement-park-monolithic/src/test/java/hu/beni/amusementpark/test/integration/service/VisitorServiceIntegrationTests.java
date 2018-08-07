@@ -127,6 +127,7 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 		select += 3;
 		update += 2;
 		insert++;
+		incrementSelectIfOracleDBProfileActive();
 		assertStatements();
 		assertEquals(amusementPark.getCapital() + amusementPark.getEntranceFee(),
 				amusementParkRepository.findById(amusementParkId).get().getCapital().longValue());

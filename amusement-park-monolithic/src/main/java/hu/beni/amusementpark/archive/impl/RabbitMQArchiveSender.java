@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import hu.beni.amusementpark.archive.ArchiveSender;
 import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
+import hu.beni.amusementpark.entity.AmusementParkKnowVisitor;
 import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
@@ -36,8 +37,8 @@ public class RabbitMQArchiveSender implements ArchiveSender {
 		archiveAmusementParkDTO.setAddress(convertToAddressDTO(amusementPark.getAddress()));
 		archiveAmusementParkDTO
 				.setMachines(amusementPark.getMachines().stream().map(this::convertToArchiveMachine).collect(toList()));
-		archiveAmusementParkDTO.setKnownVisitors(
-				amusementPark.getKnownVisitors().stream().map(this::convertToArchiveVisitor).collect(toSet()));
+		archiveAmusementParkDTO.setKnownVisitors(amusementPark.getKnownVisitors().stream()
+				.map(AmusementParkKnowVisitor::getVisitor).map(this::convertToArchiveVisitor).collect(toSet()));
 		archiveAmusementParkDTO.setGuestBookRegistries(amusementPark.getGuestBookRegistries().stream()
 				.map(this::convertToArchiveGuestBookRegistry).collect(toList()));
 		rabbitTemplate.convertAndSend(archiveQueue.getName(), archiveAmusementParkDTO);

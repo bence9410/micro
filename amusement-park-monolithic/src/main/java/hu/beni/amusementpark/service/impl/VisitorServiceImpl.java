@@ -26,9 +26,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import hu.beni.amusementpark.entity.AmusementPark;
+import hu.beni.amusementpark.entity.AmusementParkKnowVisitor;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.enums.VisitorState;
+import hu.beni.amusementpark.repository.AmusementParkKnowVisitorRepository;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
@@ -45,6 +47,7 @@ public class VisitorServiceImpl implements VisitorService {
 	private final AmusementParkRepository amusementParkRepository;
 	private final MachineRepository machineRepository;
 	private final VisitorRepository visitorRepository;
+	private final AmusementParkKnowVisitorRepository amusementParkKnowVisitorRepository;
 	private final ApplicationEventPublisher eventPublisher;
 
 	@Override
@@ -68,7 +71,7 @@ public class VisitorServiceImpl implements VisitorService {
 				NO_AMUSEMENT_PARK_WITH_ID);
 		Visitor visitor = ifNull(visitorRepository.findById(visitorId), VISITOR_NOT_SIGNED_UP);
 		checkIfVisitorAbleToEnterPark(amusementPark.getEntranceFee(), visitor);
-		addToKnownVisitorsIfFirstEnter(amusementParkId, visitorId);
+		addToKnownVisitorsIfFirstEnter(amusementPark, visitor);
 		incrementCaitalAndDecreaseSpendingMoneyAndSetPark(amusementPark, visitor);
 		eventPublisher
 				.publishEvent(new VisitorEnterParkEventDTO(amusementParkId, visitorId, amusementPark.getEntranceFee()));
@@ -81,9 +84,10 @@ public class VisitorServiceImpl implements VisitorService {
 		ifNotNull(visitor.getAmusementPark(), VISITOR_IS_IN_A_PARK);
 	}
 
-	private void addToKnownVisitorsIfFirstEnter(Long amusementParkId, Long visitorId) {
-		if (amusementParkRepository.countKnownVisitor(amusementParkId, visitorId) == 0) {
-			amusementParkRepository.addKnownVisitor(amusementParkId, visitorId);
+	private void addToKnownVisitorsIfFirstEnter(AmusementPark amusementPark, Visitor visitor) {
+		if (amusementParkKnowVisitorRepository.countByAmusementParkIdAndVisitorId(amusementPark.getId(),
+				visitor.getId()) == 0) {
+			amusementParkKnowVisitorRepository.save(new AmusementParkKnowVisitor(amusementPark, visitor));
 		}
 	}
 

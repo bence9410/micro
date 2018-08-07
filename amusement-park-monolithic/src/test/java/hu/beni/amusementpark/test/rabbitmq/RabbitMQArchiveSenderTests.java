@@ -4,6 +4,7 @@ import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_TH
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createMachine;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
+import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -22,6 +23,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import hu.beni.amusementpark.config.RabbitMQTestConfig.ArchiveReceiver;
 import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
+import hu.beni.amusementpark.entity.AmusementParkKnowVisitor;
 import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
@@ -89,7 +91,9 @@ public class RabbitMQArchiveSenderTests extends AbstractRabbitMQTests {
 		assertMachinesEquals(amusementPark.getMachines(), receivedArchiveAmusementPark.getMachines());
 		assertGuestBookRegistriesEquals(amusementPark.getGuestBookRegistries(),
 				receivedArchiveAmusementPark.getGuestBookRegistries());
-		assertKnownVisitors(amusementPark.getKnownVisitors(), receivedArchiveAmusementPark.getKnownVisitors());
+		assertKnownVisitors(
+				amusementPark.getKnownVisitors().stream().map(AmusementParkKnowVisitor::getVisitor).collect(toSet()),
+				receivedArchiveAmusementPark.getKnownVisitors());
 	}
 
 	private void assertAmusementParksEquals(AmusementPark expected, ArchiveAmusementParkDTO actual) {

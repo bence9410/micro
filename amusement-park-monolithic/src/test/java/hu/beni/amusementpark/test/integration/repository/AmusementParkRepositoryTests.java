@@ -152,15 +152,15 @@ public class AmusementParkRepositoryTests extends AbstractStatementCounterTests 
 
 	private void deleteById() {
 		amusementParkRepository.deleteById(amusementParkId);
-		select += 3;
-		delete += 2;
+		select += 4;
+		delete++;
 		assertStatements();
 	}
 
 	private void deleteAll() {
 		amusementParkRepository.deleteAll();
-		select += 5;
-		delete += 4;
+		select += 7;
+		delete += 2;
 		assertStatements();
 	}
 

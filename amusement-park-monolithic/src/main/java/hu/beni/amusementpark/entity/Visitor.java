@@ -13,7 +13,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
@@ -75,8 +74,8 @@ public class Visitor implements Serializable {
 	@OneToMany(mappedBy = "visitor")
 	private List<GuestBookRegistry> guestBookRegistries;
 
-	@ManyToMany(mappedBy = "knownVisitors")
-	private Set<AmusementPark> visitedAmusementParks;
+	@OneToMany(mappedBy = "visitor")
+	private Set<AmusementParkKnowVisitor> knownAmusementParks;
 
 	@Tolerate
 	protected Visitor() {

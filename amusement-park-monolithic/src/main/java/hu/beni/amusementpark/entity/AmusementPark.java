@@ -9,9 +9,6 @@ import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -68,11 +65,8 @@ public class AmusementPark implements Serializable {
 	@OneToMany(mappedBy = "amusementPark")
 	private List<Visitor> activeVisitors;
 
-	@ManyToMany
-	@JoinTable(name = "amusement_park_visitor", //@formatter:off
-		joinColumns = @JoinColumn(name = "amusement_park_id"),
-		inverseJoinColumns = @JoinColumn(name = "visitor_id")) //@formatter:on
-	private Set<Visitor> knownVisitors;
+	@OneToMany(mappedBy = "amusementPark", cascade = CascadeType.REMOVE)
+	private Set<AmusementParkKnowVisitor> knownVisitors;
 
 	@Tolerate
 	protected AmusementPark() {
