@@ -2,31 +2,20 @@ package hu.beni.amusementpark.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
+import javax.persistence.Embeddable;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Tolerate;
 
-@Entity
+@Embeddable
 @Data
 @Builder
-@EqualsAndHashCode(of = { "id", "zipCode", "country", "city", "street", "houseNumber" })
 public class Address implements Serializable {
 
 	private static final long serialVersionUID = 5753682920839496113L;
-
-	@Id
-	@GeneratedValue
-	private Long id;
 
 	@NotNull
 	@Size(min = 3, max = 15)
@@ -48,11 +37,4 @@ public class Address implements Serializable {
 	@Size(max = 5)
 	private String houseNumber;
 
-	@OneToOne(mappedBy = "address", fetch = FetchType.LAZY, optional = false)
-	private AmusementPark amusementPark;
-
-	@Tolerate
-	protected Address() {
-		super();
-	}
 }

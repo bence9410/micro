@@ -54,7 +54,6 @@ public class RabbitMQArchiveSender implements ArchiveSender {
 
 	private AddressDTO convertToAddressDTO(Address address) {
 		return AddressDTO.builder() //@formatter:off
-					.identifier(address.getId())
 					.country(address.getCountry())
 					.zipCode(address.getZipCode())
 					.city(address.getCity())

@@ -81,9 +81,8 @@ public class AmusementParkRepositoryTests extends AbstractStatementCounterTests 
 		amusementParkId = amusementPark.getId();
 		assertNotNull(amusementParkId);
 		assertEquals(amusementParkBeforeSave, amusementPark);
-		assertNotNull(amusementPark.getAddress().getId());
 		assertEquals(amusementParkBeforeSave.getAddress(), amusementPark.getAddress());
-		insert += 2;
+		insert++;
 		incrementSelectIfOracleDBProfileActive();
 		assertStatements();
 	}
@@ -91,7 +90,7 @@ public class AmusementParkRepositoryTests extends AbstractStatementCounterTests 
 	private void saveAll() {
 		amusementParkRepository
 				.saveAll(Arrays.asList(createAmusementParkWithAddress(), createAmusementParkWithAddress()));
-		insert += 4;
+		insert += 2;
 		incrementSelectIfOracleDBProfileActive(2);
 		assertStatements();
 	}
@@ -169,15 +168,15 @@ public class AmusementParkRepositoryTests extends AbstractStatementCounterTests 
 
 	private void deleteById() {
 		amusementParkRepository.deleteById(amusementParkId);
-		select += 4;
-		delete += 3;
+		select += 3;
+		delete += 2;
 		assertStatements();
 	}
 
 	private void deleteAll() {
 		amusementParkRepository.deleteAll();
-		select += 7;
-		delete += 6;
+		select += 5;
+		delete += 4;
 		assertStatements();
 	}
 

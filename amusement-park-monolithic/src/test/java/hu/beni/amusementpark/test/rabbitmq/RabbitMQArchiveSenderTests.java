@@ -101,7 +101,6 @@ public class RabbitMQArchiveSenderTests extends AbstractRabbitMQTests {
 	}
 
 	private void assertAddressesEquals(Address expected, AddressDTO actual) {
-		assertEquals(expected.getId(), actual.getIdentifier());
 		assertEquals(expected.getCountry(), actual.getCountry());
 		assertEquals(expected.getZipCode(), actual.getZipCode());
 		assertEquals(expected.getCity(), actual.getCity());

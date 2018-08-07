@@ -49,7 +49,6 @@ public class AmusementParkMapper extends EntityMapper<AmusementPark, AmusementPa
 
 	private AddressDTO toDTO(Address entity) {
 		return AddressDTO.builder() //@formatter:off
-				.identifier(entity.getId())
 				.country(entity.getCountry())
 				.zipCode(entity.getZipCode())
 				.city(entity.getCity())
@@ -59,7 +58,6 @@ public class AmusementParkMapper extends EntityMapper<AmusementPark, AmusementPa
 
 	private Address toEntity(AddressDTO dto) {
 		return Address.builder() //@formatter:off
-				.id(dto.getIdentifier())
 				.country(dto.getCountry())
 				.zipCode(dto.getZipCode())
 				.city(dto.getCity())
