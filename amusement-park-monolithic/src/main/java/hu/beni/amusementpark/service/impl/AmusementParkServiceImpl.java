@@ -35,8 +35,8 @@ public class AmusementParkServiceImpl implements AmusementParkService {
 	}
 
 	@Override
-	public AmusementPark findByIdFetchAddress(Long amusementParkId) {
-		return ifNull(amusementParkRepository.findByIdFetchAddress(amusementParkId), NO_AMUSEMENT_PARK_WITH_ID);
+	public AmusementPark findById(Long amusementParkId) {
+		return ifNull(amusementParkRepository.findById(amusementParkId), NO_AMUSEMENT_PARK_WITH_ID);
 	}
 
 	@Override
@@ -54,8 +54,8 @@ public class AmusementParkServiceImpl implements AmusementParkService {
 	}
 
 	@Override
-	public Page<AmusementPark> findAllFetchAddress(Pageable pageable) {
-		return amusementParkRepository.findAllFetchAddress(pageable);
+	public Page<AmusementPark> findAll(Pageable pageable) {
+		return amusementParkRepository.findAll(pageable);
 	}
 
 	@Override

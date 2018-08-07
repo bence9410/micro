@@ -66,9 +66,8 @@ public class AmusementParkServiceIntegrationTests extends AbstractStatementCount
 	}
 
 	private void findByIdFetchAddress() {
-		AmusementPark foundAmusementPark = amusementParkService.findByIdFetchAddress(amusementParkId);
+		AmusementPark foundAmusementPark = amusementParkService.findById(amusementParkId);
 		assertEquals(amusementPark, foundAmusementPark);
-		assertEquals(amusementPark.getAddress(), foundAmusementPark.getAddress());
 		select++;
 		assertStatements();
 	}
@@ -91,7 +90,7 @@ public class AmusementParkServiceIntegrationTests extends AbstractStatementCount
 	}
 
 	private Page<AmusementPark> findAllFetchAddress(Pageable pageable) {
-		Page<AmusementPark> page = amusementParkService.findAllFetchAddress(pageable);
+		Page<AmusementPark> page = amusementParkService.findAll(pageable);
 		if (page.isLast()) {
 			select++;
 		} else {

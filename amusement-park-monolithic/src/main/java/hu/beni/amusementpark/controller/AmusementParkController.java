@@ -49,12 +49,12 @@ public class AmusementParkController {
 
 	@GetMapping
 	public PagedResources<AmusementParkResource> findAllPaged(@PageableDefault Pageable pageable) {
-		return amusementParkMapper.toPagedResources(amusementParkService.findAllFetchAddress(pageable));
+		return amusementParkMapper.toPagedResources(amusementParkService.findAll(pageable));
 	}
 
 	@GetMapping(AN_AMUSEMENT_PARK)
 	public AmusementParkResource findOne(@PathVariable Long amusementParkId) {
-		return amusementParkMapper.toResource(amusementParkService.findByIdFetchAddress(amusementParkId));
+		return amusementParkMapper.toResource(amusementParkService.findById(amusementParkId));
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")

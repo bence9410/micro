@@ -75,7 +75,7 @@ public class RabbitMQArchiveSenderTests extends AbstractRabbitMQTests {
 
 	private AmusementPark findAmusementParkWithoutActiveVisitors() {
 		return transactionTemplate.execute(status -> {
-			AmusementPark amusementPark = amusementParkService.findByIdFetchAddress(amusementParkId);
+			AmusementPark amusementPark = amusementParkService.findById(amusementParkId);
 			amusementPark.getMachines().size();
 			amusementPark.getGuestBookRegistries().size();
 			amusementPark.getKnownVisitors().size();

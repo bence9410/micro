@@ -12,13 +12,13 @@ public interface AmusementParkService {
 
 	AmusementPark save(AmusementPark amusementPark);
 
-	AmusementPark findByIdFetchAddress(Long amusementParkId);
+	AmusementPark findById(Long amusementParkId);
 
 	AmusementPark findOne(Specification<AmusementPark> specification);
 
 	void delete(Long amusementParkId);
 
-	Page<AmusementPark> findAllFetchAddress(Pageable pageable);
+	Page<AmusementPark> findAll(Pageable pageable);
 
 	List<AmusementPark> findAll(Specification<AmusementPark> specification);
 

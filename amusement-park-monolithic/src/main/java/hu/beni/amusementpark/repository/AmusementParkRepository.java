@@ -2,9 +2,6 @@ package hu.beni.amusementpark.repository;
 
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -14,13 +11,6 @@ import hu.beni.amusementpark.entity.AmusementPark;
 
 public interface AmusementParkRepository
 		extends JpaRepository<AmusementPark, Long>, JpaSpecificationExecutor<AmusementPark> {
-
-	@Query("Select a from AmusementPark a join fetch a.address where a.id = :amusementParkId")
-	Optional<AmusementPark> findByIdFetchAddress(Long amusementParkId);
-
-	@Query("Select a from AmusementPark a")
-	@EntityGraph(attributePaths = "address")
-	Page<AmusementPark> findAllFetchAddress(Pageable pageable);
 
 	@Modifying
 	@Query("Update AmusementPark a set a.capital = a.capital - :ammount where a.id = :amusementParkId")

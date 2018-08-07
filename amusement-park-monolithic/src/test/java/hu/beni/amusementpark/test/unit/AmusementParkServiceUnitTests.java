@@ -67,25 +67,25 @@ public class AmusementParkServiceUnitTests {
 	}
 
 	@Test
-	public void findOneByIdNegativeNoPark() {
+	public void findByIdNegativeNoPark() {
 		Long amusementParkId = 0L;
 
-		assertThatThrownBy(() -> amusementParkService.findByIdFetchAddress(amusementParkId))
+		assertThatThrownBy(() -> amusementParkService.findById(amusementParkId))
 				.isInstanceOf(AmusementParkException.class).hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
 
-		verify(amusementParkRepository).findByIdFetchAddress(amusementParkId);
+		verify(amusementParkRepository).findById(amusementParkId);
 	}
 
 	@Test
-	public void findOneByIdPositive() {
+	public void findByIdPositive() {
 		AmusementPark amusementPark = AmusementPark.builder().id(0L).build();
 		Long amusementParkId = amusementPark.getId();
 
-		when(amusementParkRepository.findByIdFetchAddress(amusementParkId)).thenReturn(Optional.of(amusementPark));
+		when(amusementParkRepository.findById(amusementParkId)).thenReturn(Optional.of(amusementPark));
 
-		assertEquals(amusementPark, amusementParkService.findByIdFetchAddress(amusementParkId));
+		assertEquals(amusementPark, amusementParkService.findById(amusementParkId));
 
-		verify(amusementParkRepository).findByIdFetchAddress(amusementParkId);
+		verify(amusementParkRepository).findById(amusementParkId);
 	}
 
 	@Test
@@ -157,16 +157,16 @@ public class AmusementParkServiceUnitTests {
 	}
 
 	@Test
-	public void findAllFetchAddressByPageablePositive() {
+	public void findAllPageablePositive() {
 		Page<AmusementPark> page = new PageImpl<>(
 				Arrays.asList(AmusementPark.builder().id(0L).build(), AmusementPark.builder().id(1L).build()));
 		Pageable pageable = PageRequest.of(0, 10);
 
-		when(amusementParkRepository.findAllFetchAddress(pageable)).thenReturn(page);
+		when(amusementParkRepository.findAll(pageable)).thenReturn(page);
 
-		assertEquals(page, amusementParkService.findAllFetchAddress(pageable));
+		assertEquals(page, amusementParkService.findAll(pageable));
 
-		verify(amusementParkRepository).findAllFetchAddress(pageable);
+		verify(amusementParkRepository).findAll(pageable);
 	}
 
 	@Test

@@ -140,12 +140,11 @@ public class JPASpecificationTests {
 		int capital = 14000;
 
 		AmusementPark amusementPark = amusementParkRepository
-				.findOne((Root<AmusementPark> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> {
-					root.fetch(AmusementPark_.address);
-					return cb.and(cb.like(root.get(AmusementPark_.name), BASE_AMUSEMENT_PARK.getName() + "1%"),
-							cb.gt(root.get(AmusementPark_.capital), capital),
-							cb.like(root.get(AmusementPark_.address).get(Address_.city), "Buda%"));
-				}).get();
+				.findOne((Root<AmusementPark> root, CriteriaQuery<?> query, CriteriaBuilder cb) -> cb.and(
+						cb.like(root.get(AmusementPark_.name), BASE_AMUSEMENT_PARK.getName() + "1%"),
+						cb.gt(root.get(AmusementPark_.capital), capital),
+						cb.like(root.get(AmusementPark_.address).get(Address_.city), "Buda%")))
+				.get();
 
 		assertTrue(amusementPark.getName().startsWith(BASE_AMUSEMENT_PARK.getName() + "1"));
 		assertTrue(amusementPark.getCapital() > capital);

@@ -66,9 +66,7 @@ public class AmusementParkRepositoryTests extends AbstractStatementCounterTests 
 
 		findByIdReadOnlyIdAndCapitalAndTotalArea();
 
-		findByIdFetchAddress();
-
-		findAllFetchAddress();
+		findAll();
 
 		deleteById();
 
@@ -145,25 +143,11 @@ public class AmusementParkRepositoryTests extends AbstractStatementCounterTests 
 		assertStatements();
 	}
 
-	private void findByIdFetchAddress() {
-		AmusementPark foundAmusementPark = amusementParkRepository.findByIdFetchAddress(amusementParkId).get();
-		assertEquals(amusementPark, foundAmusementPark);
-		assertAddressCityNotNull(foundAmusementPark);
-		select++;
-		assertStatements();
-	}
-
-	private void findAllFetchAddress() {
-		List<AmusementPark> amusementParks = amusementParkRepository.findAllFetchAddress(PageRequest.of(0, 10))
-				.getContent();
+	private void findAll() {
+		List<AmusementPark> amusementParks = amusementParkRepository.findAll(PageRequest.of(0, 10)).getContent();
 		assertTrue(amusementParks.contains(amusementPark));
-		assertAddressCityNotNull(amusementParks.get(amusementParks.indexOf(amusementPark)));
 		select++;
 		assertStatements();
-	}
-
-	private void assertAddressCityNotNull(AmusementPark amusementPark) {
-		assertNotNull(amusementPark.getAddress().getCity());
 	}
 
 	private void deleteById() {
