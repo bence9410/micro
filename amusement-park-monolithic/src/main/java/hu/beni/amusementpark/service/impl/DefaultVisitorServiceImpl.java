@@ -10,6 +10,7 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_I
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_ON_A_MACHINE;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_TOO_YOUNG;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_NOT_SIGNED_UP;
+import static hu.beni.amusementpark.constants.SpringProfileConstants.RABBIT_MQ;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifEquals;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifFirstLessThanSecond;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifNotNull;
@@ -19,11 +20,12 @@ import static hu.beni.amusementpark.exception.ExceptionUtil.ifPrimitivesEquals;
 import java.time.LocalDate;
 import java.time.Period;
 
-import org.springframework.context.ApplicationEventPublisher;
+import javax.transaction.Transactional;
+
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.AmusementParkKnowVisitor;
@@ -35,20 +37,18 @@ import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.VisitorService;
-import hu.beni.clientsupport.dto.VisitorEnterParkEventDTO;
-import hu.beni.clientsupport.dto.VisitorGetOnMachineEventDTO;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class VisitorServiceImpl implements VisitorService {
+@Profile("!" + RABBIT_MQ)
+public class DefaultVisitorServiceImpl implements VisitorService {
 
 	private final AmusementParkRepository amusementParkRepository;
 	private final MachineRepository machineRepository;
 	private final VisitorRepository visitorRepository;
 	private final AmusementParkKnowVisitorRepository amusementParkKnowVisitorRepository;
-	private final ApplicationEventPublisher eventPublisher;
 
 	@Override
 	public Integer findSpendingMoneyByUsername() {
@@ -67,14 +67,19 @@ public class VisitorServiceImpl implements VisitorService {
 
 	@Override
 	public Visitor enterPark(Long amusementParkId, Long visitorId) {
-		AmusementPark amusementPark = ifNull(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId),
+		return enterPark(findAmusementParkIdAndEntranceFeeByIdExceptionIfNotFound(amusementParkId), visitorId);
+	}
+
+	protected AmusementPark findAmusementParkIdAndEntranceFeeByIdExceptionIfNotFound(Long amusementParkId) {
+		return ifNull(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId),
 				NO_AMUSEMENT_PARK_WITH_ID);
+	}
+
+	protected Visitor enterPark(AmusementPark amusementPark, Long visitorId) {
 		Visitor visitor = ifNull(visitorRepository.findById(visitorId), VISITOR_NOT_SIGNED_UP);
 		checkIfVisitorAbleToEnterPark(amusementPark.getEntranceFee(), visitor);
 		addToKnownVisitorsIfFirstEnter(amusementPark, visitor);
 		incrementCaitalAndDecreaseSpendingMoneyAndSetPark(amusementPark, visitor);
-		eventPublisher
-				.publishEvent(new VisitorEnterParkEventDTO(amusementParkId, visitorId, amusementPark.getEntranceFee()));
 		return visitor;
 	}
 
@@ -100,14 +105,20 @@ public class VisitorServiceImpl implements VisitorService {
 
 	@Override
 	public Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId) {
-		Machine machine = ifNull(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId),
+		return getOnMachine(amusementParkId,
+				findMachineByIdAndAmusementParkIdExceptionIfNotFound(amusementParkId, machineId), visitorId);
+	}
+
+	protected Machine findMachineByIdAndAmusementParkIdExceptionIfNotFound(Long amusementParkId, Long machineId) {
+		return ifNull(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId),
 				NO_MACHINE_IN_PARK_WITH_ID);
+	}
+
+	protected Visitor getOnMachine(Long amusementParkId, Machine machine, Long visitorId) {
 		Visitor visitor = ifNull(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId),
 				NO_VISITOR_IN_PARK_WITH_ID);
 		checkIfVisitorAbleToGetOnMachine(machine, visitor);
 		incrementCapitalAndDecreaseSpendingMoneyAndSetMachine(amusementParkId, machine, visitor);
-		eventPublisher.publishEvent(
-				new VisitorGetOnMachineEventDTO(amusementParkId, visitorId, machine.getTicketPrice(), machineId));
 		return visitor;
 	}
 

@@ -18,8 +18,9 @@ import org.springframework.context.annotation.Profile;
 
 import hu.beni.amusementpark.service.GuestBookRegistryService;
 import hu.beni.amusementpark.service.impl.AmusementParkServiceImpl;
+import hu.beni.amusementpark.service.impl.DefaultVisitorServiceImpl;
 import hu.beni.amusementpark.service.impl.MachineServiceImpl;
-import hu.beni.amusementpark.service.impl.VisitorServiceImpl;
+import hu.beni.amusementpark.service.impl.StatisticsSenderVisitorServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 
 @Configuration
@@ -32,7 +33,8 @@ public class TransactionLoggerConfig {
 		targetClasses = new HashSet<>();
 		targetClasses.add(AmusementParkServiceImpl.class);
 		targetClasses.add(MachineServiceImpl.class);
-		targetClasses.add(VisitorServiceImpl.class);
+		targetClasses.add(DefaultVisitorServiceImpl.class);
+		targetClasses.add(StatisticsSenderVisitorServiceImpl.class);
 		targetClasses.add(GuestBookRegistryService.class);
 	}
 
