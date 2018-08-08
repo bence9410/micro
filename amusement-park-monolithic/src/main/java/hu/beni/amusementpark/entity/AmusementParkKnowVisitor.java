@@ -2,11 +2,11 @@ package hu.beni.amusementpark.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,13 +18,14 @@ public class AmusementParkKnowVisitor implements Serializable {
 
 	private static final long serialVersionUID = 8289304865876769056L;
 
-	@Id
-	@GeneratedValue
-	private Long id;
+	@EmbeddedId
+	private AmusementParkIdVisitorId id = new AmusementParkIdVisitorId();
 
+	@MapsId("amusementParkId")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private AmusementPark amusementPark;
 
+	@MapsId("visitorId")
 	@ManyToOne
 	private Visitor visitor;
 
