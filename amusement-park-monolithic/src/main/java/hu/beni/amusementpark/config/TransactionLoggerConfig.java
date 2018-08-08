@@ -27,7 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TransactionLoggerConfig {
 
-	private static final Set<Class> targetClasses;
+	private static final Set<Class<?>> targetClasses;
 
 	static {
 		targetClasses = new HashSet<>();

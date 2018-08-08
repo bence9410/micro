@@ -14,6 +14,7 @@ import hu.beni.clientsupport.resource.VisitorResource;
 
 public class ResponseType {
 
+	@SuppressWarnings("rawtypes")
 	private static final Map<Class, PagedResourcesType> PAGED_TYPES;
 
 	static {
@@ -25,6 +26,7 @@ public class ResponseType {
 		});
 	}
 
+	@SuppressWarnings("unchecked")
 	public static final <T> PagedResourcesType<T> getPagedType(Class<T> clazz) {
 		return PAGED_TYPES.get(clazz);
 	}

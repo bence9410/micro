@@ -90,6 +90,7 @@ public class OracleRowNumberPartitionTests {
 				.build();
 	}
 
+	@SuppressWarnings("unchecked")
 	private List<Object[]> executeQuery() {
 		return entityManager.createNativeQuery(SELECT_ALL_VISITOR_NAME_AND_LAST_GUEST_BOOK_REGISTRY).getResultList();
 	}
