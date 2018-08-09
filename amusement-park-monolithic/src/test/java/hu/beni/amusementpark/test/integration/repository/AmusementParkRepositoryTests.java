@@ -8,8 +8,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -34,18 +32,6 @@ public class AmusementParkRepositoryTests extends AbstractStatementCounterTests 
 
 	private <T> T doInTransaction(TransactionCallback<T> transactionCallback) {
 		return transactionTemplate.execute(transactionCallback);
-	}
-
-	@Before
-	public void setUp() {
-		amusementParkRepository.deleteAll();
-		reset();
-		assertStatements();
-	}
-
-	@After
-	public void tearDown() {
-		amusementParkRepository.deleteAll();
 	}
 
 	@Test

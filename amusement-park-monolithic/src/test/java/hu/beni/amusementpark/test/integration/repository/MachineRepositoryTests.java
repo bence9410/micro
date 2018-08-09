@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,16 +32,9 @@ public class MachineRepositoryTests extends AbstractStatementCounterTests {
 
 	@Before
 	public void setUp() {
-		machineRepository.deleteAll();
 		amusementPark = amusementParkRepository.save(createAmusementParkWithAddress());
 		amusementParkId = amusementPark.getId();
 		reset();
-		assertStatements();
-	}
-
-	@After
-	public void tearDown() {
-		amusementParkRepository.deleteAll();
 	}
 
 	@Test

@@ -10,7 +10,6 @@ import static org.junit.Assert.assertTrue;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,20 +39,11 @@ public class GuestBookRegistryRepositoryTests extends AbstractStatementCounterTe
 
 	@Before
 	public void setUp() {
-		amusementParkRepository.deleteAll();
-		guestBookRegistryRepository.deleteAll();
 		amusementPark = amusementParkRepository.save(createAmusementParkWithAddress());
 		visitor = createVisitor();
 		visitor.setAmusementPark(amusementPark);
 		visitor = visitorRepository.save(visitor);
 		reset();
-		assertStatements();
-	}
-
-	@After
-	public void tearDown() {
-		visitorRepository.deleteAll();
-		amusementParkRepository.deleteAll();
 	}
 
 	@Test

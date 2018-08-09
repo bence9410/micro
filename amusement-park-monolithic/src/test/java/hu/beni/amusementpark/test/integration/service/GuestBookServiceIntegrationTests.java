@@ -5,7 +5,6 @@ import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementPar
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
 import static org.junit.Assert.assertEquals;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
-import hu.beni.amusementpark.repository.GuestBookRegistryRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.GuestBookRegistryService;
 import hu.beni.amusementpark.test.integration.AbstractStatementCounterTests;
@@ -30,9 +28,6 @@ public class GuestBookServiceIntegrationTests extends AbstractStatementCounterTe
 	@Autowired
 	private VisitorRepository visitorRepository;
 
-	@Autowired
-	private GuestBookRegistryRepository guestBookRegistryRepository;
-
 	private AmusementPark amusementPark;
 	private Visitor visitor;
 	private GuestBookRegistry guestBookRegistry;
@@ -44,14 +39,6 @@ public class GuestBookServiceIntegrationTests extends AbstractStatementCounterTe
 		visitor.setAmusementPark(amusementPark);
 		visitor = visitorRepository.save(visitor);
 		reset();
-		assertStatements();
-	}
-
-	@After
-	public void tearDown() {
-		guestBookRegistryRepository.deleteAll();
-		visitorRepository.deleteAll();
-		amusementParkRepository.deleteAll();
 	}
 
 	@Test

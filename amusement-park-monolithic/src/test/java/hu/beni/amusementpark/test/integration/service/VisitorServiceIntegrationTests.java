@@ -10,7 +10,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,13 +55,6 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 		machine = machineRepository.save(machine);
 		machineId = machine.getId();
 		reset();
-		assertStatements();
-	}
-
-	@After
-	public void tearDown() {
-		amusementParkRepository.deleteAll();
-		visitorService.delete(visitorId);
 	}
 
 	@Test

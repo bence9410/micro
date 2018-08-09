@@ -25,6 +25,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import hu.beni.amusementpark.constants.StringParamConstants;
@@ -42,6 +44,7 @@ import hu.beni.amusementpark.repository.VisitorRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.NONE)
+@DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
 public class JPASpecificationTests {
 
 	private static final AmusementPark BASE_AMUSEMENT_PARK = createAmusementParkWithAddress();

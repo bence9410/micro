@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +37,6 @@ public class MachineServiceIntegrationTests extends AbstractStatementCounterTest
 		amusementPark = amusementParkRepository.save(createAmusementParkWithAddress());
 		amusementParkId = amusementPark.getId();
 		reset();
-	}
-
-	@After
-	public void tearDown() {
-		amusementParkRepository.deleteAll();
 	}
 
 	@Test

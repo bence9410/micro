@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import hu.beni.amusementpark.entity.AmusementPark;
-import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.service.AmusementParkService;
 import hu.beni.amusementpark.test.integration.AbstractStatementCounterTests;
 
@@ -27,23 +25,13 @@ public class AmusementParkServiceIntegrationTests extends AbstractStatementCount
 	@Autowired
 	private AmusementParkService amusementParkService;
 
-	@Autowired
-	private AmusementParkRepository amusementParkRepository;
-
 	private AmusementPark amusementPark;
 	private Long amusementParkId;
 
 	@Before
 	public void setUp() {
-		amusementParkRepository.deleteAll();
 		createNineAmusementParkWithAscendantCapital();
 		reset();
-		assertStatements();
-	}
-
-	@After
-	public void tearDown() {
-		amusementParkRepository.deleteAll();
 	}
 
 	@Test

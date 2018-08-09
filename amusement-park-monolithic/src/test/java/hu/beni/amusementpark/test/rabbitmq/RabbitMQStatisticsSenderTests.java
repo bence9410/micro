@@ -9,6 +9,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 import hu.beni.amusementpark.config.RabbitMQTestConfig.StatisticsReceiver;
 import hu.beni.amusementpark.entity.AmusementPark;
@@ -18,6 +20,7 @@ import hu.beni.amusementpark.helper.ValidEntityFactory;
 import hu.beni.clientsupport.dto.VisitorEnterParkEventDTO;
 import hu.beni.clientsupport.dto.VisitorGetOnMachineEventDTO;
 
+@DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
 public class RabbitMQStatisticsSenderTests extends AbstractRabbitMQTests {
 
 	@Autowired
