@@ -6,7 +6,14 @@ import static hu.beni.amusementpark.constants.AuthenticationConstants.PASS;
 import static hu.beni.amusementpark.constants.AuthenticationConstants.VISITOR;
 import static hu.beni.amusementpark.constants.AuthenticationConstants.VISITOR_LOWER_CASE;
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.IntStream;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -21,10 +28,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import hu.beni.amusementpark.service.VisitorService;
+import lombok.RequiredArgsConstructor;
 
 @SuppressWarnings("deprecation")
 @Configuration
@@ -40,25 +51,49 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return NoOpPasswordEncoder.class.cast(NoOpPasswordEncoder.getInstance());
 	}
 
+	@Bean
+	public BeniAuthenticationSuccessHandler authenticationSuccessHandler(VisitorService visitorService,
+			ObjectMapper objectMapper) {
+		return new BeniAuthenticationSuccessHandler(visitorService, objectMapper);
+	}
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http //@formatter:off
             .authorizeRequests()
-            	.antMatchers("/links")
+            	.antMatchers("/", "/webjars/**", "/index.js", "/links", "/user")
             	.permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
             .formLogin()
-                .loginProcessingUrl("/login")
-                .defaultSuccessUrl("/", true)
-                .permitAll()
+            	.loginPage("/")
+            	.loginProcessingUrl("/login")
+                .successHandler(authenticationSuccessHandler(null, null))
                 .and()
             .logout()
-                .permitAll()
+                .logoutSuccessUrl("/")
                 .and()
             .csrf()
             	.disable(); //@formatter:on
+	}
+
+	@RequiredArgsConstructor
+	static class BeniAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+
+		private final VisitorService visitorService;
+		private final ObjectMapper objectMapper;
+
+		@Override
+		public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+				Authentication authentication) throws IOException, ServletException {
+			Map<String, Object> map = new HashMap<>();
+			map.put("name", authentication.getName());
+			map.put("authorities", authentication.getAuthorities());
+			map.put("spendingMoney", visitorService.findSpendingMoneyByUsername());
+			response.getWriter().println(objectMapper.writerFor(Map.class).writeValueAsString(map));
+		}
+
 	}
 
 	@Autowired

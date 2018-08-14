@@ -12,34 +12,49 @@
 <script type="text/javascript" src="/index.js"></script>
 </head>
 <body onload="init()">
-<div class="container-fluid">
-	<div id="header" class="row"
-			style="background-color: Lime">
-			<div class="col-md-2"></div>
-			<div class="col-md-6 row">
-				<div class="col-md-4 row">
-					Username:
-					<p id="username"></p>
-				</div>
-				<div id="spendingMoneyDiv" class="col-md-4 row" style="display: none">
-					Spending money:
-					<p id="spendingMoney"></p>
-				</div>
+<div id="header" class="row" style="background-color: Lime; display: none">
+		<div class="col-md-2"></div>
+		<div class="col-md-6 row">
+			<div class="col-md-4 row">
+				Username:
+				<p id="username"></p>
 			</div>
-			<div class="col-md-4">
-				<form id="logout" method="post">
-					<input type="submit" value="logout">
-				</form>
+			<div id="spendingMoneyDiv" class="col-md-4 row">
+				Spending money:
+				<p id="spendingMoney"></p>
 			</div>
 		</div>
-	<div id="signUp" class="text-center" style="display: none">
-		Name: <input id="name" type="text"> <br> 
-		Date of birth: <input id="dateOfBirth" type="text"> <br> 
-		Spending money: <input id="signUpSpendingMoney" type="text"> <br> 
-		<input id="singUp" type="button" onclick="signUp()" value="Sign up"> 
-		<input type="button" onclick="fillWithSampleData()" value="Fill with sample data">
+		<div class="col-md-4">
+			<form id="logout" method="post">
+				<input type="submit" value="logout">
+			</form>
+		</div>
 	</div>
+<div id="content" style="display: none">
+	<div class="jumbotron text-center">
+		<h1>Welcome to Beni</h1>
+	</div>
+	<div class="text-center" >
+		Name: <input id="name" type="text"> <br> 
+		Password: <input id="password" type="password"> <br>
+		<input type="button" onclick="login()" value="Login">
+		<input type="button" onclick="showSignUp()" value="Sign Up">
+	</div>
+	<script>
+		function login() {
+			$.ajax({
+				url : links.login,
+				method : "POST",
+				data : "username="+$("#name").val() + "&password=" + $("#password").val(),
+				success : function (data) {
+					data = JSON.parse(data)
+					$("#content").hide()
+					setUsernameAndAuthiritiesAndSpendingMoney(data)
+					getAmusementParkPage()
+				}
+			})
+		}
+	</script>
 </div>
-<div id="content"></div>
 </body>
 </html>
