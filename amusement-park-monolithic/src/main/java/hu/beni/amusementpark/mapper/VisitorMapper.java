@@ -15,6 +15,7 @@ import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import hu.beni.amusementpark.controller.VisitorController;
@@ -26,8 +27,11 @@ import hu.beni.clientsupport.resource.VisitorResource;
 @ConditionalOnWebApplication
 public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 
-	public VisitorMapper(PagedResourcesAssembler<Visitor> pagedResourcesAssembler) {
+	private final PasswordEncoder passwordEncoder;
+
+	public VisitorMapper(PagedResourcesAssembler<Visitor> pagedResourcesAssembler, PasswordEncoder passwordEncoder) {
 		super(VisitorController.class, VisitorResource.class, pagedResourcesAssembler);
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	@Override
@@ -36,6 +40,7 @@ public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 				.identifier(entity.getId())
 				.name(entity.getName())
 				.username(entity.getUsername())
+				.authority(entity.getAuthority())
 				.dateOfBirth(entity.getDateOfBirth())
 				.spendingMoney(entity.getSpendingMoney())
 				.state(visitorStateToString(entity.getState()))
@@ -48,6 +53,7 @@ public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 				.id(resource.getIdentifier())
 				.name(resource.getName())
 				.username(resource.getUsername())
+				.password(passwordEncoder.encode(resource.getPassword()))
 				.dateOfBirth(resource.getDateOfBirth())
 				.spendingMoney(resource.getSpendingMoney())
 				.state(stringToVisitorState(resource.getState())).build(); //@formatter:on

@@ -5,16 +5,25 @@ import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_
 import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_A_VISITOR_LEAVE_PARK;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_ON_A_MACHINE_A_VISITOR_GET_OFF;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_ON_A_MACHINE_A_VISITOR_GET_ON;
+import static hu.beni.amusementpark.constants.RequestMappingConstants.SIGN_UP;
+import static hu.beni.amusementpark.constants.RequestMappingConstants.USER;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.VISITORS;
 
-import javax.validation.Valid;
+import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.hateoas.PagedResources;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +34,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.mapper.VisitorMapper;
 import hu.beni.amusementpark.service.VisitorService;
 import hu.beni.amusementpark.validator.VisitorResourceValidator;
@@ -41,14 +51,30 @@ public class VisitorController {
 
 	@InitBinder("visitorResource")
 	protected void initBinder(WebDataBinder webDataBinder) {
-		VisitorResource.class.cast(webDataBinder.getTarget())
-				.setUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 		webDataBinder.addValidators(new VisitorResourceValidator());
 	}
 
-	@PostMapping(VISITORS)
-	public VisitorResource signUp(@Valid @RequestBody VisitorResource visitorResource) {
-		return visitorMapper.toResource(visitorService.signUp(visitorMapper.toEntity(visitorResource)));
+	@GetMapping(USER)
+	public ResponseEntity<VisitorResource> getUser(Authentication authentication) {
+		ResponseEntity<VisitorResource> response;
+		if (authentication == null) {
+			response = ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		} else {
+			Visitor visitor = visitorService.findByUsernameReadAuthorityAndSpendingMoney();
+			visitor.setUsername(authentication.getName());
+			response = ResponseEntity.ok(visitorMapper.toResource(visitor));
+		}
+		return response;
+	}
+
+	@PostMapping(SIGN_UP)
+	public VisitorResource signUp(@RequestBody VisitorResource visitorResource) {
+		Visitor visitor = visitorMapper.toEntity(visitorResource);
+		visitor.setAuthority("ROLE_ADMIN");
+		List<SimpleGrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority()));
+		SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
+				new User(visitor.getUsername(), visitorResource.getPassword(), authorities), null, authorities));
+		return visitorMapper.toResource(visitorService.signUp(visitor));
 	}
 
 	@GetMapping(VISITORS)

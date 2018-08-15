@@ -20,13 +20,11 @@ import hu.beni.amusementpark.controller.AmusementParkController;
 import hu.beni.amusementpark.controller.BaseLinksController;
 import hu.beni.amusementpark.controller.GuestBookRegistryController;
 import hu.beni.amusementpark.controller.MachineController;
-import hu.beni.amusementpark.controller.UserController;
 import hu.beni.amusementpark.controller.VisitorController;
 
 public class LinkFactory {
 
 	private static final Class<BaseLinksController> baseLinksControllerClass = BaseLinksController.class;
-	private static final Class<UserController> userControllerClass = UserController.class;
 	private static final Class<AmusementParkController> amusementParkControllerClass = AmusementParkController.class;
 	private static final Class<MachineController> machineControllerClass = MachineController.class;
 	private static final Class<VisitorController> visitorControllerClass = VisitorController.class;
@@ -41,7 +39,7 @@ public class LinkFactory {
 	}
 
 	public static Link createUserLink() {
-		return linkTo(methodOn(userControllerClass).getUser(null)).withRel(USER);
+		return linkTo(methodOn(visitorControllerClass).getUser(null)).withRel(USER);
 	}
 
 	public static Link createAmusementParkLink() {

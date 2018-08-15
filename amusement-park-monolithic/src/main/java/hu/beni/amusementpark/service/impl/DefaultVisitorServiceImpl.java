@@ -51,12 +51,18 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 	private final AmusementParkKnowVisitorRepository amusementParkKnowVisitorRepository;
 
 	@Override
+	public Visitor findByUsernameReadAuthorityAndSpendingMoney() {
+		return visitorRepository.findByUsernameReadAuthorityAndSpendingMoney().get();
+	}
+
+	@Override
 	public Integer findSpendingMoneyByUsername() {
 		return visitorRepository.findSpendingMoneyByUsername();
 	}
 
 	@Override
 	public Visitor signUp(Visitor visitor) {
+		visitor.setSpendingMoney(100);
 		return visitorRepository.save(visitor);
 	}
 

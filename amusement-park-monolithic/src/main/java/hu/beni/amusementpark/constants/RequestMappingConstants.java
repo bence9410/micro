@@ -4,6 +4,7 @@ public class RequestMappingConstants {
 
 	public static final String LINKS = "/links";
 	public static final String USER = "/user";
+	public static final String SIGN_UP = "/signUp";
 
 	public static final String AMUSEMENT_PARKS = "/amusement-parks";
 	public static final String AN_AMUSEMENT_PARK = "/{amusementParkId}";

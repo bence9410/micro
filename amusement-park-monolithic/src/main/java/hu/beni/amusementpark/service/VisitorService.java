@@ -9,6 +9,8 @@ public interface VisitorService {
 
 	Integer findSpendingMoneyByUsername();
 
+	Visitor findByUsernameReadAuthorityAndSpendingMoney();
+
 	Visitor signUp(Visitor visitor);
 
 	Visitor findOne(Long visitorId);

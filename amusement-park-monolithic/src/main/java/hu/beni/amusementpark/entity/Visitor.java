@@ -50,6 +50,10 @@ public class Visitor implements Serializable {
 	@Size(min = 5, max = 25)
 	private String username;
 
+	private String password;
+
+	private String authority;
+
 	@NotNull
 	@Past
 	private LocalDate dateOfBirth;
@@ -85,6 +89,18 @@ public class Visitor implements Serializable {
 	@Tolerate
 	public Visitor(Long id) {
 		this.id = id;
+	}
+
+	@Tolerate
+	public Visitor(String password, String authority) {
+		this.password = password;
+		this.authority = authority;
+	}
+
+	@Tolerate
+	public Visitor(String authority, Integer spendingMoney) {
+		this.authority = authority;
+		this.spendingMoney = spendingMoney;
 	}
 
 }

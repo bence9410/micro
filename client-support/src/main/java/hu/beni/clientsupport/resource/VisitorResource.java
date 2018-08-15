@@ -25,6 +25,12 @@ public class VisitorResource extends ResourceSupport implements Serializable {
 
 	private String username;
 
+	private String password;
+
+	private String confirmPassword;
+
+	private String authority;
+
 	private LocalDate dateOfBirth;
 
 	private Integer spendingMoney;
@@ -32,12 +38,15 @@ public class VisitorResource extends ResourceSupport implements Serializable {
 	private String state;
 
 	@Builder
-	public VisitorResource(Long identifier, String name, String username, LocalDate dateOfBirth, Integer spendingMoney,
-			String state, Link[] links) {
+	public VisitorResource(Long identifier, String name, String username, String password, String confirmPassword,
+			String authority, LocalDate dateOfBirth, Integer spendingMoney, String state, Link[] links) {
 		super();
 		this.identifier = identifier;
 		this.name = name;
 		this.username = username;
+		this.password = password;
+		this.confirmPassword = confirmPassword;
+		this.authority = authority;
 		this.dateOfBirth = dateOfBirth;
 		this.spendingMoney = spendingMoney;
 		this.state = state;

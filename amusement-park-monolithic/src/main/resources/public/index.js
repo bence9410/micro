@@ -2,7 +2,7 @@ var links
 var pages
 var jses
 var username
-var authorities
+var isAdmin
 
 function init() {
 	$.ajax({
@@ -28,7 +28,7 @@ function getUserData(){
 	$.ajax({
         url: links.user,
         success: function (data) {
-        	setUsernameAndAuthiritiesAndSpendingMoney(data)
+        	setUsernameAndAuthorityAndSpendingMoney(data)
 			getAmusementParkPage()
         },
         error: function (data) {
@@ -37,16 +37,11 @@ function getUserData(){
     })
 }
 
-function setUsernameAndAuthiritiesAndSpendingMoney(data){
+function setUsernameAndAuthorityAndSpendingMoney(data){
 	 username = data.name
 	 $("#username").html(username)
 
-     var auth = []
-     $.each(data.authorities, function (i, e) {
-         auth.push(e.authority)
-     })
-     authorities = auth.join(",")
-     $("#authorities").html(authorities)
+	 isAdmin = data.authority === "ROLE_ADMIN"
      
      $("#spendingMoney").html(data.spendingMoney)
      $("#header").show()
