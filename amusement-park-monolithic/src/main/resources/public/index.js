@@ -26,7 +26,7 @@ function init() {
 
 function getUserData(){
 	$.ajax({
-        url: links.user,
+        url: links.me,
         success: function (data) {
         	setUsernameAndAuthorityAndSpendingMoney(data)
 			getAmusementParkPage()

@@ -1,14 +1,21 @@
 package hu.beni.amusementpark.config;
 
+import static hu.beni.amusementpark.constants.RequestMappingConstants.INDEX_JS;
+import static hu.beni.amusementpark.constants.RequestMappingConstants.LINKS;
+import static hu.beni.amusementpark.constants.RequestMappingConstants.ME;
+import static hu.beni.amusementpark.constants.RequestMappingConstants.SIGN_UP;
+import static hu.beni.amusementpark.constants.RequestMappingConstants.SLASH;
+import static hu.beni.amusementpark.constants.RequestMappingConstants.WEBJARS;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.LOGIN;
+
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.repository.query.spi.EvaluationContextExtensionSupport;
@@ -40,14 +47,10 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-@RequiredArgsConstructor
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private final ObjectMapper objectMapper;
-
-	@PostConstruct
-	public void init() {
-		objectMapper.setSerializationInclusion(Include.NON_NULL);
+	public WebSecurityConfig(List<ObjectMapper> mappers) {
+		mappers.stream().forEach(mapper -> mapper.setSerializationInclusion(Include.NON_NULL));
 	}
 
 	@Bean
@@ -57,7 +60,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public BeniAuthenticationSuccessHandler authenticationSuccessHandler(VisitorService visitorService,
-			VisitorMapper visitorMapper) {
+			ObjectMapper objectMapper, VisitorMapper visitorMapper) {
 		return new BeniAuthenticationSuccessHandler(visitorService, objectMapper, visitorMapper);
 	}
 
@@ -67,21 +70,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Override
+	public void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth.userDetailsService(userDetailsService(null)).passwordEncoder(passwordEncoder());
+	}
+
+	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http //@formatter:off
             .authorizeRequests()
-            	.antMatchers("/", "/webjars/**", "/index.js", "/links", "/user", "/signUp")
+            	.antMatchers(SLASH, WEBJARS, INDEX_JS, LINKS, ME, SIGN_UP)
             	.permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
             .formLogin()
-            	.loginPage("/")
-            	.loginProcessingUrl("/login")
-                .successHandler(authenticationSuccessHandler(null, null))
+            	.loginPage(SLASH)
+            	.loginProcessingUrl(SLASH + LOGIN)
+                .successHandler(authenticationSuccessHandler(null, null, null))
                 .and()
             .logout()
-                .logoutSuccessUrl("/")
+                .logoutSuccessUrl(SLASH)
                 .and()
             .csrf()
             	.disable(); //@formatter:on
@@ -102,11 +110,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			response.getWriter().println(objectMapper.writeValueAsString(visitorMapper.toResource(visitor)));
 		}
 
-	}
-
-	@Autowired
-	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService(null)).passwordEncoder(passwordEncoder());
 	}
 
 	@RequiredArgsConstructor

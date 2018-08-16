@@ -7,10 +7,10 @@ import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_ON_MAC
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.LOGIN;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.LOGOUT;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.MACHINE;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.USER;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.ME;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.SIGN_UP;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_ENTER_PARK;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_LEAVE_PARK;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_SIGN_UP;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
@@ -39,7 +39,7 @@ public class LinkFactory {
 	}
 
 	public static Link createUserLink() {
-		return linkTo(methodOn(visitorControllerClass).getUser(null)).withRel(USER);
+		return linkTo(methodOn(visitorControllerClass).getUser(null)).withRel(ME);
 	}
 
 	public static Link createAmusementParkLink() {
@@ -63,7 +63,7 @@ public class LinkFactory {
 	}
 
 	public static Link createVisitorSignUpLink() {
-		return linkTo(methodOn(visitorControllerClass).signUp(null)).withRel(VISITOR_SIGN_UP);
+		return linkTo(methodOn(visitorControllerClass).signUp(null)).withRel(SIGN_UP);
 	}
 
 	public static Link createVisitorEnterParkLink(Long amusementParkId, Long visitorId) {

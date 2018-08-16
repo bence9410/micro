@@ -52,7 +52,7 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 
 	@Override
 	public Visitor findByUsernameReadAuthorityAndSpendingMoney() {
-		return visitorRepository.findByUsernameReadAuthorityAndSpendingMoney().get();
+		return visitorRepository.findByUsernameReadAuthorityAndSpendingMoney();
 	}
 
 	@Override

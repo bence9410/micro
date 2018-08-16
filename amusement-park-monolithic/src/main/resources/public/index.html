@@ -12,7 +12,7 @@
 <script type="text/javascript" src="/index.js"></script>
 </head>
 <body onload="init()">
-<div id="header" class="row" style="background-color: Lime; display: none">
+<div id="header" class="row" style="background-color: lime; display: none">
 		<div class="col-md-2"></div>
 		<div class="col-md-6 row">
 			<div class="col-md-4 row">
@@ -72,7 +72,7 @@
 		function signUp() {
 			$("#signUp").prop("disabled", true)
 			$.ajax({
-				url : links.visitorSignUp,
+				url : links.signUp,
 				method : "POST",
 				contentType : "application/json",
 				data : JSON.stringify(collectSignUpData()),
@@ -82,7 +82,6 @@
 					getAmusementParkPage()
 				},
 				error : function (data) {
-					console.log(data.responseText)
 					$("#signUpError").html(data.responseText)
 					$("#signUp").prop("disabled", false)
 				}

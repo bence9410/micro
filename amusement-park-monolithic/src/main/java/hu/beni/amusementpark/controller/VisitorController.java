@@ -6,7 +6,7 @@ import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_
 import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_ON_A_MACHINE_A_VISITOR_GET_OFF;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_ON_A_MACHINE_A_VISITOR_GET_ON;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.SIGN_UP;
-import static hu.beni.amusementpark.constants.RequestMappingConstants.USER;
+import static hu.beni.amusementpark.constants.RequestMappingConstants.ME;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.VISITORS;
 
 import java.util.Arrays;
@@ -54,7 +54,7 @@ public class VisitorController {
 		webDataBinder.addValidators(new VisitorResourceValidator());
 	}
 
-	@GetMapping(USER)
+	@GetMapping(ME)
 	public ResponseEntity<VisitorResource> getUser(Authentication authentication) {
 		ResponseEntity<VisitorResource> response;
 		if (authentication == null) {

@@ -23,9 +23,9 @@ import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_OFF_MA
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_ON_MACHINE;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.LOGOUT;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.MACHINE;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.SIGN_UP;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_ENTER_PARK;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_LEAVE_PARK;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_SIGN_UP;
 import static hu.beni.clientsupport.factory.ValidResourceFactory.createAmusementParkWithAddress;
 import static hu.beni.clientsupport.factory.ValidResourceFactory.createMachine;
 import static hu.beni.clientsupport.factory.ValidResourceFactory.createVisitor;
@@ -134,7 +134,7 @@ public class AmusementParkApplicationTests {
 
 		MachineResource machineResource = addMachine(amusementParkResource.getLink(MACHINE).getHref());
 
-		VisitorResource visitorResource = signUp(amusementParkResource.getLink(VISITOR_SIGN_UP).getHref());
+		VisitorResource visitorResource = signUp(amusementParkResource.getLink(SIGN_UP).getHref());
 
 		visitorResource = enterPark(visitorResource.getLink(VISITOR_ENTER_PARK).getHref(),
 				amusementParkResource.getIdentifier());
@@ -264,7 +264,7 @@ public class AmusementParkApplicationTests {
 		assertTrue(responseAmusementParkResource.getId().getHref()
 				.endsWith(responseAmusementParkResource.getIdentifier().toString()));
 		assertNotNull(responseAmusementParkResource.getLink(MACHINE));
-		assertNotNull(responseAmusementParkResource.getLink(VISITOR_SIGN_UP));
+		assertNotNull(responseAmusementParkResource.getLink(SIGN_UP));
 		assertNotNull(responseAmusementParkResource.getLink(VISITOR_ENTER_PARK));
 
 		amusementParkResource.setIdentifier(responseAmusementParkResource.getIdentifier());
