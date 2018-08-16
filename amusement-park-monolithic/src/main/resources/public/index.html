@@ -38,7 +38,8 @@
 		Username: <input id="loginUsername" type="text"> <br> 
 		Password: <input id="password" type="password"> <br>
 		<input type="button" onclick="login()" value="Login">
-		<input type="button" onclick="showSignUp()" value="Sign Up">
+		<input type="button" onclick="showSignUp()" value="Sign Up"> <br>
+		<p id="loginError"></p>
 	</div>
 	<div id="signUpDiv" class="text-center" style="display: none">
 		Username: <input id="signUpUsername" type="text"> <br> 
@@ -60,6 +61,9 @@
 					$("#content").hide()
 					setUsernameAndAuthorityAndSpendingMoney(data)
 					getAmusementParkPage()
+				},
+				error : function (data) {
+					$("#loginError").html(data.responseText)
 				}
 			})
 		}

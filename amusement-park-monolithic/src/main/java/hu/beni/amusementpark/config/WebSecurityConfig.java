@@ -1,5 +1,7 @@
 package hu.beni.amusementpark.config;
 
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.COULD_NOT_FIND_USER;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.UNEXPECTED_ERROR_OCCURED;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.INDEX_JS;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.LINKS;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.ME;
@@ -19,12 +21,17 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.repository.query.spi.EvaluationContextExtensionSupport;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -33,6 +40,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -69,9 +77,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new UserDetailsServiceImpl(visitorRepository);
 	}
 
+	@Bean
+	public AuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+		authenticationProvider.setPasswordEncoder(passwordEncoder());
+		authenticationProvider.setUserDetailsService(userDetailsService(null));
+		authenticationProvider.setHideUserNotFoundExceptions(false);
+		return authenticationProvider;
+	}
+
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService(null)).passwordEncoder(passwordEncoder());
+		auth.authenticationProvider(authenticationProvider());
 	}
 
 	@Override
@@ -87,6 +104,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             	.loginPage(SLASH)
             	.loginProcessingUrl(SLASH + LOGIN)
                 .successHandler(authenticationSuccessHandler(null, null, null))
+                .failureHandler(new BeniAuthenticationFailureHandler())
                 .and()
             .logout()
                 .logoutSuccessUrl(SLASH)
@@ -112,6 +130,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	}
 
+	static class BeniAuthenticationFailureHandler implements AuthenticationFailureHandler {
+
+		@Override
+		public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
+				AuthenticationException exception) throws IOException, ServletException {
+			response.setStatus(HttpStatus.I_AM_A_TEAPOT.value());
+			if (UsernameNotFoundException.class.isInstance(exception)
+					|| BadCredentialsException.class.isInstance(exception)) {
+				response.getWriter().println(exception.getMessage());
+			} else {
+				response.getWriter().println(UNEXPECTED_ERROR_OCCURED);
+			}
+		}
+
+	}
+
 	@RequiredArgsConstructor
 	static class UserDetailsServiceImpl implements UserDetailsService {
 
@@ -120,8 +154,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		@Override
 		public UserDetails loadUserByUsername(String username) {
 			Visitor visitor = visitorRepository.findByUsernameReadOnlyPasswordAndAuthority(username)
-					.orElseThrow(() -> new UsernameNotFoundException(
-							String.format("Could not find user with username: %s.", username)));
+					.orElseThrow(() -> new UsernameNotFoundException(String.format(COULD_NOT_FIND_USER, username)));
 			return new User(username, visitor.getPassword(),
 					Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority())));
 		}
