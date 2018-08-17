@@ -8,6 +8,7 @@ public class ErrorMessageConstants {
 	public static final String UNEXPECTED_ERROR_OCCURED = "Unexpected error occured!";
 	public static final String COULD_NOT_GET_VALIDATION_MESSAGE = "Validation error occurred, but could not get error message.";
 	public static final String COULD_NOT_FIND_USER = "Could not find user with username: %s.";
+	public static final String INVALID_LOGIN_CREDENTIAL = "%s is too long or too short, it must be between 5 and 25 character.";
 
 	public static final String NO_AMUSEMENT_PARK_WITH_ID = "No amusement park with the given id!";
 	public static final String NO_MACHINE_IN_PARK_WITH_ID = "No machine in the park with the given id!";

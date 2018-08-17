@@ -1,6 +1,7 @@
 package hu.beni.amusementpark.config;
 
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.COULD_NOT_FIND_USER;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.INVALID_LOGIN_CREDENTIAL;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.UNEXPECTED_ERROR_OCCURED;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.INDEX_JS;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.LINKS;
@@ -8,11 +9,11 @@ import static hu.beni.amusementpark.constants.RequestMappingConstants.ME;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.SIGN_UP;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.SLASH;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.WEBJARS;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.LOGIN;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +25,9 @@ import org.springframework.data.repository.query.spi.EvaluationContextExtensionS
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -42,6 +45,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -86,6 +91,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return authenticationProvider;
 	}
 
+	@Bean
+	public UsernamePasswordAuthenticationFilter authenticationFilter() throws Exception {
+		ValidateingUsernamePasswordAuthenticationFilter authenticationFilter = new ValidateingUsernamePasswordAuthenticationFilter();
+		authenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler(null, null, null));
+		authenticationFilter.setAuthenticationFailureHandler(new BeniAuthenticationFailureHandler());
+		authenticationFilter.setAuthenticationManager(authenticationManagerBean());
+		return authenticationFilter;
+	}
+
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(authenticationProvider());
@@ -100,17 +114,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .authenticated()
                 .and()
-            .formLogin()
-            	.loginPage(SLASH)
-            	.loginProcessingUrl(SLASH + LOGIN)
-                .successHandler(authenticationSuccessHandler(null, null, null))
-                .failureHandler(new BeniAuthenticationFailureHandler())
-                .and()
+            .addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
             .logout()
                 .logoutSuccessUrl(SLASH)
                 .and()
             .csrf()
-            	.disable(); //@formatter:on
+            	.disable()
+            .exceptionHandling()
+            	.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(SLASH)); //@formatter:on
 	}
 
 	@RequiredArgsConstructor
@@ -157,6 +168,38 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 					.orElseThrow(() -> new UsernameNotFoundException(String.format(COULD_NOT_FIND_USER, username)));
 			return new User(username, visitor.getPassword(),
 					Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority())));
+		}
+
+	}
+
+	static class ValidateingUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
+		private boolean postOnly = true;
+
+		@Override
+		public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
+			if (postOnly && !request.getMethod().equals("POST")) {
+				throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
+			}
+
+			String username = validateCredentialLength(obtainUsername(request), "Username");
+			String password = validateCredentialLength(obtainPassword(request), "Password");
+
+			UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username,
+					password);
+
+			setDetails(request, authRequest);
+
+			return this.getAuthenticationManager().authenticate(authRequest);
+		}
+
+		private String validateCredentialLength(String credential, String type) {
+			return Optional.ofNullable(credential).map(String::trim).filter(this::isLengthBetween5And25)
+					.orElseThrow(() -> new BadCredentialsException(String.format(INVALID_LOGIN_CREDENTIAL, type)));
+		}
+
+		private boolean isLengthBetween5And25(String string) {
+			return string.length() >= 5 && string.length() <= 25;
 		}
 
 	}
