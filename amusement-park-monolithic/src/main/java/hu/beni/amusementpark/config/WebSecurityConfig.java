@@ -1,7 +1,6 @@
 package hu.beni.amusementpark.config;
 
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.COULD_NOT_FIND_USER;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.INVALID_LOGIN_CREDENTIAL;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.UNEXPECTED_ERROR_OCCURED;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.INDEX_JS;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.LINKS;
@@ -9,6 +8,7 @@ import static hu.beni.amusementpark.constants.RequestMappingConstants.ME;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.SIGN_UP;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.SLASH;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.WEBJARS;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.sizeMessage;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -175,6 +175,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	static class ValidateingUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
 		private boolean postOnly = true;
+		private int min = 5;
+		private int max = 25;
 
 		@Override
 		public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
@@ -182,8 +184,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
 			}
 
-			String username = validateCredentialLength(obtainUsername(request), "Username");
-			String password = validateCredentialLength(obtainPassword(request), "Password");
+			String username = validateCredentialLength(obtainUsername(request), "Username ");
+			String password = validateCredentialLength(obtainPassword(request), "Password ");
 
 			UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username,
 					password);
@@ -195,11 +197,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		private String validateCredentialLength(String credential, String type) {
 			return Optional.ofNullable(credential).map(String::trim).filter(this::isLengthBetween5And25)
-					.orElseThrow(() -> new BadCredentialsException(String.format(INVALID_LOGIN_CREDENTIAL, type)));
+					.orElseThrow(() -> new BadCredentialsException(type + String.format(sizeMessage(min, max))));
 		}
 
 		private boolean isLengthBetween5And25(String string) {
-			return string.length() >= 5 && string.length() <= 25;
+			return string.length() >= min && string.length() <= max;
 		}
 
 	}

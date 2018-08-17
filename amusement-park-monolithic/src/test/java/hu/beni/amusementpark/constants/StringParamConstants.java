@@ -14,6 +14,9 @@ public class StringParamConstants {
 	public static final String STRING_WITH_16_LENGTH = STRING_WITH_11_LENGTH + "sdfgh";
 	public static final String STRING_WITH_21_LENGTH = STRING_WITH_16_LENGTH + "jklyx";
 	public static final String STRING_WITH_26_LENGTH = STRING_WITH_21_LENGTH + "cvbnm";
+	public static final String STRING_WITH_59_LENGTH = STRING_WITH_26_LENGTH + STRING_WITH_26_LENGTH
+			+ STRING_WITH_6_LENGTH + "+";
+	public static final String STRING_WITH_61_LENGTH = STRING_WITH_59_LENGTH + STRING_WITH_2_LENGTH;
 	public static final String STRING_WITH_101_LENGTH;
 
 	static {

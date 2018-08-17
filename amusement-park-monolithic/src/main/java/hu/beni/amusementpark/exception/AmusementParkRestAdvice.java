@@ -5,8 +5,12 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.ERROR;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.UNEXPECTED_ERROR_OCCURED;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.validationError;
 
+import java.util.stream.Stream;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -35,11 +39,18 @@ public class AmusementParkRestAdvice {
 	public String handleMethodArgumentNotValidException(
 			MethodArgumentNotValidException methodArgumentNotValidException) {
 		log.error(ERROR, methodArgumentNotValidException);
-		return methodArgumentNotValidException.getBindingResult().getFieldErrors().stream().map(this::convertToMessage)
+		BindingResult bindingResult = methodArgumentNotValidException.getBindingResult();
+		return Stream
+				.concat(bindingResult.getFieldErrors().stream().map(this::convertToMessage),
+						bindingResult.getGlobalErrors().stream().map(this::convertToMessage))
 				.reduce(String::concat).orElse(COULD_NOT_GET_VALIDATION_MESSAGE);
 	}
 
 	private String convertToMessage(FieldError fieldError) {
 		return validationError(fieldError.getField(), fieldError.getDefaultMessage());
+	}
+
+	private String convertToMessage(ObjectError objectError) {
+		return validationError(objectError.getDefaultMessage());
 	}
 }

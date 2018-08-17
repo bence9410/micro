@@ -5,12 +5,14 @@ import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_
 import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_A_VISITOR_LEAVE_PARK;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_ON_A_MACHINE_A_VISITOR_GET_OFF;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_ON_A_MACHINE_A_VISITOR_GET_ON;
-import static hu.beni.amusementpark.constants.RequestMappingConstants.SIGN_UP;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.ME;
+import static hu.beni.amusementpark.constants.RequestMappingConstants.SIGN_UP;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.VISITORS;
 
 import java.util.Arrays;
 import java.util.List;
+
+import javax.validation.Valid;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.data.domain.Pageable;
@@ -24,10 +26,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,7 +37,6 @@ import org.springframework.web.bind.annotation.RestController;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.mapper.VisitorMapper;
 import hu.beni.amusementpark.service.VisitorService;
-import hu.beni.amusementpark.validator.VisitorResourceValidator;
 import hu.beni.clientsupport.resource.VisitorResource;
 import lombok.RequiredArgsConstructor;
 
@@ -48,11 +47,6 @@ public class VisitorController {
 
 	private final VisitorService visitorService;
 	private final VisitorMapper visitorMapper;
-
-	@InitBinder("visitorResource")
-	protected void initBinder(WebDataBinder webDataBinder) {
-		webDataBinder.addValidators(new VisitorResourceValidator());
-	}
 
 	@GetMapping(ME)
 	public ResponseEntity<VisitorResource> getUser(Authentication authentication) {
@@ -68,7 +62,7 @@ public class VisitorController {
 	}
 
 	@PostMapping(SIGN_UP)
-	public VisitorResource signUp(@RequestBody VisitorResource visitorResource) {
+	public VisitorResource signUp(@Valid @RequestBody VisitorResource visitorResource) {
 		Visitor visitor = visitorMapper.toEntity(visitorResource);
 		visitor.setAuthority("ROLE_ADMIN");
 		List<SimpleGrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority()));
