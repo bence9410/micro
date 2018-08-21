@@ -6,6 +6,7 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_FREE_SEAT
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_MACHINE_IN_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_IN_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_ON_MACHINE_WITH_ID;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.USERNAME_ALREADY_TAKEN;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_IN_A_PARK;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_ON_A_MACHINE;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_TOO_YOUNG;
@@ -14,6 +15,7 @@ import static hu.beni.amusementpark.constants.SpringProfileConstants.RABBIT_MQ;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifEquals;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifFirstLessThanSecond;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifNotNull;
+import static hu.beni.amusementpark.exception.ExceptionUtil.ifNotZero;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifNull;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifPrimitivesEquals;
 
@@ -62,6 +64,8 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 
 	@Override
 	public Visitor signUp(Visitor visitor) {
+		ifNotZero(visitorRepository.countByUsername(visitor.getUsername()),
+				String.format(USERNAME_ALREADY_TAKEN, visitor.getUsername()));
 		visitor.setSpendingMoney(100);
 		return visitorRepository.save(visitor);
 	}

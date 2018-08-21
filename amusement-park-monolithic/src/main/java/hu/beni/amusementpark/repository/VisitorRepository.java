@@ -9,6 +9,9 @@ import hu.beni.amusementpark.entity.Visitor;
 
 public interface VisitorRepository extends JpaRepository<Visitor, Long> {
 
+	@Query("Select count(*) from Visitor v where v.username = :username")
+	Long countByUsername(String username);
+
 	@Query("Select new hu.beni.amusementpark.entity.Visitor(v.password, v.authority) from Visitor v where v.username = :username")
 	Optional<Visitor> findByUsernameReadOnlyPasswordAndAuthority(String username);
 

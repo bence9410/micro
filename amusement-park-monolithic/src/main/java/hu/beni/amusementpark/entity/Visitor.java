@@ -46,6 +46,7 @@ public class Visitor implements Serializable {
 	@Size(min = 5, max = 25)
 	private String name;
 
+	@Column(unique = true)
 	@NotNull
 	@Size(min = 5, max = 25)
 	private String username;

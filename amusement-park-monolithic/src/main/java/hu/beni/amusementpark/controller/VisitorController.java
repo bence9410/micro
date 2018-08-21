@@ -63,12 +63,21 @@ public class VisitorController {
 
 	@PostMapping(SIGN_UP)
 	public VisitorResource signUp(@Valid @RequestBody VisitorResource visitorResource) {
+		Visitor visitor = signUpAsVisitor(visitorResource);
+		login(visitor);
+		return visitorMapper.toResource(visitor);
+	}
+
+	private Visitor signUpAsVisitor(VisitorResource visitorResource) {
 		Visitor visitor = visitorMapper.toEntity(visitorResource);
-		visitor.setAuthority("ROLE_ADMIN");
+		visitor.setAuthority("ROLE_VISITOR");
+		return visitorService.signUp(visitor);
+	}
+
+	private void login(Visitor visitor) {
 		List<SimpleGrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority()));
 		SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-				new User(visitor.getUsername(), visitorResource.getPassword(), authorities), null, authorities));
-		return visitorMapper.toResource(visitorService.signUp(visitor));
+				new User(visitor.getUsername(), visitor.getPassword(), authorities), null, authorities));
 	}
 
 	@GetMapping(VISITORS)
