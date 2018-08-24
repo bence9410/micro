@@ -13,6 +13,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
@@ -74,6 +75,9 @@ public class Visitor implements Serializable {
 	@Column(name = "Visitor_State")
 	private VisitorState state;
 
+	@Lob
+	private String photo;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	private AmusementPark amusementPark;
 
@@ -103,9 +107,10 @@ public class Visitor implements Serializable {
 	}
 
 	@Tolerate
-	public Visitor(String authority, Integer spendingMoney) {
+	public Visitor(String authority, Integer spendingMoney, String photo) {
 		this.authority = authority;
 		this.spendingMoney = spendingMoney;
+		this.photo = photo;
 	}
 
 }

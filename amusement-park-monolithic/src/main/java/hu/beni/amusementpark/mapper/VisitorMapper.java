@@ -44,6 +44,7 @@ public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 				.dateOfBirth(entity.getDateOfBirth())
 				.spendingMoney(entity.getSpendingMoney())
 				.state(visitorStateToString(entity.getState()))
+				.photo(entity.getPhoto())
 				.links(createLinks(entity)).build(); //@formatter:on
 	}
 
@@ -56,7 +57,8 @@ public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 				.password(passwordEncoder.encode(resource.getPassword()))
 				.dateOfBirth(resource.getDateOfBirth())
 				.spendingMoney(resource.getSpendingMoney())
-				.state(stringToVisitorState(resource.getState())).build(); //@formatter:on
+				.state(stringToVisitorState(resource.getState()))
+				.photo(resource.getPhoto()).build(); //@formatter:on
 	}
 
 	private String visitorStateToString(VisitorState state) {

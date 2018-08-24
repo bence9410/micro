@@ -15,13 +15,14 @@
 <div id="header" class="row" style="background-color: lime; display: none">
 		<div class="col-md-2"></div>
 		<div class="col-md-6 row">
-			<div class="col-md-4 row">
-				Username:&nbsp;
-				<p id="username"></p>
-			</div>
-			<div id="spendingMoneyDiv" class="col-md-4 row">
-				Spending money:&nbsp;
-				<p id="spendingMoney"></p>
+			<div class="row container-fluid">
+				<div class="col-md-2">
+					<img id="photo" width="60" height="90" alt="photo">
+				</div>
+				<div class="col-md-10">
+					<div class="row">Username:&nbsp;<p id="username"></p></div>
+					<div class="row">Spending money:&nbsp;<p id="spendingMoney"></p></div>
+				</div>
 			</div>
 		</div>
 		<div class="col-md-4">
@@ -47,6 +48,8 @@
 		Confirm password: <input id="signUpConfirmPassword" type="password"> <br>
 		Name: <input id="name" type="text"> <br>
 		Date of birth: <input id="dateOfBirth" type="text"> <br> 
+		Photo size: 2:3<input id="file" type="file" onchange="drawImage()" > <br>
+		<img id="img"> <br>
 		<input id="signUp" type="button" onclick="signUp()" value="Sign up"> 
 		<input type="button" onclick="fillWithSampleData()" value="Fill with sample data">
 		<p id="signUpError"></p>
@@ -62,6 +65,7 @@
 					$("#content").hide()
 					setUsernameAndAuthorityAndSpendingMoney(data)
 					getAmusementParkPage()
+					$("#img").attr("src", data.photo)
 				},
 				error : function (data) {
 					$("#loginError").html(data.responseText)
@@ -72,6 +76,17 @@
 		function showSignUp() {
 			$("#loginDiv").hide()
 			$("#signUpDiv").show()
+		}
+		
+		function drawImage(){
+			var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#img')
+	                .attr('src', e.target.result)
+                    .width(150)
+                    .height(200);
+            };
+	        reader.readAsDataURL($("#file")[0].files[0]);
 		}
 		
 		function signUp() {
@@ -85,6 +100,7 @@
 					$("#content").hide()
 					setUsernameAndAuthorityAndSpendingMoney(data)
 					getAmusementParkPage()
+					$("#photo").attr("src", data.photo)
 				},
 				error : function (data) {
 					$("#signUpError").html(data.responseText)
@@ -100,6 +116,7 @@
 			user.confirmPassword = $("#signUpConfirmPassword").val()
 			user.dateOfBirth = $("#dateOfBirth").val()
 			user.name = $("#name").val()
+			user.photo = $("#img").attr("src")
 			return user
 		}
 		

@@ -134,7 +134,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		@Override
 		public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 				Authentication authentication) throws IOException, ServletException {
-			Visitor visitor = visitorService.findByUsernameReadAuthorityAndSpendingMoney();
+			Visitor visitor = visitorService.findByUsernameReadAuthorityAndSpendingMoneyAndPhoto();
 			visitor.setUsername(authentication.getName());
 			response.getWriter().println(objectMapper.writeValueAsString(visitorMapper.toResource(visitor)));
 		}

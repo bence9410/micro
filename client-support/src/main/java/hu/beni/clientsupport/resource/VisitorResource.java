@@ -58,9 +58,12 @@ public class VisitorResource extends ResourceSupport implements Serializable {
 	@Null
 	private String state;
 
+	@NotNull
+	private String photo;
+
 	@Builder
 	public VisitorResource(Long identifier, String name, String username, String password, String confirmPassword,
-			String authority, LocalDate dateOfBirth, Integer spendingMoney, String state, Link[] links) {
+			String authority, LocalDate dateOfBirth, Integer spendingMoney, String state, String photo, Link[] links) {
 		super();
 		this.identifier = identifier;
 		this.name = name;
@@ -71,6 +74,7 @@ public class VisitorResource extends ResourceSupport implements Serializable {
 		this.dateOfBirth = dateOfBirth;
 		this.spendingMoney = spendingMoney;
 		this.state = state;
+		this.photo = photo;
 		Optional.ofNullable(links).ifPresent(this::add);
 	}
 

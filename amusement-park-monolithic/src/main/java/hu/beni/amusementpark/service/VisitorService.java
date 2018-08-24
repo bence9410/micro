@@ -9,7 +9,7 @@ public interface VisitorService {
 
 	Integer findSpendingMoneyByUsername();
 
-	Visitor findByUsernameReadAuthorityAndSpendingMoney();
+	Visitor findByUsernameReadAuthorityAndSpendingMoneyAndPhoto();
 
 	Visitor signUp(Visitor visitor);
 

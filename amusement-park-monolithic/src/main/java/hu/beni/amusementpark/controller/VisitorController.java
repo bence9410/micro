@@ -54,7 +54,7 @@ public class VisitorController {
 		if (authentication == null) {
 			response = ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		} else {
-			Visitor visitor = visitorService.findByUsernameReadAuthorityAndSpendingMoney();
+			Visitor visitor = visitorService.findByUsernameReadAuthorityAndSpendingMoneyAndPhoto();
 			visitor.setUsername(authentication.getName());
 			response = ResponseEntity.ok(visitorMapper.toResource(visitor));
 		}

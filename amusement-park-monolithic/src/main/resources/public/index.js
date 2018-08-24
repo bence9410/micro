@@ -30,6 +30,7 @@ function getUserData(){
         success: function (data) {
         	setUsernameAndAuthorityAndSpendingMoney(data)
 			getAmusementParkPage()
+			$("#photo").attr("src", data.photo)
         },
         error: function (data) {
         	$("#content").show()
@@ -38,7 +39,7 @@ function getUserData(){
 }
 
 function setUsernameAndAuthorityAndSpendingMoney(data){
-	 username = data.name
+	 username = data.username
 	 $("#username").html(username)
 
 	 isAdmin = data.authority === "ROLE_ADMIN"
