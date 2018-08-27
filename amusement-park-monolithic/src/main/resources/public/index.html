@@ -48,8 +48,9 @@
 		Confirm password: <input id="signUpConfirmPassword" type="password"> <br>
 		Name: <input id="name" type="text"> <br>
 		Date of birth: <input id="dateOfBirth" type="text"> <br> 
-		Photo size: 2:3<input id="file" type="file" onchange="drawImage()" > <br>
-		<img id="img"> <br>
+		Photo (size: 2:3):<input id="file" type="file" onchange="drawImage()" > <br>
+		<img id="img" width="100" height="150" > <br>
+		<input type="button" onclick="backToLogin()" value="Back">
 		<input id="signUp" type="button" onclick="signUp()" value="Sign up"> 
 		<input type="button" onclick="fillWithSampleData()" value="Fill with sample data">
 		<p id="signUpError"></p>
@@ -65,7 +66,7 @@
 					$("#content").hide()
 					setUsernameAndAuthorityAndSpendingMoney(data)
 					getAmusementParkPage()
-					$("#img").attr("src", data.photo)
+					$("#photo").attr("src", data.photo)
 				},
 				error : function (data) {
 					$("#loginError").html(data.responseText)
@@ -79,14 +80,14 @@
 		}
 		
 		function drawImage(){
-			var reader = new FileReader();
-            reader.onload = function (e) {
-                $('#img')
-	                .attr('src', e.target.result)
-                    .width(150)
-                    .height(200);
-            };
-	        reader.readAsDataURL($("#file")[0].files[0]);
+			var reader = new FileReader()
+            reader.onload = e => $('#img').attr('src', e.target.result)
+	        reader.readAsDataURL($("#file")[0].files[0])
+		}
+		
+		function backToLogin(){
+			$("#signUpDiv").hide()
+			$("#loginDiv").show()			
 		}
 		
 		function signUp() {
