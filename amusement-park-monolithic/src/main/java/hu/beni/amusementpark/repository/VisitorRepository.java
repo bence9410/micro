@@ -3,6 +3,7 @@ package hu.beni.amusementpark.repository;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import hu.beni.amusementpark.entity.Visitor;
@@ -20,6 +21,10 @@ public interface VisitorRepository extends JpaRepository<Visitor, Long> {
 
 	@Query("Select v.spendingMoney from Visitor v where v.username = :#{principal.username}")
 	Integer findSpendingMoneyByUsername();
+
+	@Modifying
+	@Query("Update Visitor v set v.spendingMoney = v.spendingMoney + :ammount where v.username = :#{principal.username}")
+	void incrementSpendingMoneyForLoggedInVisitor(Integer ammount);
 
 	@Query("Select count(v) from Visitor v where v.machine.id = :machineId")
 	Long countByMachineId(Long machineId);

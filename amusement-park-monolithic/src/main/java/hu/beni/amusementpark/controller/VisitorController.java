@@ -7,6 +7,7 @@ import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_
 import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_ON_A_MACHINE_A_VISITOR_GET_ON;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.ME;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.SIGN_UP;
+import static hu.beni.amusementpark.constants.RequestMappingConstants.UPLOAD_MONEY;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.VISITORS;
 
 import java.util.Arrays;
@@ -78,6 +79,12 @@ public class VisitorController {
 		List<SimpleGrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority()));
 		SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
 				new User(visitor.getUsername(), visitor.getPassword(), authorities), null, authorities));
+	}
+
+	@PostMapping(UPLOAD_MONEY)
+	public ResponseEntity<Void> uploadMoney(@RequestBody Integer ammount) {
+		visitorService.uploadMoney(ammount);
+		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping(VISITORS)

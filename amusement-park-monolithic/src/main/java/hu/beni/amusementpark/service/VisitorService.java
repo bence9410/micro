@@ -13,6 +13,8 @@ public interface VisitorService {
 
 	Visitor signUp(Visitor visitor);
 
+	void uploadMoney(Integer ammount);
+
 	Visitor findOne(Long visitorId);
 
 	Visitor leavePark(Long amusementParkId, Long visitorId);

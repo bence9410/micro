@@ -70,6 +70,10 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 		return visitorRepository.save(visitor);
 	}
 
+	public void uploadMoney(Integer ammount) {
+		visitorRepository.incrementSpendingMoneyForLoggedInVisitor(ammount);
+	}
+
 	@Override
 	public Visitor findOne(Long visitorId) {
 		return ifNull(visitorRepository.findById(visitorId), VISITOR_NOT_SIGNED_UP);

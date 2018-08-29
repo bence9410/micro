@@ -48,6 +48,24 @@ function setUsernameAndAuthorityAndSpendingMoney(data){
      $("#header").show()
 }
 
+function uploadMoney(){
+	var money = $("#money").val()
+	$.ajax({
+		url : links.uploadMoney,
+		method : "POST",
+		contentType : "application/json",
+		data : money,
+		success : function(){
+			$("#moneyUploadResult").html("success")
+			var spendingMoney = $("#spendingMoney")
+			spendingMoney.html(parseInt(spendingMoney.html()) + parseInt(money))
+		},
+		error : function(){
+			$("#moneyUploadResult").html("error")
+		}
+	})
+}
+
 function getAmusementParkPage() {
 	$.ajax({
 		url : pages.amusementPark,
