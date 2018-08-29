@@ -86,6 +86,7 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 		assertEquals(visitorBeforeSignUp, visitor);
 		assertTrue(visitor.getDateOfSignUp().isBefore(LocalDateTime.now()));
 		insert++;
+		select++;
 		incrementSelectIfOracleDBProfileActive();
 		assertStatements();
 	}

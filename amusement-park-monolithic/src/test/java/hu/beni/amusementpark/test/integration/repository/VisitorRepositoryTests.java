@@ -157,7 +157,7 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 	private void deleteAll() {
 		visitorRepository.deleteAll();
 		select++;
-		delete += 2;
+		delete += 3;
 		assertStatements();
 	}
 

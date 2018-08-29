@@ -6,6 +6,7 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_FREE_SEAT
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_MACHINE_IN_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_IN_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_ON_MACHINE_WITH_ID;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.USERNAME_ALREADY_TAKEN;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_IN_A_PARK;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_ON_A_MACHINE;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_TOO_YOUNG;
@@ -90,13 +91,26 @@ public class VisitorServiceUnitTests {
 	}
 
 	@Test
+	public void signUpNegativeUsernameAlreadyTaken() {
+		Visitor visitor = Visitor.builder().username("benike").build();
+
+		when(visitorRepository.countByUsername(visitor.getUsername())).thenReturn(1L);
+
+		assertThatThrownBy(() -> visitorService.signUp(visitor)).isInstanceOf(AmusementParkException.class)
+				.hasMessage(String.format(USERNAME_ALREADY_TAKEN, visitor.getUsername()));
+
+		verify(visitorRepository).countByUsername(visitor.getUsername());
+	}
+
+	@Test
 	public void signUpPositive() {
-		Visitor visitor = Visitor.builder().build();
+		Visitor visitor = Visitor.builder().username("benike").build();
 
 		when(visitorRepository.save(visitor)).thenReturn(visitor);
 
 		assertEquals(visitor, visitorService.signUp(visitor));
 
+		verify(visitorRepository).countByUsername(visitor.getUsername());
 		verify(visitorRepository).save(visitor);
 	}
 
