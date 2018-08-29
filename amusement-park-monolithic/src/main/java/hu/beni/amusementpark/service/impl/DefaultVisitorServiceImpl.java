@@ -66,7 +66,7 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 	public Visitor signUp(Visitor visitor) {
 		ifNotZero(visitorRepository.countByUsername(visitor.getUsername()),
 				String.format(USERNAME_ALREADY_TAKEN, visitor.getUsername()));
-		visitor.setSpendingMoney(100);
+		visitor.setSpendingMoney(250);
 		return visitorRepository.save(visitor);
 	}
 

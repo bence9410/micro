@@ -19,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.repository.query.spi.EvaluationContextExtensionSupport;
@@ -60,6 +61,7 @@ import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@ConditionalOnWebApplication
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	public WebSecurityConfig(List<ObjectMapper> mappers) {

@@ -72,6 +72,7 @@ public class OracleRowNumberPartitionTests {
 		Visitor v2 = ValidEntityFactory.createVisitor();
 		v1.setAmusementPark(amusementPark);
 		v1.setName("jenike");
+		v1.setUsername("jenike");
 		v2.setAmusementPark(amusementPark);
 
 		v1 = visitorRepository.save(v1);
