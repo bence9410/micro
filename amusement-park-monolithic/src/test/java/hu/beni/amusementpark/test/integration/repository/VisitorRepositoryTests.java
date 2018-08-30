@@ -54,7 +54,7 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 
 		saveAll();
 
-		findSpendingMoneyByUserName();
+		findByUsername();
 
 		countByMachineId();
 
@@ -102,10 +102,9 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 		assertStatements();
 	}
 
-	private void findSpendingMoneyByUserName() {
-		SecurityContextHolder.getContext()
-				.setAuthentication(new UsernamePasswordAuthenticationToken(visitor, "visitor"));
-		assertEquals(visitor.getSpendingMoney(), visitorRepository.findSpendingMoneyByUsername());
+	private void findByUsername() {
+		assertEquals(visitor.getSpendingMoney(),
+				visitorRepository.findByUsername(visitor.getUsername()).get().getSpendingMoney());
 		select++;
 		assertStatements();
 	}
@@ -123,6 +122,8 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 	}
 
 	private void findByMachineIdAndVisitorId() {
+		SecurityContextHolder.getContext()
+				.setAuthentication(new UsernamePasswordAuthenticationToken(visitor, "visitor"));
 		assertEquals(visitor, visitorRepository.findByMachineIdAndVisitorId(machine.getId(), visitorId).get());
 		select++;
 		assertStatements();

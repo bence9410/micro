@@ -1,5 +1,6 @@
 package hu.beni.amusementpark.service.impl;
 
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.COULD_NOT_FIND_USER;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NOT_ENOUGH_MONEY;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_FREE_SEAT_ON_MACHINE;
@@ -53,13 +54,8 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 	private final AmusementParkKnowVisitorRepository amusementParkKnowVisitorRepository;
 
 	@Override
-	public Visitor findByUsernameReadAuthorityAndSpendingMoneyAndPhoto() {
-		return visitorRepository.findByUsernameReadAuthorityAndSpendingMoneyAndPhoto();
-	}
-
-	@Override
-	public Integer findSpendingMoneyByUsername() {
-		return visitorRepository.findSpendingMoneyByUsername();
+	public Visitor findByUsername(String username) {
+		return ifNull(visitorRepository.findByUsername(username), String.format(COULD_NOT_FIND_USER, username));
 	}
 
 	@Override

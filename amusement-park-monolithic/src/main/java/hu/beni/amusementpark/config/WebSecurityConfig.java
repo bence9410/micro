@@ -12,17 +12,19 @@ import static hu.beni.amusementpark.constants.ValidationMessageConstants.sizeMes
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.repository.query.spi.EvaluationContextExtensionSupport;
+import org.springframework.hateoas.MediaTypes;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -64,8 +66,11 @@ import lombok.RequiredArgsConstructor;
 @ConditionalOnWebApplication
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	public WebSecurityConfig(List<ObjectMapper> mappers) {
-		mappers.stream().forEach(mapper -> mapper.setSerializationInclusion(Include.NON_NULL));
+	private final ObjectMapper objectMapper;
+
+	public WebSecurityConfig(@Qualifier("_halObjectMapper") ObjectMapper objectMapper) {
+		objectMapper.setSerializationInclusion(Include.NON_NULL);
+		this.objectMapper = objectMapper;
 	}
 
 	@Bean
@@ -75,7 +80,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	public BeniAuthenticationSuccessHandler authenticationSuccessHandler(VisitorService visitorService,
-			ObjectMapper objectMapper, VisitorMapper visitorMapper) {
+			VisitorMapper visitorMapper) {
 		return new BeniAuthenticationSuccessHandler(visitorService, objectMapper, visitorMapper);
 	}
 
@@ -96,7 +101,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public UsernamePasswordAuthenticationFilter authenticationFilter() throws Exception {
 		ValidateingUsernamePasswordAuthenticationFilter authenticationFilter = new ValidateingUsernamePasswordAuthenticationFilter();
-		authenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler(null, null, null));
+		authenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler(null, null));
 		authenticationFilter.setAuthenticationFailureHandler(new BeniAuthenticationFailureHandler());
 		authenticationFilter.setAuthenticationManager(authenticationManagerBean());
 		return authenticationFilter;
@@ -136,9 +141,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		@Override
 		public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 				Authentication authentication) throws IOException, ServletException {
-			Visitor visitor = visitorService.findByUsernameReadAuthorityAndSpendingMoneyAndPhoto();
-			visitor.setUsername(authentication.getName());
-			response.getWriter().println(objectMapper.writeValueAsString(visitorMapper.toResource(visitor)));
+			response.setHeader(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE);
+			response.getWriter().println(objectMapper.writeValueAsString(
+					visitorMapper.toResource(visitorService.findByUsername(authentication.getName()))));
 		}
 
 	}
@@ -166,7 +171,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		@Override
 		public UserDetails loadUserByUsername(String username) {
-			Visitor visitor = visitorRepository.findByUsernameReadOnlyPasswordAndAuthority(username)
+			Visitor visitor = visitorRepository.findByUsername(username)
 					.orElseThrow(() -> new UsernameNotFoundException(String.format(COULD_NOT_FIND_USER, username)));
 			return new User(username, visitor.getPassword(),
 					Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority())));

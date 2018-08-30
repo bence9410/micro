@@ -10,8 +10,10 @@ import static hu.beni.amusementpark.constants.RequestMappingConstants.SIGN_UP;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.UPLOAD_MONEY;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.VISITORS;
 
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -23,7 +25,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -50,16 +51,10 @@ public class VisitorController {
 	private final VisitorMapper visitorMapper;
 
 	@GetMapping(ME)
-	public ResponseEntity<VisitorResource> getUser(Authentication authentication) {
-		ResponseEntity<VisitorResource> response;
-		if (authentication == null) {
-			response = ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-		} else {
-			Visitor visitor = visitorService.findByUsernameReadAuthorityAndSpendingMoneyAndPhoto();
-			visitor.setUsername(authentication.getName());
-			response = ResponseEntity.ok(visitorMapper.toResource(visitor));
-		}
-		return response;
+	public ResponseEntity<VisitorResource> getUser(Principal principal) {
+		return Optional.ofNullable(principal).map(Principal::getName).map(visitorService::findByUsername)
+				.map(visitorMapper::toResource).map(ResponseEntity::ok)
+				.orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
 	}
 
 	@PostMapping(SIGN_UP)

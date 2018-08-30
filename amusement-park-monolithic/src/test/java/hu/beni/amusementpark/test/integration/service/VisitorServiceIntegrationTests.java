@@ -61,7 +61,7 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 	public void test() {
 		signUp();
 
-		findSpendingMoneyByUsername();
+		findByUsername();
 
 		findOne();
 
@@ -91,10 +91,9 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 		assertStatements();
 	}
 
-	private void findSpendingMoneyByUsername() {
-		SecurityContextHolder.getContext()
-				.setAuthentication(new UsernamePasswordAuthenticationToken(visitor, "visitor"));
-		assertEquals(visitor.getSpendingMoney(), visitorService.findSpendingMoneyByUsername());
+	private void findByUsername() {
+		assertEquals(visitor.getSpendingMoney(),
+				visitorService.findByUsername(visitor.getUsername()).getSpendingMoney());
 		select++;
 		assertStatements();
 	}
@@ -128,6 +127,8 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 	}
 
 	private void getOnMachine() {
+		SecurityContextHolder.getContext()
+				.setAuthentication(new UsernamePasswordAuthenticationToken(visitor, "visitor"));
 		Visitor onMachineVisitor = visitorService.getOnMachine(amusementParkId, machineId, visitorId);
 		assertEquals(visitor.getSpendingMoney() - amusementPark.getEntranceFee() - machine.getTicketPrice(),
 				onMachineVisitor.getSpendingMoney().longValue());

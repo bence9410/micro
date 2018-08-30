@@ -7,9 +7,7 @@ import hu.beni.amusementpark.entity.Visitor;
 
 public interface VisitorService {
 
-	Integer findSpendingMoneyByUsername();
-
-	Visitor findByUsernameReadAuthorityAndSpendingMoneyAndPhoto();
+	Visitor findByUsername(String username);
 
 	Visitor signUp(Visitor visitor);
 

@@ -58,7 +58,6 @@ public class VisitorResource extends ResourceSupport implements Serializable {
 	@Null
 	private String state;
 
-	@NotNull
 	private String photo;
 
 	@Builder

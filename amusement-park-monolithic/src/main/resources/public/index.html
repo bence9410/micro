@@ -81,7 +81,6 @@
 				method : "POST",
 				data : "username="+$("#loginUsername").val() + "&password=" + $("#password").val(),
 				success : function (data) {
-					data = JSON.parse(data)
 					$("#content").hide()
 					setUsernameAndAuthorityAndSpendingMoney(data)
 					getAmusementParkPage()

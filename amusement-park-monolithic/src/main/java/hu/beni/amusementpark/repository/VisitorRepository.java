@@ -13,14 +13,8 @@ public interface VisitorRepository extends JpaRepository<Visitor, Long> {
 	@Query("Select count(*) from Visitor v where v.username = :username")
 	Long countByUsername(String username);
 
-	@Query("Select new hu.beni.amusementpark.entity.Visitor(v.password, v.authority) from Visitor v where v.username = :username")
-	Optional<Visitor> findByUsernameReadOnlyPasswordAndAuthority(String username);
-
-	@Query("Select new hu.beni.amusementpark.entity.Visitor(v.authority, v.spendingMoney, v.photo) from Visitor v where v.username = :#{principal.username}")
-	Visitor findByUsernameReadAuthorityAndSpendingMoneyAndPhoto();
-
-	@Query("Select v.spendingMoney from Visitor v where v.username = :#{principal.username}")
-	Integer findSpendingMoneyByUsername();
+	@Query("Select v from Visitor v where v.username = :username")
+	Optional<Visitor> findByUsername(String username);
 
 	@Modifying
 	@Query("Update Visitor v set v.spendingMoney = v.spendingMoney + :ammount where v.username = :#{principal.username}")

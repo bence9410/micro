@@ -1,5 +1,6 @@
 package hu.beni.amusementpark.test.unit;
 
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.COULD_NOT_FIND_USER;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NOT_ENOUGH_MONEY;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_FREE_SEAT_ON_MACHINE;
@@ -71,23 +72,25 @@ public class VisitorServiceUnitTests {
 	}
 
 	@Test
-	public void findSpendingMoneyByUsernameNegativeNotSignedUp() {
-		when(visitorRepository.findSpendingMoneyByUsername()).thenReturn(null);
+	public void findByUsernameNegativeNoVisitorWithUsername() {
+		String username = "benike";
 
-		assertNull(visitorService.findSpendingMoneyByUsername());
+		assertThatThrownBy(() -> visitorService.findByUsername(username)).isInstanceOf(AmusementParkException.class)
+				.hasMessage(String.format(COULD_NOT_FIND_USER, username));
 
-		verify(visitorRepository).findSpendingMoneyByUsername();
+		verify(visitorRepository).findByUsername(username);
 	}
 
 	@Test
-	public void findSpendingMoneyByUsernamePositive() {
-		Integer spendingMoney = 1000;
+	public void findByUsernamePositive() {
+		Visitor visitor = Visitor.builder().username("benike").build();
+		String username = visitor.getUsername();
 
-		when(visitorRepository.findSpendingMoneyByUsername()).thenReturn(spendingMoney);
+		when(visitorRepository.findByUsername(username)).thenReturn(Optional.of(visitor));
 
-		assertEquals(spendingMoney, visitorService.findSpendingMoneyByUsername());
+		assertEquals(visitor, visitorService.findByUsername(username));
 
-		verify(visitorRepository).findSpendingMoneyByUsername();
+		verify(visitorRepository).findByUsername(username);
 	}
 
 	@Test
