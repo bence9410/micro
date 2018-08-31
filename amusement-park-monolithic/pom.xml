@@ -95,6 +95,11 @@
 			<artifactId>httpclient</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.seleniumhq.selenium</groupId>
+			<artifactId>selenium-java</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -123,6 +128,7 @@
 						<include>**/validation/**.java</include>
 						<include>**/rabbitmq/**.java</include>
 						<include>**/OracleRowNumberPartitionTests.java</include>
+						<include>**/SeleniumTests.java</include>
 					</includes>
 				</configuration>
 			</plugin>
@@ -146,6 +152,7 @@
 						<exclude>**/validation/**.java</exclude>
 						<exclude>**/rabbitmq/**.java</exclude>
 						<exclude>**/OracleRowNumberPartitionTests.java</exclude>
+						<exclude>**/SeleniumTests.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

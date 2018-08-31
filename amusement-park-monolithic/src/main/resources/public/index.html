@@ -29,7 +29,7 @@
 			<form id="logout" method="post">
 				<input type="submit" value="logout">
 			</form>
-			<input type="button" value="Upload money" data-toggle="modal" data-target="#uploadMoneyModal">
+			<input id="uploadMoney" type="button" value="Upload money" data-toggle="modal" data-target="#uploadMoneyModal">
 		</div>
 		<div class="modal fade" id="uploadMoneyModal" role="dialog">
 		    <div class="modal-dialog">
@@ -40,11 +40,11 @@
 		        	</div>
 		        	<div class="modal-body">
 		          		Money: <input id="money" type=text>
-		          		<input type="button" value="Upload" onclick="uploadMoney()"> 
+		          		<input id="upload" type="button" value="Upload" onclick="uploadMoney()"> 
 		          		<p id="moneyUploadResult"></p>
 		        	</div>
 		        	<div class="modal-footer">
-		         		<input type="button" data-dismiss="modal" value="Close">
+		         		<input id="closeUpload" type="button" data-dismiss="modal" value="Close">
 		        	</div>
 		      	</div>
 		   	</div>
@@ -57,8 +57,8 @@
 	<div id=loginDiv class="text-center" >
 		Username: <input id="loginUsername" type="text"> <br> 
 		Password: <input id="password" type="password"> <br>
-		<input type="button" onclick="login()" value="Login">
-		<input type="button" onclick="showSignUp()" value="Sign Up"> <br>
+		<input id="login" type="button" onclick="login()" value="Login">
+		<input id="goToSignUp" type="button" onclick="showSignUp()" value="Sign Up"> <br>
 		<p id="loginError"></p>
 	</div>
 	<div id="signUpDiv" class="text-center" style="display: none">
