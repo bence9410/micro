@@ -1,4 +1,4 @@
-package hu.beni.amusementpark.test.ui;
+package hu.beni.amusementpark.helper;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
 import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOfElementLocated;

@@ -1,9 +1,21 @@
 package hu.beni.amusementpark.test.ui;
 
-import org.junit.After;
-import org.junit.Before;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.ERROR;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.UNEXPECTED_ERROR_OCCURED;
+
+import java.io.File;
+import java.io.FileReader;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.firefox.FirefoxBinary;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
@@ -12,10 +24,10 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import hu.beni.amusementpark.entity.Address;
-import hu.beni.amusementpark.entity.AmusementPark;
-import hu.beni.amusementpark.helper.ValidEntityFactory;
+import hu.beni.amusementpark.helper.DriverFacade;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class SeleniumTests {
@@ -30,86 +42,57 @@ public class SeleniumTests {
 		FIREFOX_OPTIONS.setBinary(firefoxBinary);
 	}
 
-	private DriverFacade driverFacade;
+	private final ScriptEngine scriptEngine = new ScriptEngineManager().getEngineByName("js");
+
+	private final List<String> errors = new ArrayList<>();
 
 	@LocalServerPort
 	private int port;
 
-	@Before
-	public void setUp() {
-
-		driverFacade = new DriverFacade(new FirefoxDriver(FIREFOX_OPTIONS));
-		driverFacade.get("http://localhost:" + port);
-	}
-
-	@After
-	public void tearDown() {
-		driverFacade.quit();
-	}
-
 	@Test
-	public void createAmusementParkPositiveTest() {
-		login("admin", "password");
-
-		createAmusementParkAndCheckResult(ValidEntityFactory.createAmusementParkWithAddress());
+	public void test() {
+		for (File f : new File("./src/test/resources/js/selenium/").listFiles()) {
+			runTestfile(f);
+		}
+		errors.stream().map(this::addNewLineToBeginning).reduce(String::concat).ifPresent(this::throwRuntimeException);
 	}
 
-	@Test
-	public void signUpAndUploadMoneyPositiveTest() {
-		driverFacade.click("#goToSignUp");
-
-		driverFacade.write("#signUpUsername", "visitor");
-		driverFacade.write("#signUpPassword", "password");
-		driverFacade.write("#signUpConfirmPassword", "password");
-		driverFacade.write("#name", "Visitor Lajos");
-		driverFacade.write("#dateOfBirth", "1994-10-10");
-		driverFacade.click("#signUp");
-
-		driverFacade.text("#username", "visitor");
-		driverFacade.text("#spendingMoney", "250");
-
-		driverFacade.click("#uploadMoney");
-		driverFacade.write("#money", "100");
-		driverFacade.click("#upload");
-		driverFacade.text("#moneyUploadResult", "success");
-		driverFacade.click("#closeUpload");
-		driverFacade.hidden("#money");
-
-		driverFacade.text("#spendingMoney", "350");
+	private void runTestfile(File f) {
+		DriverFacade driverFacade = null;
+		String errorMessage = null;
+		try {
+			driverFacade = new DriverFacade(new FirefoxDriver(FIREFOX_OPTIONS));
+			driverFacade.get("http://localhost:" + port);
+			scriptEngine.put("driver", driverFacade);
+			scriptEngine.eval(new FileReader(f));
+		} catch (TimeoutException e) {
+			errorMessage = f.getName() + ": " + getSeleniumErrorMessage(e);
+		} catch (Throwable t) {
+			log.error(ERROR, t);
+			errorMessage = UNEXPECTED_ERROR_OCCURED;
+		}
+		Optional.ofNullable(errorMessage).ifPresent(errors::add);
+		Optional.ofNullable(driverFacade).ifPresent(DriverFacade::quit);
 	}
 
-	private void login(String username, String password) {
-		driverFacade.write("#loginUsername", username);
-		driverFacade.write("#password", password);
-		driverFacade.click("#login");
-
-		driverFacade.text("#username", username);
+	private String getSeleniumErrorMessage(TimeoutException e) {
+		String seleniumErrorMessage;
+		try {
+			Field detailMessage = Throwable.class.getDeclaredField("detailMessage");
+			detailMessage.setAccessible(true);
+			seleniumErrorMessage = String.class.cast(detailMessage.get(e));
+		} catch (Throwable t) {
+			seleniumErrorMessage = e.getMessage();
+		}
+		return seleniumErrorMessage;
 	}
 
-	private void createAmusementParkAndCheckResult(AmusementPark amusementPark) {
-		Address address = amusementPark.getAddress();
-		driverFacade.write("#parkName", amusementPark.getName());
-		driverFacade.write("#capital", amusementPark.getCapital().toString());
-		driverFacade.write("#totalArea", amusementPark.getTotalArea().toString());
-		driverFacade.write("#entranceFee", amusementPark.getEntranceFee().toString());
+	private String addNewLineToBeginning(String string) {
+		return "\n" + string;
+	}
 
-		driverFacade.write("#country", address.getCountry());
-		driverFacade.write("#zipCode", address.getZipCode());
-		driverFacade.write("#city", address.getCity());
-		driverFacade.write("#street", address.getStreet());
-		driverFacade.write("#houseNumber", address.getHouseNumber());
-
-		driverFacade.click("#save");
-
-		driverFacade.text("#result", "success");
-
-		driverFacade.text("#tableBody>tr>td:nth-child(1)", amusementPark.getName());
-		driverFacade.text("#tableBody>tr>td:nth-child(2)", amusementPark.getCapital().toString());
-		driverFacade.text("#tableBody>tr>td:nth-child(3)", amusementPark.getTotalArea().toString());
-		driverFacade.text("#tableBody>tr>td:nth-child(4)", amusementPark.getEntranceFee().toString());
-		driverFacade.text("#tableBody>tr>td:nth-child(5)", address.getCountry() + " " + address.getZipCode() + " "
-				+ address.getCity() + " " + address.getStreet() + " " + address.getHouseNumber());
-		driverFacade.visible("#tableBody>tr>td:nth-child(6)>input[value='Delete']");
+	private void throwRuntimeException(String message) {
+		throw new RuntimeException(message);
 	}
 
 }
