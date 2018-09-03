@@ -5,7 +5,11 @@ import static org.openqa.selenium.support.ui.ExpectedConditions.invisibilityOfEl
 import static org.openqa.selenium.support.ui.ExpectedConditions.textToBe;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfElementLocated;
 
+import java.io.File;
+
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -25,6 +29,10 @@ public class DriverFacade {
 
 	public void quit() {
 		webDriver.quit();
+	}
+
+	public File takeScreenshot() {
+		return TakesScreenshot.class.cast(webDriver).getScreenshotAs(OutputType.FILE);
 	}
 
 	public void visible(String selector) {

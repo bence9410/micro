@@ -6,6 +6,7 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.UNEXPECTED_E
 import java.io.File;
 import java.io.FileReader;
 import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.FileCopyUtils;
 
 import hu.beni.amusementpark.helper.DriverFacade;
 import lombok.extern.slf4j.Slf4j;
@@ -51,28 +53,30 @@ public class SeleniumTests {
 
 	@Test
 	public void test() {
-		for (File f : new File("./src/test/resources/js/selenium/").listFiles()) {
-			runTestfile(f);
+		for (File testFile : new File("./src/test/resources/js/selenium/").listFiles()) {
+			DriverFacade driverFacade = new DriverFacade(new FirefoxDriver(FIREFOX_OPTIONS));
+			runTestFile(driverFacade, testFile);
+			driverFacade.quit();
 		}
 		errors.stream().map(this::addNewLineToBeginning).reduce(String::concat).ifPresent(this::throwRuntimeException);
 	}
 
-	private void runTestfile(File f) {
-		DriverFacade driverFacade = null;
+	private void runTestFile(DriverFacade driverFacade, File testFile) {
 		String errorMessage = null;
+		String testFileName = testFile.getName();
 		try {
-			driverFacade = new DriverFacade(new FirefoxDriver(FIREFOX_OPTIONS));
 			driverFacade.get("http://localhost:" + port);
 			scriptEngine.put("driver", driverFacade);
-			scriptEngine.eval(new FileReader(f));
+			scriptEngine.eval(new FileReader(testFile));
 		} catch (TimeoutException e) {
-			errorMessage = f.getName() + ": " + getSeleniumErrorMessage(e);
+			errorMessage = testFileName + ": " + getSeleniumErrorMessage(e);
+			takeScreenshot(driverFacade, testFileName);
 		} catch (Throwable t) {
 			log.error(ERROR, t);
 			errorMessage = UNEXPECTED_ERROR_OCCURED;
+			takeScreenshot(driverFacade, testFileName);
 		}
 		Optional.ofNullable(errorMessage).ifPresent(errors::add);
-		Optional.ofNullable(driverFacade).ifPresent(DriverFacade::quit);
 	}
 
 	private String getSeleniumErrorMessage(TimeoutException e) {
@@ -85,6 +89,17 @@ public class SeleniumTests {
 			seleniumErrorMessage = e.getMessage();
 		}
 		return seleniumErrorMessage;
+	}
+
+	private void takeScreenshot(DriverFacade driverFacade, String testFileName) {
+		try {
+			File outDir = new File("./target/selenium-screenshots/");
+			outDir.mkdirs();
+			FileCopyUtils.copy(driverFacade.takeScreenshot(),
+					new File(outDir, testFileName + LocalDateTime.now() + ".png"));
+		} catch (Throwable t) {
+			log.error("Could not take screenshot for " + testFileName, t);
+		}
 	}
 
 	private String addNewLineToBeginning(String string) {
