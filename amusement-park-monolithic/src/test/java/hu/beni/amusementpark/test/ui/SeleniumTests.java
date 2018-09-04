@@ -25,6 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.util.StringUtils;
 
 import hu.beni.amusementpark.helper.DriverFacade;
 import lombok.extern.slf4j.Slf4j;
@@ -34,12 +35,16 @@ import lombok.extern.slf4j.Slf4j;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class SeleniumTests {
 
+	private static final String ONLY_TEST_TO_RUN = System.getProperty("selenium.only.test.to.run");
+	private static final boolean HEADLESS = !"false".equals(System.getProperty("selenium.headless"));
 	private static final FirefoxOptions FIREFOX_OPTIONS;
 
 	static {
 		System.setProperty("webdriver.gecko.driver", "/opt/geckodriver");
 		FirefoxBinary firefoxBinary = new FirefoxBinary();
-		firefoxBinary.addCommandLineOptions("--headless");
+		if (HEADLESS) {
+			firefoxBinary.addCommandLineOptions("--headless");
+		}
 		FIREFOX_OPTIONS = new FirefoxOptions();
 		FIREFOX_OPTIONS.setBinary(firefoxBinary);
 	}
@@ -53,12 +58,20 @@ public class SeleniumTests {
 
 	@Test
 	public void test() {
-		for (File testFile : new File("./src/test/resources/js/selenium/").listFiles()) {
-			DriverFacade driverFacade = new DriverFacade(new FirefoxDriver(FIREFOX_OPTIONS));
-			runTestFile(driverFacade, testFile);
-			driverFacade.quit();
+		if (StringUtils.isEmpty(ONLY_TEST_TO_RUN)) {
+			for (File testFile : new File("./src/test/resources/js/selenium/").listFiles()) {
+				executeTestFile(testFile);
+			}
+		} else {
+			executeTestFile(new File("./src/test/resources/js/selenium/" + ONLY_TEST_TO_RUN));
 		}
 		errors.stream().map(this::addNewLineToBeginning).reduce(String::concat).ifPresent(this::throwRuntimeException);
+	}
+
+	public void executeTestFile(File testFile) {
+		DriverFacade driverFacade = new DriverFacade(new FirefoxDriver(FIREFOX_OPTIONS));
+		runTestFile(driverFacade, testFile);
+		driverFacade.quit();
 	}
 
 	private void runTestFile(DriverFacade driverFacade, File testFile) {

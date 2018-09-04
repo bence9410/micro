@@ -22,8 +22,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<testFailureIgnore>true</testFailureIgnore>
 	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -123,7 +123,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<testFailureIgnore>true</testFailureIgnore>
+					<testFailureIgnore>${testFailureIgnore}</testFailureIgnore>
 					<includes>
 						<include>**/validation/**.java</include>
 						<include>**/rabbitmq/**.java</include>
