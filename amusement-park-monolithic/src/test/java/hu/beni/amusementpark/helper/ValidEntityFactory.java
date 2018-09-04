@@ -44,7 +44,6 @@ public class ValidEntityFactory {
 
 	public static Visitor createVisitor() {
 		return Visitor.builder() //@formatter:off
-    			.name("Németh Bence")
     			.username("benike")
     			.password(PASSWORD_ENCODER.encode("password"))
     			.authority("ROLE_ADMIN")

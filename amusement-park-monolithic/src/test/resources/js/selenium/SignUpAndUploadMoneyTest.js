@@ -3,7 +3,6 @@ driver.click("#goToSignUp");
 driver.write("#signUpUsername", "visitor");
 driver.write("#signUpPassword", "password");
 driver.write("#signUpConfirmPassword", "password");
-driver.write("#name", "Visitor Lajos");
 driver.write("#dateOfBirth", "1994-10-10");
 driver.click("#signUp");
 

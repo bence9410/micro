@@ -146,7 +146,6 @@ public class RabbitMQArchiveSenderTests extends AbstractRabbitMQTests {
 		expectedKnownVisitors.forEach(expected -> {
 			ArchiveVisitorDTO actual = actualKnownVisitorsIterator.next();
 			assertEquals(expected.getId(), actual.getIdentifier());
-			assertEquals(expected.getName(), actual.getName());
 			assertEquals(expected.getUsername(), actual.getUsername());
 			assertEquals(expected.getDateOfBirth(), actual.getDateOfBirth());
 			assertEquals(expected.getDateOfSignUp(), actual.getDateOfSignUp());

@@ -21,7 +21,6 @@ public class AmusementParkApplication {
 	@Bean
 	public ApplicationRunner applicationRunner(VisitorService visitorService) {
 		return args -> visitorService.signUp(Visitor.builder() // @formatter:off
-				.name("Németh Bence")
 				.username("admin")
 				.password(new BCryptPasswordEncoder().encode("password"))
 				.authority("ROLE_ADMIN")

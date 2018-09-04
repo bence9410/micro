@@ -2,7 +2,6 @@ package hu.beni.amusementpark.test.validation;
 
 import static hu.beni.amusementpark.constants.FieldNameConstants.AUTHORITY;
 import static hu.beni.amusementpark.constants.FieldNameConstants.DATE_OF_BIRTH;
-import static hu.beni.amusementpark.constants.FieldNameConstants.NAME;
 import static hu.beni.amusementpark.constants.FieldNameConstants.PASSWO;
 import static hu.beni.amusementpark.constants.FieldNameConstants.SPENDING_MONEY;
 import static hu.beni.amusementpark.constants.FieldNameConstants.USERNAME;
@@ -35,21 +34,6 @@ public class VisitorValidationTests extends AbstractValidation<Visitor> {
 	@Test
 	public void validVisitor() {
 		validateAndAssertNoViolations(visitor);
-	}
-
-	@Test
-	public void invalidName() {
-		visitor.setName(null);
-		validateAndAssertViolationsSizeIsOne(visitor);
-		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getName(), NAME, NOT_NULL_MESSAGE);
-
-		visitor.setName(STRING_WITH_4_LENGTH);
-		validateAndAssertViolationsSizeIsOne(visitor);
-		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getName(), NAME, sizeMessage(5, 25));
-
-		visitor.setName(STRING_WITH_26_LENGTH);
-		validateAndAssertViolationsSizeIsOne(visitor);
-		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getName(), NAME, sizeMessage(5, 25));
 	}
 
 	@Test

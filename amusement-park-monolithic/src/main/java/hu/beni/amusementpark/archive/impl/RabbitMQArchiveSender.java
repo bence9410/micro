@@ -77,7 +77,6 @@ public class RabbitMQArchiveSender implements ArchiveSender {
 	private ArchiveVisitorDTO convertToArchiveVisitor(Visitor visitor) {
 		return ArchiveVisitorDTO.builder() //@formatter:off
 				.identifier(visitor.getId())
-				.name(visitor.getName())
 				.username(visitor.getUsername())
 				.dateOfBirth(visitor.getDateOfBirth())
 				.dateOfSignUp(visitor.getDateOfSignUp()).build(); //@formatter:on

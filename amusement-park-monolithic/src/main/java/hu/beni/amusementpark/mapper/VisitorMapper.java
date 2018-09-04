@@ -38,7 +38,6 @@ public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 	public VisitorResource toResource(Visitor entity) {
 		return VisitorResource.builder() //@formatter:off
 				.identifier(entity.getId())
-				.name(entity.getName())
 				.username(entity.getUsername())
 				.authority(entity.getAuthority())
 				.dateOfBirth(entity.getDateOfBirth())
@@ -52,7 +51,6 @@ public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 	public Visitor toEntity(VisitorResource resource) {
 		return Visitor.builder() //@formatter:off
 				.id(resource.getIdentifier())
-				.name(resource.getName())
 				.username(resource.getUsername())
 				.password(passwordEncoder.encode(resource.getPassword()))
 				.dateOfBirth(resource.getDateOfBirth())

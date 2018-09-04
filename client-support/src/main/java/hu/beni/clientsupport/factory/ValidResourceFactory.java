@@ -29,8 +29,7 @@ public class ValidResourceFactory {
 
 	public static VisitorResource createVisitor() {
 		return VisitorResource.builder() //@formatter:off
-				.name("Németh Bence")
-    			.username("benike")
+				.username("benike")
     			.password("password")
     			.confirmPassword("password")
     			.dateOfBirth(LocalDate.of(1994, 10, 22)).build(); //@formatter:on
