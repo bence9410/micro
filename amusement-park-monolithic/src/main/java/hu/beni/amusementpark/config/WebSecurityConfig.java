@@ -8,6 +8,7 @@ import static hu.beni.amusementpark.constants.RequestMappingConstants.ME;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.SIGN_UP;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.SLASH;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.WEBJARS;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.EMAIL_MESSAGE;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.sizeMessage;
 
 import java.io.IOException;
@@ -197,8 +198,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
 			}
 
-			String username = validateCredentialLength(obtainUsername(request), "Email ");
-			String password = validateCredentialLength(obtainPassword(request), "Password ");
+			String username = validateEmail(obtainUsername(request));
+			String password = validatePassword(obtainPassword(request));
 
 			UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username,
 					password);
@@ -208,9 +209,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			return this.getAuthenticationManager().authenticate(authRequest);
 		}
 
-		private String validateCredentialLength(String credential, String type) {
+		private String validateEmail(String email) {
+			return Optional.ofNullable(email).filter(this::isValidEmail)
+					.orElseThrow(() -> new BadCredentialsException("Email " + EMAIL_MESSAGE));
+		}
+
+		private boolean isValidEmail(String email) {
+			return email.matches(".+@.+\\..+");
+		}
+
+		private String validatePassword(String credential) {
 			return Optional.ofNullable(credential).map(String::trim).filter(this::isLengthBetween5And25)
-					.orElseThrow(() -> new BadCredentialsException(type + String.format(sizeMessage(min, max))));
+					.orElseThrow(() -> new BadCredentialsException("Password " + String.format(sizeMessage(min, max))));
 		}
 
 		private boolean isLengthBetween5And25(String string) {

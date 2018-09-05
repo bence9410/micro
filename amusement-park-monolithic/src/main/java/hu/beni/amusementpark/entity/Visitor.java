@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
@@ -45,7 +46,7 @@ public class Visitor implements Serializable {
 
 	@Column(unique = true)
 	@NotNull
-	@Size(min = 5, max = 25)
+	@Email(regexp = ".+@.+\\..+")
 	private String email;
 
 	@NotNull

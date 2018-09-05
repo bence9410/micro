@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Past;
@@ -30,7 +31,7 @@ public class VisitorResource extends ResourceSupport implements Serializable {
 	private Long identifier;
 
 	@NotNull
-	@Size(min = 5, max = 25)
+	@Email(regexp = ".+@.+\\..+")
 	private String email;
 
 	@NotNull
