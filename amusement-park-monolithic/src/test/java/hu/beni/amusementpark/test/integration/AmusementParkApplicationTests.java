@@ -94,7 +94,7 @@ public class AmusementParkApplicationTests {
 
 	@Test
 	public void pageTest() {
-		loginAsAdmin("admin", "password");
+		loginAsAdmin("admin@gmail.com", "password");
 
 		PagedResourcesType<AmusementParkResource> responseType = getPagedType(AmusementParkResource.class);
 
@@ -124,7 +124,7 @@ public class AmusementParkApplicationTests {
 
 	@Test
 	public void positiveTest() {
-		VisitorResource visitorResource = loginAsAdmin("admin", "password");
+		VisitorResource visitorResource = loginAsAdmin("admin@gmail.com", "password");
 
 		AmusementParkResource amusementParkResource = createAmusementPark();
 
@@ -151,7 +151,7 @@ public class AmusementParkApplicationTests {
 
 	@Test
 	public void negativeTest() {
-		loginAsAdmin("admin", "password");
+		loginAsAdmin("admin@gmail.com", "password");
 
 		AmusementParkResource amusementParkResource = createAmusementParkWithAddress();
 		amusementParkResource.setAddress(null);
@@ -184,8 +184,8 @@ public class AmusementParkApplicationTests {
 		logout();
 	}
 
-	private VisitorResource loginAsAdmin(String username, String password) {
-		ResponseEntity<VisitorResource> response = client.post(uri(links.get(LOGIN)), createMap(username, password),
+	private VisitorResource loginAsAdmin(String email, String password) {
+		ResponseEntity<VisitorResource> response = client.post(uri(links.get(LOGIN)), createMap(email, password),
 				VISITOR_TYPE);
 
 		assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -199,7 +199,7 @@ public class AmusementParkApplicationTests {
 		assertNotNull(visitorResource.getLink(VISITOR_ENTER_PARK));
 		assertNotNull(visitorResource.getLink(AMUSEMENT_PARK));
 
-		assertEquals(username, visitorResource.getUsername());
+		assertEquals(email, visitorResource.getEmail());
 		assertEquals("ROLE_ADMIN", visitorResource.getAuthority());
 
 		return visitorResource;
@@ -207,7 +207,7 @@ public class AmusementParkApplicationTests {
 
 	private MultiValueMap<String, String> createMap(String username, String password) {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-		map.add("username", username);
+		map.add("email", username);
 		map.add("password", password);
 		return map;
 	}

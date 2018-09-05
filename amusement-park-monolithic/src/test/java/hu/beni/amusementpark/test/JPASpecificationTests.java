@@ -78,7 +78,7 @@ public class JPASpecificationTests {
 		}).map(amusementParkRepository::save).collect(Collectors.toList());
 
 		Visitor v1 = createVisitor();
-		v1.setUsername("jenike");
+		v1.setEmail("jenike@gmail.com");
 		visitorRepository.save(v1);
 		Visitor v2 = visitorRepository.save(createVisitor());
 

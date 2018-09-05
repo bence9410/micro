@@ -8,6 +8,7 @@ import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -16,7 +17,9 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import hu.beni.amusementpark.config.RabbitMQTestConfig.ArchiveReceiver;
@@ -65,8 +68,9 @@ public class RabbitMQArchiveSenderTests extends AbstractRabbitMQTests {
 		amusementParkId = amusementParkService.save(createAmusementParkWithAddress()).getId();
 		machineService.addMachine(amusementParkId, createMachine());
 		Visitor visitor = visitorService.signUp(createVisitor());
-		SecurityContextHolder.getContext()
-				.setAuthentication(new UsernamePasswordAuthenticationToken(visitor, "visitor"));
+		SecurityContextHolder.getContext().setAuthentication(
+				new UsernamePasswordAuthenticationToken(new User(visitor.getEmail(), visitor.getPassword(),
+						Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority()))), null));
 		Long visitorId = visitor.getId();
 		visitorService.enterPark(amusementParkId, visitorId);
 		guestBookRegistryService.addRegistry(amusementParkId, visitorId, OPINION_ON_THE_PARK);
@@ -146,7 +150,7 @@ public class RabbitMQArchiveSenderTests extends AbstractRabbitMQTests {
 		expectedKnownVisitors.forEach(expected -> {
 			ArchiveVisitorDTO actual = actualKnownVisitorsIterator.next();
 			assertEquals(expected.getId(), actual.getIdentifier());
-			assertEquals(expected.getUsername(), actual.getUsername());
+			assertEquals(expected.getEmail(), actual.getEmail());
 			assertEquals(expected.getDateOfBirth(), actual.getDateOfBirth());
 			assertEquals(expected.getDateOfSignUp(), actual.getDateOfSignUp());
 		});

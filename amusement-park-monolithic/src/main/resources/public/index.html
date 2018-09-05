@@ -20,7 +20,7 @@
 					<img id="photo" width="60" height="90" alt="photo">
 				</div>
 				<div class="col-md-10">
-					<div class="row">Username:&nbsp;<p id="username"></p></div>
+					<div class="row">Email:&nbsp;<p id="email"></p></div>
 					<div class="row">Spending money:&nbsp;<p id="spendingMoney"></p></div>
 				</div>
 			</div>
@@ -55,14 +55,14 @@
 		<h1>Welcome to Beni</h1>
 	</div>
 	<div id=loginDiv class="text-center" >
-		Username: <input id="loginUsername" type="text"> <br> 
+		Email: <input id="loginEmail" type="text"> <br> 
 		Password: <input id="password" type="password"> <br>
 		<input id="login" type="button" onclick="login()" value="Login">
 		<input id="goToSignUp" type="button" onclick="showSignUp()" value="Sign Up"> <br>
 		<p id="loginError"></p>
 	</div>
 	<div id="signUpDiv" class="text-center" style="display: none">
-		Username: <input id="signUpUsername" type="text"> <br> 
+		Email: <input id="signUpEmail" type="text"> <br> 
 		Password: <input id="signUpPassword" type="password"> <br> 
 		Confirm password: <input id="signUpConfirmPassword" type="password"> <br>
 		Date of birth: <input id="dateOfBirth" type="text"> <br> 
@@ -78,10 +78,10 @@
 			$.ajax({
 				url : links.login,
 				method : "POST",
-				data : "username="+$("#loginUsername").val() + "&password=" + $("#password").val(),
+				data : "email="+$("#loginEmail").val() + "&password=" + $("#password").val(),
 				success : function (data) {
 					$("#content").hide()
-					setUsernameAndAuthorityAndSpendingMoney(data)
+					setEmailAndAuthorityAndSpendingMoney(data)
 					getAmusementParkPage()
 					$("#photo").attr("src", data.photo)
 				},
@@ -116,7 +116,7 @@
 				data : JSON.stringify(collectSignUpData()),
 				success : function (data) {
 					$("#content").hide()
-					setUsernameAndAuthorityAndSpendingMoney(data)
+					setEmailAndAuthorityAndSpendingMoney(data)
 					getAmusementParkPage()
 					$("#photo").attr("src", data.photo)
 				},
@@ -129,7 +129,7 @@
 		
 		function collectSignUpData(){
 			var user = {}
-			user.username = $("#signUpUsername").val()
+			user.email = $("#signUpEmail").val()
 			user.password = $("#signUpPassword").val()
 			user.confirmPassword = $("#signUpConfirmPassword").val()
 			user.dateOfBirth = $("#dateOfBirth").val()
@@ -138,7 +138,7 @@
 		}
 		
 		function fillWithSampleData(){
-			$("#signUpUsername").val("visitor")
+			$("#signUpEmail").val("visitor@gmail.com")
 			$("#signUpPassword").val("password")
 			$("#signUpConfirmPassword").val("password")
 			$("#dateOfBirth").val("1994-10-22")

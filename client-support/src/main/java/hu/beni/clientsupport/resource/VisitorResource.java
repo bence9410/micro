@@ -31,7 +31,7 @@ public class VisitorResource extends ResourceSupport implements Serializable {
 
 	@NotNull
 	@Size(min = 5, max = 25)
-	private String username;
+	private String email;
 
 	@NotNull
 	@Size(min = 5, max = 25)
@@ -57,11 +57,11 @@ public class VisitorResource extends ResourceSupport implements Serializable {
 	private String photo;
 
 	@Builder
-	public VisitorResource(Long identifier, String username, String password, String confirmPassword, String authority,
+	public VisitorResource(Long identifier, String email, String password, String confirmPassword, String authority,
 			LocalDate dateOfBirth, Integer spendingMoney, String state, String photo, Link[] links) {
 		super();
 		this.identifier = identifier;
-		this.username = username;
+		this.email = email;
 		this.password = password;
 		this.confirmPassword = confirmPassword;
 		this.authority = authority;

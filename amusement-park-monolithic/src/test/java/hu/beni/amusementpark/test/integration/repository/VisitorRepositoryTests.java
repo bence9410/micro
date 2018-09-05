@@ -12,7 +12,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
@@ -54,7 +56,7 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 
 		saveAll();
 
-		findByUsername();
+		findByEmail();
 
 		countByMachineId();
 
@@ -89,8 +91,8 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 		Visitor visitor = createVisitor();
 		visitor.setAmusementPark(amusementPark);
 		visitor.setMachine(machine);
-		String username = visitor.getUsername() + Math.random();
-		visitor.setUsername(username.substring(0, username.length() > 25 ? 25 : username.length()));
+		String email = visitor.getEmail() + Math.random();
+		visitor.setEmail(email.substring(0, email.length() > 25 ? 25 : email.length()));
 		return visitor;
 	}
 
@@ -102,9 +104,9 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 		assertStatements();
 	}
 
-	private void findByUsername() {
+	private void findByEmail() {
 		assertEquals(visitor.getSpendingMoney(),
-				visitorRepository.findByUsername(visitor.getUsername()).get().getSpendingMoney());
+				visitorRepository.findByEmail(visitor.getEmail()).get().getSpendingMoney());
 		select++;
 		assertStatements();
 	}
@@ -122,8 +124,9 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 	}
 
 	private void findByMachineIdAndVisitorId() {
-		SecurityContextHolder.getContext()
-				.setAuthentication(new UsernamePasswordAuthenticationToken(visitor, "visitor"));
+		SecurityContextHolder.getContext().setAuthentication(
+				new UsernamePasswordAuthenticationToken(new User(visitor.getEmail(), visitor.getPassword(),
+						Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority()))), null));
 		assertEquals(visitor, visitorRepository.findByMachineIdAndVisitorId(machine.getId(), visitorId).get());
 		select++;
 		assertStatements();

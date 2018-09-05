@@ -4,7 +4,7 @@ import static hu.beni.amusementpark.constants.FieldNameConstants.AUTHORITY;
 import static hu.beni.amusementpark.constants.FieldNameConstants.DATE_OF_BIRTH;
 import static hu.beni.amusementpark.constants.FieldNameConstants.PASSWO;
 import static hu.beni.amusementpark.constants.FieldNameConstants.SPENDING_MONEY;
-import static hu.beni.amusementpark.constants.FieldNameConstants.USERNAME;
+import static hu.beni.amusementpark.constants.FieldNameConstants.EMAIL;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_26_LENGTH;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4_LENGTH;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_59_LENGTH;
@@ -37,18 +37,18 @@ public class VisitorValidationTests extends AbstractValidation<Visitor> {
 	}
 
 	@Test
-	public void invalidUsername() {
-		visitor.setUsername(null);
+	public void invalidEmail() {
+		visitor.setEmail(null);
 		validateAndAssertViolationsSizeIsOne(visitor);
-		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getUsername(), USERNAME, NOT_NULL_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getEmail(), EMAIL, NOT_NULL_MESSAGE);
 
-		visitor.setUsername(STRING_WITH_4_LENGTH);
+		visitor.setEmail(STRING_WITH_4_LENGTH);
 		validateAndAssertViolationsSizeIsOne(visitor);
-		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getUsername(), USERNAME, sizeMessage(5, 25));
+		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getEmail(), EMAIL, sizeMessage(5, 25));
 
-		visitor.setUsername(STRING_WITH_26_LENGTH);
+		visitor.setEmail(STRING_WITH_26_LENGTH);
 		validateAndAssertViolationsSizeIsOne(visitor);
-		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getUsername(), USERNAME, sizeMessage(5, 25));
+		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getEmail(), EMAIL, sizeMessage(5, 25));
 	}
 
 	@Test

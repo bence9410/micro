@@ -8,8 +8,8 @@ public class ErrorMessageConstants {
 	public static final String ERROR = "Error:";
 	public static final String UNEXPECTED_ERROR_OCCURED = "Unexpected error occured!";
 	public static final String COULD_NOT_GET_VALIDATION_MESSAGE = "Validation error occurred, but could not get error message.";
-	public static final String COULD_NOT_FIND_USER = "Could not find user with username: %s.";
-	public static final String USERNAME_ALREADY_TAKEN = "Username %s is already taken.";
+	public static final String COULD_NOT_FIND_USER = "Could not find user with email: %s.";
+	public static final String EMAIL_ALREADY_TAKEN = "Email %s is already taken.";
 
 	public static final String NO_AMUSEMENT_PARK_WITH_ID = "No amusement park with the given id!";
 	public static final String NO_MACHINE_IN_PARK_WITH_ID = "No machine in the park with the given id!";

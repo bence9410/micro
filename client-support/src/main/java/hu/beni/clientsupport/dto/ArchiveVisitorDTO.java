@@ -15,9 +15,7 @@ public class ArchiveVisitorDTO implements Serializable {
 
 	private Long identifier;
 
-	private String name;
-
-	private String username;
+	private String email;
 
 	private LocalDate dateOfBirth;
 

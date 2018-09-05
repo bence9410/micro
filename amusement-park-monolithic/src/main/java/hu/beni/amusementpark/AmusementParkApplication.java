@@ -21,7 +21,7 @@ public class AmusementParkApplication {
 	@Bean
 	public ApplicationRunner applicationRunner(VisitorService visitorService) {
 		return args -> visitorService.signUp(Visitor.builder() // @formatter:off
-				.username("admin")
+				.email("admin@gmail.com")
 				.password(new BCryptPasswordEncoder().encode("password"))
 				.authority("ROLE_ADMIN")
 				.dateOfBirth(LocalDate.of(1994, 10, 22)).build()); // @formatter:on

@@ -13,11 +13,11 @@ var address = {
 	houseNumber : "80/C"
 }
 
-driver.write("#loginUsername", "admin");
+driver.write("#loginEmail", "admin@gmail.com");
 driver.write("#password", "password");
 driver.click("#login");
 
-driver.text("#username", "admin");
+driver.text("#email", "admin@gmail.com");
 
 driver.write("#parkName", amusementPark.name);
 driver.write("#capital", amusementPark.capital);

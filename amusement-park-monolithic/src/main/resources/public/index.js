@@ -1,7 +1,7 @@
 var links
 var pages
 var jses
-var username
+var email
 var isAdmin
 
 function init() {
@@ -28,7 +28,7 @@ function getUserData(){
 	$.ajax({
         url: links.me,
         success: function (data) {
-        	setUsernameAndAuthorityAndSpendingMoney(data)
+        	setEmailAndAuthorityAndSpendingMoney(data)
 			getAmusementParkPage()
 			$("#photo").attr("src", data.photo)
         },
@@ -38,9 +38,9 @@ function getUserData(){
     })
 }
 
-function setUsernameAndAuthorityAndSpendingMoney(data){
-	 username = data.username
-	 $("#username").html(username)
+function setEmailAndAuthorityAndSpendingMoney(data){
+	 email = data.email
+	 $("#email").html(email)
 
 	 isAdmin = data.authority === "ROLE_ADMIN"
      

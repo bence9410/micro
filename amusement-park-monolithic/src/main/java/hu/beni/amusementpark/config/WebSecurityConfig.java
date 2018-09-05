@@ -143,7 +143,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				Authentication authentication) throws IOException, ServletException {
 			response.setHeader(HttpHeaders.CONTENT_TYPE, MediaTypes.HAL_JSON_UTF8_VALUE);
 			response.getWriter().println(objectMapper.writeValueAsString(
-					visitorMapper.toResource(visitorService.findByUsername(authentication.getName()))));
+					visitorMapper.toResource(visitorService.findByEmail(authentication.getName()))));
 		}
 
 	}
@@ -170,10 +170,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		private final VisitorRepository visitorRepository;
 
 		@Override
-		public UserDetails loadUserByUsername(String username) {
-			Visitor visitor = visitorRepository.findByUsername(username)
-					.orElseThrow(() -> new UsernameNotFoundException(String.format(COULD_NOT_FIND_USER, username)));
-			return new User(username, visitor.getPassword(),
+		public UserDetails loadUserByUsername(String email) {
+			Visitor visitor = visitorRepository.findByEmail(email)
+					.orElseThrow(() -> new UsernameNotFoundException(String.format(COULD_NOT_FIND_USER, email)));
+			return new User(email, visitor.getPassword(),
 					Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority())));
 		}
 
@@ -181,9 +181,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	static class ValidateingUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
+		private static final String USERNAME_FORM_KEY = "email";
+
 		private boolean postOnly = true;
 		private int min = 5;
 		private int max = 25;
+
+		public ValidateingUsernamePasswordAuthenticationFilter() {
+			setUsernameParameter(USERNAME_FORM_KEY);
+		}
 
 		@Override
 		public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) {
@@ -191,7 +197,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				throw new AuthenticationServiceException("Authentication method not supported: " + request.getMethod());
 			}
 
-			String username = validateCredentialLength(obtainUsername(request), "Username ");
+			String username = validateCredentialLength(obtainUsername(request), "Email ");
 			String password = validateCredentialLength(obtainPassword(request), "Password ");
 
 			UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username,

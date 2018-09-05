@@ -1,13 +1,13 @@
 package hu.beni.amusementpark.test.unit;
 
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.COULD_NOT_FIND_USER;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.EMAIL_ALREADY_TAKEN;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NOT_ENOUGH_MONEY;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_FREE_SEAT_ON_MACHINE;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_MACHINE_IN_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_IN_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_ON_MACHINE_WITH_ID;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.USERNAME_ALREADY_TAKEN;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_IN_A_PARK;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_ON_A_MACHINE;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_TOO_YOUNG;
@@ -72,48 +72,48 @@ public class VisitorServiceUnitTests {
 	}
 
 	@Test
-	public void findByUsernameNegativeNoVisitorWithUsername() {
-		String username = "benike";
+	public void findByEmailNegativeNoVisitorWithUsername() {
+		String email = "nembence1994@gmail.com";
 
-		assertThatThrownBy(() -> visitorService.findByUsername(username)).isInstanceOf(AmusementParkException.class)
-				.hasMessage(String.format(COULD_NOT_FIND_USER, username));
+		assertThatThrownBy(() -> visitorService.findByEmail(email)).isInstanceOf(AmusementParkException.class)
+				.hasMessage(String.format(COULD_NOT_FIND_USER, email));
 
-		verify(visitorRepository).findByUsername(username);
+		verify(visitorRepository).findByEmail(email);
 	}
 
 	@Test
-	public void findByUsernamePositive() {
-		Visitor visitor = Visitor.builder().username("benike").build();
-		String username = visitor.getUsername();
+	public void findByEmailPositive() {
+		Visitor visitor = Visitor.builder().email("nembence1994@gmail.com").build();
+		String email = visitor.getEmail();
 
-		when(visitorRepository.findByUsername(username)).thenReturn(Optional.of(visitor));
+		when(visitorRepository.findByEmail(email)).thenReturn(Optional.of(visitor));
 
-		assertEquals(visitor, visitorService.findByUsername(username));
+		assertEquals(visitor, visitorService.findByEmail(email));
 
-		verify(visitorRepository).findByUsername(username);
+		verify(visitorRepository).findByEmail(email);
 	}
 
 	@Test
-	public void signUpNegativeUsernameAlreadyTaken() {
-		Visitor visitor = Visitor.builder().username("benike").build();
+	public void signUpNegativeEmailAlreadyTaken() {
+		Visitor visitor = Visitor.builder().email("nembence1994@gmail.com").build();
 
-		when(visitorRepository.countByUsername(visitor.getUsername())).thenReturn(1L);
+		when(visitorRepository.countByEmail(visitor.getEmail())).thenReturn(1L);
 
 		assertThatThrownBy(() -> visitorService.signUp(visitor)).isInstanceOf(AmusementParkException.class)
-				.hasMessage(String.format(USERNAME_ALREADY_TAKEN, visitor.getUsername()));
+				.hasMessage(String.format(EMAIL_ALREADY_TAKEN, visitor.getEmail()));
 
-		verify(visitorRepository).countByUsername(visitor.getUsername());
+		verify(visitorRepository).countByEmail(visitor.getEmail());
 	}
 
 	@Test
 	public void signUpPositive() {
-		Visitor visitor = Visitor.builder().username("benike").build();
+		Visitor visitor = Visitor.builder().email("nembence1994@gmail.com").build();
 
 		when(visitorRepository.save(visitor)).thenReturn(visitor);
 
 		assertEquals(visitor, visitorService.signUp(visitor));
 
-		verify(visitorRepository).countByUsername(visitor.getUsername());
+		verify(visitorRepository).countByEmail(visitor.getEmail());
 		verify(visitorRepository).save(visitor);
 	}
 

@@ -9,13 +9,16 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
@@ -61,7 +64,7 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 	public void test() {
 		signUp();
 
-		findByUsername();
+		findByEmail();
 
 		findOne();
 
@@ -91,9 +94,8 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 		assertStatements();
 	}
 
-	private void findByUsername() {
-		assertEquals(visitor.getSpendingMoney(),
-				visitorService.findByUsername(visitor.getUsername()).getSpendingMoney());
+	private void findByEmail() {
+		assertEquals(visitor.getSpendingMoney(), visitorService.findByEmail(visitor.getEmail()).getSpendingMoney());
 		select++;
 		assertStatements();
 	}
@@ -127,8 +129,9 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 	}
 
 	private void getOnMachine() {
-		SecurityContextHolder.getContext()
-				.setAuthentication(new UsernamePasswordAuthenticationToken(visitor, "visitor"));
+		SecurityContextHolder.getContext().setAuthentication(
+				new UsernamePasswordAuthenticationToken(new User(visitor.getEmail(), visitor.getPassword(),
+						Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority()))), null));
 		Visitor onMachineVisitor = visitorService.getOnMachine(amusementParkId, machineId, visitorId);
 		assertEquals(visitor.getSpendingMoney() - amusementPark.getEntranceFee() - machine.getTicketPrice(),
 				onMachineVisitor.getSpendingMoney().longValue());

@@ -52,7 +52,7 @@ public class VisitorController {
 
 	@GetMapping(ME)
 	public ResponseEntity<VisitorResource> getUser(Principal principal) {
-		return Optional.ofNullable(principal).map(Principal::getName).map(visitorService::findByUsername)
+		return Optional.ofNullable(principal).map(Principal::getName).map(visitorService::findByEmail)
 				.map(visitorMapper::toResource).map(ResponseEntity::ok)
 				.orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
 	}
@@ -73,7 +73,7 @@ public class VisitorController {
 	private void login(Visitor visitor) {
 		List<SimpleGrantedAuthority> authorities = Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority()));
 		SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(
-				new User(visitor.getUsername(), visitor.getPassword(), authorities), null, authorities));
+				new User(visitor.getEmail(), visitor.getPassword(), authorities), null, authorities));
 	}
 
 	@PostMapping(UPLOAD_MONEY)

@@ -1,12 +1,12 @@
 driver.click("#goToSignUp");
 
-driver.write("#signUpUsername", "visitor");
+driver.write("#signUpEmail", "visitor@gmail.com");
 driver.write("#signUpPassword", "password");
 driver.write("#signUpConfirmPassword", "password");
 driver.write("#dateOfBirth", "1994-10-10");
 driver.click("#signUp");
 
-driver.text("#username", "visitor");
+driver.text("#email", "visitor@gmail.com");
 driver.text("#spendingMoney", "250");
 
 driver.click("#uploadMoney");

@@ -7,7 +7,7 @@ import hu.beni.amusementpark.entity.Visitor;
 
 public interface VisitorService {
 
-	Visitor findByUsername(String username);
+	Visitor findByEmail(String email);
 
 	Visitor signUp(Visitor visitor);
 

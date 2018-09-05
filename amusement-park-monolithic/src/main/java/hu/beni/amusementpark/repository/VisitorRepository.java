@@ -10,14 +10,14 @@ import hu.beni.amusementpark.entity.Visitor;
 
 public interface VisitorRepository extends JpaRepository<Visitor, Long> {
 
-	@Query("Select count(*) from Visitor v where v.username = :username")
-	Long countByUsername(String username);
+	@Query("Select count(*) from Visitor v where v.email = :email")
+	Long countByEmail(String email);
 
-	@Query("Select v from Visitor v where v.username = :username")
-	Optional<Visitor> findByUsername(String username);
+	@Query("Select v from Visitor v where v.email = :email")
+	Optional<Visitor> findByEmail(String email);
 
 	@Modifying
-	@Query("Update Visitor v set v.spendingMoney = v.spendingMoney + :ammount where v.username = :#{principal.username}")
+	@Query("Update Visitor v set v.spendingMoney = v.spendingMoney + :ammount where v.email = :#{principal.username}")
 	void incrementSpendingMoneyForLoggedInVisitor(Integer ammount);
 
 	@Query("Select count(v) from Visitor v where v.machine.id = :machineId")
@@ -26,10 +26,10 @@ public interface VisitorRepository extends JpaRepository<Visitor, Long> {
 	@Query("Select count(v) from Visitor v where v.amusementPark.id = :amusementParkId")
 	Long countByAmusementParkId(Long amusementParkId);
 
-	@Query("Select v from Visitor v where v.machine.id = :machineId and v.id = :visitorId and v.username = :#{principal.username}")
+	@Query("Select v from Visitor v where v.machine.id = :machineId and v.id = :visitorId and v.email = :#{principal.username}")
 	Optional<Visitor> findByMachineIdAndVisitorId(Long machineId, Long visitorId);
 
-	@Query("Select v from Visitor v where v.amusementPark.id = :amusementParkId and v.id = :visitorId and v.username = :#{principal.username}")
+	@Query("Select v from Visitor v where v.amusementPark.id = :amusementParkId and v.id = :visitorId and v.email = :#{principal.username}")
 	Optional<Visitor> findByAmusementParkIdAndVisitorId(Long amusementParkId, Long visitorId);
 
 }

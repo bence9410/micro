@@ -1,13 +1,13 @@
 package hu.beni.amusementpark.service.impl;
 
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.COULD_NOT_FIND_USER;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.EMAIL_ALREADY_TAKEN;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NOT_ENOUGH_MONEY;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_FREE_SEAT_ON_MACHINE;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_MACHINE_IN_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_IN_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_ON_MACHINE_WITH_ID;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.USERNAME_ALREADY_TAKEN;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_IN_A_PARK;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_ON_A_MACHINE;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_TOO_YOUNG;
@@ -54,14 +54,14 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 	private final AmusementParkKnowVisitorRepository amusementParkKnowVisitorRepository;
 
 	@Override
-	public Visitor findByUsername(String username) {
-		return ifNull(visitorRepository.findByUsername(username), String.format(COULD_NOT_FIND_USER, username));
+	public Visitor findByEmail(String email) {
+		return ifNull(visitorRepository.findByEmail(email), String.format(COULD_NOT_FIND_USER, email));
 	}
 
 	@Override
 	public Visitor signUp(Visitor visitor) {
-		ifNotZero(visitorRepository.countByUsername(visitor.getUsername()),
-				String.format(USERNAME_ALREADY_TAKEN, visitor.getUsername()));
+		ifNotZero(visitorRepository.countByEmail(visitor.getEmail()),
+				String.format(EMAIL_ALREADY_TAKEN, visitor.getEmail()));
 		visitor.setSpendingMoney(250);
 		return visitorRepository.save(visitor);
 	}
