@@ -41,6 +41,8 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 	private Visitor visitor;
 	private Long visitorId;
 
+	private int num;
+
 	@Before
 	public void setUp() {
 		amusementPark = amusementParkRepository.save(ValidEntityFactory.createAmusementParkWithAddress());
@@ -88,12 +90,11 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 	}
 
 	private Visitor createVisitorSetAmusementParkAndMachine() {
-		Visitor visitor = createVisitor();
-		visitor.setAmusementPark(amusementPark);
-		visitor.setMachine(machine);
-		String email = visitor.getEmail() + Math.random();
-		visitor.setEmail(email.substring(0, email.length() > 25 ? 25 : email.length()));
-		return visitor;
+		Visitor v = createVisitor();
+		v.setAmusementPark(amusementPark);
+		v.setMachine(machine);
+		v.setEmail(v.getEmail().replace('4', Integer.toString(num++).charAt(0)));
+		return v;
 	}
 
 	private void saveAll() {
