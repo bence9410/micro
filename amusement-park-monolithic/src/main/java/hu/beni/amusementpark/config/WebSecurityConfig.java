@@ -31,6 +31,7 @@ import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.RememberMeAuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -51,6 +52,10 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -90,7 +95,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		return new UserDetailsServiceImpl(visitorRepository);
 	}
 
-	@Bean
 	public AuthenticationProvider authenticationProvider() {
 		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
 		authenticationProvider.setPasswordEncoder(passwordEncoder());
@@ -100,17 +104,26 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
+	public AbstractRememberMeServices rememberMeServices() {
+		AbstractRememberMeServices rememberMeServices = new PersistentTokenBasedRememberMeServices("beni",
+				userDetailsService(null), new InMemoryTokenRepositoryImpl());
+		rememberMeServices.setAlwaysRemember(true);
+		return rememberMeServices;
+	}
+
 	public UsernamePasswordAuthenticationFilter authenticationFilter() throws Exception {
 		ValidateingUsernamePasswordAuthenticationFilter authenticationFilter = new ValidateingUsernamePasswordAuthenticationFilter();
 		authenticationFilter.setAuthenticationSuccessHandler(authenticationSuccessHandler(null, null));
 		authenticationFilter.setAuthenticationFailureHandler(new BeniAuthenticationFailureHandler());
 		authenticationFilter.setAuthenticationManager(authenticationManagerBean());
+		authenticationFilter.setRememberMeServices(rememberMeServices());
 		return authenticationFilter;
 	}
 
 	@Override
 	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.authenticationProvider(authenticationProvider());
+		auth.authenticationProvider(authenticationProvider())
+				.authenticationProvider(new RememberMeAuthenticationProvider("beni"));
 	}
 
 	@Override
@@ -123,8 +136,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()
                 .and()
             .addFilterBefore(authenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(new RememberMeAuthenticationFilter(
+    				authenticationManagerBean(), rememberMeServices()), UsernamePasswordAuthenticationFilter.class)
             .logout()
-                .logoutSuccessUrl(SLASH)
+            	.addLogoutHandler(rememberMeServices())
+            	.logoutSuccessUrl(SLASH)
                 .and()
             .csrf()
             	.disable()
