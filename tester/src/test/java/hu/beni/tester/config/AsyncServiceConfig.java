@@ -1,6 +1,7 @@
 package hu.beni.tester.config;
 
 import static hu.beni.tester.constant.Constants.ADMIN;
+import static hu.beni.tester.constant.Constants.GMAIL;
 import static hu.beni.tester.constant.Constants.VISITOR;
 import static java.util.stream.Collectors.toList;
 
@@ -29,33 +30,33 @@ public class AsyncServiceConfig {
 
 	@Bean
 	public List<AsyncService> admins() {
-		return createAsyncServices(properties.getNumberOf().getAdmins(), this::createAdminUsername);
+		return createAsyncServices(properties.getNumberOf().getAdmins(), this::createAdminEmail);
 	}
 
 	@Bean
 	public List<AsyncService> visitors() {
-		return createAsyncServices(properties.getNumberOf().getVisitors(), this::createVisitorUsername);
+		return createAsyncServices(properties.getNumberOf().getVisitors(), this::createVisitorEmail);
 	}
 
-	private String createAdminUsername(int usernameIndex) {
-		return ADMIN + usernameIndex;
+	private String createAdminEmail(int emailIndex) {
+		return ADMIN + emailIndex + GMAIL;
 	}
 
-	private String createVisitorUsername(int usernameIndex) {
-		return VISITOR + usernameIndex;
+	private String createVisitorEmail(int emailIndex) {
+		return VISITOR + emailIndex + GMAIL;
 	}
 
-	private List<AsyncService> createAsyncServices(int numberOfInstance, IntFunction<String> usernameProducer) {
-		return createUsernameStream(numberOfInstance, usernameProducer).map(this::createAsyncService).collect(toList());
+	private List<AsyncService> createAsyncServices(int numberOfInstance, IntFunction<String> emailProducer) {
+		return createEmailStream(numberOfInstance, emailProducer).map(this::createAsyncService).collect(toList());
 
 	}
 
-	private Stream<String> createUsernameStream(int endExclusive, IntFunction<String> function) {
+	private Stream<String> createEmailStream(int endExclusive, IntFunction<String> function) {
 		return IntStream.range(0, endExclusive).mapToObj(function);
 	}
 
-	private AsyncService createAsyncService(String username) {
-		return ctx.getBean(AsyncService.class, ctx.getBean(Client.class), username, resourceFactory, properties);
+	private AsyncService createAsyncService(String email) {
+		return ctx.getBean(AsyncService.class, ctx.getBean(Client.class), email, resourceFactory, properties);
 	}
 
 }

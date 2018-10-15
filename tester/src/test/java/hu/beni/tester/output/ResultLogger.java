@@ -37,14 +37,13 @@ public class ResultLogger {
 	private final String[] header = { "", "fullRun", "createAmusementParksWithMachines",
 			"findAllParksPagedBeforeVisitorStuff", "wholeVisitorStuff", "tenParkVisitorStuff", "oneParkVisitorStuff",
 			"findAllParksPagedAfterVisitorStuff", "findAllVisitorsPaged", "wholeDeleteParks", "tenDeleteParks",
-			"wholeDeleteVisitors", "tenDeleteVisitors", "gitCommitId" };
+			"gitCommitId" };
 
 	private final String[] result;
 
 	public ResultLogger(TimeTo timeTo, ApplicationProperties properties) {
 		NumberOfProperties numberOf = properties.getNumberOf();
 		DeleteTime deleteParks = timeTo.getDeleteParks();
-		DeleteTime deleteVisitors = timeTo.getDeleteVisitors();
 		result = new String[] {
 				numberOf.getAdmins() + "a " + numberOf.getVisitors() + "v " + numberOf.getAmusementParksPerAdmin()
 						+ "p/a " + numberOf.getMachinesPerPark() + "m/p ",
@@ -52,9 +51,7 @@ public class ResultLogger {
 				minAvgMax(timeTo.getFindAllParksPagedBeforeVisitorStuff()), minAvgMax(timeTo.getWholeVisitorStuff()),
 				minAvgMax(timeTo.getTenParkVisitorStuff()), minAvgMax(timeTo.getOneParkVisitorStuff()),
 				minAvgMax(timeTo.getFindAllParksPagedAfterVisitorStuff()), minAvgMax(timeTo.getFindAllVisitorsPaged()),
-				Long.toString(deleteParks.getWholeTime()), minAvgMax(deleteParks.getTenDeleteTimes()),
-				Long.toString(deleteVisitors.getWholeTime()), minAvgMax(deleteVisitors.getTenDeleteTimes()),
-				GIT_COMMIT_ID };
+				Long.toString(deleteParks.getWholeTime()), minAvgMax(deleteParks.getTenDeleteTimes()), GIT_COMMIT_ID };
 	}
 
 	public void logToConsole() {

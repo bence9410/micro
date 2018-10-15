@@ -10,6 +10,7 @@ import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.MACHINE;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.ME;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.SIGN_UP;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.UPLOAD_MONEY;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_ENTER_PARK;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_LEAVE_PARK;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -49,6 +50,10 @@ public class LinkFactory {
 
 	public static Link createAmusementParkLink() {
 		return linkTo(methodOn(amusementParkControllerClass).findAllPaged(null)).withRel(AMUSEMENT_PARK);
+	}
+
+	public static Link createVisitorLink() {
+		return linkTo(methodOn(visitorControllerClass).findAllPaged(null)).withRel(VISITOR);
 	}
 
 	public static Link createAmusementParkSelfLink(Long amusementParkId) {

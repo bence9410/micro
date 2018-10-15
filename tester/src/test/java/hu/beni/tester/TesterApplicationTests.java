@@ -59,7 +59,7 @@ public class TesterApplicationTests {
 	@Test
 	public void test() {
 
-		login();
+		loginAndSignUp();
 
 		IntStream.range(0, properties.getNumberOf().getRuns()).forEach(i -> actualTestWithClearBeforeAndLogAfter());
 
@@ -67,7 +67,7 @@ public class TesterApplicationTests {
 	}
 
 	private void actualTestWithClearBeforeAndLogAfter() {
-		clearDB();
+		uploadMoney();
 
 		timeTo = new TimeTo();
 		long start = System.currentTimeMillis();
@@ -82,23 +82,22 @@ public class TesterApplicationTests {
 
 		sumVisitorsSpendingMoney();
 
-		deleteParksAndVisitors();
+		deleteParks();
 
 		timeTo.setFullRun(System.currentTimeMillis() - start);
 
 		log();
 	}
 
-	private void login() {
+	private void loginAndSignUp() {
 		log.info("login");
 		executeAdminsAsyncAndJoin(AsyncService::login);
-		executeVisitorsAsyncAndJoin(AsyncService::login);
+		executeVisitorsAsyncAndJoin(AsyncService::signUp);
 	}
 
-	private void clearDB() {
-		log.info("clearDB");
-		executeAdminAndJoin(AsyncService::deleteAllPark);
-		executeAdminAndJoin(AsyncService::deleteAllVisitor);
+	private void uploadMoney() {
+		log.info("uploadMoney");
+		executeVisitorsAsyncAndJoin(AsyncService::uploadMoney);
 	}
 
 	private void createAmusementParksWithMachines() {
@@ -140,10 +139,9 @@ public class TesterApplicationTests {
 				validator::checkSpendingMoneySunGetTime));
 	}
 
-	private void deleteParksAndVisitors() {
-		log.info("deleteParksAndVisitors");
+	private void deleteParks() {
+		log.info("deleteParks");
 		timeTo.setDeleteParks(executeAdminAndJoin(AsyncService::deleteAllPark));
-		timeTo.setDeleteVisitors(executeAdminAndJoin(AsyncService::deleteAllVisitor));
 	}
 
 	private void logout() {

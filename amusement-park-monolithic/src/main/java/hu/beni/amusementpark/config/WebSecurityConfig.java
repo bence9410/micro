@@ -1,6 +1,7 @@
 package hu.beni.amusementpark.config;
 
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.COULD_NOT_FIND_USER;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.ERROR;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.UNEXPECTED_ERROR_OCCURED;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.INDEX_JS;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.LINKS;
@@ -67,6 +68,7 @@ import hu.beni.amusementpark.mapper.VisitorMapper;
 import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.VisitorService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -170,11 +172,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	}
 
+	@Slf4j
 	static class BeniAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
 		@Override
 		public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 				AuthenticationException exception) throws IOException, ServletException {
+			log.error(ERROR, exception);
 			response.setStatus(HttpStatus.I_AM_A_TEAPOT.value());
 			if (UsernameNotFoundException.class.isInstance(exception)
 					|| BadCredentialsException.class.isInstance(exception)) {

@@ -9,6 +9,7 @@ public class HATEOASLinkRelConstants {
 	public static final String SIGN_UP = "signUp";
 	public static final String AMUSEMENT_PARK = "amusementPark";
 	public static final String MACHINE = "machine";
+	public static final String VISITOR = "visitor";
 	public static final String VISITOR_ENTER_PARK = "visitorEnterPark";
 	public static final String GET_ON_MACHINE = "getOnMachine";
 	public static final String VISITOR_LEAVE_PARK = "leavePark";

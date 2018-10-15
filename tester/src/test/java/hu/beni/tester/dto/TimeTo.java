@@ -27,6 +27,4 @@ public class TimeTo {
 
 	private DeleteTime deleteParks;
 
-	private DeleteTime deleteVisitors;
-
 }
