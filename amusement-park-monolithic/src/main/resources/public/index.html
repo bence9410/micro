@@ -57,6 +57,7 @@
 	<div id=loginDiv class="text-center" >
 		Email: <input id="loginEmail" type="text"> <br> 
 		Password: <input id="password" type="password"> <br>
+		Remeber me: <input id="rememberMeLogin" type="checkbox"> <br>
 		<input id="login" type="button" onclick="login()" value="Login">
 		<input id="goToSignUp" type="button" onclick="showSignUp()" value="Sign Up"> <br>
 		<p id="loginError"></p>
@@ -68,6 +69,7 @@
 		Date of birth: <input id="dateOfBirth" type="text"> <br> 
 		Photo (size: 2:3):<input id="file" type="file" onchange="drawImage()" > <br>
 		<img id="img" width="100" height="150" > <br>
+		Remeber me: <input id="rememberMeSignUp" type="checkbox"> <br>
 		<input type="button" onclick="backToLogin()" value="Back">
 		<input id="signUp" type="button" onclick="signUp()" value="Sign up"> 
 		<input type="button" onclick="fillWithSampleData()" value="Fill with sample data">
@@ -78,7 +80,7 @@
 			$.ajax({
 				url : links.login,
 				method : "POST",
-				data : "email="+$("#loginEmail").val() + "&password=" + $("#password").val(),
+				data : "email="+$("#loginEmail").val() + "&password=" + $("#password").val() + ($("#rememberMeLogin").is(":checked") ? "&remember-me=true" : ""),
 				success : function (data) {
 					$("#content").hide()
 					setEmailAndAuthorityAndSpendingMoney(data)
@@ -110,7 +112,7 @@
 		function signUp() {
 			$("#signUp").prop("disabled", true)
 			$.ajax({
-				url : links.signUp,
+				url : links.signUp + ($("#rememberMeSignUp").is(":checked") ? "?remember-me=true" : ""),
 				method : "POST",
 				contentType : "application/json",
 				data : JSON.stringify(collectSignUpData()),

@@ -68,7 +68,7 @@ public class LinkFactory {
 	}
 
 	public static Link createVisitorSignUpLink() {
-		return linkTo(methodOn(visitorControllerClass).signUp(null)).withRel(SIGN_UP);
+		return linkTo(visitorControllerClass).slash(SIGN_UP).withRel(SIGN_UP);
 	}
 
 	public static Link createVisitorEnterParkLink(Long amusementParkId, Long visitorId) {
