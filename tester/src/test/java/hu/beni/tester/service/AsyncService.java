@@ -12,14 +12,17 @@ import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_ON_MAC
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.LOGIN;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.LOGOUT;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.MACHINE;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.SIGN_UP;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.UPLOAD_MONEY;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_ENTER_PARK;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_LEAVE_PARK;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_SIGN_UP;
+import static hu.beni.tester.constant.Constants.DATE_OF_BIRTH;
+import static hu.beni.tester.constant.Constants.EMAIL;
 import static hu.beni.tester.constant.Constants.GUEST_BOOK_REGISTRY_TEXT;
 import static hu.beni.tester.constant.Constants.LINKS_URL;
 import static hu.beni.tester.constant.Constants.PASS;
 import static hu.beni.tester.constant.Constants.PASSWORD;
-import static hu.beni.tester.constant.Constants.USERNAME;
 import static java.util.stream.Collectors.toMap;
 import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
 
@@ -63,16 +66,17 @@ public class AsyncService {
 	};
 
 	private final Client client;
-	private final String username;
+	private final String email;
 	private final ResourceFactory resourceFactory;
 	private final ApplicationProperties properties;
 	private final Map<String, String> links;
+	private Long visitorId;
 
 	public AsyncService(Client client, String username, ResourceFactory resourceFactory,
 			ApplicationProperties properties) {
 		super();
 		this.client = client;
-		this.username = username;
+		this.email = username;
 		this.resourceFactory = resourceFactory;
 		this.properties = properties;
 		links = getBaseLinks();
@@ -84,15 +88,28 @@ public class AsyncService {
 	}
 
 	public CompletableFuture<Void> login() {
-		client.post(uri(links.get(LOGIN)), createMapWithUsernameAndPass());
+		client.post(uri(links.get(LOGIN)), createMapWithEmailAndPass());
 		return CompletableFuture.completedFuture(null);
 	}
 
-	private MultiValueMap<String, String> createMapWithUsernameAndPass() {
+	private MultiValueMap<String, String> createMapWithEmailAndPass() {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-		map.add(USERNAME, username);
+		map.add(EMAIL, email);
 		map.add(PASSWORD, PASS);
 		return map;
+	}
+
+	public CompletableFuture<Void> signUp() {
+		visitorId = client
+				.post(uri(links.get(SIGN_UP)), VisitorResource.builder().email(email).password(PASS)
+						.confirmPassword(PASS).dateOfBirth(DATE_OF_BIRTH).build(), VISITOR_TYPE)
+				.getBody().getIdentifier();
+		return CompletableFuture.completedFuture(null);
+	}
+
+	public CompletableFuture<Void> uploadMoney() {
+		client.post(uri(links.get(UPLOAD_MONEY)), properties.getData().getVisitor().getSpendingMoney());
+		return CompletableFuture.completedFuture(null);
 	}
 
 	public CompletableFuture<?> logout() {
@@ -180,19 +197,17 @@ public class AsyncService {
 
 	private void visitAllStuffInEveryPark(List<Long> oneParkTimes, List<Long> tenParkTimes) {
 		Optional<String> nextPageUrl = Optional.of(links.get(AMUSEMENT_PARK));
-		VisitorResource visitorResource = client
-				.post(uri(links.get(VISITOR_SIGN_UP)), resourceFactory.createVisitor(), VISITOR_TYPE).getBody();
 		do {
 			long tenParkStart = now();
 			PagedResources<AmusementParkResource> page = client
 					.get(uri(nextPageUrl.get()), ResponseType.getPagedType(AmusementParkResource.class)).getBody();
 			nextPageUrl = Optional.ofNullable(page.getNextLink()).map(Link::getHref);
-			visitEverythingInParks(page.getContent(), visitorResource.getIdentifier(), oneParkTimes);
+			visitEverythingInParks(page.getContent(), oneParkTimes);
 			tenParkTimes.add(millisFrom(tenParkStart));
 		} while (nextPageUrl.isPresent());
 	}
 
-	private void visitEverythingInParks(Collection<AmusementParkResource> amusementParkResources, Long visitorId,
+	private void visitEverythingInParks(Collection<AmusementParkResource> amusementParkResources,
 			List<Long> oneParkTimes) {
 		amusementParkResources.stream().map(this::mapToEnterParkUrl)
 				.forEach(enterParkUrl -> visitEverythingInAPark(uri(enterParkUrl, visitorId), oneParkTimes));
@@ -229,14 +244,14 @@ public class AsyncService {
 
 	public CompletableFuture<SumAndTime> sumVisitorsSpendingMoney() {
 		long start = now();
-		long sum = sum(links.get(VISITOR_SIGN_UP), VisitorResource.class, VisitorResource::getSpendingMoney);
+		long sum = sum(links.get(VISITOR), VisitorResource.class, VisitorResource::getSpendingMoney);
 		return CompletableFuture.completedFuture(new SumAndTime(sum, millisFrom(start)));
 	}
 
 	public CompletableFuture<DeleteTime> deleteAllVisitor() {
 		List<Long> tenVisitorTimes = new LinkedList<>();
 		long start = now();
-		deleteAllOnUrl(links.get(VISITOR_SIGN_UP), tenVisitorTimes);
+		deleteAllOnUrl(links.get(VISITOR), tenVisitorTimes);
 		return CompletableFuture.completedFuture(new DeleteTime(millisFrom(start), tenVisitorTimes));
 	}
 

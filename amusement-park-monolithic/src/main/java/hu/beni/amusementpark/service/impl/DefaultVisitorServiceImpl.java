@@ -1,5 +1,7 @@
 package hu.beni.amusementpark.service.impl;
 
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.COULD_NOT_FIND_USER;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.EMAIL_ALREADY_TAKEN;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NOT_ENOUGH_MONEY;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_FREE_SEAT_ON_MACHINE;
@@ -14,6 +16,7 @@ import static hu.beni.amusementpark.constants.SpringProfileConstants.RABBIT_MQ;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifEquals;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifFirstLessThanSecond;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifNotNull;
+import static hu.beni.amusementpark.exception.ExceptionUtil.ifNotZero;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifNull;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifPrimitivesEquals;
 
@@ -51,13 +54,20 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 	private final AmusementParkKnowVisitorRepository amusementParkKnowVisitorRepository;
 
 	@Override
-	public Integer findSpendingMoneyByUsername() {
-		return visitorRepository.findSpendingMoneyByUsername();
+	public Visitor findByEmail(String email) {
+		return ifNull(visitorRepository.findByEmail(email), String.format(COULD_NOT_FIND_USER, email));
 	}
 
 	@Override
 	public Visitor signUp(Visitor visitor) {
+		ifNotZero(visitorRepository.countByEmail(visitor.getEmail()),
+				String.format(EMAIL_ALREADY_TAKEN, visitor.getEmail()));
+		visitor.setSpendingMoney(250);
 		return visitorRepository.save(visitor);
+	}
+
+	public void uploadMoney(Integer ammount) {
+		visitorRepository.incrementSpendingMoneyForLoggedInVisitor(ammount);
 	}
 
 	@Override

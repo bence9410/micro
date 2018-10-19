@@ -1,8 +1,8 @@
 var links
 var pages
 var jses
-var username
-var authorities
+var email
+var isAdmin
 
 function init() {
 	$.ajax({
@@ -26,63 +26,44 @@ function init() {
 
 function getUserData(){
 	$.ajax({
-        url: links.user,
+        url: links.me,
         success: function (data) {
-        	setUsernameAndAuthirities(data)
-        	setSpendingMoneyOrShowSingUpDiv(data.spendingMoney)
+        	setEmailAndAuthorityAndSpendingMoney(data)
+			getAmusementParkPage()
+			$("#photo").attr("src", data.photo)
+        },
+        error: function (data) {
+        	$("#content").show()
         }
     })
 }
 
-function setUsernameAndAuthirities(data){
-	 username = data.name
-     $("#username").html(username)
+function setEmailAndAuthorityAndSpendingMoney(data){
+	 email = data.email
+	 $("#email").html(email)
 
-     var auth = []
-     $.each(data.authorities, function (i, e) {
-         auth.push(e.authority)
-     })
-     authorities = auth.join(",")
-     $("#authorities").html(authorities)
+	 isAdmin = data.authority === "ROLE_ADMIN"
+     
+     $("#spendingMoney").html(data.spendingMoney)
+     $("#header").show()
 }
 
-function setSpendingMoneyOrShowSingUpDiv(spendingMoney){
-	if (spendingMoney === undefined) {
-		$("#signUp").show()
-	} else {
-		$("#spendingMoney").html(spendingMoney)
-		$("#spendingMoneyDiv").show()
-		getAmusementParkPage()
-	}
-}
-
-function signUp() {
+function uploadMoney(){
+	var money = $("#money").val()
 	$.ajax({
-		url : links.visitorSignUp,
+		url : links.uploadMoney,
 		method : "POST",
 		contentType : "application/json",
-		data : JSON.stringify(collectData()),
-		success : function(data) {
-			$("#signUp").hide()
-			$("#spendingMoney").html(data.spendingMoney)
-			$("#spendingMoneyDiv").show()
-			getAmusementParkPage()
+		data : money,
+		success : function(){
+			$("#moneyUploadResult").html("success")
+			var spendingMoney = $("#spendingMoney")
+			spendingMoney.html(parseInt(spendingMoney.html()) + parseInt(money))
+		},
+		error : function(){
+			$("#moneyUploadResult").html("error")
 		}
 	})
-}
-
-function collectData() {
-	var visitor = {}
-	visitor.name = $("#name").val()
-	visitor.dateOfBirth = $("#dateOfBirth").val()
-	visitor.spendingMoney = $("#signUpSpendingMoney").val()
-	return visitor
-}
-
-function fillWithSampleData() {
-	$("#name").val("Németh Bence")
-	$("#dateOfBirth").val("1994-10-22")
-	$("#signUpSpendingMoney").val("1000")
 }
 
 function getAmusementParkPage() {
@@ -90,6 +71,7 @@ function getAmusementParkPage() {
 		url : pages.amusementPark,
 		success : function(data) {
 			$("#content").html("<script src=\"" + jses.amusementPark + "\"></script>" + data)
+			$("#content").show()
 		}
 	})
 }

@@ -1,11 +1,15 @@
 package hu.beni.amusementpark.test.validation;
 
+import static hu.beni.amusementpark.constants.FieldNameConstants.AUTHORITY;
 import static hu.beni.amusementpark.constants.FieldNameConstants.DATE_OF_BIRTH;
-import static hu.beni.amusementpark.constants.FieldNameConstants.NAME;
+import static hu.beni.amusementpark.constants.FieldNameConstants.EMAIL;
+import static hu.beni.amusementpark.constants.FieldNameConstants.PASSWO;
 import static hu.beni.amusementpark.constants.FieldNameConstants.SPENDING_MONEY;
-import static hu.beni.amusementpark.constants.FieldNameConstants.USERNAME;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_26_LENGTH;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4_LENGTH;
+import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_59_LENGTH;
+import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_61_LENGTH;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.EMAIL_MESSAGE;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.PAST_MESSAGE;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.rangeMessage;
@@ -34,33 +38,44 @@ public class VisitorValidationTests extends AbstractValidation<Visitor> {
 	}
 
 	@Test
-	public void invalidName() {
-		visitor.setName(null);
+	public void invalidEmail() {
+		visitor.setEmail(null);
 		validateAndAssertViolationsSizeIsOne(visitor);
-		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getName(), NAME, NOT_NULL_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getEmail(), EMAIL, NOT_NULL_MESSAGE);
 
-		visitor.setName(STRING_WITH_4_LENGTH);
+		visitor.setEmail(STRING_WITH_4_LENGTH);
 		validateAndAssertViolationsSizeIsOne(visitor);
-		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getName(), NAME, sizeMessage(5, 25));
-
-		visitor.setName(STRING_WITH_26_LENGTH);
-		validateAndAssertViolationsSizeIsOne(visitor);
-		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getName(), NAME, sizeMessage(5, 25));
+		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getEmail(), EMAIL, EMAIL_MESSAGE);
 	}
 
 	@Test
-	public void invalidUsername() {
-		visitor.setUsername(null);
+	public void invalidPassword() {
+		visitor.setPassword(null);
 		validateAndAssertViolationsSizeIsOne(visitor);
-		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getUsername(), USERNAME, NOT_NULL_MESSAGE);
+		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getPassword(), PASSWO, NOT_NULL_MESSAGE);
 
-		visitor.setUsername(STRING_WITH_4_LENGTH);
+		visitor.setPassword(STRING_WITH_59_LENGTH);
 		validateAndAssertViolationsSizeIsOne(visitor);
-		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getUsername(), USERNAME, sizeMessage(5, 25));
+		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getPassword(), PASSWO, sizeMessage(60, 60));
 
-		visitor.setUsername(STRING_WITH_26_LENGTH);
+		visitor.setPassword(STRING_WITH_61_LENGTH);
 		validateAndAssertViolationsSizeIsOne(visitor);
-		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getUsername(), USERNAME, sizeMessage(5, 25));
+		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getPassword(), PASSWO, sizeMessage(60, 60));
+	}
+
+	@Test
+	public void invalidAuthority() {
+		visitor.setAuthority(null);
+		validateAndAssertViolationsSizeIsOne(visitor);
+		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getAuthority(), AUTHORITY, NOT_NULL_MESSAGE);
+
+		visitor.setAuthority(STRING_WITH_4_LENGTH);
+		validateAndAssertViolationsSizeIsOne(visitor);
+		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getAuthority(), AUTHORITY, sizeMessage(5, 25));
+
+		visitor.setAuthority(STRING_WITH_26_LENGTH);
+		validateAndAssertViolationsSizeIsOne(visitor);
+		assertInvalidValueAndPropertyNameAndMessageEquals(visitor.getAuthority(), AUTHORITY, sizeMessage(5, 25));
 	}
 
 	@Test

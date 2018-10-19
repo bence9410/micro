@@ -28,7 +28,7 @@ import hu.beni.amusementpark.repository.VisitorRepository;
 @ActiveProfiles(ORACLE_DB)
 public class OracleRowNumberPartitionTests {
 
-	private static final String SELECT_ALL_VISITOR_NAME_AND_LAST_GUEST_BOOK_REGISTRY = "select visitor.name, "
+	private static final String SELECT_ALL_VISITOR_EMAIL_AND_LAST_GUEST_BOOK_REGISTRY = "select visitor.email, "
 			+ "guestBookRegistry.text_of_registry from Visitor visitor join (select * from (select row_number() "
 			+ "over (partition by visitor_id order by date_of_registry desc) rn, gbr.* from guest_book_registry "
 			+ "gbr) where rn = 1) guestBookRegistry on visitor.id = guestBookRegistry.visitor_id";
@@ -57,12 +57,12 @@ public class OracleRowNumberPartitionTests {
 
 		Object[] row = result.get(0);
 
-		assertEquals(g1.getVisitor().getName(), row[0]);
+		assertEquals(g1.getVisitor().getEmail(), row[0]);
 		assertEquals(g1.getTextOfRegistry(), row[1]);
 
 		row = result.get(1);
 
-		assertEquals(g2.getVisitor().getName(), row[0]);
+		assertEquals(g2.getVisitor().getEmail(), row[0]);
 		assertEquals(g2.getTextOfRegistry(), row[1]);
 	}
 
@@ -71,7 +71,7 @@ public class OracleRowNumberPartitionTests {
 		Visitor v1 = ValidEntityFactory.createVisitor();
 		Visitor v2 = ValidEntityFactory.createVisitor();
 		v1.setAmusementPark(amusementPark);
-		v1.setName("jenike");
+		v1.setEmail("jenike@gmail.com");
 		v2.setAmusementPark(amusementPark);
 
 		v1 = visitorRepository.save(v1);
@@ -92,7 +92,7 @@ public class OracleRowNumberPartitionTests {
 
 	@SuppressWarnings("unchecked")
 	private List<Object[]> executeQuery() {
-		return entityManager.createNativeQuery(SELECT_ALL_VISITOR_NAME_AND_LAST_GUEST_BOOK_REGISTRY).getResultList();
+		return entityManager.createNativeQuery(SELECT_ALL_VISITOR_EMAIL_AND_LAST_GUEST_BOOK_REGISTRY).getResultList();
 	}
 
 }

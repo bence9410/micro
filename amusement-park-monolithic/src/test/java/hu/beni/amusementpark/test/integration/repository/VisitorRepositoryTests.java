@@ -12,7 +12,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
@@ -39,6 +41,8 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 	private Visitor visitor;
 	private Long visitorId;
 
+	private int num;
+
 	@Before
 	public void setUp() {
 		amusementPark = amusementParkRepository.save(ValidEntityFactory.createAmusementParkWithAddress());
@@ -54,7 +58,7 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 
 		saveAll();
 
-		findSpendingMoneyByUserName();
+		findByEmail();
 
 		countByMachineId();
 
@@ -86,12 +90,11 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 	}
 
 	private Visitor createVisitorSetAmusementParkAndMachine() {
-		Visitor visitor = createVisitor();
-		visitor.setAmusementPark(amusementPark);
-		visitor.setMachine(machine);
-		String username = visitor.getUsername() + Math.random();
-		visitor.setUsername(username.substring(0, username.length() > 25 ? 25 : username.length()));
-		return visitor;
+		Visitor v = createVisitor();
+		v.setAmusementPark(amusementPark);
+		v.setMachine(machine);
+		v.setEmail(v.getEmail().replace('4', Integer.toString(num++).charAt(0)));
+		return v;
 	}
 
 	private void saveAll() {
@@ -102,10 +105,9 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 		assertStatements();
 	}
 
-	private void findSpendingMoneyByUserName() {
-		SecurityContextHolder.getContext()
-				.setAuthentication(new UsernamePasswordAuthenticationToken(visitor, "visitor"));
-		assertEquals(visitor.getSpendingMoney(), visitorRepository.findSpendingMoneyByUsername());
+	private void findByEmail() {
+		assertEquals(visitor.getSpendingMoney(),
+				visitorRepository.findByEmail(visitor.getEmail()).get().getSpendingMoney());
 		select++;
 		assertStatements();
 	}
@@ -123,6 +125,9 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 	}
 
 	private void findByMachineIdAndVisitorId() {
+		SecurityContextHolder.getContext().setAuthentication(
+				new UsernamePasswordAuthenticationToken(new User(visitor.getEmail(), visitor.getPassword(),
+						Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority()))), null));
 		assertEquals(visitor, visitorRepository.findByMachineIdAndVisitorId(machine.getId(), visitorId).get());
 		select++;
 		assertStatements();
@@ -157,7 +162,7 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 	private void deleteAll() {
 		visitorRepository.deleteAll();
 		select++;
-		delete += 2;
+		delete += 7;
 		assertStatements();
 	}
 

@@ -15,6 +15,7 @@ import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.Link;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import hu.beni.amusementpark.controller.VisitorController;
@@ -26,19 +27,23 @@ import hu.beni.clientsupport.resource.VisitorResource;
 @ConditionalOnWebApplication
 public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 
-	public VisitorMapper(PagedResourcesAssembler<Visitor> pagedResourcesAssembler) {
+	private final PasswordEncoder passwordEncoder;
+
+	public VisitorMapper(PagedResourcesAssembler<Visitor> pagedResourcesAssembler, PasswordEncoder passwordEncoder) {
 		super(VisitorController.class, VisitorResource.class, pagedResourcesAssembler);
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	@Override
 	public VisitorResource toResource(Visitor entity) {
 		return VisitorResource.builder() //@formatter:off
 				.identifier(entity.getId())
-				.name(entity.getName())
-				.username(entity.getUsername())
+				.email(entity.getEmail())
+				.authority(entity.getAuthority())
 				.dateOfBirth(entity.getDateOfBirth())
 				.spendingMoney(entity.getSpendingMoney())
 				.state(visitorStateToString(entity.getState()))
+				.photo(entity.getPhoto())
 				.links(createLinks(entity)).build(); //@formatter:on
 	}
 
@@ -46,11 +51,12 @@ public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 	public Visitor toEntity(VisitorResource resource) {
 		return Visitor.builder() //@formatter:off
 				.id(resource.getIdentifier())
-				.name(resource.getName())
-				.username(resource.getUsername())
+				.email(resource.getEmail())
+				.password(passwordEncoder.encode(resource.getPassword()))
 				.dateOfBirth(resource.getDateOfBirth())
 				.spendingMoney(resource.getSpendingMoney())
-				.state(stringToVisitorState(resource.getState())).build(); //@formatter:on
+				.state(stringToVisitorState(resource.getState()))
+				.photo(resource.getPhoto()).build(); //@formatter:on
 	}
 
 	private String visitorStateToString(VisitorState state) {

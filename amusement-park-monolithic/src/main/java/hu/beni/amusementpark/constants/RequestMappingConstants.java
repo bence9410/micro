@@ -2,8 +2,13 @@ package hu.beni.amusementpark.constants;
 
 public class RequestMappingConstants {
 
+	public static final String SLASH = "/";
+	public static final String WEBJARS = "/webjars/**";
+	public static final String INDEX_JS = "/index.js";
 	public static final String LINKS = "/links";
-	public static final String USER = "/user";
+	public static final String ME = "/me";
+	public static final String SIGN_UP = "/signUp";
+	public static final String UPLOAD_MONEY = "/uploadMoney";
 
 	public static final String AMUSEMENT_PARKS = "/amusement-parks";
 	public static final String AN_AMUSEMENT_PARK = "/{amusementParkId}";

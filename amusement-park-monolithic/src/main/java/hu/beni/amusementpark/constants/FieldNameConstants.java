@@ -34,7 +34,9 @@ public class FieldNameConstants {
 	public static final String AMUSEMENT_PARK = "amusementPark";
 	public static final String VISITOR = "visitor";
 
-	public static final String USERNAME = "username";
+	public static final String EMAIL = "email";
+	public static final String PASSWO = "password";
+	public static final String AUTHORITY = "authority";
 	public static final String DATE_OF_BIRTH = "dateOfBirth";
 	public static final String SPENDING_MONEY = "spendingMoney";
 	public static final String STATE = "state";

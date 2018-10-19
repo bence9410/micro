@@ -77,7 +77,9 @@ public class JPASpecificationTests {
 			return amusementPark;
 		}).map(amusementParkRepository::save).collect(Collectors.toList());
 
-		Visitor v1 = visitorRepository.save(createVisitor());
+		Visitor v1 = createVisitor();
+		v1.setEmail("jenike@gmail.com");
+		visitorRepository.save(v1);
 		Visitor v2 = visitorRepository.save(createVisitor());
 
 		amusementParksWithMachineForChildren = new ArrayList<>();

@@ -2,6 +2,8 @@ package hu.beni.amusementpark.helper;
 
 import java.time.LocalDate;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
@@ -9,6 +11,8 @@ import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.enums.MachineType;
 
 public class ValidEntityFactory {
+
+	private static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
 	public static Address createAddress() {
 		return Address.builder() //@formatter:off
@@ -40,8 +44,9 @@ public class ValidEntityFactory {
 
 	public static Visitor createVisitor() {
 		return Visitor.builder() //@formatter:off
-    			.name("Németh Bence")
-    			.username("benike")
+    			.email("nembence1994@gmail.com")
+    			.password(PASSWORD_ENCODER.encode("password"))
+    			.authority("ROLE_ADMIN")
         		.dateOfBirth(LocalDate.of(1994, 10, 22))
         		.spendingMoney(1000).build(); //@formatter:on
 	}

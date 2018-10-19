@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-	if (authorities.indexOf("ADMIN") != -1) {
+	if (isAdmin) {
 		$("#saveDiv").show()
 		$("thead").children("tr").append("<th></th>")
 	}
@@ -103,7 +103,7 @@ function convertAmusementParkToTableRow(amusementPark) {
 	tr.push("<td>" + address.country + " " + address.zipCode)
 	tr.push(" " + address.city + " " + address.street)
 	tr.push(" " + address.houseNumber + "</td>")
-	if (authorities.indexOf("ADMIN") != -1) {
+	if (isAdmin) {
 		tr.push("<td><input type=\"button\" onclick=\"deletePark('"
 				+ amusementPark._links.self.href + "')\" value=\"Delete\"></td>")
 	}

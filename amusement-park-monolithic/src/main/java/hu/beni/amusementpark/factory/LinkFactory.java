@@ -7,10 +7,12 @@ import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_ON_MAC
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.LOGIN;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.LOGOUT;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.MACHINE;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.USER;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.ME;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.SIGN_UP;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.UPLOAD_MONEY;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_ENTER_PARK;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_LEAVE_PARK;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_SIGN_UP;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
@@ -20,13 +22,11 @@ import hu.beni.amusementpark.controller.AmusementParkController;
 import hu.beni.amusementpark.controller.BaseLinksController;
 import hu.beni.amusementpark.controller.GuestBookRegistryController;
 import hu.beni.amusementpark.controller.MachineController;
-import hu.beni.amusementpark.controller.UserController;
 import hu.beni.amusementpark.controller.VisitorController;
 
 public class LinkFactory {
 
 	private static final Class<BaseLinksController> baseLinksControllerClass = BaseLinksController.class;
-	private static final Class<UserController> userControllerClass = UserController.class;
 	private static final Class<AmusementParkController> amusementParkControllerClass = AmusementParkController.class;
 	private static final Class<MachineController> machineControllerClass = MachineController.class;
 	private static final Class<VisitorController> visitorControllerClass = VisitorController.class;
@@ -41,11 +41,19 @@ public class LinkFactory {
 	}
 
 	public static Link createUserLink() {
-		return linkTo(methodOn(userControllerClass).getUser(null)).withRel(USER);
+		return linkTo(methodOn(visitorControllerClass).getUser(null)).withRel(ME);
+	}
+
+	public static Link createUploadMoneyLink() {
+		return linkTo(methodOn(visitorControllerClass).uploadMoney(null)).withRel(UPLOAD_MONEY);
 	}
 
 	public static Link createAmusementParkLink() {
 		return linkTo(methodOn(amusementParkControllerClass).findAllPaged(null)).withRel(AMUSEMENT_PARK);
+	}
+
+	public static Link createVisitorLink() {
+		return linkTo(methodOn(visitorControllerClass).findAllPaged(null)).withRel(VISITOR);
 	}
 
 	public static Link createAmusementParkSelfLink(Long amusementParkId) {
@@ -65,7 +73,7 @@ public class LinkFactory {
 	}
 
 	public static Link createVisitorSignUpLink() {
-		return linkTo(methodOn(visitorControllerClass).signUp(null)).withRel(VISITOR_SIGN_UP);
+		return linkTo(visitorControllerClass).slash(SIGN_UP).withRel(SIGN_UP);
 	}
 
 	public static Link createVisitorEnterParkLink(Long amusementParkId, Long visitorId) {

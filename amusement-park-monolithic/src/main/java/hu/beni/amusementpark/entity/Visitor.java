@@ -13,8 +13,10 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
@@ -33,7 +35,7 @@ import lombok.experimental.Tolerate;
 @Getter
 @Setter
 @Builder
-@EqualsAndHashCode(of = { "id", "name", "dateOfBirth", "dateOfSignUp", "spendingMoney", "state" })
+@EqualsAndHashCode(of = { "id", "email", "dateOfBirth", "dateOfSignUp", "spendingMoney", "state" })
 public class Visitor implements Serializable {
 
 	private static final long serialVersionUID = -2955989272392888202L;
@@ -42,13 +44,18 @@ public class Visitor implements Serializable {
 	@GeneratedValue
 	private Long id;
 
+	@Column(unique = true)
 	@NotNull
-	@Size(min = 5, max = 25)
-	private String name;
+	@Email(regexp = ".+@.+\\..+")
+	private String email;
+
+	@NotNull
+	@Size(min = 60, max = 60)
+	private String password;
 
 	@NotNull
 	@Size(min = 5, max = 25)
-	private String username;
+	private String authority;
 
 	@NotNull
 	@Past
@@ -65,6 +72,9 @@ public class Visitor implements Serializable {
 	@Column(name = "Visitor_State")
 	private VisitorState state;
 
+	@Lob
+	private String photo;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	private AmusementPark amusementPark;
 
@@ -80,11 +90,6 @@ public class Visitor implements Serializable {
 	@Tolerate
 	protected Visitor() {
 		super();
-	}
-
-	@Tolerate
-	public Visitor(Long id) {
-		this.id = id;
 	}
 
 }

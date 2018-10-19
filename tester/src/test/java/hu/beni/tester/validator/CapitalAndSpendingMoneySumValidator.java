@@ -60,24 +60,27 @@ public class CapitalAndSpendingMoneySumValidator {
 	}
 
 	public Long checkCapitalSumBeforeVisitorsGetTime(SumAndTime sumAndTime) {
-		return checkSumAndReturnTime(sumAndTime, expectedCapitalBeforeVisitorsSum,
-				"Problem with capital sum before visitors!");
+		checkSum(sumAndTime.getSum(), expectedCapitalBeforeVisitorsSum, "Problem with capital sum before visitors!");
+		return sumAndTime.getTime();
 	}
 
 	public Long checkCapitalSumAfterVisitorsGetTime(SumAndTime sumAndTime) {
-		return checkSumAndReturnTime(sumAndTime, expectedCapitalAfterVisitorsSum,
-				"Problem with capital sum after visitors!");
+		checkSum(sumAndTime.getSum(), expectedCapitalAfterVisitorsSum, "Problem with capital sum after visitors!");
+		return sumAndTime.getTime();
 	}
 
 	public Long checkSpendingMoneySunGetTime(SumAndTime sumAndTime) {
-		return checkSumAndReturnTime(sumAndTime, expectedSpendingMoneySum, "Problem with spending money sum!");
+		NumberOfProperties numberOfProperties = properties.getNumberOf();
+		int numberOfVisitors = numberOfProperties.getVisitors();
+		long initial = 250 * (numberOfProperties.getAdmins() + numberOfVisitors);
+		long sum = sumAndTime.getSum() - initial;
+		checkSum(sum, expectedSpendingMoneySum, "Problem with spending money sum!");
+		return sumAndTime.getTime();
 	}
 
-	private Long checkSumAndReturnTime(SumAndTime sumAndTime, long expectedSum, String errorMessage) {
-		long sum = sumAndTime.getSum();
+	private void checkSum(long sum, long expectedSum, String errorMessage) {
 		if (sum != expectedSum) {
 			throw new RuntimeException(errorMessage + " Expected: " + expectedSum + ". Actual: " + sum + ".");
 		}
-		return sumAndTime.getTime();
 	}
 }

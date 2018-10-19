@@ -1,7 +1,6 @@
 package hu.beni.amusementpark.test.integration;
 
-import static hu.beni.amusementpark.constants.AuthenticationConstants.ADMIN_LOWER_CASE;
-import static hu.beni.amusementpark.constants.AuthenticationConstants.PASS;
+import static hu.beni.amusementpark.constants.Constants.ROLE_VISITOR;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.MACHINE_IS_TOO_EXPENSIVE;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_ARCHIVE_SEND_TYPE;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.validationError;
@@ -21,21 +20,24 @@ import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.ADD_REGIST
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.AMUSEMENT_PARK;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_OFF_MACHINE;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_ON_MACHINE;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.LOGIN;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.LOGOUT;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.MACHINE;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.ME;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.SIGN_UP;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.UPLOAD_MONEY;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_ENTER_PARK;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_LEAVE_PARK;
-import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_SIGN_UP;
 import static hu.beni.clientsupport.factory.ValidResourceFactory.createAmusementParkWithAddress;
 import static hu.beni.clientsupport.factory.ValidResourceFactory.createMachine;
-import static hu.beni.clientsupport.factory.ValidResourceFactory.createVisitor;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.net.URI;
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -52,7 +54,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.mvc.TypeReferences.PagedResourcesType;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -97,8 +98,43 @@ public class AmusementParkApplicationTests {
 	}
 
 	@Test
+	public void signUpAndUploadMoneyTest() {
+		logout();
+
+		VisitorResource inputVisitorResource = VisitorResource.builder() //@formatter:off
+				.email("benike@gmail.com")
+				.password("password")
+				.confirmPassword("password")
+				.dateOfBirth(LocalDate.of(1994, 10, 22)).build(); //@formatter:on
+
+		assertVisitorResource(inputVisitorResource.getEmail(), inputVisitorResource.getDateOfBirth(), 250,
+				client.post(uri(links.get(SIGN_UP)), inputVisitorResource, VISITOR_TYPE).getBody());
+
+		client.post(uri(links.get(UPLOAD_MONEY)), 500);
+
+		assertVisitorResource(inputVisitorResource.getEmail(), inputVisitorResource.getDateOfBirth(), 750,
+				client.get(uri(links.get(ME)), VISITOR_TYPE).getBody());
+
+	}
+
+	private void assertVisitorResource(String email, LocalDate dateOfBirth, Integer spendingMoney,
+			VisitorResource actualVisitorResource) {
+		assertEquals(email, actualVisitorResource.getEmail());
+		assertEquals(dateOfBirth, actualVisitorResource.getDateOfBirth());
+		assertEquals(spendingMoney.intValue(), actualVisitorResource.getSpendingMoney().intValue());
+		assertEquals(ROLE_VISITOR, actualVisitorResource.getAuthority());
+		assertNull(actualVisitorResource.getPassword());
+		assertNull(actualVisitorResource.getConfirmPassword());
+		assertNotNull(actualVisitorResource.getIdentifier());
+		assertEquals(3, actualVisitorResource.getLinks().size());
+		assertNotNull(actualVisitorResource.getId().getHref());
+		assertNotNull(actualVisitorResource.getLink(VISITOR_ENTER_PARK).getHref());
+		assertNotNull(actualVisitorResource.getLink(AMUSEMENT_PARK).getHref());
+	}
+
+	@Test
 	public void pageTest() {
-		login(ADMIN_LOWER_CASE, PASS);
+		loginAsAdmin("admin0@gmail.com", "password");
 
 		PagedResourcesType<AmusementParkResource> responseType = getPagedType(AmusementParkResource.class);
 
@@ -128,13 +164,11 @@ public class AmusementParkApplicationTests {
 
 	@Test
 	public void positiveTest() {
-		login(ADMIN_LOWER_CASE, PASS);
+		VisitorResource visitorResource = loginAsAdmin("admin0@gmail.com", "password");
 
 		AmusementParkResource amusementParkResource = createAmusementPark();
 
 		MachineResource machineResource = addMachine(amusementParkResource.getLink(MACHINE).getHref());
-
-		VisitorResource visitorResource = signUp(amusementParkResource.getLink(VISITOR_SIGN_UP).getHref());
 
 		visitorResource = enterPark(visitorResource.getLink(VISITOR_ENTER_PARK).getHref(),
 				amusementParkResource.getIdentifier());
@@ -157,7 +191,7 @@ public class AmusementParkApplicationTests {
 
 	@Test
 	public void negativeTest() {
-		login(ADMIN_LOWER_CASE, PASS);
+		loginAsAdmin("admin0@gmail.com", "password");
 
 		AmusementParkResource amusementParkResource = createAmusementParkWithAddress();
 		amusementParkResource.setAddress(null);
@@ -190,45 +224,39 @@ public class AmusementParkApplicationTests {
 		logout();
 	}
 
-	private void login(String username, String password) {
-		logout();
+	private VisitorResource loginAsAdmin(String email, String password) {
+		ResponseEntity<VisitorResource> response = client.post(uri(links.get(LOGIN)), createMap(email, password),
+				VISITOR_TYPE);
 
-		ResponseEntity<Void> response = client.post(uri(getLoginUrl()), createMap(username, password));
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertTrue(response.getHeaders().getFirst("Set-Cookie").contains("JSESSIONID="));
 
-		assertEquals(HttpStatus.FOUND, response.getStatusCode());
+		VisitorResource visitorResource = response.getBody();
 
-		HttpHeaders responseHeaders = response.getHeaders();
+		assertNotNull(visitorResource);
+		assertEquals(3, visitorResource.getLinks().size());
+		assertNotNull(visitorResource.getId().getHref());
+		assertNotNull(visitorResource.getLink(VISITOR_ENTER_PARK));
+		assertNotNull(visitorResource.getLink(AMUSEMENT_PARK));
 
-		assertTrue(responseHeaders.getLocation().toString().endsWith(port + "/"));
-		assertTrue(responseHeaders.getFirst("Set-Cookie").contains("JSESSIONID="));
+		assertEquals(email, visitorResource.getEmail());
+		assertEquals("ROLE_ADMIN", visitorResource.getAuthority());
+
+		return visitorResource;
 	}
 
 	private MultiValueMap<String, String> createMap(String username, String password) {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-		map.add("username", username);
+		map.add("email", username);
 		map.add("password", password);
 		return map;
-	}
-
-	private String getLoginUrl() {
-		ResponseEntity<Void> response = client.post(uri(links.get(AMUSEMENT_PARK)));
-
-		assertEquals(HttpStatus.FOUND, response.getStatusCode());
-
-		URI location = response.getHeaders().getLocation();
-		assertNotNull(location);
-
-		String locationAsString = location.toString();
-		assertTrue(locationAsString.endsWith("login"));
-
-		return locationAsString;
 	}
 
 	private void logout() {
 		ResponseEntity<Void> response = client.post(uri(links.get(LOGOUT)));
 
 		assertEquals(HttpStatus.FOUND, response.getStatusCode());
-		assertTrue(response.getHeaders().getLocation().toString().contains("login?logout"));
+		assertTrue(response.getHeaders().getLocation().toString().endsWith(Integer.toString(port) + "/"));
 
 		testRedirectToLoginPage();
 
@@ -239,7 +267,7 @@ public class AmusementParkApplicationTests {
 		ResponseEntity<Void> response = client.post(uri(links.get(AMUSEMENT_PARK)));
 
 		assertEquals(HttpStatus.FOUND, response.getStatusCode());
-		assertTrue(response.getHeaders().getLocation().toString().endsWith("login"));
+		assertTrue(response.getHeaders().getLocation().toString().endsWith(Integer.toString(port) + "/"));
 	}
 
 	private void restTemplateFollowsRedirectOnGet() {
@@ -264,7 +292,7 @@ public class AmusementParkApplicationTests {
 		assertTrue(responseAmusementParkResource.getId().getHref()
 				.endsWith(responseAmusementParkResource.getIdentifier().toString()));
 		assertNotNull(responseAmusementParkResource.getLink(MACHINE));
-		assertNotNull(responseAmusementParkResource.getLink(VISITOR_SIGN_UP));
+		assertNotNull(responseAmusementParkResource.getLink(SIGN_UP));
 		assertNotNull(responseAmusementParkResource.getLink(VISITOR_ENTER_PARK));
 
 		amusementParkResource.setIdentifier(responseAmusementParkResource.getIdentifier());
@@ -288,22 +316,6 @@ public class AmusementParkApplicationTests {
 		assertNotNull(machineResource.getLink(GET_ON_MACHINE));
 
 		return machineResource;
-	}
-
-	private VisitorResource signUp(String url) {
-		ResponseEntity<VisitorResource> response = client.post(uri(url), createVisitor(), VISITOR_TYPE);
-
-		assertEquals(HttpStatus.OK, response.getStatusCode());
-
-		VisitorResource visitorResource = response.getBody();
-
-		assertNotNull(visitorResource);
-		assertEquals(3, visitorResource.getLinks().size());
-		assertTrue(visitorResource.getId().getHref().endsWith(visitorResource.getIdentifier().toString()));
-		assertNotNull(visitorResource.getLink(VISITOR_ENTER_PARK));
-		assertNotNull(visitorResource.getLink(AMUSEMENT_PARK));
-
-		return visitorResource;
 	}
 
 	private VisitorResource enterPark(String enterParkUrl, Long amusementParkId) {
@@ -402,8 +414,9 @@ public class AmusementParkApplicationTests {
 	private ExceptionAsserter<HttpClientErrorException> teaPotStatusAndMachineTypeMustBeOneOf() {
 		return exception -> {
 			assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
-			assertEquals(validationError(TYPE, oneOfMessage(
-					Stream.of(MachineType.values()).map(value -> value.toString()).collect(toSet()).toString())),
+			assertEquals(
+					validationError(TYPE, oneOfMessage(
+							Stream.of(MachineType.values()).map(MachineType::toString).collect(toSet()).toString())),
 					exception.getResponseBodyAsString());
 		};
 	}

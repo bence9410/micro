@@ -9,6 +9,7 @@ public class ValidationMessageConstants {
 	public static final String NOT_NULL_MESSAGE = "must not be null";
 	public static final String NOT_EMPTY_MESSAGE = "must not be empty";
 	public static final String PAST_MESSAGE = "must be a past date";
+	public static final String EMAIL_MESSAGE = "must be a well-formed email address";
 
 	public static String sizeMessage(long min, long max) {
 		return String.format(SIZE_MESSAGE, min, max);

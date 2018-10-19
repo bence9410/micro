@@ -1,5 +1,7 @@
 package hu.beni.amusementpark.test.unit;
 
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.COULD_NOT_FIND_USER;
+import static hu.beni.amusementpark.constants.ErrorMessageConstants.EMAIL_ALREADY_TAKEN;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NOT_ENOUGH_MONEY;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_AMUSEMENT_PARK_WITH_ID;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_FREE_SEAT_ON_MACHINE;
@@ -70,33 +72,48 @@ public class VisitorServiceUnitTests {
 	}
 
 	@Test
-	public void findSpendingMoneyByUsernameNegativeNotSignedUp() {
-		when(visitorRepository.findSpendingMoneyByUsername()).thenReturn(null);
+	public void findByEmailNegativeNoVisitorWithUsername() {
+		String email = "nembence1994@gmail.com";
 
-		assertNull(visitorService.findSpendingMoneyByUsername());
+		assertThatThrownBy(() -> visitorService.findByEmail(email)).isInstanceOf(AmusementParkException.class)
+				.hasMessage(String.format(COULD_NOT_FIND_USER, email));
 
-		verify(visitorRepository).findSpendingMoneyByUsername();
+		verify(visitorRepository).findByEmail(email);
 	}
 
 	@Test
-	public void findSpendingMoneyByUsernamePositive() {
-		Integer spendingMoney = 1000;
+	public void findByEmailPositive() {
+		Visitor visitor = Visitor.builder().email("nembence1994@gmail.com").build();
+		String email = visitor.getEmail();
 
-		when(visitorRepository.findSpendingMoneyByUsername()).thenReturn(spendingMoney);
+		when(visitorRepository.findByEmail(email)).thenReturn(Optional.of(visitor));
 
-		assertEquals(spendingMoney, visitorService.findSpendingMoneyByUsername());
+		assertEquals(visitor, visitorService.findByEmail(email));
 
-		verify(visitorRepository).findSpendingMoneyByUsername();
+		verify(visitorRepository).findByEmail(email);
+	}
+
+	@Test
+	public void signUpNegativeEmailAlreadyTaken() {
+		Visitor visitor = Visitor.builder().email("nembence1994@gmail.com").build();
+
+		when(visitorRepository.countByEmail(visitor.getEmail())).thenReturn(1L);
+
+		assertThatThrownBy(() -> visitorService.signUp(visitor)).isInstanceOf(AmusementParkException.class)
+				.hasMessage(String.format(EMAIL_ALREADY_TAKEN, visitor.getEmail()));
+
+		verify(visitorRepository).countByEmail(visitor.getEmail());
 	}
 
 	@Test
 	public void signUpPositive() {
-		Visitor visitor = Visitor.builder().build();
+		Visitor visitor = Visitor.builder().email("nembence1994@gmail.com").build();
 
 		when(visitorRepository.save(visitor)).thenReturn(visitor);
 
 		assertEquals(visitor, visitorService.signUp(visitor));
 
+		verify(visitorRepository).countByEmail(visitor.getEmail());
 		verify(visitorRepository).save(visitor);
 	}
 

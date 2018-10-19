@@ -12,34 +12,141 @@
 <script type="text/javascript" src="/index.js"></script>
 </head>
 <body onload="init()">
-<div class="container-fluid">
-	<div id="header" class="row"
-			style="background-color: Lime">
-			<div class="col-md-2"></div>
-			<div class="col-md-6 row">
-				<div class="col-md-4 row">
-					Username:
-					<p id="username"></p>
+<div id="header" class="row" style="background-color: lime; display: none">
+		<div class="col-md-2"></div>
+		<div class="col-md-6 row">
+			<div class="row container-fluid">
+				<div class="col-md-2">
+					<img id="photo" width="60" height="90" alt="photo">
 				</div>
-				<div id="spendingMoneyDiv" class="col-md-4 row" style="display: none">
-					Spending money:
-					<p id="spendingMoney"></p>
+				<div class="col-md-10">
+					<div class="row">Email:&nbsp;<p id="email"></p></div>
+					<div class="row">Spending money:&nbsp;<p id="spendingMoney"></p></div>
 				</div>
-			</div>
-			<div class="col-md-4">
-				<form id="logout" method="post">
-					<input type="submit" value="logout">
-				</form>
 			</div>
 		</div>
-	<div id="signUp" class="text-center" style="display: none">
-		Name: <input id="name" type="text"> <br> 
-		Date of birth: <input id="dateOfBirth" type="text"> <br> 
-		Spending money: <input id="signUpSpendingMoney" type="text"> <br> 
-		<input id="singUp" type="button" onclick="signUp()" value="Sign up"> 
-		<input type="button" onclick="fillWithSampleData()" value="Fill with sample data">
+		<div class="col-md-4">
+			<form id="logout" method="post">
+				<input type="submit" value="logout">
+			</form>
+			<input id="uploadMoney" type="button" value="Upload money" data-toggle="modal" data-target="#uploadMoneyModal">
+		</div>
+		<div class="modal fade" id="uploadMoneyModal" role="dialog">
+		    <div class="modal-dialog">
+		    	<div class="modal-content">
+		        	<div class="modal-header">
+		        		<h4 class="modal-title">Upload money</h4>
+		          		<button type="button" class="close" data-dismiss="modal">&times;</button>
+		        	</div>
+		        	<div class="modal-body">
+		          		Money: <input id="money" type=text>
+		          		<input id="upload" type="button" value="Upload" onclick="uploadMoney()"> 
+		          		<p id="moneyUploadResult"></p>
+		        	</div>
+		        	<div class="modal-footer">
+		         		<input id="closeUpload" type="button" data-dismiss="modal" value="Close">
+		        	</div>
+		      	</div>
+		   	</div>
+  		</div>
 	</div>
+<div id="content" style="display: none">
+	<div class="jumbotron text-center">
+		<h1>Welcome to Beni</h1>
+	</div>
+	<div id=loginDiv class="text-center" >
+		Email: <input id="loginEmail" type="text"> <br> 
+		Password: <input id="password" type="password"> <br>
+		Remeber me: <input id="rememberMeLogin" type="checkbox"> <br>
+		<input id="login" type="button" onclick="login()" value="Login">
+		<input id="goToSignUp" type="button" onclick="showSignUp()" value="Sign Up"> <br>
+		<p id="loginError"></p>
+	</div>
+	<div id="signUpDiv" class="text-center" style="display: none">
+		Email: <input id="signUpEmail" type="text"> <br> 
+		Password: <input id="signUpPassword" type="password"> <br> 
+		Confirm password: <input id="signUpConfirmPassword" type="password"> <br>
+		Date of birth: <input id="dateOfBirth" type="text"> <br> 
+		Photo (size: 2:3):<input id="file" type="file" onchange="drawImage()" > <br>
+		<img id="img" width="100" height="150" > <br>
+		Remeber me: <input id="rememberMeSignUp" type="checkbox"> <br>
+		<input type="button" onclick="backToLogin()" value="Back">
+		<input id="signUp" type="button" onclick="signUp()" value="Sign up"> 
+		<input type="button" onclick="fillWithSampleData()" value="Fill with sample data">
+		<p id="signUpError"></p>
+	</div>
+	<script>
+		function login() {
+			$.ajax({
+				url : links.login,
+				method : "POST",
+				data : "email="+$("#loginEmail").val() + "&password=" + $("#password").val() + ($("#rememberMeLogin").is(":checked") ? "&remember-me=true" : ""),
+				success : function (data) {
+					$("#content").hide()
+					setEmailAndAuthorityAndSpendingMoney(data)
+					getAmusementParkPage()
+					$("#photo").attr("src", data.photo)
+				},
+				error : function (data) {
+					$("#loginError").html(data.responseText)
+				}
+			})
+		}
+		
+		function showSignUp() {
+			$("#loginDiv").hide()
+			$("#signUpDiv").show()
+		}
+		
+		function drawImage(){
+			var reader = new FileReader()
+            reader.onload = e => $('#img').attr('src', e.target.result)
+	        reader.readAsDataURL($("#file")[0].files[0])
+		}
+		
+		function backToLogin(){
+			$("#signUpDiv").hide()
+			$("#loginDiv").show()			
+		}
+		
+		function signUp() {
+			$("#signUp").prop("disabled", true)
+			$.ajax({
+				url : links.signUp + ($("#rememberMeSignUp").is(":checked") ? "?remember-me=true" : ""),
+				method : "POST",
+				contentType : "application/json",
+				data : JSON.stringify(collectSignUpData()),
+				success : function (data) {
+					$("#content").hide()
+					setEmailAndAuthorityAndSpendingMoney(data)
+					getAmusementParkPage()
+					$("#photo").attr("src", data.photo)
+				},
+				error : function (data) {
+					$("#signUpError").html(data.responseText)
+					$("#signUp").prop("disabled", false)
+				}
+			})
+		}
+		
+		function collectSignUpData(){
+			var user = {}
+			user.email = $("#signUpEmail").val()
+			user.password = $("#signUpPassword").val()
+			user.confirmPassword = $("#signUpConfirmPassword").val()
+			user.dateOfBirth = $("#dateOfBirth").val()
+			user.photo = $("#img").attr("src")
+			return user
+		}
+		
+		function fillWithSampleData(){
+			$("#signUpEmail").val("visitor@gmail.com")
+			$("#signUpPassword").val("password")
+			$("#signUpConfirmPassword").val("password")
+			$("#dateOfBirth").val("1994-10-22")
+		}
+		
+	</script>
 </div>
-<div id="content"></div>
 </body>
 </html>
