@@ -19,6 +19,7 @@ import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -28,6 +29,7 @@ import org.springframework.data.repository.query.spi.EvaluationContextExtensionS
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.security.access.expression.SecurityExpressionRoot;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
@@ -54,8 +56,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
-import org.springframework.security.web.authentication.rememberme.InMemoryTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -112,9 +115,23 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	@Bean
+	public PersistentTokenRepository persistentTokenRepository(DataSource dataSource) {
+		JdbcTokenRepositoryImpl jdbcTokenRepositoryImpl = new JdbcTokenRepositoryImpl() {
+			protected void initDao() {
+				try {
+					getJdbcTemplate().execute(CREATE_TABLE_SQL);
+				} catch (BadSqlGrammarException e) {
+				}
+			}
+		};
+		jdbcTokenRepositoryImpl.setDataSource(dataSource);
+		return jdbcTokenRepositoryImpl;
+	}
+
+	@Bean
 	public AbstractRememberMeServices rememberMeServices() {
 		AbstractRememberMeServices rememberMeServices = new PersistentTokenBasedRememberMeServices("beni",
-				userDetailsService(null), new InMemoryTokenRepositoryImpl());
+				userDetailsService(null), persistentTokenRepository(null));
 		return rememberMeServices;
 	}
 
