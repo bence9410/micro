@@ -1,5 +1,6 @@
 package hu.beni.amusementpark.test.integration;
 
+import static hu.beni.amusementpark.constants.Constants.ROLE_VISITOR;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.MACHINE_IS_TOO_EXPENSIVE;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_ARCHIVE_SEND_TYPE;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.validationError;
@@ -22,7 +23,9 @@ import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.GET_ON_MAC
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.LOGIN;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.LOGOUT;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.MACHINE;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.ME;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.SIGN_UP;
+import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.UPLOAD_MONEY;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_ENTER_PARK;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_LEAVE_PARK;
 import static hu.beni.clientsupport.factory.ValidResourceFactory.createAmusementParkWithAddress;
@@ -31,8 +34,10 @@ import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -93,8 +98,43 @@ public class AmusementParkApplicationTests {
 	}
 
 	@Test
+	public void signUpAndUploadMoneyTest() {
+		logout();
+
+		VisitorResource inputVisitorResource = VisitorResource.builder() //@formatter:off
+				.email("benike@gmail.com")
+				.password("password")
+				.confirmPassword("password")
+				.dateOfBirth(LocalDate.of(1994, 10, 22)).build(); //@formatter:on
+
+		assertVisitorResource(inputVisitorResource.getEmail(), inputVisitorResource.getDateOfBirth(), 250,
+				client.post(uri(links.get(SIGN_UP)), inputVisitorResource, VISITOR_TYPE).getBody());
+
+		client.post(uri(links.get(UPLOAD_MONEY)), 500);
+
+		assertVisitorResource(inputVisitorResource.getEmail(), inputVisitorResource.getDateOfBirth(), 750,
+				client.get(uri(links.get(ME)), VISITOR_TYPE).getBody());
+
+	}
+
+	private void assertVisitorResource(String email, LocalDate dateOfBirth, Integer spendingMoney,
+			VisitorResource actualVisitorResource) {
+		assertEquals(email, actualVisitorResource.getEmail());
+		assertEquals(dateOfBirth, actualVisitorResource.getDateOfBirth());
+		assertEquals(spendingMoney.intValue(), actualVisitorResource.getSpendingMoney().intValue());
+		assertEquals(ROLE_VISITOR, actualVisitorResource.getAuthority());
+		assertNull(actualVisitorResource.getPassword());
+		assertNull(actualVisitorResource.getConfirmPassword());
+		assertNotNull(actualVisitorResource.getIdentifier());
+		assertEquals(3, actualVisitorResource.getLinks().size());
+		assertNotNull(actualVisitorResource.getId().getHref());
+		assertNotNull(actualVisitorResource.getLink(VISITOR_ENTER_PARK).getHref());
+		assertNotNull(actualVisitorResource.getLink(AMUSEMENT_PARK).getHref());
+	}
+
+	@Test
 	public void pageTest() {
-		loginAsAdmin("admin@gmail.com", "password");
+		loginAsAdmin("admin0@gmail.com", "password");
 
 		PagedResourcesType<AmusementParkResource> responseType = getPagedType(AmusementParkResource.class);
 
@@ -124,7 +164,7 @@ public class AmusementParkApplicationTests {
 
 	@Test
 	public void positiveTest() {
-		VisitorResource visitorResource = loginAsAdmin("admin@gmail.com", "password");
+		VisitorResource visitorResource = loginAsAdmin("admin0@gmail.com", "password");
 
 		AmusementParkResource amusementParkResource = createAmusementPark();
 
@@ -151,7 +191,7 @@ public class AmusementParkApplicationTests {
 
 	@Test
 	public void negativeTest() {
-		loginAsAdmin("admin@gmail.com", "password");
+		loginAsAdmin("admin0@gmail.com", "password");
 
 		AmusementParkResource amusementParkResource = createAmusementParkWithAddress();
 		amusementParkResource.setAddress(null);

@@ -20,6 +20,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import hu.beni.amusementpark.config.RabbitMQTestConfig.ArchiveReceiver;
@@ -36,6 +38,7 @@ import hu.beni.clientsupport.dto.ArchiveGuestBookRegistryDTO;
 import hu.beni.clientsupport.dto.ArchiveMachineDTO;
 import hu.beni.clientsupport.dto.ArchiveVisitorDTO;
 
+@DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
 public class RabbitMQArchiveSenderTests extends AbstractRabbitMQTests {
 
 	@Autowired
