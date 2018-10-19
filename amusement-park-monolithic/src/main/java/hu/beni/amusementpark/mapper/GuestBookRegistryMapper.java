@@ -40,6 +40,6 @@ public class GuestBookRegistryMapper extends EntityMapper<GuestBookRegistry, Gue
 	private Link[] createLinks(GuestBookRegistry guestBookRegistry) {
 		return new Link[] { //@formatter:off
 				createGuestBookRegistrySelfLink(guestBookRegistry.getId()),
-				createAddGuestBookRegistryLink(null, null) }; //@formatter:on
+				createAddGuestBookRegistryLink(null) }; //@formatter:on
 	}
 }

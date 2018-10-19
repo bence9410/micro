@@ -13,8 +13,8 @@ public class VisitorEnterParkEventDTO extends VisitorSpentMoneyInParkEvent {
 
 	private static final long serialVersionUID = -5424568354736327084L;
 
-	public VisitorEnterParkEventDTO(Long amusementParkId, Long visitorId, Integer spentMoney) {
-		super(amusementParkId, visitorId, spentMoney);
+	public VisitorEnterParkEventDTO(Long amusementParkId, String visitorEmail, Integer spentMoney) {
+		super(amusementParkId, visitorEmail, spentMoney);
 	}
 
 }

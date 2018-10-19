@@ -15,8 +15,8 @@ public class VisitorGetOnMachineEventDTO extends VisitorSpentMoneyInParkEvent {
 
 	private final Long machineId;
 
-	public VisitorGetOnMachineEventDTO(Long amusementParkId, Long visitorId, Integer spentMoney, Long machineId) {
-		super(amusementParkId, visitorId, spentMoney);
+	public VisitorGetOnMachineEventDTO(Long amusementParkId, String visitorEmail, Integer spentMoney, Long machineId) {
+		super(amusementParkId, visitorEmail, spentMoney);
 		this.machineId = machineId;
 	}
 

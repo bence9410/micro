@@ -27,9 +27,6 @@ public class VisitorResource extends ResourceSupport implements Serializable {
 
 	private static final long serialVersionUID = -426306691990271010L;
 
-	@Null
-	private Long identifier;
-
 	@NotNull
 	@Email(regexp = ".+@.+\\..+")
 	private String email;
@@ -58,10 +55,9 @@ public class VisitorResource extends ResourceSupport implements Serializable {
 	private String photo;
 
 	@Builder
-	public VisitorResource(Long identifier, String email, String password, String confirmPassword, String authority,
+	public VisitorResource(String email, String password, String confirmPassword, String authority,
 			LocalDate dateOfBirth, Integer spendingMoney, String state, String photo, Link[] links) {
 		super();
-		this.identifier = identifier;
 		this.email = email;
 		this.password = password;
 		this.confirmPassword = confirmPassword;

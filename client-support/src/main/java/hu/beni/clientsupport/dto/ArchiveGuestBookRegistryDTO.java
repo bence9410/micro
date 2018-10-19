@@ -18,6 +18,6 @@ public class ArchiveGuestBookRegistryDTO implements Serializable {
 
 	private LocalDateTime dateOfRegistry;
 
-	private Long visitorId;
+	private String visitorEmail;
 
 }

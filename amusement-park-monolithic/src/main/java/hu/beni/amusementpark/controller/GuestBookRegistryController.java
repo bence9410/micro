@@ -3,6 +3,8 @@ package hu.beni.amusementpark.controller;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.A_GUEST_BOOK_REGISTRY;
 import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_A_VISITOR_GUEST_BOOK_REGISTRIES;
 
+import java.security.Principal;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,10 +26,10 @@ public class GuestBookRegistryController {
 	private final GuestBookRegistryMapper guestBookRegistryMapper;
 
 	@PostMapping(IN_A_PARK_A_VISITOR_GUEST_BOOK_REGISTRIES)
-	public GuestBookRegistryResource addRegistry(@PathVariable Long amusementParkId, @PathVariable Long visitorId,
-			@RequestBody String textOfRegistry) {
+	public GuestBookRegistryResource addRegistry(@PathVariable Long amusementParkId, @RequestBody String textOfRegistry,
+			Principal principal) {
 		return guestBookRegistryMapper
-				.toResource(guestBookRegistryService.addRegistry(amusementParkId, visitorId, textOfRegistry));
+				.toResource(guestBookRegistryService.addRegistry(amusementParkId, principal.getName(), textOfRegistry));
 	}
 
 	@GetMapping(A_GUEST_BOOK_REGISTRY)

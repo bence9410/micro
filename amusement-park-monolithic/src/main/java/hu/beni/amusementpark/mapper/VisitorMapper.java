@@ -5,9 +5,9 @@ import static hu.beni.amusementpark.factory.LinkFactory.createAmusementParkLink;
 import static hu.beni.amusementpark.factory.LinkFactory.createGetOffMachineLink;
 import static hu.beni.amusementpark.factory.LinkFactory.createGetOnMachineLink;
 import static hu.beni.amusementpark.factory.LinkFactory.createMachineLink;
+import static hu.beni.amusementpark.factory.LinkFactory.createUserLink;
 import static hu.beni.amusementpark.factory.LinkFactory.createVisitorEnterParkLink;
 import static hu.beni.amusementpark.factory.LinkFactory.createVisitorLeavePark;
-import static hu.beni.amusementpark.factory.LinkFactory.createVisitorSelfLink;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +37,6 @@ public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 	@Override
 	public VisitorResource toResource(Visitor entity) {
 		return VisitorResource.builder() //@formatter:off
-				.identifier(entity.getId())
 				.email(entity.getEmail())
 				.authority(entity.getAuthority())
 				.dateOfBirth(entity.getDateOfBirth())
@@ -50,7 +49,6 @@ public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 	@Override
 	public Visitor toEntity(VisitorResource resource) {
 		return Visitor.builder() //@formatter:off
-				.id(resource.getIdentifier())
 				.email(resource.getEmail())
 				.password(passwordEncoder.encode(resource.getPassword()))
 				.dateOfBirth(resource.getDateOfBirth())
@@ -68,22 +66,21 @@ public class VisitorMapper extends EntityMapper<Visitor, VisitorResource> {
 	}
 
 	private Link[] createLinks(Visitor visitor) {
-		Long visitorId = visitor.getId();
 		VisitorState state = visitor.getState();
 		List<Link> links = new ArrayList<>();
-		links.add(createVisitorSelfLink(visitorId));
+		links.add(createUserLink());
 		if (state == null) {
-			links.add(createVisitorEnterParkLink(null, visitorId));
+			links.add(createVisitorEnterParkLink(null));
 			links.add(createAmusementParkLink());
 		} else {
 			Long amusementParkId = visitor.getAmusementPark().getId();
 			if (VisitorState.REST.equals(state)) {
 				links.add(createMachineLink(amusementParkId));
-				links.add(createVisitorLeavePark(amusementParkId, visitorId));
-				links.add(createGetOnMachineLink(amusementParkId, null, visitorId));
-				links.add(createAddGuestBookRegistryLink(amusementParkId, visitorId));
+				links.add(createVisitorLeavePark(amusementParkId));
+				links.add(createGetOnMachineLink(amusementParkId, null));
+				links.add(createAddGuestBookRegistryLink(amusementParkId));
 			} else if (VisitorState.ON_MACHINE.equals(state)) {
-				links.add(createGetOffMachineLink(amusementParkId, visitor.getMachine().getId(), visitorId));
+				links.add(createGetOffMachineLink(amusementParkId, visitor.getMachine().getId()));
 			}
 		}
 		return links.toArray(new Link[links.size()]);

@@ -68,40 +68,34 @@ public class LinkFactory {
 		return linkTo(methodOn(machineControllerClass).findOne(amusementParkId, machineId)).withSelfRel();
 	}
 
-	public static Link createVisitorSelfLink(Long visitorId) {
-		return linkTo(methodOn(visitorControllerClass).findOne(visitorId)).withSelfRel();
-	}
-
 	public static Link createVisitorSignUpLink() {
 		return linkTo(visitorControllerClass).slash(SIGN_UP).withRel(SIGN_UP);
 	}
 
-	public static Link createVisitorEnterParkLink(Long amusementParkId, Long visitorId) {
-		return linkTo(methodOn(visitorControllerClass).enterPark(amusementParkId, visitorId))
-				.withRel(VISITOR_ENTER_PARK);
+	public static Link createVisitorEnterParkLink(Long amusementParkId) {
+		return linkTo(methodOn(visitorControllerClass).enterPark(amusementParkId, null)).withRel(VISITOR_ENTER_PARK);
 	}
 
-	public static Link createGetOnMachineLink(Long amusementParkId, Long machineId, Long visitorId) {
-		return linkTo(methodOn(visitorControllerClass).getOnMachine(amusementParkId, machineId, visitorId, null))
+	public static Link createGetOnMachineLink(Long amusementParkId, Long machineId) {
+		return linkTo(methodOn(visitorControllerClass).getOnMachine(amusementParkId, machineId, null))
 				.withRel(GET_ON_MACHINE);
 	}
 
-	public static Link createGetOffMachineLink(Long amusementParkId, Long machineId, Long visitorId) {
-		return linkTo(methodOn(visitorControllerClass).getOffMachine(amusementParkId, machineId, visitorId, null))
+	public static Link createGetOffMachineLink(Long amusementParkId, Long machineId) {
+		return linkTo(methodOn(visitorControllerClass).getOffMachine(amusementParkId, machineId, null))
 				.withRel(GET_OFF_MACHINE);
 	}
 
-	public static Link createVisitorLeavePark(Long amusementParkId, Long visitorId) {
-		return linkTo(methodOn(visitorControllerClass).leavePark(amusementParkId, visitorId, null))
-				.withRel(VISITOR_LEAVE_PARK);
+	public static Link createVisitorLeavePark(Long amusementParkId) {
+		return linkTo(methodOn(visitorControllerClass).leavePark(amusementParkId, null)).withRel(VISITOR_LEAVE_PARK);
 	}
 
 	public static Link createGuestBookRegistrySelfLink(Long guestBookRegistryId) {
 		return linkTo(methodOn(guestBookRegistryControllerClass).findOne(guestBookRegistryId)).withSelfRel();
 	}
 
-	public static Link createAddGuestBookRegistryLink(Long amusementParkId, Long visitorId) {
-		return linkTo(methodOn(guestBookRegistryControllerClass).addRegistry(amusementParkId, visitorId, null))
+	public static Link createAddGuestBookRegistryLink(Long amusementParkId) {
+		return linkTo(methodOn(guestBookRegistryControllerClass).addRegistry(amusementParkId, null, null))
 				.withRel(ADD_REGISTRY);
 	}
 

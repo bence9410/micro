@@ -114,36 +114,29 @@ public class VisitorController {
 
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping(A_VISITOR)
-	public void delete(@PathVariable Long visitorId) {
-		visitorService.delete(visitorId);
-	}
-
-	@GetMapping(A_VISITOR)
-	public VisitorResource findOne(@PathVariable Long visitorId) {
-		return visitorMapper.toResource(visitorService.findOne(visitorId));
+	public void delete(@PathVariable String visitorEmail) {
+		visitorService.delete(visitorEmail);
 	}
 
 	@PutMapping(IN_A_PARK_A_VISITOR_ENTER_PARK)
-	public VisitorResource enterPark(@PathVariable Long amusementParkId, @PathVariable Long visitorId) {
-		return visitorMapper.toResource(visitorService.enterPark(amusementParkId, visitorId));
+	public VisitorResource enterPark(@PathVariable Long amusementParkId, Principal principal) {
+		return visitorMapper.toResource(visitorService.enterPark(amusementParkId, principal.getName()));
 	}
 
 	@PutMapping(IN_A_PARK_A_VISITOR_LEAVE_PARK)
-	public VisitorResource leavePark(@PathVariable Long amusementParkId, @PathVariable Long visitorId,
-			Principal principal) {
-		return visitorMapper.toResource(visitorService.leavePark(amusementParkId, visitorId, principal.getName()));
+	public VisitorResource leavePark(@PathVariable Long amusementParkId, Principal principal) {
+		return visitorMapper.toResource(visitorService.leavePark(amusementParkId, principal.getName()));
 	}
 
 	@PutMapping(IN_A_PARK_ON_A_MACHINE_A_VISITOR_GET_ON)
 	public VisitorResource getOnMachine(@PathVariable Long amusementParkId, @PathVariable Long machineId,
-			@PathVariable Long visitorId, Principal principal) {
-		return visitorMapper
-				.toResource(visitorService.getOnMachine(amusementParkId, machineId, visitorId, principal.getName()));
+			Principal principal) {
+		return visitorMapper.toResource(visitorService.getOnMachine(amusementParkId, machineId, principal.getName()));
 	}
 
 	@PutMapping(IN_A_PARK_ON_A_MACHINE_A_VISITOR_GET_OFF)
 	public VisitorResource getOffMachine(@PathVariable Long amusementParkId, @PathVariable Long machineId,
-			@PathVariable Long visitorId, Principal principal) {
-		return visitorMapper.toResource(visitorService.getOffMachine(machineId, visitorId, principal.getName()));
+			Principal principal) {
+		return visitorMapper.toResource(visitorService.getOffMachine(machineId, principal.getName()));
 	}
 }

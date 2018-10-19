@@ -32,10 +32,10 @@ public class GuestBookRegistryServiceImpl implements GuestBookRegistryService {
 	}
 
 	@Override
-	public GuestBookRegistry addRegistry(Long amusementParkId, Long visitorId, String textOfRegistry) {
+	public GuestBookRegistry addRegistry(Long amusementParkId, String visitorEmail, String textOfRegistry) {
 		AmusementPark amusementPark = ifNull(amusementParkRepository.findByIdReadOnlyId(amusementParkId),
 				NO_AMUSEMENT_PARK_WITH_ID);
-		Visitor visitor = ifNull(visitorRepository.findById(visitorId), NO_VISITOR_IN_PARK_WITH_ID);
+		Visitor visitor = ifNull(visitorRepository.findById(visitorEmail), NO_VISITOR_IN_PARK_WITH_ID);
 		return guestBookRegistryRepository.save(GuestBookRegistry.builder().textOfRegistry(textOfRegistry)
 				.visitor(visitor).amusementPark(amusementPark).build());
 	}

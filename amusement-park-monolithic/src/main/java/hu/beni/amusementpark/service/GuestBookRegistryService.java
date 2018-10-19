@@ -6,6 +6,6 @@ public interface GuestBookRegistryService {
 
 	GuestBookRegistry findOne(Long guestBookRegistryId);
 
-	GuestBookRegistry addRegistry(Long amusementParkId, Long visitorId, String textOfRegistry);
+	GuestBookRegistry addRegistry(Long amusementParkId, String visitorEmail, String textOfRegistry);
 
 }

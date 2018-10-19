@@ -11,13 +11,13 @@ public abstract class VisitorSpentMoneyInParkEvent implements Serializable {
 
 	private final Long amusementParkId;
 
-	private final Long visitorId;
+	private final String visitorEmail;
 
 	private final Integer spentMoney;
 
-	protected VisitorSpentMoneyInParkEvent(Long amusementParkId, Long visitorId, Integer spentMoney) {
+	protected VisitorSpentMoneyInParkEvent(Long amusementParkId, String visitorEmail, Integer spentMoney) {
 		this.amusementParkId = amusementParkId;
-		this.visitorId = visitorId;
+		this.visitorEmail = visitorEmail;
 		this.spentMoney = spentMoney;
 	}
 }

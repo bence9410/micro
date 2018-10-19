@@ -8,17 +8,17 @@ import org.springframework.data.jpa.repository.Query;
 
 import hu.beni.amusementpark.entity.Visitor;
 
-public interface VisitorRepository extends JpaRepository<Visitor, Long> {
+public interface VisitorRepository extends JpaRepository<Visitor, String> {
 
-	@Query("Select count(*) from Visitor v where v.email = :email")
-	Long countByEmail(String email);
+	@Query("Select count(*) from Visitor v where v.email = :visitorEmail")
+	Long countByEmail(String visitorEmail);
 
-	@Query("Select v from Visitor v where v.email = :email")
-	Optional<Visitor> findByEmail(String email);
+	@Query("Select v from Visitor v where v.email = :visitorEmail")
+	Optional<Visitor> findByEmail(String visitorEmail);
 
 	@Modifying
-	@Query("Update Visitor v set v.spendingMoney = v.spendingMoney + :ammount where v.email = :email")
-	void incrementSpendingMoneyByEmail(Integer ammount, String email);
+	@Query("Update Visitor v set v.spendingMoney = v.spendingMoney + :ammount where v.email = :visitorEmail")
+	void incrementSpendingMoneyByEmail(Integer ammount, String visitorEmail);
 
 	@Query("Select count(v) from Visitor v where v.machine.id = :machineId")
 	Long countByMachineId(Long machineId);
@@ -26,10 +26,10 @@ public interface VisitorRepository extends JpaRepository<Visitor, Long> {
 	@Query("Select count(v) from Visitor v where v.amusementPark.id = :amusementParkId")
 	Long countByAmusementParkId(Long amusementParkId);
 
-	@Query("Select v from Visitor v where v.machine.id = :machineId and v.id = :visitorId and v.email = :email")
-	Optional<Visitor> findByMachineIdAndVisitorIdAndEmail(Long machineId, Long visitorId, String email);
+	@Query("Select v from Visitor v where v.machine.id = :machineId and v.email = :visitorEmail")
+	Optional<Visitor> findByMachineIdAndVisitorEmail(Long machineId, String visitorEmail);
 
-	@Query("Select v from Visitor v where v.amusementPark.id = :amusementParkId and v.id = :visitorId and v.email = :email")
-	Optional<Visitor> findByAmusementParkIdAndVisitorIdAndEmail(Long amusementParkId, Long visitorId, String email);
+	@Query("Select v from Visitor v where v.amusementPark.id = :amusementParkId and v.email = :visitorEmail")
+	Optional<Visitor> findByAmusementParkIdAndVisitorEmail(Long amusementParkId, String visitorEmail);
 
 }

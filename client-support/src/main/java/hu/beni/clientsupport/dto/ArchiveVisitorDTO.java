@@ -13,8 +13,6 @@ public class ArchiveVisitorDTO implements Serializable {
 
 	private static final long serialVersionUID = 7802032004601520550L;
 
-	private Long identifier;
-
 	private String email;
 
 	private LocalDate dateOfBirth;

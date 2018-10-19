@@ -7,24 +7,24 @@ import hu.beni.amusementpark.entity.Visitor;
 
 public interface VisitorService {
 
-	Visitor findByEmail(String email);
+	Visitor findByEmail(String visitorEmail);
 
 	Visitor signUp(Visitor visitor);
 
-	void uploadMoney(Integer ammount, String email);
+	void uploadMoney(Integer ammount, String visitorEmail);
 
-	Visitor findOne(Long visitorId);
+	Visitor findOne(String visitorEmail);
 
-	Visitor leavePark(Long amusementParkId, Long visitorId, String email);
+	Visitor leavePark(Long amusementParkId, String visitorEmail);
 
-	Visitor enterPark(Long amusementParkId, Long visitorId);
+	Visitor enterPark(Long amusementParkId, String visitorEmail);
 
-	Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId, String email);
+	Visitor getOnMachine(Long amusementParkId, Long machineId, String visitorEmail);
 
-	Visitor getOffMachine(Long machineId, Long visitorId, String email);
+	Visitor getOffMachine(Long machineId, String visitorEmail);
 
 	Page<Visitor> findAll(Pageable pageable);
 
-	void delete(Long visitorId);
+	void delete(String visitorEmail);
 
 }

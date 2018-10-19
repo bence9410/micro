@@ -53,6 +53,6 @@ public class MachineMapper extends EntityMapper<Machine, MachineResource> {
 		Long machineId = machine.getId();
 		return new Link[] { //@formatter:off
 				createMachineSelfLink(amusementParkId, machineId),
-				createGetOnMachineLink(amusementParkId, machineId, null) }; //@formatter:off
+				createGetOnMachineLink(amusementParkId, machineId) }; //@formatter:off
 	}
 }

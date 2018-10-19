@@ -76,7 +76,6 @@ public class RabbitMQArchiveSender implements ArchiveSender {
 
 	private ArchiveVisitorDTO convertToArchiveVisitor(Visitor visitor) {
 		return ArchiveVisitorDTO.builder() //@formatter:off
-				.identifier(visitor.getId())
 				.email(visitor.getEmail())
 				.dateOfBirth(visitor.getDateOfBirth())
 				.dateOfSignUp(visitor.getDateOfSignUp()).build(); //@formatter:on
@@ -87,7 +86,7 @@ public class RabbitMQArchiveSender implements ArchiveSender {
 				.identifier(guestBookRegistry.getId())
 				.textOfRegistry(guestBookRegistry.getTextOfRegistry())
 				.dateOfRegistry(guestBookRegistry.getDateOfRegistry())
-				.visitorId(guestBookRegistry.getVisitor().getId()).build(); //@formatter:on
+				.visitorEmail(guestBookRegistry.getVisitor().getEmail()).build(); //@formatter:on
 	}
 
 }

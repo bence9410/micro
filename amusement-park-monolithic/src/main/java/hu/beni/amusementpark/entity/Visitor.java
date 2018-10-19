@@ -11,7 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
@@ -41,10 +40,6 @@ public class Visitor implements Serializable {
 	private static final long serialVersionUID = -2955989272392888202L;
 
 	@Id
-	@GeneratedValue
-	private Long id;
-
-	@Column(unique = true)
 	@NotNull
 	@Email(regexp = ".+@.+\\..+")
 	private String email;

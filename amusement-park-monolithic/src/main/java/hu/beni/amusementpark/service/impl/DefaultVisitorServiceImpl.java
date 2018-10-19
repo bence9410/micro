@@ -54,8 +54,8 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 	private final AmusementParkKnowVisitorRepository amusementParkKnowVisitorRepository;
 
 	@Override
-	public Visitor findByEmail(String email) {
-		return ifNull(visitorRepository.findByEmail(email), String.format(COULD_NOT_FIND_USER, email));
+	public Visitor findByEmail(String visitorEmail) {
+		return ifNull(visitorRepository.findByEmail(visitorEmail), String.format(COULD_NOT_FIND_USER, visitorEmail));
 	}
 
 	@Override
@@ -66,18 +66,18 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 		return visitorRepository.save(visitor);
 	}
 
-	public void uploadMoney(Integer ammount, String email) {
-		visitorRepository.incrementSpendingMoneyByEmail(ammount, email);
+	public void uploadMoney(Integer ammount, String visitorEmail) {
+		visitorRepository.incrementSpendingMoneyByEmail(ammount, visitorEmail);
 	}
 
 	@Override
-	public Visitor findOne(Long visitorId) {
-		return ifNull(visitorRepository.findById(visitorId), VISITOR_NOT_SIGNED_UP);
+	public Visitor findOne(String visitorEmail) {
+		return ifNull(visitorRepository.findById(visitorEmail), VISITOR_NOT_SIGNED_UP);
 	}
 
 	@Override
-	public Visitor enterPark(Long amusementParkId, Long visitorId) {
-		return enterPark(findAmusementParkIdAndEntranceFeeByIdExceptionIfNotFound(amusementParkId), visitorId);
+	public Visitor enterPark(Long amusementParkId, String visitorEmail) {
+		return enterPark(findAmusementParkIdAndEntranceFeeByIdExceptionIfNotFound(amusementParkId), visitorEmail);
 	}
 
 	protected AmusementPark findAmusementParkIdAndEntranceFeeByIdExceptionIfNotFound(Long amusementParkId) {
@@ -85,8 +85,8 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 				NO_AMUSEMENT_PARK_WITH_ID);
 	}
 
-	protected Visitor enterPark(AmusementPark amusementPark, Long visitorId) {
-		Visitor visitor = ifNull(visitorRepository.findById(visitorId), VISITOR_NOT_SIGNED_UP);
+	protected Visitor enterPark(AmusementPark amusementPark, String visitorEmail) {
+		Visitor visitor = ifNull(visitorRepository.findById(visitorEmail), VISITOR_NOT_SIGNED_UP);
 		checkIfVisitorAbleToEnterPark(amusementPark.getEntranceFee(), visitor);
 		addToKnownVisitorsIfFirstEnter(amusementPark, visitor);
 		incrementCaitalAndDecreaseSpendingMoneyAndSetPark(amusementPark, visitor);
@@ -100,8 +100,8 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 	}
 
 	private void addToKnownVisitorsIfFirstEnter(AmusementPark amusementPark, Visitor visitor) {
-		if (amusementParkKnowVisitorRepository.countByAmusementParkIdAndVisitorId(amusementPark.getId(),
-				visitor.getId()) == 0) {
+		if (amusementParkKnowVisitorRepository.countByAmusementParkIdAndVisitorEmail(amusementPark.getId(),
+				visitor.getEmail()) == 0) {
 			amusementParkKnowVisitorRepository.save(new AmusementParkKnowVisitor(amusementPark, visitor));
 		}
 	}
@@ -114,9 +114,9 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId, String email) {
+	public Visitor getOnMachine(Long amusementParkId, Long machineId, String visitorEmail) {
 		return getOnMachine(amusementParkId,
-				findMachineByIdAndAmusementParkIdExceptionIfNotFound(amusementParkId, machineId), visitorId, email);
+				findMachineByIdAndAmusementParkIdExceptionIfNotFound(amusementParkId, machineId), visitorEmail);
 	}
 
 	protected Machine findMachineByIdAndAmusementParkIdExceptionIfNotFound(Long amusementParkId, Long machineId) {
@@ -124,9 +124,8 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 				NO_MACHINE_IN_PARK_WITH_ID);
 	}
 
-	protected Visitor getOnMachine(Long amusementParkId, Machine machine, Long visitorId, String email) {
-		Visitor visitor = ifNull(
-				visitorRepository.findByAmusementParkIdAndVisitorIdAndEmail(amusementParkId, visitorId, email),
+	protected Visitor getOnMachine(Long amusementParkId, Machine machine, String visitorEmail) {
+		Visitor visitor = ifNull(visitorRepository.findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail),
 				NO_VISITOR_IN_PARK_WITH_ID);
 		checkIfVisitorAbleToGetOnMachine(machine, visitor);
 		incrementCapitalAndDecreaseSpendingMoneyAndSetMachine(amusementParkId, machine, visitor);
@@ -151,8 +150,8 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public Visitor getOffMachine(Long machineId, Long visitorId, String email) {
-		Visitor visitor = ifNull(visitorRepository.findByMachineIdAndVisitorIdAndEmail(machineId, visitorId, email),
+	public Visitor getOffMachine(Long machineId, String visitorEmail) {
+		Visitor visitor = ifNull(visitorRepository.findByMachineIdAndVisitorEmail(machineId, visitorEmail),
 				NO_VISITOR_ON_MACHINE_WITH_ID);
 		visitor.setMachine(null);
 		visitor.setState(VisitorState.REST);
@@ -160,9 +159,8 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public Visitor leavePark(Long amusementParkId, Long visitorId, String email) {
-		Visitor visitor = ifNull(
-				visitorRepository.findByAmusementParkIdAndVisitorIdAndEmail(amusementParkId, visitorId, email),
+	public Visitor leavePark(Long amusementParkId, String visitorEmail) {
+		Visitor visitor = ifNull(visitorRepository.findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail),
 				NO_VISITOR_IN_PARK_WITH_ID);
 		visitor.setAmusementPark(null);
 		visitor.setState(null);
@@ -175,7 +173,7 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public void delete(Long visitorId) {
-		visitorRepository.deleteById(visitorId);
+	public void delete(String visitorEmail) {
+		visitorRepository.deleteById(visitorEmail);
 	}
 }

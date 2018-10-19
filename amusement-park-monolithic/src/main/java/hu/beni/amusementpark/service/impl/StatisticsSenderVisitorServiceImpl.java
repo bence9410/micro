@@ -31,20 +31,20 @@ public class StatisticsSenderVisitorServiceImpl extends DefaultVisitorServiceImp
 	}
 
 	@Override
-	public Visitor enterPark(Long amusementParkId, Long visitorId) {
+	public Visitor enterPark(Long amusementParkId, String visitorEmail) {
 		AmusementPark amusementPark = findAmusementParkIdAndEntranceFeeByIdExceptionIfNotFound(amusementParkId);
-		Visitor visitor = enterPark(amusementPark, visitorId);
-		eventPublisher
-				.publishEvent(new VisitorEnterParkEventDTO(amusementParkId, visitorId, amusementPark.getEntranceFee()));
+		Visitor visitor = enterPark(amusementPark, visitorEmail);
+		eventPublisher.publishEvent(
+				new VisitorEnterParkEventDTO(amusementParkId, visitorEmail, amusementPark.getEntranceFee()));
 		return visitor;
 	}
 
 	@Override
-	public Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId, String email) {
+	public Visitor getOnMachine(Long amusementParkId, Long machineId, String visitorEmail) {
 		Machine machine = findMachineByIdAndAmusementParkIdExceptionIfNotFound(amusementParkId, machineId);
-		Visitor visitor = getOnMachine(amusementParkId, machine, visitorId, email);
+		Visitor visitor = getOnMachine(amusementParkId, machine, visitorEmail);
 		eventPublisher.publishEvent(
-				new VisitorGetOnMachineEventDTO(amusementParkId, visitorId, machine.getTicketPrice(), machineId));
+				new VisitorGetOnMachineEventDTO(amusementParkId, visitorEmail, machine.getTicketPrice(), machineId));
 		return visitor;
 	}
 
