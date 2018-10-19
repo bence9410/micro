@@ -40,9 +40,9 @@ public class StatisticsSenderVisitorServiceImpl extends DefaultVisitorServiceImp
 	}
 
 	@Override
-	public Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId) {
+	public Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId, String email) {
 		Machine machine = findMachineByIdAndAmusementParkIdExceptionIfNotFound(amusementParkId, machineId);
-		Visitor visitor = getOnMachine(amusementParkId, machine, visitorId);
+		Visitor visitor = getOnMachine(amusementParkId, machine, visitorId, email);
 		eventPublisher.publishEvent(
 				new VisitorGetOnMachineEventDTO(amusementParkId, visitorId, machine.getTicketPrice(), machineId));
 		return visitor;

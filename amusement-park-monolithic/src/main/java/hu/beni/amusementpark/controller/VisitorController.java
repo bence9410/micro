@@ -102,9 +102,9 @@ public class VisitorController {
 	}
 
 	@PostMapping(UPLOAD_MONEY)
-	public ResponseEntity<Void> uploadMoney(@RequestBody Integer ammount) {
-		visitorService.uploadMoney(ammount);
-		return ResponseEntity.ok().build();
+	public Void uploadMoney(@RequestBody Integer ammount, Principal principal) {
+		visitorService.uploadMoney(ammount, principal.getName());
+		return null;
 	}
 
 	@GetMapping(VISITORS)
@@ -129,19 +129,21 @@ public class VisitorController {
 	}
 
 	@PutMapping(IN_A_PARK_A_VISITOR_LEAVE_PARK)
-	public VisitorResource leavePark(@PathVariable Long amusementParkId, @PathVariable Long visitorId) {
-		return visitorMapper.toResource(visitorService.leavePark(amusementParkId, visitorId));
+	public VisitorResource leavePark(@PathVariable Long amusementParkId, @PathVariable Long visitorId,
+			Principal principal) {
+		return visitorMapper.toResource(visitorService.leavePark(amusementParkId, visitorId, principal.getName()));
 	}
 
 	@PutMapping(IN_A_PARK_ON_A_MACHINE_A_VISITOR_GET_ON)
 	public VisitorResource getOnMachine(@PathVariable Long amusementParkId, @PathVariable Long machineId,
-			@PathVariable Long visitorId) {
-		return visitorMapper.toResource(visitorService.getOnMachine(amusementParkId, machineId, visitorId));
+			@PathVariable Long visitorId, Principal principal) {
+		return visitorMapper
+				.toResource(visitorService.getOnMachine(amusementParkId, machineId, visitorId, principal.getName()));
 	}
 
 	@PutMapping(IN_A_PARK_ON_A_MACHINE_A_VISITOR_GET_OFF)
 	public VisitorResource getOffMachine(@PathVariable Long amusementParkId, @PathVariable Long machineId,
-			@PathVariable Long visitorId) {
-		return visitorMapper.toResource(visitorService.getOffMachine(machineId, visitorId));
+			@PathVariable Long visitorId, Principal principal) {
+		return visitorMapper.toResource(visitorService.getOffMachine(machineId, visitorId, principal.getName()));
 	}
 }

@@ -66,8 +66,8 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 		return visitorRepository.save(visitor);
 	}
 
-	public void uploadMoney(Integer ammount) {
-		visitorRepository.incrementSpendingMoneyForLoggedInVisitor(ammount);
+	public void uploadMoney(Integer ammount, String email) {
+		visitorRepository.incrementSpendingMoneyByEmail(ammount, email);
 	}
 
 	@Override
@@ -114,9 +114,9 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId) {
+	public Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId, String email) {
 		return getOnMachine(amusementParkId,
-				findMachineByIdAndAmusementParkIdExceptionIfNotFound(amusementParkId, machineId), visitorId);
+				findMachineByIdAndAmusementParkIdExceptionIfNotFound(amusementParkId, machineId), visitorId, email);
 	}
 
 	protected Machine findMachineByIdAndAmusementParkIdExceptionIfNotFound(Long amusementParkId, Long machineId) {
@@ -124,8 +124,9 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 				NO_MACHINE_IN_PARK_WITH_ID);
 	}
 
-	protected Visitor getOnMachine(Long amusementParkId, Machine machine, Long visitorId) {
-		Visitor visitor = ifNull(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId),
+	protected Visitor getOnMachine(Long amusementParkId, Machine machine, Long visitorId, String email) {
+		Visitor visitor = ifNull(
+				visitorRepository.findByAmusementParkIdAndVisitorIdAndEmail(amusementParkId, visitorId, email),
 				NO_VISITOR_IN_PARK_WITH_ID);
 		checkIfVisitorAbleToGetOnMachine(machine, visitor);
 		incrementCapitalAndDecreaseSpendingMoneyAndSetMachine(amusementParkId, machine, visitor);
@@ -150,8 +151,8 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public Visitor getOffMachine(Long machineId, Long visitorId) {
-		Visitor visitor = ifNull(visitorRepository.findByMachineIdAndVisitorId(machineId, visitorId),
+	public Visitor getOffMachine(Long machineId, Long visitorId, String email) {
+		Visitor visitor = ifNull(visitorRepository.findByMachineIdAndVisitorIdAndEmail(machineId, visitorId, email),
 				NO_VISITOR_ON_MACHINE_WITH_ID);
 		visitor.setMachine(null);
 		visitor.setState(VisitorState.REST);
@@ -159,8 +160,9 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 	}
 
 	@Override
-	public Visitor leavePark(Long amusementParkId, Long visitorId) {
-		Visitor visitor = ifNull(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId),
+	public Visitor leavePark(Long amusementParkId, Long visitorId, String email) {
+		Visitor visitor = ifNull(
+				visitorRepository.findByAmusementParkIdAndVisitorIdAndEmail(amusementParkId, visitorId, email),
 				NO_VISITOR_IN_PARK_WITH_ID);
 		visitor.setAmusementPark(null);
 		visitor.setState(null);

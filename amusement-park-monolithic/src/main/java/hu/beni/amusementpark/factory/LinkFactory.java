@@ -45,7 +45,7 @@ public class LinkFactory {
 	}
 
 	public static Link createUploadMoneyLink() {
-		return linkTo(methodOn(visitorControllerClass).uploadMoney(null)).withRel(UPLOAD_MONEY);
+		return linkTo(methodOn(visitorControllerClass).uploadMoney(null, null)).withRel(UPLOAD_MONEY);
 	}
 
 	public static Link createAmusementParkLink() {
@@ -82,17 +82,17 @@ public class LinkFactory {
 	}
 
 	public static Link createGetOnMachineLink(Long amusementParkId, Long machineId, Long visitorId) {
-		return linkTo(methodOn(visitorControllerClass).getOnMachine(amusementParkId, machineId, visitorId))
+		return linkTo(methodOn(visitorControllerClass).getOnMachine(amusementParkId, machineId, visitorId, null))
 				.withRel(GET_ON_MACHINE);
 	}
 
 	public static Link createGetOffMachineLink(Long amusementParkId, Long machineId, Long visitorId) {
-		return linkTo(methodOn(visitorControllerClass).getOffMachine(amusementParkId, machineId, visitorId))
+		return linkTo(methodOn(visitorControllerClass).getOffMachine(amusementParkId, machineId, visitorId, null))
 				.withRel(GET_OFF_MACHINE);
 	}
 
 	public static Link createVisitorLeavePark(Long amusementParkId, Long visitorId) {
-		return linkTo(methodOn(visitorControllerClass).leavePark(amusementParkId, visitorId))
+		return linkTo(methodOn(visitorControllerClass).leavePark(amusementParkId, visitorId, null))
 				.withRel(VISITOR_LEAVE_PARK);
 	}
 

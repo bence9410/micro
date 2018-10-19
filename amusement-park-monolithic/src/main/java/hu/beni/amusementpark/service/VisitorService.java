@@ -11,17 +11,17 @@ public interface VisitorService {
 
 	Visitor signUp(Visitor visitor);
 
-	void uploadMoney(Integer ammount);
+	void uploadMoney(Integer ammount, String email);
 
 	Visitor findOne(Long visitorId);
 
-	Visitor leavePark(Long amusementParkId, Long visitorId);
+	Visitor leavePark(Long amusementParkId, Long visitorId, String email);
 
 	Visitor enterPark(Long amusementParkId, Long visitorId);
 
-	Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId);
+	Visitor getOnMachine(Long amusementParkId, Long machineId, Long visitorId, String email);
 
-	Visitor getOffMachine(Long machineId, Long visitorId);
+	Visitor getOffMachine(Long machineId, Long visitorId, String email);
 
 	Page<Visitor> findAll(Pageable pageable);
 
