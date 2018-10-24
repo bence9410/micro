@@ -7,10 +7,8 @@ import javax.validation.Valid;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.hateoas.Resources;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import hu.beni.amusementpark.mapper.MachineMapper;
 import hu.beni.amusementpark.service.MachineService;
-import hu.beni.amusementpark.validator.MachineResourceValidator;
 import hu.beni.clientsupport.resource.MachineResource;
 import lombok.RequiredArgsConstructor;
 
@@ -31,11 +28,6 @@ public class MachineController {
 
 	private final MachineService machineService;
 	private final MachineMapper machineMapper;
-
-	@InitBinder("machineResource")
-	protected void initBinder(WebDataBinder webDataBinder) {
-		webDataBinder.addValidators(new MachineResourceValidator());
-	}
 
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")

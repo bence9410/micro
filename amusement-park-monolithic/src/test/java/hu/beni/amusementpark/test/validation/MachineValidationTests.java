@@ -1,12 +1,5 @@
 package hu.beni.amusementpark.test.validation;
 
-import static hu.beni.amusementpark.constants.FieldNameConstants.FANTASY_NAME;
-import static hu.beni.amusementpark.constants.FieldNameConstants.MINIMUM_REQUIRED_AGE;
-import static hu.beni.amusementpark.constants.FieldNameConstants.NUMBER_OF_SEATS;
-import static hu.beni.amusementpark.constants.FieldNameConstants.PRICE;
-import static hu.beni.amusementpark.constants.FieldNameConstants.SIZE;
-import static hu.beni.amusementpark.constants.FieldNameConstants.TICKET_PRICE;
-import static hu.beni.amusementpark.constants.FieldNameConstants.TYPE;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_26_LENGTH;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4_LENGTH;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
@@ -20,6 +13,14 @@ import org.junit.Test;
 import hu.beni.amusementpark.entity.Machine;
 
 public class MachineValidationTests extends AbstractValidation<Machine> {
+
+	private static final String FANTASY_NAME = "fantasyName";
+	private static final String SIZE = "size";
+	private static final String PRICE = "price";
+	private static final String NUMBER_OF_SEATS = "numberOfSeats";
+	private static final String MINIMUM_REQUIRED_AGE = "minimumRequiredAge";
+	private static final String TICKET_PRICE = "ticketPrice";
+	private static final String TYPE = "type";
 
 	private Machine machine;
 

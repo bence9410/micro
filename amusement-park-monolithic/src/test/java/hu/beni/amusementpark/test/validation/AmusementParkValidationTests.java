@@ -1,11 +1,5 @@
 package hu.beni.amusementpark.test.validation;
 
-import static hu.beni.amusementpark.constants.FieldNameConstants.ADDRESS;
-import static hu.beni.amusementpark.constants.FieldNameConstants.CAPITAL;
-import static hu.beni.amusementpark.constants.FieldNameConstants.COUNTRY_IN_ADDRESS;
-import static hu.beni.amusementpark.constants.FieldNameConstants.ENTRANCE_FEE;
-import static hu.beni.amusementpark.constants.FieldNameConstants.NAME;
-import static hu.beni.amusementpark.constants.FieldNameConstants.TOTAL_AREA;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_21_LENGTH;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4_LENGTH;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
@@ -20,6 +14,13 @@ import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
 
 public class AmusementParkValidationTests extends AbstractValidation<AmusementPark> {
+
+	private static final String NAME = "name";
+	private static final String CAPITAL = "capital";
+	private static final String TOTAL_AREA = "totalArea";
+	private static final String ENTRANCE_FEE = "entranceFee";
+	private static final String ADDRESS = "address";
+	private static final String COUNTRY_IN_ADDRESS = ADDRESS + "." + "country";
 
 	private AmusementPark amusementPark;
 

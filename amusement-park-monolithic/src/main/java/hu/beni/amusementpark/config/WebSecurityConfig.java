@@ -3,8 +3,6 @@ package hu.beni.amusementpark.config;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.COULD_NOT_FIND_USER;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.ERROR;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.UNEXPECTED_ERROR_OCCURED;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.EMAIL_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.sizeMessage;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -214,14 +212,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	static class ValidateingUsernamePasswordAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-		private static final String USERNAME_FORM_KEY = "email";
-
 		private boolean postOnly = true;
 		private int min = 5;
 		private int max = 25;
 
 		public ValidateingUsernamePasswordAuthenticationFilter() {
-			setUsernameParameter(USERNAME_FORM_KEY);
+			setUsernameParameter("email");
 		}
 
 		@Override
@@ -243,7 +239,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 		private String validateEmail(String email) {
 			return Optional.ofNullable(email).filter(this::isValidEmail)
-					.orElseThrow(() -> new BadCredentialsException("Email " + EMAIL_MESSAGE));
+					.orElseThrow(() -> new BadCredentialsException("Email must be a well-formed email address"));
 		}
 
 		private boolean isValidEmail(String email) {
@@ -251,11 +247,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		}
 
 		private String validatePassword(String credential) {
-			return Optional.ofNullable(credential).map(String::trim).filter(this::isLengthBetween5And25)
-					.orElseThrow(() -> new BadCredentialsException("Password " + String.format(sizeMessage(min, max))));
+			return Optional.ofNullable(credential).map(String::trim).filter(this::isLengthBetweenMinAndMax)
+					.orElseThrow(() -> new BadCredentialsException(
+							String.format("Password size must be between %d and %d", min, max)));
 		}
 
-		private boolean isLengthBetween5And25(String string) {
+		private boolean isLengthBetweenMinAndMax(String string) {
 			return string.length() >= min && string.length() <= max;
 		}
 

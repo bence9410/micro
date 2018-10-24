@@ -1,11 +1,8 @@
 package hu.beni.amusementpark.test.integration;
 
-import static hu.beni.amusementpark.constants.Constants.ROLE_VISITOR;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.MACHINE_IS_TOO_EXPENSIVE;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_ARCHIVE_SEND_TYPE;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.validationError;
-import static hu.beni.amusementpark.constants.FieldNameConstants.ADDRESS;
-import static hu.beni.amusementpark.constants.FieldNameConstants.TYPE;
 import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.oneOfMessage;
@@ -121,7 +118,7 @@ public class AmusementParkApplicationTests {
 		assertEquals(email, actualVisitorResource.getEmail());
 		assertEquals(dateOfBirth, actualVisitorResource.getDateOfBirth());
 		assertEquals(spendingMoney.intValue(), actualVisitorResource.getSpendingMoney().intValue());
-		assertEquals(ROLE_VISITOR, actualVisitorResource.getAuthority());
+		assertEquals("ROLE_VISITOR", actualVisitorResource.getAuthority());
 		assertNull(actualVisitorResource.getPassword());
 		assertNull(actualVisitorResource.getConfirmPassword());
 		assertEquals(3, actualVisitorResource.getLinks().size());
@@ -208,7 +205,7 @@ public class AmusementParkApplicationTests {
 		machineResource.setType("asd");
 
 		assertThrows(() -> client.post(uri(machineLinkHref), machineResource, String.class),
-				HttpClientErrorException.class, teaPotStatusAndMachineTypeMustBeOneOf());
+				HttpClientErrorException.class, teaPotStatusAndMachineTypeMustMatch());
 
 		machineResource.setType(MachineType.CAROUSEL.toString());
 		machineResource.setPrice(2000);
@@ -401,15 +398,15 @@ public class AmusementParkApplicationTests {
 	private ExceptionAsserter<HttpClientErrorException> teaPotStatusAndAddressNullMessage() {
 		return exception -> {
 			assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
-			assertEquals(validationError(ADDRESS, NOT_NULL_MESSAGE), exception.getResponseBodyAsString());
+			assertEquals(validationError("address", NOT_NULL_MESSAGE), exception.getResponseBodyAsString());
 		};
 	}
 
-	private ExceptionAsserter<HttpClientErrorException> teaPotStatusAndMachineTypeMustBeOneOf() {
+	private ExceptionAsserter<HttpClientErrorException> teaPotStatusAndMachineTypeMustMatch() {
 		return exception -> {
 			assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
 			assertEquals(
-					validationError(TYPE, oneOfMessage(
+					validationError("type", oneOfMessage(
 							Stream.of(MachineType.values()).map(MachineType::toString).collect(toSet()).toString())),
 					exception.getResponseBodyAsString());
 		};

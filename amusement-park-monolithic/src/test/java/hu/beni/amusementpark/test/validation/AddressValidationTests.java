@@ -1,10 +1,5 @@
 package hu.beni.amusementpark.test.validation;
 
-import static hu.beni.amusementpark.constants.FieldNameConstants.CITY;
-import static hu.beni.amusementpark.constants.FieldNameConstants.COUNTRY;
-import static hu.beni.amusementpark.constants.FieldNameConstants.HOUSE_NUMBER;
-import static hu.beni.amusementpark.constants.FieldNameConstants.STREET;
-import static hu.beni.amusementpark.constants.FieldNameConstants.ZIP_CODE;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_EMPTY;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_11_LENGTH;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_16_LENGTH;
@@ -14,7 +9,7 @@ import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_6_LENGTH;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_EMPTY_MESSAGE;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.*;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.sizeMessage;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createAddress;
 
 import org.junit.Before;
@@ -23,6 +18,12 @@ import org.junit.Test;
 import hu.beni.amusementpark.entity.Address;
 
 public class AddressValidationTests extends AbstractValidation<Address> {
+
+	private static final String COUNTRY = "country";
+	private static final String ZIP_CODE = "zipCode";
+	private static final String CITY = "city";
+	private static final String STREET = "street";
+	private static final String HOUSE_NUMBER = "houseNumber";
 
 	private Address address;
 

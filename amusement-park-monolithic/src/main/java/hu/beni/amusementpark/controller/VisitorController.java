@@ -1,12 +1,5 @@
 package hu.beni.amusementpark.controller;
 
-import static hu.beni.amusementpark.constants.Constants.REMEMBER_ME;
-import static hu.beni.amusementpark.constants.Constants.ROLE_VISITOR;
-import static hu.beni.amusementpark.constants.Constants.SET_COOKIE;
-import static hu.beni.amusementpark.constants.Constants.TRUE_LOWERCASE;
-import static hu.beni.amusementpark.constants.FieldNameConstants.EMAIL;
-import static hu.beni.amusementpark.constants.FieldNameConstants.PASSWO;
-
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
@@ -58,7 +51,7 @@ public class VisitorController {
 
 	@PostMapping("/signUp")
 	public ResponseEntity<VisitorResource> signUp(HttpServletRequest request,
-			@RequestParam(name = REMEMBER_ME, required = false) String rememberMe,
+			@RequestParam(name = "remember-me", required = false) String rememberMe,
 			@Valid @RequestBody VisitorResource visitorResource) {
 		signUpAsVisitor(visitorResource);
 		return copyCookiesAndBody(login(createLoginUrl(request), rememberMe, visitorResource));
@@ -66,7 +59,7 @@ public class VisitorController {
 
 	private Visitor signUpAsVisitor(VisitorResource visitorResource) {
 		Visitor visitor = visitorMapper.toEntity(visitorResource);
-		visitor.setAuthority(ROLE_VISITOR);
+		visitor.setAuthority("ROLE_VISITOR");
 		return visitorService.signUp(visitor);
 	}
 
@@ -77,17 +70,17 @@ public class VisitorController {
 
 	private ResponseEntity<VisitorResource> login(String loginUrl, String rememberMe, VisitorResource visitorResource) {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-		map.add(EMAIL, visitorResource.getEmail());
-		map.add(PASSWO, visitorResource.getPassword());
-		if (TRUE_LOWERCASE.equals(rememberMe)) {
-			map.add(REMEMBER_ME, rememberMe);
+		map.add("email", visitorResource.getEmail());
+		map.add("password", visitorResource.getPassword());
+		if (Boolean.TRUE.toString().toLowerCase().equals(rememberMe)) {
+			map.add("remember-me", rememberMe);
 		}
 		return restTemplate.postForEntity(loginUrl, map, VisitorResource.class);
 	}
 
 	private ResponseEntity<VisitorResource> copyCookiesAndBody(ResponseEntity<VisitorResource> loginResponse) {
-		List<String> cookies = loginResponse.getHeaders().get(SET_COOKIE);
-		return ResponseEntity.ok().header(SET_COOKIE, cookies.toArray(new String[cookies.size()]))
+		List<String> cookies = loginResponse.getHeaders().get("Set-Cookie");
+		return ResponseEntity.ok().header("Set-Cookie", cookies.toArray(new String[cookies.size()]))
 				.body(loginResponse.getBody());
 	}
 

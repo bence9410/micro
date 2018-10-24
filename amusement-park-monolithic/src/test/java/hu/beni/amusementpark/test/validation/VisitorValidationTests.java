@@ -1,10 +1,5 @@
 package hu.beni.amusementpark.test.validation;
 
-import static hu.beni.amusementpark.constants.FieldNameConstants.AUTHORITY;
-import static hu.beni.amusementpark.constants.FieldNameConstants.DATE_OF_BIRTH;
-import static hu.beni.amusementpark.constants.FieldNameConstants.EMAIL;
-import static hu.beni.amusementpark.constants.FieldNameConstants.PASSWO;
-import static hu.beni.amusementpark.constants.FieldNameConstants.SPENDING_MONEY;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_26_LENGTH;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4_LENGTH;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_59_LENGTH;
@@ -24,6 +19,12 @@ import org.junit.Test;
 import hu.beni.amusementpark.entity.Visitor;
 
 public class VisitorValidationTests extends AbstractValidation<Visitor> {
+
+	private static final String EMAIL = "email";
+	private static final String PASSWO = "password";
+	private static final String AUTHORITY = "authority";
+	private static final String DATE_OF_BIRTH = "dateOfBirth";
+	private static final String SPENDING_MONEY = "spendingMoney";
 
 	private Visitor visitor;
 

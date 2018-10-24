@@ -1,8 +1,5 @@
 package hu.beni.amusementpark.test.validation;
 
-import static hu.beni.amusementpark.constants.FieldNameConstants.AMUSEMENT_PARK;
-import static hu.beni.amusementpark.constants.FieldNameConstants.TEXT_OF_REGISTRY;
-import static hu.beni.amusementpark.constants.FieldNameConstants.VISITOR;
 import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_101_LENGTH;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4_LENGTH;
@@ -17,6 +14,10 @@ import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.entity.Visitor;
 
 public class GuestBookRegistryValidationTests extends AbstractValidation<GuestBookRegistry> {
+
+	private static final String TEXT_OF_REGISTRY = "textOfRegistry";
+	private static final String AMUSEMENT_PARK = "amusementPark";
+	private static final String VISITOR = "visitor";
 
 	private GuestBookRegistry guestBookRegistry;
 
