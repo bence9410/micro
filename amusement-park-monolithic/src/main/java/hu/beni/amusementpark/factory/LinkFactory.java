@@ -40,12 +40,12 @@ public class LinkFactory {
 		return linkTo(baseLinksControllerClass).slash(LOGOUT).withRel(LOGOUT);
 	}
 
-	public static Link createUserLink() {
-		return linkTo(methodOn(visitorControllerClass).getUser(null)).withRel(ME);
+	public static Link createMeLink() {
+		return linkTo(methodOn(visitorControllerClass).me(null)).withRel(ME);
 	}
 
-	public static Link createUserLinkWithSelfRel() {
-		return linkTo(methodOn(visitorControllerClass).getUser(null)).withSelfRel();
+	public static Link createMeLinkWithSelfRel() {
+		return linkTo(methodOn(visitorControllerClass).me(null)).withSelfRel();
 	}
 
 	public static Link createUploadMoneyLink() {

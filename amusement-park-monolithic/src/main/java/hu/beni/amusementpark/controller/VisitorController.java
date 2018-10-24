@@ -60,7 +60,7 @@ public class VisitorController {
 	private final RestTemplate restTemplate;
 
 	@GetMapping(ME)
-	public ResponseEntity<VisitorResource> getUser(Principal principal) {
+	public ResponseEntity<VisitorResource> me(Principal principal) {
 		return Optional.ofNullable(principal).map(Principal::getName).map(visitorService::findByEmail)
 				.map(visitorMapper::toResource).map(ResponseEntity::ok)
 				.orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
