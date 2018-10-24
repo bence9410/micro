@@ -6,10 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
@@ -23,7 +20,6 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.Range;
 
-import hu.beni.amusementpark.enums.VisitorState;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -62,10 +58,6 @@ public class Visitor implements Serializable {
 	@NotNull
 	@Range(min = 50, max = Integer.MAX_VALUE)
 	private Integer spendingMoney;
-
-	@Enumerated(EnumType.STRING)
-	@Column(name = "Visitor_State")
-	private VisitorState state;
 
 	@Lob
 	private String photo;

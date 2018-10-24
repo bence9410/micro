@@ -37,7 +37,6 @@ import org.springframework.data.domain.Pageable;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
-import hu.beni.amusementpark.enums.VisitorState;
 import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.repository.AmusementParkKnowVisitorRepository;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
@@ -219,7 +218,6 @@ public class VisitorServiceUnitTests {
 
 		assertEquals(spendingMoney - amusementPark.getEntranceFee(), visitor.getSpendingMoney().longValue());
 		assertEquals(amusementPark, visitor.getAmusementPark());
-		assertEquals(VisitorState.REST, visitor.getState());
 
 		verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
 		verify(visitorRepository).findById(visitorEmail);
@@ -247,7 +245,6 @@ public class VisitorServiceUnitTests {
 
 		assertEquals(spendingMoney - amusementPark.getEntranceFee(), visitor.getSpendingMoney().longValue());
 		assertEquals(amusementPark, visitor.getAmusementPark());
-		assertEquals(VisitorState.REST, visitor.getState());
 
 		verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
 		verify(visitorRepository).findById(visitorEmail);
@@ -289,7 +286,7 @@ public class VisitorServiceUnitTests {
 		Long amusementParkId = 0L;
 		Machine machine = Machine.builder().id(1L).build();
 		Long machineId = machine.getId();
-		Visitor visitor = Visitor.builder().email("benike@gmail.com").state(VisitorState.ON_MACHINE).build();
+		Visitor visitor = Visitor.builder().email("benike@gmail.com").machine(machine).build();
 		String visitorEmail = visitor.getEmail();
 
 		when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId))
@@ -388,7 +385,6 @@ public class VisitorServiceUnitTests {
 
 		assertEquals(spendingMoney - machine.getTicketPrice(), visitor.getSpendingMoney().longValue());
 		assertEquals(machine, visitor.getMachine());
-		assertEquals(VisitorState.ON_MACHINE, visitor.getState());
 
 		verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
 		verify(visitorRepository).findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail);
@@ -410,8 +406,7 @@ public class VisitorServiceUnitTests {
 	@Test
 	public void getOffMachinePositive() {
 		Long machineId = 0L;
-		Visitor visitor = Visitor.builder().email("benike@gmail.com").state(VisitorState.ON_MACHINE)
-				.machine(Machine.builder().build()).build();
+		Visitor visitor = Visitor.builder().email("benike@gmail.com").machine(Machine.builder().build()).build();
 		String visitorEmail = visitor.getEmail();
 
 		when(visitorRepository.findByMachineIdAndVisitorEmail(machineId, visitorEmail))
@@ -420,7 +415,6 @@ public class VisitorServiceUnitTests {
 		assertEquals(visitor, visitorService.getOffMachine(machineId, visitorEmail));
 
 		assertNull(visitor.getMachine());
-		assertEquals(VisitorState.REST, visitor.getState());
 
 		verify(visitorRepository).findByMachineIdAndVisitorEmail(machineId, visitorEmail);
 	}
@@ -440,7 +434,7 @@ public class VisitorServiceUnitTests {
 	public void leaveParkPositive() {
 		Long amusementParkId = 0L;
 		Visitor visitor = Visitor.builder().email("benike@gmail.com").amusementPark(AmusementPark.builder().build())
-				.state(VisitorState.REST).spendingMoney(100).build();
+				.spendingMoney(100).build();
 		String visitorEmail = visitor.getEmail();
 
 		when(visitorRepository.findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail))
@@ -449,7 +443,6 @@ public class VisitorServiceUnitTests {
 		visitorService.leavePark(amusementParkId, visitorEmail);
 
 		assertNull(visitor.getAmusementPark());
-		assertNull(visitor.getState());
 		assertNotNull(visitor.getSpendingMoney());
 
 		verify(visitorRepository).findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail);

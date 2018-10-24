@@ -22,7 +22,6 @@ import org.springframework.security.core.userdetails.User;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
-import hu.beni.amusementpark.enums.VisitorState;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
 import hu.beni.amusementpark.service.VisitorService;
@@ -113,7 +112,6 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 		Visitor inParkVisitor = visitorService.enterPark(amusementParkId, visitorEmail);
 		assertEquals(visitor.getSpendingMoney() - amusementPark.getEntranceFee(),
 				inParkVisitor.getSpendingMoney().longValue());
-		assertEquals(VisitorState.REST, inParkVisitor.getState());
 		assertEquals(amusementParkId, inParkVisitor.getAmusementPark().getId());
 		select += 4;
 		update += 2;
@@ -132,7 +130,6 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 		Visitor onMachineVisitor = visitorService.getOnMachine(amusementParkId, machineId, visitorEmail);
 		assertEquals(visitor.getSpendingMoney() - amusementPark.getEntranceFee() - machine.getTicketPrice(),
 				onMachineVisitor.getSpendingMoney().longValue());
-		assertEquals(VisitorState.ON_MACHINE, onMachineVisitor.getState());
 		assertEquals(machineId, onMachineVisitor.getMachine().getId());
 		select += 3;
 		update += 2;
@@ -146,7 +143,6 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 	private void getOffMachine() {
 		Visitor offMachineVisitor = visitorService.getOffMachine(machineId, visitorEmail);
 		assertNull(offMachineVisitor.getMachine());
-		assertEquals(VisitorState.REST, offMachineVisitor.getState());
 		select++;
 		update++;
 		assertStatements();
@@ -155,7 +151,6 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 	private void leavePark() {
 		Visitor leftParkVisitor = visitorService.leavePark(amusementParkId, visitorEmail);
 		assertNull(leftParkVisitor.getAmusementPark());
-		assertNull(leftParkVisitor.getState());
 		select++;
 		update++;
 		assertStatements();

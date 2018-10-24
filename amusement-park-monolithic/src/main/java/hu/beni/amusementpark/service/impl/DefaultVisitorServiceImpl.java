@@ -13,7 +13,6 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_O
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_TOO_YOUNG;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_NOT_SIGNED_UP;
 import static hu.beni.amusementpark.constants.SpringProfileConstants.RABBIT_MQ;
-import static hu.beni.amusementpark.exception.ExceptionUtil.ifEquals;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifFirstLessThanSecond;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifNotNull;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifNotZero;
@@ -34,7 +33,6 @@ import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.AmusementParkKnowVisitor;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
-import hu.beni.amusementpark.enums.VisitorState;
 import hu.beni.amusementpark.repository.AmusementParkKnowVisitorRepository;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
@@ -108,7 +106,6 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 
 	private void incrementCaitalAndDecreaseSpendingMoneyAndSetPark(AmusementPark amusementPark, Visitor visitor) {
 		visitor.setSpendingMoney(visitor.getSpendingMoney() - amusementPark.getEntranceFee());
-		visitor.setState(VisitorState.REST);
 		visitor.setAmusementPark(amusementPark);
 		amusementParkRepository.incrementCapitalById(amusementPark.getEntranceFee(), amusementPark.getId());
 	}
@@ -133,7 +130,7 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 	}
 
 	private void checkIfVisitorAbleToGetOnMachine(Machine machine, Visitor visitor) {
-		ifEquals(VisitorState.ON_MACHINE, visitor.getState(), VISITOR_IS_ON_A_MACHINE);
+		ifNotNull(visitor.getMachine(), VISITOR_IS_ON_A_MACHINE);
 		ifFirstLessThanSecond(visitor.getSpendingMoney(), machine.getTicketPrice(), NOT_ENOUGH_MONEY);
 		ifFirstLessThanSecond(Period.between(visitor.getDateOfBirth(), LocalDate.now()).getYears(),
 				machine.getMinimumRequiredAge(), VISITOR_IS_TOO_YOUNG);
@@ -146,7 +143,6 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 		amusementParkRepository.incrementCapitalById(machine.getTicketPrice(), amusementParkId);
 		visitor.setSpendingMoney(visitor.getSpendingMoney() - machine.getTicketPrice());
 		visitor.setMachine(machine);
-		visitor.setState(VisitorState.ON_MACHINE);
 	}
 
 	@Override
@@ -154,7 +150,6 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 		Visitor visitor = ifNull(visitorRepository.findByMachineIdAndVisitorEmail(machineId, visitorEmail),
 				NO_VISITOR_ON_MACHINE_WITH_ID);
 		visitor.setMachine(null);
-		visitor.setState(VisitorState.REST);
 		return visitor;
 	}
 
@@ -163,7 +158,6 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 		Visitor visitor = ifNull(visitorRepository.findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail),
 				NO_VISITOR_IN_PARK_WITH_ID);
 		visitor.setAmusementPark(null);
-		visitor.setState(null);
 		return visitor;
 	}
 
