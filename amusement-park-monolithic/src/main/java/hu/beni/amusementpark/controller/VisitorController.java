@@ -6,15 +6,6 @@ import static hu.beni.amusementpark.constants.Constants.SET_COOKIE;
 import static hu.beni.amusementpark.constants.Constants.TRUE_LOWERCASE;
 import static hu.beni.amusementpark.constants.FieldNameConstants.EMAIL;
 import static hu.beni.amusementpark.constants.FieldNameConstants.PASSWO;
-import static hu.beni.amusementpark.constants.RequestMappingConstants.A_VISITOR;
-import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_A_VISITOR_ENTER_PARK;
-import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_A_VISITOR_LEAVE_PARK;
-import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_ON_A_MACHINE_A_VISITOR_GET_OFF;
-import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_ON_A_MACHINE_A_VISITOR_GET_ON;
-import static hu.beni.amusementpark.constants.RequestMappingConstants.ME;
-import static hu.beni.amusementpark.constants.RequestMappingConstants.SIGN_UP;
-import static hu.beni.amusementpark.constants.RequestMappingConstants.UPLOAD_MONEY;
-import static hu.beni.amusementpark.constants.RequestMappingConstants.VISITORS;
 
 import java.security.Principal;
 import java.util.List;
@@ -42,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import hu.beni.amusementpark.constants.RequestMappingConstants;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.mapper.VisitorMapper;
 import hu.beni.amusementpark.service.VisitorService;
@@ -59,14 +49,14 @@ public class VisitorController {
 	private final VisitorMapper visitorMapper;
 	private final RestTemplate restTemplate;
 
-	@GetMapping(ME)
+	@GetMapping("/me")
 	public ResponseEntity<VisitorResource> me(Principal principal) {
 		return Optional.ofNullable(principal).map(Principal::getName).map(visitorService::findByEmail)
 				.map(visitorMapper::toResource).map(ResponseEntity::ok)
 				.orElse(ResponseEntity.status(HttpStatus.UNAUTHORIZED).build());
 	}
 
-	@PostMapping(SIGN_UP)
+	@PostMapping("/signUp")
 	public ResponseEntity<VisitorResource> signUp(HttpServletRequest request,
 			@RequestParam(name = REMEMBER_ME, required = false) String rememberMe,
 			@Valid @RequestBody VisitorResource visitorResource) {
@@ -81,7 +71,7 @@ public class VisitorController {
 	}
 
 	private String createLoginUrl(HttpServletRequest request) {
-		return "http://" + request.getServerName() + ":" + request.getServerPort() + RequestMappingConstants.SLASH
+		return "http://" + request.getServerName() + ":" + request.getServerPort() + "/"
 				+ HATEOASLinkRelConstants.LOGIN;
 	}
 
@@ -101,40 +91,40 @@ public class VisitorController {
 				.body(loginResponse.getBody());
 	}
 
-	@PostMapping(UPLOAD_MONEY)
+	@PostMapping("/visitors/uploadMoney")
 	public ResponseEntity<Void> uploadMoney(@RequestBody Integer ammount, Principal principal) {
 		visitorService.uploadMoney(ammount, principal.getName());
 		return ResponseEntity.ok().build();
 	}
 
-	@GetMapping(VISITORS)
+	@GetMapping("/visitors")
 	public PagedResources<VisitorResource> findAllPaged(@PageableDefault Pageable pageable) {
 		return visitorMapper.toPagedResources(visitorService.findAll(pageable));
 	}
 
 	@PreAuthorize("hasRole('ADMIN')")
-	@DeleteMapping(A_VISITOR)
+	@DeleteMapping("/visitors/{visitorId}")
 	public void delete(@PathVariable String visitorEmail) {
 		visitorService.delete(visitorEmail);
 	}
 
-	@PutMapping(IN_A_PARK_A_VISITOR_ENTER_PARK)
+	@PutMapping("amusement-parks/{amusementParkId}/visitors/enter-park")
 	public VisitorResource enterPark(@PathVariable Long amusementParkId, Principal principal) {
 		return visitorMapper.toResource(visitorService.enterPark(amusementParkId, principal.getName()));
 	}
 
-	@PutMapping(IN_A_PARK_A_VISITOR_LEAVE_PARK)
+	@PutMapping("amusement-parks/{amusementParkId}/visitors/leave-park")
 	public VisitorResource leavePark(@PathVariable Long amusementParkId, Principal principal) {
 		return visitorMapper.toResource(visitorService.leavePark(amusementParkId, principal.getName()));
 	}
 
-	@PutMapping(IN_A_PARK_ON_A_MACHINE_A_VISITOR_GET_ON)
+	@PutMapping("amusement-parks/{amusementParkId}/machines/{machineId}/visitors/get-on-machine")
 	public VisitorResource getOnMachine(@PathVariable Long amusementParkId, @PathVariable Long machineId,
 			Principal principal) {
 		return visitorMapper.toResource(visitorService.getOnMachine(amusementParkId, machineId, principal.getName()));
 	}
 
-	@PutMapping(IN_A_PARK_ON_A_MACHINE_A_VISITOR_GET_OFF)
+	@PutMapping("amusement-parks/{amusementParkId}/machines/{machineId}/visitors/get-off-machine")
 	public VisitorResource getOffMachine(@PathVariable Long amusementParkId, @PathVariable Long machineId,
 			Principal principal) {
 		return visitorMapper.toResource(visitorService.getOffMachine(machineId, principal.getName()));

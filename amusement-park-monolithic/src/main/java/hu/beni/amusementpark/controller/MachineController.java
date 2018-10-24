@@ -1,8 +1,5 @@
 package hu.beni.amusementpark.controller;
 
-import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_AN_AMUSEMENT_PARK_MACHINES;
-import static hu.beni.amusementpark.constants.RequestMappingConstants.MACHINE_ID;
-
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -27,7 +24,7 @@ import hu.beni.clientsupport.resource.MachineResource;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping(IN_AN_AMUSEMENT_PARK_MACHINES)
+@RequestMapping("amusement-parks/{amusementParkId}/machines")
 @RequiredArgsConstructor
 @ConditionalOnWebApplication
 public class MachineController {
@@ -48,7 +45,7 @@ public class MachineController {
 				.toResource(machineService.addMachine(amusementParkId, machineMapper.toEntity(machineResource)));
 	}
 
-	@GetMapping(MACHINE_ID)
+	@GetMapping("/{machineId}")
 	public MachineResource findOne(@PathVariable Long amusementParkId, @PathVariable Long machineId) {
 		return machineMapper.toResource(machineService.findOne(amusementParkId, machineId));
 	}
@@ -59,7 +56,7 @@ public class MachineController {
 				.map(machineMapper::toResource).collect(Collectors.toList()));
 	}
 
-	@DeleteMapping(MACHINE_ID)
+	@DeleteMapping("/{machineId}")
 	@PreAuthorize("hasRole('ADMIN')")
 	public void delete(@PathVariable Long amusementParkId, @PathVariable Long machineId) {
 		machineService.removeMachine(amusementParkId, machineId);

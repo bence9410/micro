@@ -1,8 +1,5 @@
 package hu.beni.amusementpark.controller;
 
-import static hu.beni.amusementpark.constants.RequestMappingConstants.A_GUEST_BOOK_REGISTRY;
-import static hu.beni.amusementpark.constants.RequestMappingConstants.IN_A_PARK_A_VISITOR_GUEST_BOOK_REGISTRIES;
-
 import java.security.Principal;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -25,14 +22,14 @@ public class GuestBookRegistryController {
 	private final GuestBookRegistryService guestBookRegistryService;
 	private final GuestBookRegistryMapper guestBookRegistryMapper;
 
-	@PostMapping(IN_A_PARK_A_VISITOR_GUEST_BOOK_REGISTRIES)
+	@PostMapping("/amusement-parks/{amusementParkId}/visitors/guest-book-registries")
 	public GuestBookRegistryResource addRegistry(@PathVariable Long amusementParkId, @RequestBody String textOfRegistry,
 			Principal principal) {
 		return guestBookRegistryMapper
 				.toResource(guestBookRegistryService.addRegistry(amusementParkId, principal.getName(), textOfRegistry));
 	}
 
-	@GetMapping(A_GUEST_BOOK_REGISTRY)
+	@GetMapping("guest-book-registries/{guestBookRegistryId}")
 	public GuestBookRegistryResource findOne(@PathVariable Long guestBookRegistryId) {
 		return guestBookRegistryMapper.toResource(guestBookRegistryService.findOne(guestBookRegistryId));
 	}

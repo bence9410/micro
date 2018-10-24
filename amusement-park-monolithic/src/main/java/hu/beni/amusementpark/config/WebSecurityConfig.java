@@ -3,12 +3,6 @@ package hu.beni.amusementpark.config;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.COULD_NOT_FIND_USER;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.ERROR;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.UNEXPECTED_ERROR_OCCURED;
-import static hu.beni.amusementpark.constants.RequestMappingConstants.INDEX_JS;
-import static hu.beni.amusementpark.constants.RequestMappingConstants.LINKS;
-import static hu.beni.amusementpark.constants.RequestMappingConstants.ME;
-import static hu.beni.amusementpark.constants.RequestMappingConstants.SIGN_UP;
-import static hu.beni.amusementpark.constants.RequestMappingConstants.SLASH;
-import static hu.beni.amusementpark.constants.RequestMappingConstants.WEBJARS;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.EMAIL_MESSAGE;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.sizeMessage;
 
@@ -150,7 +144,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http //@formatter:off
             .authorizeRequests()
-            	.antMatchers(SLASH, WEBJARS, INDEX_JS, LINKS, ME, SIGN_UP)
+            	.antMatchers("/", "/webjars/**", "/index.js", "/links", "/me", "/signUp")
             	.permitAll()
                 .anyRequest()
                 .authenticated()
@@ -160,12 +154,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     				authenticationManagerBean(), rememberMeServices()), UsernamePasswordAuthenticationFilter.class)
             .logout()
             	.addLogoutHandler(rememberMeServices())
-            	.logoutSuccessUrl(SLASH)
+            	.logoutSuccessUrl("/")
                 .and()
             .csrf()
             	.disable()
             .exceptionHandling()
-            	.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(SLASH)); //@formatter:on
+            	.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/")); //@formatter:on
 	}
 
 	@RequiredArgsConstructor
