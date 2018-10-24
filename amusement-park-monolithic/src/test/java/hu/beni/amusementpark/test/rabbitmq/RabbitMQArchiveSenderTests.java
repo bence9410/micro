@@ -8,7 +8,6 @@ import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -16,10 +15,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -71,13 +66,10 @@ public class RabbitMQArchiveSenderTests extends AbstractRabbitMQTests {
 		amusementParkId = amusementParkService.save(createAmusementParkWithAddress()).getId();
 		machineService.addMachine(amusementParkId, createMachine());
 		Visitor visitor = visitorService.signUp(createVisitor());
-		SecurityContextHolder.getContext().setAuthentication(
-				new UsernamePasswordAuthenticationToken(new User(visitor.getEmail(), visitor.getPassword(),
-						Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority()))), null));
-		Long visitorId = visitor.getId();
-		visitorService.enterPark(amusementParkId, visitorId);
-		guestBookRegistryService.addRegistry(amusementParkId, visitorId, OPINION_ON_THE_PARK);
-		visitorService.leavePark(amusementParkId, visitorId);
+		String visitorEmail = visitor.getEmail();
+		visitorService.enterPark(amusementParkId, visitorEmail);
+		guestBookRegistryService.addRegistry(amusementParkId, visitorEmail, OPINION_ON_THE_PARK);
+		visitorService.leavePark(amusementParkId, visitorEmail);
 	}
 
 	private AmusementPark findAmusementParkWithoutActiveVisitors() {
@@ -143,7 +135,6 @@ public class RabbitMQArchiveSenderTests extends AbstractRabbitMQTests {
 			assertEquals(expected.getId(), actual.getIdentifier());
 			assertEquals(expected.getTextOfRegistry(), actual.getTextOfRegistry());
 			assertEquals(expected.getDateOfRegistry(), actual.getDateOfRegistry());
-			assertEquals(expected.getVisitor().getId(), actual.getVisitorId());
 		});
 	}
 
@@ -152,7 +143,6 @@ public class RabbitMQArchiveSenderTests extends AbstractRabbitMQTests {
 		Iterator<ArchiveVisitorDTO> actualKnownVisitorsIterator = actualKnownVisitors.iterator();
 		expectedKnownVisitors.forEach(expected -> {
 			ArchiveVisitorDTO actual = actualKnownVisitorsIterator.next();
-			assertEquals(expected.getId(), actual.getIdentifier());
 			assertEquals(expected.getEmail(), actual.getEmail());
 			assertEquals(expected.getDateOfBirth(), actual.getDateOfBirth());
 			assertEquals(expected.getDateOfSignUp(), actual.getDateOfSignUp());

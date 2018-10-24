@@ -23,8 +23,8 @@ public class GuestBookRegistryValidationTests extends AbstractValidation<GuestBo
 	@Before
 	public void setUp() {
 		guestBookRegistry = GuestBookRegistry.builder().textOfRegistry(OPINION_ON_THE_PARK)
-				.visitor(Visitor.builder().id(1000L).build()).amusementPark(AmusementPark.builder().id(1001L).build())
-				.build();
+				.visitor(Visitor.builder().email("benike@gmail.com").build())
+				.amusementPark(AmusementPark.builder().id(1001L).build()).build();
 	}
 
 	@Test

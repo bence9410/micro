@@ -67,6 +67,7 @@ public class GuestBookRegistryRepositoryTests extends AbstractStatementCounterTe
 		assertNotNull(guestBookRegistry.getId());
 		assertEquals(guestBookRegistryBeforeSave, guestBookRegistry);
 		assertTrue(guestBookRegistry.getDateOfRegistry().isBefore(LocalDateTime.now()));
+		select++;
 		insert++;
 		incrementSelectIfOracleDBProfileActive();
 		assertStatements();
@@ -82,6 +83,7 @@ public class GuestBookRegistryRepositoryTests extends AbstractStatementCounterTe
 	private void saveAll() {
 		guestBookRegistryRepository.saveAll(Arrays.asList(createGuestBookRegistrySetAmusementParkAndVisitor(),
 				createGuestBookRegistrySetAmusementParkAndVisitor()));
+		select++;
 		insert += 2;
 		incrementSelectIfOracleDBProfileActive(2);
 		assertStatements();

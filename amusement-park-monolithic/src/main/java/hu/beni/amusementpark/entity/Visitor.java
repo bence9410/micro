@@ -34,7 +34,7 @@ import lombok.experimental.Tolerate;
 @Getter
 @Setter
 @Builder
-@EqualsAndHashCode(of = { "id", "email", "dateOfBirth", "dateOfSignUp", "spendingMoney", "state" })
+@EqualsAndHashCode(of = "email")
 public class Visitor implements Serializable {
 
 	private static final long serialVersionUID = -2955989272392888202L;

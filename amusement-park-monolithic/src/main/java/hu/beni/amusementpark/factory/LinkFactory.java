@@ -44,6 +44,10 @@ public class LinkFactory {
 		return linkTo(methodOn(visitorControllerClass).getUser(null)).withRel(ME);
 	}
 
+	public static Link createUserLinkWithSelfRel() {
+		return linkTo(methodOn(visitorControllerClass).getUser(null)).withSelfRel();
+	}
+
 	public static Link createUploadMoneyLink() {
 		return linkTo(methodOn(visitorControllerClass).uploadMoney(null, null)).withRel(UPLOAD_MONEY);
 	}

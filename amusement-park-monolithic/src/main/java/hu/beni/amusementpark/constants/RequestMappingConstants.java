@@ -19,13 +19,13 @@ public class RequestMappingConstants {
 	public static final String VISITORS = "/visitors";
 	public static final String A_VISITOR = VISITORS + "/{visitorId}";
 
-	private static final String IN_A_PARK_A_VISITOR = AMUSEMENT_PARKS + AN_AMUSEMENT_PARK + A_VISITOR;
+	private static final String IN_A_PARK_A_VISITOR = AMUSEMENT_PARKS + AN_AMUSEMENT_PARK + VISITORS;
 
-	public static final String IN_A_PARK_A_VISITOR_ENTER_PARK = IN_A_PARK_A_VISITOR + "enter-park";
-	public static final String IN_A_PARK_A_VISITOR_LEAVE_PARK = IN_A_PARK_A_VISITOR + "leave-park";
+	public static final String IN_A_PARK_A_VISITOR_ENTER_PARK = IN_A_PARK_A_VISITOR + "/enter-park";
+	public static final String IN_A_PARK_A_VISITOR_LEAVE_PARK = IN_A_PARK_A_VISITOR + "/leave-park";
 
 	private static final String IN_A_PARK_ON_A_MACHINE_A_VISITOR = IN_AN_AMUSEMENT_PARK_MACHINES + MACHINE_ID
-			+ A_VISITOR;
+			+ VISITORS;
 
 	public static final String IN_A_PARK_ON_A_MACHINE_A_VISITOR_GET_ON = IN_A_PARK_ON_A_MACHINE_A_VISITOR
 			+ "/get-on-machine";

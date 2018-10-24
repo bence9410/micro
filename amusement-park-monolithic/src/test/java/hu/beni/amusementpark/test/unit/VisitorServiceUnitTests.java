@@ -119,32 +119,32 @@ public class VisitorServiceUnitTests {
 
 	@Test
 	public void findOneNegativeNotSignedUp() {
-		Long visitorId = 0L;
+		String visitorEmail = "benike@gmail.com";
 
-		assertThatThrownBy(() -> visitorService.findOne(visitorId)).isInstanceOf(AmusementParkException.class)
+		assertThatThrownBy(() -> visitorService.findOne(visitorEmail)).isInstanceOf(AmusementParkException.class)
 				.hasMessage(VISITOR_NOT_SIGNED_UP);
 
-		verify(visitorRepository).findById(visitorId);
+		verify(visitorRepository).findById(visitorEmail);
 	}
 
 	@Test
 	public void findOnePositive() {
-		Visitor visitor = Visitor.builder().id(0L).build();
-		Long visitorId = visitor.getId();
+		Visitor visitor = Visitor.builder().email("benike@gmail.com").build();
+		String visitorEmail = visitor.getEmail();
 
-		when(visitorRepository.findById(visitorId)).thenReturn(Optional.of(visitor));
+		when(visitorRepository.findById(visitorEmail)).thenReturn(Optional.of(visitor));
 
-		assertEquals(visitor, visitorService.findOne(visitorId));
+		assertEquals(visitor, visitorService.findOne(visitorEmail));
 
-		verify(visitorRepository).findById(visitorId);
+		verify(visitorRepository).findById(visitorEmail);
 	}
 
 	@Test
 	public void enterParkNegativeNoPark() {
 		Long amusementParkId = 0L;
-		Long visitorId = 1L;
+		String visitorEmail = "benike@gmail.com";
 
-		assertThatThrownBy(() -> visitorService.enterPark(amusementParkId, visitorId))
+		assertThatThrownBy(() -> visitorService.enterPark(amusementParkId, visitorEmail))
 				.isInstanceOf(AmusementParkException.class).hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
 
 		verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
@@ -154,75 +154,76 @@ public class VisitorServiceUnitTests {
 	public void enterParkNegativeNotSignedUp() {
 		AmusementPark amusementPark = AmusementPark.builder().id(0L).entranceFee(50).build();
 		Long amusementParkId = amusementPark.getId();
-		Long visitorId = 1L;
+		String visitorEmail = "benike@gmail.com";
 
 		when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId))
 				.thenReturn(Optional.of(amusementPark));
 
-		assertThatThrownBy(() -> visitorService.enterPark(amusementParkId, visitorId))
+		assertThatThrownBy(() -> visitorService.enterPark(amusementParkId, visitorEmail))
 				.isInstanceOf(AmusementParkException.class).hasMessage(VISITOR_NOT_SIGNED_UP);
 
 		verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
-		verify(visitorRepository).findById(visitorId);
+		verify(visitorRepository).findById(visitorEmail);
 	}
 
 	@Test
 	public void enterParkNegativeNotEnoughMoney() {
 		AmusementPark amusementPark = AmusementPark.builder().id(0L).entranceFee(50).build();
 		Long amusementParkId = amusementPark.getId();
-		Visitor visitor = Visitor.builder().id(1L).spendingMoney(20).build();
-		Long visitorId = visitor.getId();
+		Visitor visitor = Visitor.builder().email("benike@gmail.com").spendingMoney(20).build();
+		String visitorEmail = visitor.getEmail();
 
 		when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId))
 				.thenReturn(Optional.of(amusementPark));
-		when(visitorRepository.findById(visitorId)).thenReturn(Optional.of(visitor));
+		when(visitorRepository.findById(visitorEmail)).thenReturn(Optional.of(visitor));
 
-		assertThatThrownBy(() -> visitorService.enterPark(amusementParkId, visitorId))
+		assertThatThrownBy(() -> visitorService.enterPark(amusementParkId, visitorEmail))
 				.isInstanceOf(AmusementParkException.class).hasMessage(NOT_ENOUGH_MONEY);
 
 		verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
-		verify(visitorRepository).findById(visitorId);
+		verify(visitorRepository).findById(visitorEmail);
 	}
 
 	@Test
 	public void enterParkNegativeVisitorIsInAPark() {
 		AmusementPark amusementPark = AmusementPark.builder().id(0L).entranceFee(50).build();
 		Long amusementParkId = amusementPark.getId();
-		Visitor visitor = Visitor.builder().id(1L).spendingMoney(100).amusementPark(amusementPark).build();
-		Long visitorId = visitor.getId();
+		Visitor visitor = Visitor.builder().email("benike@gmail.com").spendingMoney(100).amusementPark(amusementPark)
+				.build();
+		String visitorEmail = visitor.getEmail();
 
 		when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId))
 				.thenReturn(Optional.of(amusementPark));
-		when(visitorRepository.findById(visitorId)).thenReturn(Optional.of(visitor));
+		when(visitorRepository.findById(visitorEmail)).thenReturn(Optional.of(visitor));
 
-		assertThatThrownBy(() -> visitorService.enterPark(amusementParkId, visitorId))
+		assertThatThrownBy(() -> visitorService.enterPark(amusementParkId, visitorEmail))
 				.isInstanceOf(AmusementParkException.class).hasMessage(VISITOR_IS_IN_A_PARK);
 
 		verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
-		verify(visitorRepository).findById(visitorId);
+		verify(visitorRepository).findById(visitorEmail);
 	}
 
 	@Test
 	public void enterParkPositiveAddVisitorToKnown() {
 		AmusementPark amusementPark = AmusementPark.builder().id(0L).entranceFee(50).build();
 		Long amusementParkId = amusementPark.getId();
-		Visitor visitor = Visitor.builder().id(1L).spendingMoney(100).build();
-		Long visitorId = visitor.getId();
+		Visitor visitor = Visitor.builder().email("benike@gmail.com").spendingMoney(100).build();
+		String visitorEmail = visitor.getEmail();
 		Integer spendingMoney = visitor.getSpendingMoney();
 
 		when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId))
 				.thenReturn(Optional.of(amusementPark));
-		when(visitorRepository.findById(visitorId)).thenReturn(Optional.of(visitor));
+		when(visitorRepository.findById(visitorEmail)).thenReturn(Optional.of(visitor));
 
-		assertEquals(visitor, visitorService.enterPark(amusementParkId, visitorId));
+		assertEquals(visitor, visitorService.enterPark(amusementParkId, visitorEmail));
 
 		assertEquals(spendingMoney - amusementPark.getEntranceFee(), visitor.getSpendingMoney().longValue());
 		assertEquals(amusementPark, visitor.getAmusementPark());
 		assertEquals(VisitorState.REST, visitor.getState());
 
 		verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
-		verify(visitorRepository).findById(visitorId);
-		verify(amusementParkKnowVisitorRepository).countByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
+		verify(visitorRepository).findById(visitorEmail);
+		verify(amusementParkKnowVisitorRepository).countByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail);
 		verify(amusementParkKnowVisitorRepository).save(any());
 		verify(amusementParkRepository).incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
 	}
@@ -231,26 +232,26 @@ public class VisitorServiceUnitTests {
 	public void enterParkPositiveVisitorAlreadyKnown() {
 		AmusementPark amusementPark = AmusementPark.builder().id(0L).entranceFee(50).build();
 		Long amusementParkId = amusementPark.getId();
-		Visitor visitor = Visitor.builder().id(1L).spendingMoney(100).build();
-		Long visitorId = visitor.getId();
+		Visitor visitor = Visitor.builder().email("benike@gmail.com").spendingMoney(100).build();
+		String visitorEmail = visitor.getEmail();
 		Long numberOfKnowsVisitorsById = 1L;
 		Integer spendingMoney = visitor.getSpendingMoney();
 
 		when(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId))
 				.thenReturn(Optional.of(amusementPark));
-		when(visitorRepository.findById(visitorId)).thenReturn(Optional.of(visitor));
-		when(amusementParkKnowVisitorRepository.countByAmusementParkIdAndVisitorId(amusementParkId, visitorId))
+		when(visitorRepository.findById(visitorEmail)).thenReturn(Optional.of(visitor));
+		when(amusementParkKnowVisitorRepository.countByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail))
 				.thenReturn(numberOfKnowsVisitorsById);
 
-		assertEquals(visitor, visitorService.enterPark(amusementParkId, visitorId));
+		assertEquals(visitor, visitorService.enterPark(amusementParkId, visitorEmail));
 
 		assertEquals(spendingMoney - amusementPark.getEntranceFee(), visitor.getSpendingMoney().longValue());
 		assertEquals(amusementPark, visitor.getAmusementPark());
 		assertEquals(VisitorState.REST, visitor.getState());
 
 		verify(amusementParkRepository).findByIdReadOnlyIdAndEntranceFee(amusementParkId);
-		verify(visitorRepository).findById(visitorId);
-		verify(amusementParkKnowVisitorRepository).countByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
+		verify(visitorRepository).findById(visitorEmail);
+		verify(amusementParkKnowVisitorRepository).countByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail);
 		verify(amusementParkRepository).incrementCapitalById(amusementPark.getEntranceFee(), amusementParkId);
 	}
 
@@ -258,9 +259,9 @@ public class VisitorServiceUnitTests {
 	public void getOnMachineNegativeNoMachineInPark() {
 		Long amusementParkId = 0L;
 		Long machineId = 1L;
-		Long visitorId = 2L;
+		String visitorEmail = "benike@gmail.com";
 
-		assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId))
+		assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorEmail))
 				.isInstanceOf(AmusementParkException.class).hasMessage(NO_MACHINE_IN_PARK_WITH_ID);
 
 		verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
@@ -271,16 +272,16 @@ public class VisitorServiceUnitTests {
 		Long amusementParkId = 0L;
 		Machine machine = Machine.builder().id(1L).build();
 		Long machineId = machine.getId();
-		Long visitorId = 2L;
+		String visitorEmail = "benike@gmail.com";
 
 		when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId))
 				.thenReturn(Optional.of(machine));
 
-		assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId))
+		assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorEmail))
 				.isInstanceOf(AmusementParkException.class).hasMessage(NO_VISITOR_IN_PARK_WITH_ID);
 
 		verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
-		verify(visitorRepository).findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
+		verify(visitorRepository).findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail);
 	}
 
 	@Test
@@ -288,19 +289,19 @@ public class VisitorServiceUnitTests {
 		Long amusementParkId = 0L;
 		Machine machine = Machine.builder().id(1L).build();
 		Long machineId = machine.getId();
-		Visitor visitor = Visitor.builder().id(2L).state(VisitorState.ON_MACHINE).build();
-		Long visitorId = visitor.getId();
+		Visitor visitor = Visitor.builder().email("benike@gmail.com").state(VisitorState.ON_MACHINE).build();
+		String visitorEmail = visitor.getEmail();
 
 		when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId))
 				.thenReturn(Optional.of(machine));
-		when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId))
+		when(visitorRepository.findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail))
 				.thenReturn(Optional.of(visitor));
 
-		assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId))
+		assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorEmail))
 				.isInstanceOf(AmusementParkException.class).hasMessage(VISITOR_IS_ON_A_MACHINE);
 
 		verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
-		verify(visitorRepository).findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
+		verify(visitorRepository).findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail);
 	}
 
 	@Test
@@ -308,19 +309,19 @@ public class VisitorServiceUnitTests {
 		Long amusementParkId = 0L;
 		Machine machine = Machine.builder().id(1L).ticketPrice(50).build();
 		Long machineId = machine.getId();
-		Visitor visitor = Visitor.builder().id(2L).spendingMoney(40).build();
-		Long visitorId = visitor.getId();
+		Visitor visitor = Visitor.builder().email("benike@gmail.com").spendingMoney(40).build();
+		String visitorEmail = visitor.getEmail();
 
 		when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId))
 				.thenReturn(Optional.of(machine));
-		when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId))
+		when(visitorRepository.findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail))
 				.thenReturn(Optional.of(visitor));
 
-		assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId))
+		assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorEmail))
 				.isInstanceOf(AmusementParkException.class).hasMessage(NOT_ENOUGH_MONEY);
 
 		verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
-		verify(visitorRepository).findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
+		verify(visitorRepository).findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail);
 	}
 
 	@Test
@@ -328,19 +329,20 @@ public class VisitorServiceUnitTests {
 		Long amusementParkId = 0L;
 		Machine machine = Machine.builder().id(1L).ticketPrice(20).minimumRequiredAge(20).build();
 		Long machineId = machine.getId();
-		Visitor visitor = Visitor.builder().id(2L).spendingMoney(40).dateOfBirth(LocalDate.now()).build();
-		Long visitorId = visitor.getId();
+		Visitor visitor = Visitor.builder().email("benike@gmail.com").spendingMoney(40).dateOfBirth(LocalDate.now())
+				.build();
+		String visitorEmail = visitor.getEmail();
 
 		when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId))
 				.thenReturn(Optional.of(machine));
-		when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId))
+		when(visitorRepository.findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail))
 				.thenReturn(Optional.of(visitor));
 
-		assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId))
+		assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorEmail))
 				.isInstanceOf(AmusementParkException.class).hasMessage(VISITOR_IS_TOO_YOUNG);
 
 		verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
-		verify(visitorRepository).findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
+		verify(visitorRepository).findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail);
 	}
 
 	@Test
@@ -348,20 +350,21 @@ public class VisitorServiceUnitTests {
 		Long amusementParkId = 0L;
 		Machine machine = Machine.builder().id(1L).ticketPrice(20).minimumRequiredAge(20).numberOfSeats(10).build();
 		Long machineId = machine.getId();
-		Visitor visitor = Visitor.builder().id(2L).spendingMoney(40).dateOfBirth(LocalDate.of(1990, 10, 20)).build();
-		Long visitorId = visitor.getId();
+		Visitor visitor = Visitor.builder().email("benike@gmail.com").spendingMoney(40)
+				.dateOfBirth(LocalDate.of(1990, 10, 20)).build();
+		String visitorEmail = visitor.getEmail();
 
 		when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId))
 				.thenReturn(Optional.of(machine));
-		when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId))
+		when(visitorRepository.findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail))
 				.thenReturn(Optional.of(visitor));
 		when(visitorRepository.countByMachineId(machineId)).thenReturn(10L);
 
-		assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorId))
+		assertThatThrownBy(() -> visitorService.getOnMachine(amusementParkId, machineId, visitorEmail))
 				.isInstanceOf(AmusementParkException.class).hasMessage(NO_FREE_SEAT_ON_MACHINE);
 
 		verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
-		verify(visitorRepository).findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
+		verify(visitorRepository).findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail);
 		verify(visitorRepository).countByMachineId(machineId);
 	}
 
@@ -370,24 +373,25 @@ public class VisitorServiceUnitTests {
 		Long amusementParkId = 0L;
 		Machine machine = Machine.builder().id(1L).ticketPrice(20).minimumRequiredAge(20).numberOfSeats(10).build();
 		Long machineId = machine.getId();
-		Visitor visitor = Visitor.builder().id(2L).spendingMoney(40).dateOfBirth(LocalDate.of(1990, 10, 20)).build();
-		Long visitorId = visitor.getId();
+		Visitor visitor = Visitor.builder().email("benike@gmail.com").spendingMoney(40)
+				.dateOfBirth(LocalDate.of(1990, 10, 20)).build();
+		String visitorEmail = visitor.getEmail();
 		Integer spendingMoney = visitor.getSpendingMoney();
 
 		when(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId))
 				.thenReturn(Optional.of(machine));
-		when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId))
+		when(visitorRepository.findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail))
 				.thenReturn(Optional.of(visitor));
 		when(visitorRepository.countByMachineId(machineId)).thenReturn(1L);
 
-		assertEquals(visitor, visitorService.getOnMachine(amusementParkId, machineId, visitorId));
+		assertEquals(visitor, visitorService.getOnMachine(amusementParkId, machineId, visitorEmail));
 
 		assertEquals(spendingMoney - machine.getTicketPrice(), visitor.getSpendingMoney().longValue());
 		assertEquals(machine, visitor.getMachine());
 		assertEquals(VisitorState.ON_MACHINE, visitor.getState());
 
 		verify(machineRepository).findByAmusementParkIdAndMachineId(amusementParkId, machineId);
-		verify(visitorRepository).findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
+		verify(visitorRepository).findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail);
 		verify(visitorRepository).countByMachineId(machineId);
 		verify(amusementParkRepository).incrementCapitalById(machine.getTicketPrice(), amusementParkId);
 	}
@@ -395,65 +399,66 @@ public class VisitorServiceUnitTests {
 	@Test
 	public void getOffMachineNegativeNoVisitor() {
 		Long machineId = 0L;
-		Long visitorId = 1L;
+		String visitorEmail = "benike@gmail.com";
 
-		assertThatThrownBy(() -> visitorService.getOffMachine(machineId, visitorId))
+		assertThatThrownBy(() -> visitorService.getOffMachine(machineId, visitorEmail))
 				.isInstanceOf(AmusementParkException.class).hasMessage(NO_VISITOR_ON_MACHINE_WITH_ID);
 
-		verify(visitorRepository).findByMachineIdAndVisitorId(machineId, visitorId);
+		verify(visitorRepository).findByMachineIdAndVisitorEmail(machineId, visitorEmail);
 	}
 
 	@Test
 	public void getOffMachinePositive() {
 		Long machineId = 0L;
-		Visitor visitor = Visitor.builder().id(1L).state(VisitorState.ON_MACHINE).machine(Machine.builder().build())
-				.build();
-		Long visitorId = visitor.getId();
+		Visitor visitor = Visitor.builder().email("benike@gmail.com").state(VisitorState.ON_MACHINE)
+				.machine(Machine.builder().build()).build();
+		String visitorEmail = visitor.getEmail();
 
-		when(visitorRepository.findByMachineIdAndVisitorId(machineId, visitorId)).thenReturn(Optional.of(visitor));
+		when(visitorRepository.findByMachineIdAndVisitorEmail(machineId, visitorEmail))
+				.thenReturn(Optional.of(visitor));
 
-		assertEquals(visitor, visitorService.getOffMachine(machineId, visitorId));
+		assertEquals(visitor, visitorService.getOffMachine(machineId, visitorEmail));
 
 		assertNull(visitor.getMachine());
 		assertEquals(VisitorState.REST, visitor.getState());
 
-		verify(visitorRepository).findByMachineIdAndVisitorId(machineId, visitorId);
+		verify(visitorRepository).findByMachineIdAndVisitorEmail(machineId, visitorEmail);
 	}
 
 	@Test
 	public void leaveParkNegativeNoVisitorInPark() {
 		Long amusementParkId = 0L;
-		Long visitorId = 1L;
+		String visitorEmail = "benike@gmail.com";
 
-		assertThatThrownBy(() -> visitorService.leavePark(amusementParkId, visitorId))
+		assertThatThrownBy(() -> visitorService.leavePark(amusementParkId, visitorEmail))
 				.isInstanceOf(AmusementParkException.class).hasMessage(NO_VISITOR_IN_PARK_WITH_ID);
 
-		verify(visitorRepository).findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
+		verify(visitorRepository).findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail);
 	}
 
 	@Test
 	public void leaveParkPositive() {
 		Long amusementParkId = 0L;
-		Visitor visitor = Visitor.builder().id(1L).amusementPark(AmusementPark.builder().build())
+		Visitor visitor = Visitor.builder().email("benike@gmail.com").amusementPark(AmusementPark.builder().build())
 				.state(VisitorState.REST).spendingMoney(100).build();
-		Long visitorId = visitor.getId();
+		String visitorEmail = visitor.getEmail();
 
-		when(visitorRepository.findByAmusementParkIdAndVisitorId(amusementParkId, visitorId))
+		when(visitorRepository.findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail))
 				.thenReturn(Optional.of(visitor));
 
-		visitorService.leavePark(amusementParkId, visitorId);
+		visitorService.leavePark(amusementParkId, visitorEmail);
 
 		assertNull(visitor.getAmusementPark());
 		assertNull(visitor.getState());
 		assertNotNull(visitor.getSpendingMoney());
 
-		verify(visitorRepository).findByAmusementParkIdAndVisitorId(amusementParkId, visitorId);
+		verify(visitorRepository).findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail);
 	}
 
 	@Test
 	public void findAllPositive() {
-		Page<Visitor> page = new PageImpl<>(
-				Arrays.asList(Visitor.builder().id(0L).build(), Visitor.builder().id(1L).build()));
+		Page<Visitor> page = new PageImpl<>(Arrays.asList(Visitor.builder().email("benike@gmail.com").build(),
+				Visitor.builder().email("jenike@gmail.com").build()));
 		Pageable pageable = PageRequest.of(0, 10);
 
 		when(visitorRepository.findAll(pageable)).thenReturn(page);
@@ -465,10 +470,10 @@ public class VisitorServiceUnitTests {
 
 	@Test
 	public void deletePositive() {
-		Long visitorId = 0L;
+		String visitorEmail = "benike@gmail.com";
 
-		visitorService.delete(visitorId);
+		visitorService.delete(visitorEmail);
 
-		verify(visitorRepository).deleteById(visitorId);
+		verify(visitorRepository).deleteById(visitorEmail);
 	}
 }

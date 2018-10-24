@@ -30,8 +30,8 @@ public class OracleRowNumberPartitionTests {
 
 	private static final String SELECT_ALL_VISITOR_EMAIL_AND_LAST_GUEST_BOOK_REGISTRY = "select visitor.email, "
 			+ "guestBookRegistry.text_of_registry from Visitor visitor join (select * from (select row_number() "
-			+ "over (partition by visitor_id order by date_of_registry desc) rn, gbr.* from guest_book_registry "
-			+ "gbr) where rn = 1) guestBookRegistry on visitor.id = guestBookRegistry.visitor_id";
+			+ "over (partition by visitor_email order by date_of_registry desc) rn, gbr.* from guest_book_registry "
+			+ "gbr) where rn = 1) guestBookRegistry on visitor.email = guestBookRegistry.visitor_email";
 
 	@Autowired
 	private AmusementParkRepository amusementParkRepository;

@@ -3,15 +3,10 @@ package hu.beni.amusementpark.test.rabbitmq;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
@@ -34,16 +29,14 @@ public class RabbitMQStatisticsSenderTests extends AbstractRabbitMQTests {
 		AmusementPark amusementPark = amusementParkService.save(ValidEntityFactory.createAmusementParkWithAddress());
 		Machine machine = machineService.addMachine(amusementPark.getId(), ValidEntityFactory.createMachine());
 		Visitor visitor = visitorService.signUp(ValidEntityFactory.createVisitor());
-		SecurityContextHolder.getContext().setAuthentication(
-				new UsernamePasswordAuthenticationToken(new User(visitor.getEmail(), visitor.getPassword(),
-						Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority()))), null));
+		String visitorEmail = visitor.getEmail();
 
-		visitorService.enterPark(amusementPark.getId(), visitor.getId());
+		visitorService.enterPark(amusementPark.getId(), visitorEmail);
 		assertEnterParkEventReceivedAndEquals(
-				new VisitorEnterParkEventDTO(amusementPark.getId(), visitor.getId(), amusementPark.getEntranceFee()));
+				new VisitorEnterParkEventDTO(amusementPark.getId(), visitorEmail, amusementPark.getEntranceFee()));
 
-		visitorService.getOnMachine(amusementPark.getId(), machine.getId(), visitor.getId());
-		assertGetOnMachineEventReceivedAndEquals(new VisitorGetOnMachineEventDTO(amusementPark.getId(), visitor.getId(),
+		visitorService.getOnMachine(amusementPark.getId(), machine.getId(), visitorEmail);
+		assertGetOnMachineEventReceivedAndEquals(new VisitorGetOnMachineEventDTO(amusementPark.getId(), visitorEmail,
 				machine.getTicketPrice(), machine.getId()));
 	}
 

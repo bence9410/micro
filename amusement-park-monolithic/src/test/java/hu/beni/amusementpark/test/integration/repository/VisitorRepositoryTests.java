@@ -2,7 +2,6 @@ package hu.beni.amusementpark.test.integration.repository;
 
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
@@ -11,10 +10,6 @@ import java.util.Arrays;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
@@ -39,7 +34,7 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 	private AmusementPark amusementPark;
 	private Machine machine;
 	private Visitor visitor;
-	private Long visitorId;
+	private String visitorEmail;
 
 	private int num;
 
@@ -54,6 +49,7 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 
 	@Test
 	public void test() {
+
 		save();
 
 		saveAll();
@@ -66,7 +62,7 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 
 		findByMachineIdAndVisitorId();
 
-		findByAmusementParkIdAndVisitorId();
+		findByAmusementParkIdAndVisitorEmail();
 
 		findById();
 
@@ -80,12 +76,11 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 	private void save() {
 		Visitor visitorBeforeSave = createVisitorSetAmusementParkAndMachine();
 		visitor = visitorRepository.save(visitorBeforeSave);
-		visitorId = visitor.getId();
-		assertNotNull(visitorId);
+		visitorEmail = visitor.getEmail();
 		assertEquals(visitorBeforeSave, visitor);
 		assertTrue(visitor.getDateOfSignUp().isBefore(LocalDateTime.now()));
+		select++;
 		insert++;
-		incrementSelectIfOracleDBProfileActive();
 		assertStatements();
 	}
 
@@ -100,8 +95,8 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 	private void saveAll() {
 		visitorRepository.saveAll(
 				Arrays.asList(createVisitorSetAmusementParkAndMachine(), createVisitorSetAmusementParkAndMachine()));
+		select += 2;
 		insert += 2;
-		incrementSelectIfOracleDBProfileActive(2);
 		assertStatements();
 	}
 
@@ -125,23 +120,20 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 	}
 
 	private void findByMachineIdAndVisitorId() {
-		SecurityContextHolder.getContext().setAuthentication(
-				new UsernamePasswordAuthenticationToken(new User(visitor.getEmail(), visitor.getPassword(),
-						Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority()))), null));
-		assertEquals(visitor, visitorRepository.findByMachineIdAndVisitorId(machine.getId(), visitorId).get());
+		assertEquals(visitor, visitorRepository.findByMachineIdAndVisitorEmail(machine.getId(), visitorEmail).get());
 		select++;
 		assertStatements();
 	}
 
-	private void findByAmusementParkIdAndVisitorId() {
+	private void findByAmusementParkIdAndVisitorEmail() {
 		assertEquals(visitor,
-				visitorRepository.findByAmusementParkIdAndVisitorId(amusementPark.getId(), visitorId).get());
+				visitorRepository.findByAmusementParkIdAndVisitorEmail(amusementPark.getId(), visitorEmail).get());
 		select++;
 		assertStatements();
 	}
 
 	private void findById() {
-		assertEquals(visitor, visitorRepository.findById(visitorId).get());
+		assertEquals(visitor, visitorRepository.findById(visitorEmail).get());
 		select++;
 		assertStatements();
 	}
@@ -153,7 +145,7 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 	}
 
 	private void deleteById() {
-		visitorRepository.deleteById(visitorId);
+		visitorRepository.deleteById(visitorEmail);
 		select++;
 		delete++;
 		assertStatements();

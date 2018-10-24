@@ -8,12 +8,12 @@ import lombok.Data;
 
 @Embeddable
 @Data
-public class AmusementParkIdVisitorId implements Serializable {
+public class AmusementParkIdVisitorEmail implements Serializable {
 
 	private static final long serialVersionUID = 8789414110410471281L;
 
 	private Long amusementParkId;
 
-	private Long visitorId;
+	private String visitorEmail;
 
 }

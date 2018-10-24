@@ -49,7 +49,8 @@ public class GuestBookServiceIntegrationTests extends AbstractStatementCounterTe
 	}
 
 	private void addRegistry() {
-		guestBookRegistry = guestBookService.addRegistry(amusementPark.getId(), visitor.getId(), OPINION_ON_THE_PARK);
+		guestBookRegistry = guestBookService.addRegistry(amusementPark.getId(), visitor.getEmail(),
+				OPINION_ON_THE_PARK);
 		select += 2;
 		insert++;
 		incrementSelectIfOracleDBProfileActive();

@@ -4,7 +4,6 @@ import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementPar
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createMachine;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -47,7 +46,7 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 	private Long machineId;
 
 	private Visitor visitor;
-	private Long visitorId;
+	private String visitorEmail;
 
 	@Before
 	public void setUp() {
@@ -84,13 +83,11 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 	private void signUp() {
 		Visitor visitorBeforeSignUp = createVisitor();
 		visitor = visitorService.signUp(visitorBeforeSignUp);
-		visitorId = visitor.getId();
-		assertNotNull(visitorId);
+		visitorEmail = visitor.getEmail();
 		assertEquals(visitorBeforeSignUp, visitor);
 		assertTrue(visitor.getDateOfSignUp().isBefore(LocalDateTime.now()));
 		insert++;
-		select++;
-		incrementSelectIfOracleDBProfileActive();
+		select += 2;
 		assertStatements();
 	}
 
@@ -101,7 +98,7 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 	}
 
 	private void findOne() {
-		assertEquals(visitor, visitorService.findOne(visitorId));
+		assertEquals(visitor, visitorService.findOne(visitorEmail));
 		select++;
 		assertStatements();
 	}
@@ -113,7 +110,7 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 	}
 
 	private void enterPark() {
-		Visitor inParkVisitor = visitorService.enterPark(amusementParkId, visitorId);
+		Visitor inParkVisitor = visitorService.enterPark(amusementParkId, visitorEmail);
 		assertEquals(visitor.getSpendingMoney() - amusementPark.getEntranceFee(),
 				inParkVisitor.getSpendingMoney().longValue());
 		assertEquals(VisitorState.REST, inParkVisitor.getState());
@@ -132,7 +129,7 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 		SecurityContextHolder.getContext().setAuthentication(
 				new UsernamePasswordAuthenticationToken(new User(visitor.getEmail(), visitor.getPassword(),
 						Arrays.asList(new SimpleGrantedAuthority(visitor.getAuthority()))), null));
-		Visitor onMachineVisitor = visitorService.getOnMachine(amusementParkId, machineId, visitorId);
+		Visitor onMachineVisitor = visitorService.getOnMachine(amusementParkId, machineId, visitorEmail);
 		assertEquals(visitor.getSpendingMoney() - amusementPark.getEntranceFee() - machine.getTicketPrice(),
 				onMachineVisitor.getSpendingMoney().longValue());
 		assertEquals(VisitorState.ON_MACHINE, onMachineVisitor.getState());
@@ -147,7 +144,7 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 	}
 
 	private void getOffMachine() {
-		Visitor offMachineVisitor = visitorService.getOffMachine(machineId, visitorId);
+		Visitor offMachineVisitor = visitorService.getOffMachine(machineId, visitorEmail);
 		assertNull(offMachineVisitor.getMachine());
 		assertEquals(VisitorState.REST, offMachineVisitor.getState());
 		select++;
@@ -156,7 +153,7 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 	}
 
 	private void leavePark() {
-		Visitor leftParkVisitor = visitorService.leavePark(amusementParkId, visitorId);
+		Visitor leftParkVisitor = visitorService.leavePark(amusementParkId, visitorEmail);
 		assertNull(leftParkVisitor.getAmusementPark());
 		assertNull(leftParkVisitor.getState());
 		select++;
@@ -166,7 +163,7 @@ public class VisitorServiceIntegrationTests extends AbstractStatementCounterTest
 
 	private void assertSpendingMoneyChangedCorrectly() {
 		assertEquals(visitor.getSpendingMoney() - amusementPark.getEntranceFee() - machine.getTicketPrice(),
-				visitorService.findOne(visitorId).getSpendingMoney().longValue());
+				visitorService.findOne(visitorEmail).getSpendingMoney().longValue());
 		select++;
 		assertStatements();
 	}

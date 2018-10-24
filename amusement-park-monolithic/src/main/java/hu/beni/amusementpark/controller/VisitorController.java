@@ -102,9 +102,9 @@ public class VisitorController {
 	}
 
 	@PostMapping(UPLOAD_MONEY)
-	public Void uploadMoney(@RequestBody Integer ammount, Principal principal) {
+	public ResponseEntity<Void> uploadMoney(@RequestBody Integer ammount, Principal principal) {
 		visitorService.uploadMoney(ammount, principal.getName());
-		return null;
+		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping(VISITORS)

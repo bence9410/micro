@@ -22,7 +22,7 @@ public class AmusementParkKnowVisitor implements Serializable {
 	private static final long serialVersionUID = 8289304865876769056L;
 
 	@EmbeddedId
-	private AmusementParkIdVisitorId id = new AmusementParkIdVisitorId();
+	private AmusementParkIdVisitorEmail id = new AmusementParkIdVisitorEmail();
 
 	@CreationTimestamp
 	private LocalDateTime dateOfFirstEnter;
@@ -31,7 +31,7 @@ public class AmusementParkKnowVisitor implements Serializable {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private AmusementPark amusementPark;
 
-	@MapsId("visitorId")
+	@MapsId("visitorEmail")
 	@ManyToOne
 	private Visitor visitor;
 

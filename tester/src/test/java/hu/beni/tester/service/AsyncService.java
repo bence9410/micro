@@ -70,7 +70,7 @@ public class AsyncService {
 	private final ResourceFactory resourceFactory;
 	private final ApplicationProperties properties;
 	private final Map<String, String> links;
-	private Long visitorId;
+	private String visitorEmail;
 
 	public AsyncService(Client client, String username, ResourceFactory resourceFactory,
 			ApplicationProperties properties) {
@@ -100,10 +100,8 @@ public class AsyncService {
 	}
 
 	public CompletableFuture<Void> signUp() {
-		visitorId = client
-				.post(uri(links.get(SIGN_UP)), VisitorResource.builder().email(email).password(PASS)
-						.confirmPassword(PASS).dateOfBirth(DATE_OF_BIRTH).build(), VISITOR_TYPE)
-				.getBody().getIdentifier();
+		visitorEmail = client.post(uri(links.get(SIGN_UP)), VisitorResource.builder().email(email).password(PASS)
+				.confirmPassword(PASS).dateOfBirth(DATE_OF_BIRTH).build(), VISITOR_TYPE).getBody().getEmail();
 		return CompletableFuture.completedFuture(null);
 	}
 
@@ -210,7 +208,7 @@ public class AsyncService {
 	private void visitEverythingInParks(Collection<AmusementParkResource> amusementParkResources,
 			List<Long> oneParkTimes) {
 		amusementParkResources.stream().map(this::mapToEnterParkUrl)
-				.forEach(enterParkUrl -> visitEverythingInAPark(uri(enterParkUrl, visitorId), oneParkTimes));
+				.forEach(enterParkUrl -> visitEverythingInAPark(uri(enterParkUrl), oneParkTimes));
 	}
 
 	private String mapToEnterParkUrl(AmusementParkResource amusementParkResource) {
@@ -228,12 +226,11 @@ public class AsyncService {
 	private void getMachinesAndGetOnAndOff(VisitorResource visitorResource) {
 		client.get(uri(visitorResource.getLink(MACHINE).getHref()), RESOURCES_MACHINE_TYPE).getBody().getContent()
 				.stream()
-				.forEach(machineResource -> getOnAndOffMachine(machineResource.getLink(GET_ON_MACHINE).getHref(),
-						visitorResource.getIdentifier()));
+				.forEach(machineResource -> getOnAndOffMachine(machineResource.getLink(GET_ON_MACHINE).getHref()));
 	}
 
-	private void getOnAndOffMachine(String getOnMachineUrl, Long visitorId) {
-		VisitorResource onMachineVisitor = client.put(uri(getOnMachineUrl, visitorId), VISITOR_TYPE).getBody();
+	private void getOnAndOffMachine(String getOnMachineUrl) {
+		VisitorResource onMachineVisitor = client.put(uri(getOnMachineUrl), VISITOR_TYPE).getBody();
 		client.put(uri(onMachineVisitor.getLink(GET_OFF_MACHINE).getHref()));
 	}
 
