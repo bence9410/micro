@@ -17,6 +17,7 @@ function init() {
 		}
 	}) 
 	pages = {
+		loginAndSignUp: "/pages/login-and-sign-up.html",
 		amusementPark: "/pages/amusement-park.html"
 	}
 	jses = {
@@ -33,7 +34,13 @@ function getUserData(){
 			$("#photo").attr("src", data.photo)
         },
         error: function (data) {
-        	$("#content").show()
+        	$.ajax({
+        		url : pages.loginAndSignUp,
+        		success : function(data) {
+        			$("#content").html(data)
+        			$("#content").show()
+        		}
+        	})
         }
     })
 }

@@ -1,0 +1,114 @@
+<div class="jumbotron text-center">
+	<h1>Welcome to Beni</h1>
+</div>
+<div id=loginDiv>
+	<div class="row">
+		<div class="col-md-6">
+			<p class="text-right" style="margin-top: 8px; margin-bottom: 8px">Email:</p>
+		</div>
+		<div class="col-md-6">
+			<input id="loginEmail" type="text" style="margin-top: 5px">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<p class="text-right" style="margin-top: 8px; margin-bottom: 8px">Password:</p>
+		</div>
+		<div class="col-md-6">
+			<input id="password" type="password" style="margin-top: 5px">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<p class="text-right" style="margin-top: 8px; margin-bottom: 8px">Remember
+				me:</p>
+		</div>
+		<div class="col-md-6">
+			<input id="rememberMeLogin" type="checkbox" style="margin-top: 15px;">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6 text-right">
+			<input id="login" style="margin-top: 5px; margin-bottom: 5px"
+				type="button" onclick="login()" value="Login">
+		</div>
+		<div class="col-md-6">
+			<input id="goToSignUp" style="margin-top: 5px" type="button"
+				onclick="showSignUp()" value="Sign Up">
+		</div>
+	</div>
+	<div class="text-center">
+		<p id="loginError" style="margin-top: 8px; margin-bottom: 8px"></p>
+	</div>
+</div>
+<div id="signUpDiv" style="display: none">
+	<div class="row">
+		<div class="col-md-6">
+			<p class="text-right" style="margin-top: 8px; margin-bottom: 8px">Email:</p>
+		</div>
+		<div class="col-md-6">
+			<input id="signUpEmail" type="text" style="margin-top: 5px">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<p class="text-right" style="margin-top: 8px; margin-bottom: 8px">Password:</p>
+		</div>
+		<div class="col-md-6">
+			<input id="signUpPassword" type="password" style="margin-top: 5px">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<p class="text-right" style="margin-top: 8px; margin-bottom: 8px">Confirm
+				password:</p>
+		</div>
+		<div class="col-md-6">
+			<input id="signUpConfirmPassword" type="password"
+				style="margin-top: 5px">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<p class="text-right" style="margin-top: 8px; margin-bottom: 8px">Date
+				of birth:</p>
+		</div>
+		<div class="col-md-6">
+			<input id="dateOfBirth" type="text" style="margin-top: 5px">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<p class="text-right" style="margin-top: 8px; margin-bottom: 8px">Photo
+				(size: 2:3):</p>
+		</div>
+		<div class="col-md-6">
+			<input id="file" style="margin-top: 8px" type="file"
+				onchange="drawImage()">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6 text-right">
+			<img id="img" width="100" height="150">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+			<p class="text-right" style="margin-top: 8px; margin-bottom: 8px">Remember
+				me:</p>
+		</div>
+		<div class="col-md-6">
+			<input id="rememberMeLogin" type="checkbox" style="margin-top: 15px;">
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-md-6 text-right">
+			<input type="button" onclick="backToLogin()" value="Back">
+		</div>
+		<div class="col-md-6">
+			<input id="signUp" type="button" onclick="signUp()" value="Sign up">
+		</div>
+	</div>
+	<p id="signUpError"></p>
+</div>
+<script type="text/javascript" src="/js/login-and-sign-up.js"></script>
