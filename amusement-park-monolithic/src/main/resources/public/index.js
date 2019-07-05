@@ -1,6 +1,5 @@
 var links
 var pages
-var jses
 var email
 var isAdmin
 
@@ -19,9 +18,6 @@ function init() {
 	pages = {
 		loginAndSignUp : "/pages/login-and-sign-up.html",
 		amusementPark : "/pages/amusement-park.html"
-	}
-	jses = {
-		amusementPark : "js/amusement-park.js"
 	}
 }
 
@@ -79,9 +75,7 @@ function getAmusementParkPage() {
 	$.ajax({
 		url : pages.amusementPark,
 		success : function(data) {
-			$("#content").html(
-					"<script src=\"" + jses.amusementPark + "\"></script>"
-							+ data)
+			$("#content").html(data)
 			$("#content").show()
 		}
 	})
