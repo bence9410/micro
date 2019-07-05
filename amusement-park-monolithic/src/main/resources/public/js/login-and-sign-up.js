@@ -5,9 +5,8 @@ function login() {
 		data : "email="+$("#loginEmail").val() + "&password=" + $("#password").val() + ($("#rememberMeLogin").is(":checked") ? "&remember-me=true" : ""),
 		success : function (data) {
 			$("#content").hide()
-			setEmailAndAuthorityAndSpendingMoney(data)
+			initHeader(data)
 			getAmusementParkPage()
-			$("#photo").attr("src", data.photo)
 		},
 		error : function (data) {
 			$("#loginError").html(data.responseText)
@@ -40,9 +39,8 @@ function signUp() {
 		data : JSON.stringify(collectSignUpData()),
 		success : function (data) {
 			$("#content").hide()
-			setEmailAndAuthorityAndSpendingMoney(data)
+			initHeader(data)
 			getAmusementParkPage()
-			$("#photo").attr("src", data.photo)
 		},
 		error : function (data) {
 			$("#signUpError").html(data.responseText)

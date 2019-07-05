@@ -6,68 +6,70 @@ var isAdmin
 
 function init() {
 	$.ajax({
-		url: "/links",
-		success: function (data) {
+		url : "/links",
+		success : function(data) {
 			links = {}
-			$.each(data, function (i, e) {
+			$.each(data, function(i, e) {
 				links[e.rel] = e.href
 			})
 			getUserData()
 			$("#logout").attr("action", links.logout)
 		}
-	}) 
+	})
 	pages = {
-		loginAndSignUp: "/pages/login-and-sign-up.html",
-		amusementPark: "/pages/amusement-park.html"
+		loginAndSignUp : "/pages/login-and-sign-up.html",
+		amusementPark : "/pages/amusement-park.html"
 	}
 	jses = {
-		amusementPark: "js/amusement-park.js"
+		amusementPark : "js/amusement-park.js"
 	}
 }
 
-function getUserData(){
+function getUserData() {
 	$.ajax({
-        url: links.me,
-        success: function (data) {
-        	setEmailAndAuthorityAndSpendingMoney(data)
+		url : links.me,
+		success : function(data) {
+			initHeader(data)
 			getAmusementParkPage()
-			$("#photo").attr("src", data.photo)
-        },
-        error: function (data) {
-        	$.ajax({
-        		url : pages.loginAndSignUp,
-        		success : function(data) {
-        			$("#content").html(data)
-        			$("#content").show()
-        		}
-        	})
-        }
-    })
+		},
+		error : function(data) {
+			$.ajax({
+				url : pages.loginAndSignUp,
+				success : function(data) {
+					$("#content").html(data)
+					$("#content").show()
+				}
+			})
+		}
+	})
 }
 
-function setEmailAndAuthorityAndSpendingMoney(data){
-	 email = data.email
-	 $("#email").html(email)
+function initHeader(data) {
+	email = data.email
+	$("#email").html(email)
+	
+	$("#photo").attr("src", data.photo)
 
-	 isAdmin = data.authority === "ROLE_ADMIN"
-     
-     $("#spendingMoney").html(data.spendingMoney)
-     $("#header").show()
+	isAdmin = data.authority === "ROLE_ADMIN"
+
+	$("#spendingMoney").html(data.spendingMoney)
+	$("#header").show()
 }
 
-function uploadMoney(){
+function uploadMoney() {
 	var money = $("#money").val()
 	$.ajax({
 		url : links.uploadMoney,
 		method : "POST",
 		contentType : "application/json",
 		data : money,
-		success : function(){
+		success : function() {
 			$("#moneyUploadResult").html("success")
 			var spendingMoney = $("#spendingMoney")
-			spendingMoney.html(parseInt(spendingMoney.html()) + parseInt(money))
+			spendingMoney
+					.html(parseInt(spendingMoney.html()) + parseInt(money))
 		},
-		error : function(){
+		error : function() {
 			$("#moneyUploadResult").html("error")
 		}
 	})
@@ -77,7 +79,9 @@ function getAmusementParkPage() {
 	$.ajax({
 		url : pages.amusementPark,
 		success : function(data) {
-			$("#content").html("<script src=\"" + jses.amusementPark + "\"></script>" + data)
+			$("#content").html(
+					"<script src=\"" + jses.amusementPark + "\"></script>"
+							+ data)
 			$("#content").show()
 		}
 	})
