@@ -12,8 +12,8 @@
 <script type="text/javascript" src="/index.js"></script>
 </head>
 <body onload="init()">
-<div id="header" class="row" style="background-color: lime; display: none ">
-		
+	<div id="header" class="row"
+		style="background-color: lime; display: none">
 		<div class="col-md-2"></div>
 		<div class="col-md-6 row">
 			<div class="row container-fluid">
@@ -21,8 +21,14 @@
 					<img id="photo" width="60" height="90" alt="photo">
 				</div>
 				<div class="col-md-10">
-					<div class="row">Email:&nbsp;<p id="email"></p></div>
-					<div class="row">Spending money:&nbsp;<p id="spendingMoney"></p></div>
+					<div class="row">
+						Email:&nbsp;
+						<p id="email"></p>
+					</div>
+					<div class="row">
+						Spending money:&nbsp;
+						<p id="spendingMoney"></p>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -30,28 +36,29 @@
 			<form id="logout" method="post">
 				<input type="submit" value="logout">
 			</form>
-			<input id="uploadMoney" type="button" value="Upload money" data-toggle="modal" data-target="#uploadMoneyModal">
+			<input id="uploadMoney" type="button" value="Upload money"
+				data-toggle="modal" data-target="#uploadMoneyModal">
 		</div>
 		<div class="modal fade" id="uploadMoneyModal" role="dialog">
-		    <div class="modal-dialog">
-		    	<div class="modal-content">
-		        	<div class="modal-header">
-		        		<h4 class="modal-title">Upload money</h4>
-		          		<button type="button" class="close" data-dismiss="modal">&times;</button>
-		        	</div>
-		        	<div class="modal-body">
-		          		Money: <input id="money" type=text>
-		          		<input id="upload" type="button" value="Upload" onclick="uploadMoney()"> 
-		          		<p id="moneyUploadResult"></p>
-		        	</div>
-		        	<div class="modal-footer">
-		         		<input id="closeUpload" type="button" data-dismiss="modal" value="Close">
-		        	</div>
-		      	</div>
-		   	</div>
-  		</div>
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Upload money</h4>
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+					</div>
+					<div class="modal-body">
+						Money: <input id="money" type=text> <input id="upload"
+							type="button" value="Upload" onclick="uploadMoney()">
+						<p id="moneyUploadResult"></p>
+					</div>
+					<div class="modal-footer">
+						<input id="closeUpload" type="button" data-dismiss="modal"
+							value="Close">
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
-<div id="content" style="display: none">
-</div>
+	<div id="content" style="display: none"></div>
 </body>
 </html>
