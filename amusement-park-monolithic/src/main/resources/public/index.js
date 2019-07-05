@@ -54,22 +54,45 @@ function initHeader(data) {
 
 function uploadMoney() {
 	var money = $("#money").val()
-	$.ajax({
-		url : links.uploadMoney,
-		method : "POST",
-		contentType : "application/json",
-		data : money,
-		success : function() {
-			$("#moneyUploadResult").html("success")
-			var spendingMoney = $("#spendingMoney")
-			spendingMoney
-					.html(parseInt(spendingMoney.html()) + parseInt(money))
-		},
-		error : function() {
-			$("#moneyUploadResult").html("error")
-		}
-	})
+	if (isNaN(money)) {
+		var moneyUploadResult = $("#moneyUploadResult")
+		moneyUploadResult.removeClass()
+		moneyUploadResult.addClass("text-danger")
+		moneyUploadResult.html("Error: '"+ money  + "' is not a number.")
+	} else {
+		$.ajax({
+			url : links.uploadMoney,
+			method : "POST",
+			contentType : "application/json",
+			data : money,
+			success : function() {
+				var moneyUploadResult = $("#moneyUploadResult")
+				moneyUploadResult.removeClass()
+				moneyUploadResult.addClass("text-success")
+				moneyUploadResult.html("success")
+	
+				var spendingMoney = $("#spendingMoney")
+				spendingMoney
+						.html(parseInt(spendingMoney.html()) + parseInt(money))
+			},
+			error : function(data) {		
+				var moneyUploadResult = $("#moneyUploadResult")
+				moneyUploadResult.removeClass()
+				moneyUploadResult.addClass("text-danger")
+				moneyUploadResult.html("Error: " + data.responseText)
+			}
+		})
+	}
 }
+
+function clearUploadMoneyPopup() {
+	var moneyUploadResult = $("#moneyUploadResult")
+	moneyUploadResult.removeClass()
+	moneyUploadResult.html("")
+	
+	$("#money").val("")
+ }
+
 
 function getAmusementParkPage() {
 	$.ajax({

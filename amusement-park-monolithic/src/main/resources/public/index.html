@@ -36,7 +36,8 @@
 				<input type="submit" value="logout">
 			</form>
 			<input id="uploadMoney" type="button" value="Upload money"
-				data-toggle="modal" data-target="#uploadMoneyModal">
+				data-toggle="modal" data-target="#uploadMoneyModal"
+				onclick="clearUploadMoneyPopup()">
 		</div>
 		<div class="modal fade" id="uploadMoneyModal" role="dialog">
 			<div class="modal-dialog">
@@ -46,8 +47,8 @@
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
 					</div>
 					<div class="modal-body">
-						Money: <input id="money" type=text> <input id="upload"
-							type="button" value="Upload" onclick="uploadMoney()">
+						Money: <input id="money" type="text"> 
+						<input id="upload" type="button" value="Upload" onclick="uploadMoney()">
 						<p id="moneyUploadResult"></p>
 					</div>
 					<div class="modal-footer">
