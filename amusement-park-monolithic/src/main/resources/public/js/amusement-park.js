@@ -104,7 +104,7 @@ function convertAmusementParkToTableRow(amusementPark) {
 	tr.push(" " + address.city + " " + address.street)
 	tr.push(" " + address.houseNumber + "</td>")
 	tr.push("<td> <input type=\"button\" value=\"Enter\" onclick=\"enterPark('"
-			+ amusementPark._links.visitorEnterPark.href + "')\"></td>")
+			+ amusementPark._links.visitorEnterPark.href + "','" + amusementPark._links.machine.href + "')\"></td>")
 	if (isAdmin) {
 		tr.push("<td><input type=\"button\" onclick=\"deletePark('"
 				+ amusementPark._links.self.href + "')\" value=\"Delete\"></td>")
@@ -112,14 +112,14 @@ function convertAmusementParkToTableRow(amusementPark) {
 	tr.push("</tr>")
 	return tr.join("")
 }
-function enterPark(href) {
+function enterPark(href,machineHref) {
 	$.ajax({
 		url : href,
 		method : "PUT",
 		success : function(data){
 			
 			$("#spendingMoney").html(data.spendingMoney)
-			getMachinePage(data._links.leavePark.href)
+			getMachinePage(data._links.leavePark.href, machineHref)
 		}
 	})
 }
@@ -140,12 +140,14 @@ function deletePark(href) {
 		}
 	})
 }
-function getMachinePage(leaveParkHref) {
+function getMachinePage(leaveParkHref, machineHref) {
 	$.ajax({
 		url : pages.machine,
 		success : function(data) {
 			$("#content").html(data)
 			$("#leave").attr("onclick","leavePark('" + leaveParkHref + "')")
+			getMachines(machineHref)
+			$("#refresh").attr("onclick","getMachines('" + machineHref + "')")
 		}
 	})
 }
