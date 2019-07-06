@@ -17,7 +17,8 @@ function init() {
 	})
 	pages = {
 		loginAndSignUp : "/pages/login-and-sign-up.html",
-		amusementPark : "/pages/amusement-park.html"
+		amusementPark : "/pages/amusement-park.html",
+		machine : "/pages/machine.html"
 	}
 }
 

@@ -103,12 +103,25 @@ function convertAmusementParkToTableRow(amusementPark) {
 	tr.push("<td>" + address.country + " " + address.zipCode)
 	tr.push(" " + address.city + " " + address.street)
 	tr.push(" " + address.houseNumber + "</td>")
+	tr.push("<td> <input type=\"button\" value=\"Enter\" onclick=\"enterPark('"
+			+ amusementPark._links.visitorEnterPark.href + "')\"></td>")
 	if (isAdmin) {
 		tr.push("<td><input type=\"button\" onclick=\"deletePark('"
 				+ amusementPark._links.self.href + "')\" value=\"Delete\"></td>")
 	}
 	tr.push("</tr>")
 	return tr.join("")
+}
+function enterPark(href) {
+	$.ajax({
+		url : href,
+		method : "PUT",
+		success : function(data){
+			
+			$("#spendingMoney").html(data.spendingMoney)
+			getMachinePage(data._links.leavePark.href)
+		}
+	})
 }
 
 function deletePark(href) {
@@ -124,6 +137,15 @@ function deletePark(href) {
 			console.log(data)
 			console.log(textStatus)
 			console.log(jqXHR)
+		}
+	})
+}
+function getMachinePage(leaveParkHref) {
+	$.ajax({
+		url : pages.machine,
+		success : function(data) {
+			$("#content").html(data)
+			$("#leave").attr("onclick","leavePark('" + leaveParkHref + "')")
 		}
 	})
 }
