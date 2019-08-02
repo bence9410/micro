@@ -11,13 +11,16 @@
 	src="/webjars/bootstrap/js/bootstrap.min.js"></script>
 </head>
 <body onload="init()">
-	<div id="header" class="row"
+	<div id="header" class="navbar bg-success  font-weight-bold "
 		style="background-color: lime; display: none">
+		
 		<div class="col-md-2"></div>
 		<div class="col-md-6 row">
 			<div class="row container-fluid">
 				<div class="col-md-2">
-					<img id="photo" width="60" height="90" alt="photo">
+					<a class="navbar-brand" href="#">
+    <img src="/img/arc.jpg" alt="profilkép" style="width:60px;">
+  </a>
 				</div>
 				<div class="col-md-10">
 					<div class="row">
@@ -31,11 +34,11 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-md-4">
+		<div class="col-md-4 ">
 			<form id="logout" method="post">
-				<input type="submit" value="logout">
+				<input class="btn btn-secondary btn-md col-md-6 border border-secondary font-weight-normal" type="submit" value="Logout">
 			</form>
-			<input id="uploadMoney" type="button" value="Upload money"
+			<input class="btn btn-secondary btn-md col-md-6 border border-secondary font-weight-normal" id="uploadMoney" type="button" value="Upload money"
 				data-toggle="modal" data-target="#uploadMoneyModal"
 				onclick="clearUploadMoneyPopup()">
 		</div>
