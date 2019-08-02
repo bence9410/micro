@@ -3,37 +3,45 @@
 </div>
 <div id=loginDiv>
 	<div class="row">
-		<div class="col-md-6">
-			<p class="text-right" style="margin-top: 8px; margin-bottom: 8px">Email:</p>
+			<div class="col-md-4 col-sm-2 col-5"> </div>
+			<div class="col-md-4 col-sm-8 col-7">
+				<div class="form-group">
+					<label for="exampleInputEmail1">Email:</label> <input
+						type="email" class="form-control" id="loginEmail"
+						placeholder="Email">
+				</div>
+			</div>
+			<div class="col-md-3"></div>
 		</div>
-		<div class="col-md-6">
-			<input id="loginEmail" type="text" style="margin-top: 5px">
+		<div class="row">
+			<div class="col-md-4 col-sm-2 col-5"> </div>
+			<div class="col-md-4 col-sm-8 col-7">
+				<div class="form-group">
+					<div class="form-group">
+   						<label for="exampleInputPassword1">Password</label>
+   						<input type="password" class="form-control" id="password" placeholder="Password">
+  					</div>
+				</div>
+			</div>
+			<div class="col-md-3"></div>
 		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-6">
-			<p class="text-right" style="margin-top: 8px; margin-bottom: 8px">Password:</p>
-		</div>
-		<div class="col-md-6">
-			<input id="password" type="password" style="margin-top: 5px">
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-md-6">
-			<p class="text-right" style="margin-top: 8px; margin-bottom: 8px">Remember
-				me:</p>
-		</div>
-		<div class="col-md-6">
-			<input id="rememberMeLogin" type="checkbox" style="margin-top: 15px;">
-		</div>
-	</div>
+		
+		<div class="row">
+			<div class="col-md-4 col-sm-2 col-5"> </div>
+			<div class="col-md-4 col-sm-8 col-7">
+				<div class="form-check">
+   					<input type="checkbox" class="form-check-input" id="rememberMeLogin">
+   					<label class="form-check-label" for="exampleCheck1">Remember me</label>
+ 				</div>
+  			</div>
+  	</div>
 	<div class="row">
 		<div class="col-md-6 text-right">
-			<input id="login" style="margin-top: 5px; margin-bottom: 5px"
+			<input id="login" class="btn btn-secondary btn-md col-md-4 border border-secondary font-weight-normal" style="margin-top: 5px; margin-bottom: 5px"
 				type="button" onclick="login()" value="Login">
 		</div>
 		<div class="col-md-6">
-			<input id="goToSignUp" style="margin-top: 5px" type="button"
+			<input id="goToSignUp" class="btn btn-secondary btn-md col-md-4 border border-secondary font-weight-normal" style="margin-top: 5px" type="button"
 				onclick="showSignUp()" value="Sign Up">
 		</div>
 	</div>
