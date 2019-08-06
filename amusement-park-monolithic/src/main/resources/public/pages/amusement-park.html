@@ -2,32 +2,36 @@
 	<h1>Amusement Park</h1>
 </div>
 <div class="container-fluid">
+	<div class="row">
+		<input class="btn-primary" type="button" value="create"
+			onclick="toggleSaveDiv()">
+	</div>
+
 	<div id="saveDiv" class="" style="display: none">
 		<div class="row">
-			<div class="col-md-4 col-sm-2 col-5"> </div>
+			<div class="col-md-4 col-sm-2 col-5"></div>
 			<div class="col-md-4 col-sm-8 col-7">
 				<div class="form-group">
 					<label for="exampleInputEmail1">Email address</label> <input
 						type="email" class="form-control" id="exampleInputEmail1"
 						placeholder="Email">
 				</div>
-				
+
 			</div>
 			<div class="col-md-3"></div>
 		</div>
 		<div class="row">
-			<div class="col-md-4 col-sm-2 col-5"> </div>
+			<div class="col-md-4 col-sm-2 col-5"></div>
 			<div class="col-md-4 col-sm-8 col-7">
 				<div class="form-group">
-					<label for="exampleInputEmail1">Name:</label> <input
-						type="email" class="form-control" id="exampleInputEmail1"
-						placeholder="Name">
+					<label for="exampleInputEmail1">Name:</label> <input type="email"
+						class="form-control" id="exampleInputEmail1" placeholder="Name">
 				</div>
 			</div>
 			<div class="col-md-3"></div>
 		</div>
 		<div class="row">
-			<div class="col-md-4 col-sm-2 col-5"> </div>
+			<div class="col-md-4 col-sm-2 col-5"></div>
 			<div class="col-md-4 col-sm-8 col-7">
 				<div class="form-group">
 					<label for="exampleInputEmail1">Capital:</label> <input
@@ -38,7 +42,7 @@
 			<div class="col-md-3"></div>
 		</div>
 		<div class="row">
-			<div class="col-md-4 col-sm-2 col-5"> </div>
+			<div class="col-md-4 col-sm-2 col-5"></div>
 			<div class="col-md-4 col-sm-8 col-7">
 				<div class="form-group">
 					<label for="exampleInputEmail1">Total area:</label> <input
@@ -49,7 +53,7 @@
 			<div class="col-md-3"></div>
 		</div>
 		<div class="row">
-			<div class="col-md-4 col-sm-2 col-5"> </div>
+			<div class="col-md-4 col-sm-2 col-5"></div>
 			<div class="col-md-4 col-sm-8 col-7">
 				<div class="form-group">
 					<label for="exampleInputEmail1">Entrance fee:</label> <input
@@ -60,7 +64,7 @@
 			<div class="col-md-3"></div>
 		</div>
 		<div class="row">
-			<div class="col-md-4 col-sm-2 col-5"> </div>
+			<div class="col-md-4 col-sm-2 col-5"></div>
 			<div class="col-md-4 col-sm-8 col-7">
 				<div class="form-group">
 					<label for="exampleInputEmail1">Country:</label> <input
@@ -71,7 +75,7 @@
 			<div class="col-md-3"></div>
 		</div>
 		<div class="row">
-			<div class="col-md-4 col-sm-2 col-5"> </div>
+			<div class="col-md-4 col-sm-2 col-5"></div>
 			<div class="col-md-4 col-sm-8 col-7">
 				<div class="form-group">
 					<label for="exampleInputEmail1">ZIP code:</label> <input
@@ -82,29 +86,27 @@
 			<div class="col-md-3"></div>
 		</div>
 		<div class="row">
-			<div class="col-md-4 col-sm-2 col-5"> </div>
+			<div class="col-md-4 col-sm-2 col-5"></div>
 			<div class="col-md-4 col-sm-8 col-7">
 				<div class="form-group">
-					<label for="exampleInputEmail1">City:</label> <input
-						type="email" class="form-control" id="exampleInputEmail1"
-						placeholder="City">
+					<label for="exampleInputEmail1">City:</label> <input type="email"
+						class="form-control" id="exampleInputEmail1" placeholder="City">
 				</div>
 			</div>
 			<div class="col-md-3"></div>
 		</div>
 		<div class="row">
-			<div class="col-md-4 col-sm-2 col-5"> </div>
+			<div class="col-md-4 col-sm-2 col-5"></div>
 			<div class="col-md-4 col-sm-8 col-7">
 				<div class="form-group">
-					<label for="exampleInputEmail1">Street:</label> <input
-						type="email" class="form-control" id="exampleInputEmail1"
-						placeholder="Street">
+					<label for="exampleInputEmail1">Street:</label> <input type="email"
+						class="form-control" id="exampleInputEmail1" placeholder="Street">
 				</div>
 			</div>
 			<div class="col-md-3"></div>
 		</div>
 		<div class="row">
-			<div class="col-md-4 col-sm-2 col-5"> </div>
+			<div class="col-md-4 col-sm-2 col-5"></div>
 			<div class="col-md-4 col-sm-8 col-7">
 				<div class="form-group">
 					<label for="exampleInputEmail1">House number:</label> <input
@@ -116,11 +118,15 @@
 		</div>
 		<div class="row ">
 			<div class="col-md-6 text-right ">
-				
-				<input id="save" class="btn btn-secondary btn-md col-md-4 border border-secondary font-weight-normal" type="button" onclick="save()" value="Save">
+
+				<input id="save"
+					class="btn btn-secondary btn-md col-md-4 border border-secondary font-weight-normal"
+					type="button" onclick="save()" value="Save">
 			</div>
 			<div class="col-md-6 text-left">
-				<input class="btn btn-secondary btn-md col-md-4 border border-secondary font-weight-normal" type="button" onclick="parkFillWithSampleData()"
+				<input
+					class="btn btn-secondary btn-md col-md-4 border border-secondary font-weight-normal"
+					type="button" onclick="parkFillWithSampleData()"
 					value="Fill with sample data">
 			</div>
 		</div>

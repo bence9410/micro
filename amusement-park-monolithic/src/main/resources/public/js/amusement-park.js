@@ -1,13 +1,16 @@
 $(document).ready(function() {
 
 	if (isAdmin) {
-		$("#saveDiv").show()
 		$("thead").children("tr").append("<th></th>")
 	}
 
 	getAmusementParks()
 
 })
+
+function toggleSaveDiv(){
+	$("#saveDiv").toggle()
+}
 
 function save() {
 	$("#save").attr("disabled", true)
