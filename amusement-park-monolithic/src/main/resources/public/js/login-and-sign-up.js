@@ -1,4 +1,4 @@
-function login() {
+function ajaxLogin() {
 	$.ajax({
 		url : links.login,
 		method : "POST",

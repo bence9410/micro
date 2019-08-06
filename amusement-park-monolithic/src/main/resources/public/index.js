@@ -35,6 +35,7 @@ function getUserData() {
 				success : function(data) {
 					$("#content").html(data)
 					$("#content").show()
+					$("#loginForm").submit(function(event){event.preventDefault();});
 				}
 			})
 		}
