@@ -11,6 +11,9 @@ $(document).ready(function() {
 function toggleSaveDiv(){
 	$("#saveDiv").toggle()
 }
+function toggleSearchDiv(){
+	$("#searcheDiv").toggle()
+}
 
 function save() {
 	$("#save").attr("disabled", true)
