@@ -26,8 +26,8 @@ public class ResourceFactory {
 		visitor = data.getVisitor();
 	}
 
-	public AmusementParkResource createAmusementParkWithAddress() {
-		AmusementParkResource amusementParkResource = ValidResourceFactory.createAmusementParkWithAddress();
+	public AmusementParkResource createAmusementPark() {
+		AmusementParkResource amusementParkResource = ValidResourceFactory.createAmusementPark();
 		amusementParkResource.setCapital(amusementPark.getCapital());
 		amusementParkResource.setEntranceFee(amusementPark.getEntranceFee());
 		return amusementParkResource;

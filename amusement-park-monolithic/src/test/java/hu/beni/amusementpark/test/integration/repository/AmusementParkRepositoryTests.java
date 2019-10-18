@@ -1,6 +1,6 @@
 package hu.beni.amusementpark.test.integration.repository;
 
-import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
+import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementPark;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -60,20 +60,18 @@ public class AmusementParkRepositoryTests extends AbstractStatementCounterTests 
 	}
 
 	private void save() {
-		AmusementPark amusementParkBeforeSave = createAmusementParkWithAddress();
+		AmusementPark amusementParkBeforeSave = createAmusementPark();
 		amusementPark = amusementParkRepository.save(amusementParkBeforeSave);
 		amusementParkId = amusementPark.getId();
 		assertNotNull(amusementParkId);
 		assertEquals(amusementParkBeforeSave, amusementPark);
-		assertEquals(amusementParkBeforeSave.getAddress(), amusementPark.getAddress());
 		insert++;
 		incrementSelectIfOracleDBProfileActive();
 		assertStatements();
 	}
 
 	private void saveAll() {
-		amusementParkRepository
-				.saveAll(Arrays.asList(createAmusementParkWithAddress(), createAmusementParkWithAddress()));
+		amusementParkRepository.saveAll(Arrays.asList(createAmusementPark(), createAmusementPark()));
 		insert += 2;
 		incrementSelectIfOracleDBProfileActive(2);
 		assertStatements();

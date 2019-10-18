@@ -1,5 +1,7 @@
 package hu.beni.amusementpark.test.integration.repository;
 
+import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementPark;
+import static hu.beni.amusementpark.helper.ValidEntityFactory.createMachine;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -14,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
-import hu.beni.amusementpark.helper.ValidEntityFactory;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
@@ -40,8 +41,8 @@ public class VisitorRepositoryTests extends AbstractStatementCounterTests {
 
 	@Before
 	public void setUp() {
-		amusementPark = amusementParkRepository.save(ValidEntityFactory.createAmusementParkWithAddress());
-		machine = ValidEntityFactory.createMachine();
+		amusementPark = amusementParkRepository.save(createAmusementPark());
+		machine = createMachine();
 		machine.setAmusementPark(amusementPark);
 		machine = machineRepository.save(machine);
 		reset();

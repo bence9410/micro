@@ -70,13 +70,12 @@ public class AsyncService {
 	private final ResourceFactory resourceFactory;
 	private final ApplicationProperties properties;
 	private final Map<String, String> links;
-	private String visitorEmail;
 
-	public AsyncService(Client client, String username, ResourceFactory resourceFactory,
+	public AsyncService(Client client, String email, ResourceFactory resourceFactory,
 			ApplicationProperties properties) {
 		super();
 		this.client = client;
-		this.email = username;
+		this.email = email;
 		this.resourceFactory = resourceFactory;
 		this.properties = properties;
 		links = getBaseLinks();
@@ -100,8 +99,8 @@ public class AsyncService {
 	}
 
 	public CompletableFuture<Void> signUp() {
-		visitorEmail = client.post(uri(links.get(SIGN_UP)), VisitorResource.builder().email(email).password(PASS)
-				.confirmPassword(PASS).dateOfBirth(DATE_OF_BIRTH).build(), VISITOR_TYPE).getBody().getEmail();
+		client.post(uri(links.get(SIGN_UP)), VisitorResource.builder().email(email).password(PASS).confirmPassword(PASS)
+				.dateOfBirth(DATE_OF_BIRTH).build(), VISITOR_TYPE);
 		return CompletableFuture.completedFuture(null);
 	}
 
@@ -151,8 +150,8 @@ public class AsyncService {
 	}
 
 	private AmusementParkResource createAmusementPark() {
-		return client.post(uri(links.get(AMUSEMENT_PARK)), resourceFactory.createAmusementParkWithAddress(),
-				AMUSEMENT_PARK_TYPE).getBody();
+		return client.post(uri(links.get(AMUSEMENT_PARK)), resourceFactory.createAmusementPark(), AMUSEMENT_PARK_TYPE)
+				.getBody();
 	}
 
 	private String mapToMachineLinkHref(AmusementParkResource amusementParkResource) {

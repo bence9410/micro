@@ -3,14 +3,12 @@ package hu.beni.amusementpark.repository;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import hu.beni.amusementpark.entity.AmusementPark;
 
-public interface AmusementParkRepository
-		extends JpaRepository<AmusementPark, Long>, JpaSpecificationExecutor<AmusementPark> {
+public interface AmusementParkRepository extends JpaRepository<AmusementPark, Long> {
 
 	@Modifying
 	@Query("Update AmusementPark a set a.capital = a.capital - :ammount where a.id = :amusementParkId")

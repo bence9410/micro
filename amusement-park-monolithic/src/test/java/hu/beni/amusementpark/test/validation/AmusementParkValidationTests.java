@@ -5,12 +5,11 @@ import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.rangeMessage;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.sizeMessage;
-import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
+import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementPark;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
 
 public class AmusementParkValidationTests extends AbstractValidation<AmusementPark> {
@@ -19,14 +18,12 @@ public class AmusementParkValidationTests extends AbstractValidation<AmusementPa
 	private static final String CAPITAL = "capital";
 	private static final String TOTAL_AREA = "totalArea";
 	private static final String ENTRANCE_FEE = "entranceFee";
-	private static final String ADDRESS = "address";
-	private static final String COUNTRY_IN_ADDRESS = ADDRESS + "." + "country";
 
 	private AmusementPark amusementPark;
 
 	@Before
 	public void setUp() {
-		amusementPark = createAmusementParkWithAddress();
+		amusementPark = createAmusementPark();
 	}
 
 	@Test
@@ -99,18 +96,5 @@ public class AmusementParkValidationTests extends AbstractValidation<AmusementPa
 		validateAndAssertViolationsSizeIsOne(amusementPark);
 		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getEntranceFee(), ENTRANCE_FEE,
 				rangeMessage(5, 200));
-	}
-
-	@Test
-	public void invalidAddress() {
-		Address address = amusementPark.getAddress();
-		amusementPark.setAddress(null);
-		validateAndAssertViolationsSizeIsOne(amusementPark);
-		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getAddress(), ADDRESS, NOT_NULL_MESSAGE);
-
-		address.setCountry(null);
-		amusementPark.setAddress(address);
-		validateAndAssertViolationsSizeIsOne(amusementPark);
-		assertInvalidValueAndPropertyNameAndMessageEquals(address.getCountry(), COUNTRY_IN_ADDRESS, NOT_NULL_MESSAGE);
 	}
 }

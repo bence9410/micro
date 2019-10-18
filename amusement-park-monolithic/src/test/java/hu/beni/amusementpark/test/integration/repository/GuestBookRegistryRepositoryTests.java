@@ -1,7 +1,7 @@
 package hu.beni.amusementpark.test.integration.repository;
 
 import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
-import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
+import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementPark;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createVisitor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -39,7 +39,7 @@ public class GuestBookRegistryRepositoryTests extends AbstractStatementCounterTe
 
 	@Before
 	public void setUp() {
-		amusementPark = amusementParkRepository.save(createAmusementParkWithAddress());
+		amusementPark = amusementParkRepository.save(createAmusementPark());
 		visitor = createVisitor();
 		visitor.setAmusementPark(amusementPark);
 		visitor = visitorRepository.save(visitor);

@@ -1,6 +1,6 @@
 package hu.beni.amusementpark.test.integration.service;
 
-import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
+import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementPark;
 import static hu.beni.amusementpark.helper.ValidEntityFactory.createMachine;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -34,7 +34,7 @@ public class MachineServiceIntegrationTests extends AbstractStatementCounterTest
 
 	@Before
 	public void setUp() {
-		amusementPark = amusementParkRepository.save(createAmusementParkWithAddress());
+		amusementPark = amusementParkRepository.save(createAmusementPark());
 		amusementParkId = amusementPark.getId();
 		reset();
 	}

@@ -11,9 +11,7 @@ import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
 import hu.beni.amusementpark.controller.AmusementParkController;
-import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
-import hu.beni.clientsupport.dto.AddressDTO;
 import hu.beni.clientsupport.resource.AmusementParkResource;
 
 @Component
@@ -32,7 +30,6 @@ public class AmusementParkMapper extends EntityMapper<AmusementPark, AmusementPa
 				.capital(entity.getCapital())
 				.totalArea(entity.getTotalArea())
 				.entranceFee(entity.getEntranceFee())
-				.address(toDTO(entity.getAddress()))
 				.links(createLinks(entity)).build(); //@formatter:on
 	}
 
@@ -43,26 +40,7 @@ public class AmusementParkMapper extends EntityMapper<AmusementPark, AmusementPa
 				.name(resource.getName())
 				.capital(resource.getCapital())
 				.totalArea(resource.getTotalArea())
-				.entranceFee(resource.getEntranceFee())
-				.address(toEntity(resource.getAddress())).build(); //@formatter:on
-	}
-
-	private AddressDTO toDTO(Address entity) {
-		return AddressDTO.builder() //@formatter:off
-				.country(entity.getCountry())
-				.zipCode(entity.getZipCode())
-				.city(entity.getCity())
-				.street(entity.getStreet())			
-				.houseNumber(entity.getHouseNumber()).build(); //@formatter:on
-	}
-
-	private Address toEntity(AddressDTO dto) {
-		return Address.builder() //@formatter:off
-				.country(dto.getCountry())
-				.zipCode(dto.getZipCode())
-				.city(dto.getCity())
-				.street(dto.getStreet())			
-				.houseNumber(dto.getHouseNumber()).build(); //@formatter:on
+				.entranceFee(resource.getEntranceFee()).build(); //@formatter:on
 	}
 
 	private Link[] createLinks(AmusementPark amusementPark) {

@@ -1,6 +1,6 @@
 package hu.beni.amusementpark.test.integration.service;
 
-import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementParkWithAddress;
+import static hu.beni.amusementpark.helper.ValidEntityFactory.createAmusementPark;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -42,12 +42,11 @@ public class AmusementParkServiceIntegrationTests extends AbstractStatementCount
 	}
 
 	private void save() {
-		AmusementPark amusementParkBeforeSave = createAmusementParkWithAddress();
+		AmusementPark amusementParkBeforeSave = createAmusementPark();
 		amusementPark = amusementParkService.save(amusementParkBeforeSave);
 		amusementParkId = amusementPark.getId();
 		assertNotNull(amusementParkId);
 		assertEquals(amusementParkBeforeSave, amusementPark);
-		assertEquals(amusementParkBeforeSave.getAddress(), amusementPark.getAddress());
 		insert++;
 		incrementSelectIfOracleDBProfileActive();
 		assertStatements();
@@ -90,7 +89,7 @@ public class AmusementParkServiceIntegrationTests extends AbstractStatementCount
 
 	private void createNineAmusementParkWithAscendantCapital() {
 		IntStream.range(1000, 1009).forEach(i -> {
-			AmusementPark amusementPark = createAmusementParkWithAddress();
+			AmusementPark amusementPark = createAmusementPark();
 			amusementPark.setCapital(i);
 			amusementParkService.save(amusementPark);
 		});

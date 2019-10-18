@@ -12,7 +12,6 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_I
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_ON_A_MACHINE;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_IS_TOO_YOUNG;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.VISITOR_NOT_SIGNED_UP;
-import static hu.beni.amusementpark.constants.SpringProfileConstants.RABBIT_MQ;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifFirstLessThanSecond;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifNotNull;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifNotZero;
@@ -24,7 +23,6 @@ import java.time.Period;
 
 import javax.transaction.Transactional;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -43,8 +41,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 @Transactional
-@Profile("!" + RABBIT_MQ)
-public class DefaultVisitorServiceImpl implements VisitorService {
+public class VisitorServiceImpl implements VisitorService {
 
 	private final AmusementParkRepository amusementParkRepository;
 	private final MachineRepository machineRepository;
@@ -78,12 +75,12 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 		return enterPark(findAmusementParkIdAndEntranceFeeByIdExceptionIfNotFound(amusementParkId), visitorEmail);
 	}
 
-	protected AmusementPark findAmusementParkIdAndEntranceFeeByIdExceptionIfNotFound(Long amusementParkId) {
+	private AmusementPark findAmusementParkIdAndEntranceFeeByIdExceptionIfNotFound(Long amusementParkId) {
 		return ifNull(amusementParkRepository.findByIdReadOnlyIdAndEntranceFee(amusementParkId),
 				NO_AMUSEMENT_PARK_WITH_ID);
 	}
 
-	protected Visitor enterPark(AmusementPark amusementPark, String visitorEmail) {
+	private Visitor enterPark(AmusementPark amusementPark, String visitorEmail) {
 		Visitor visitor = ifNull(visitorRepository.findById(visitorEmail), VISITOR_NOT_SIGNED_UP);
 		checkIfVisitorAbleToEnterPark(amusementPark.getEntranceFee(), visitor);
 		addToKnownVisitorsIfFirstEnter(amusementPark, visitor);
@@ -116,12 +113,12 @@ public class DefaultVisitorServiceImpl implements VisitorService {
 				findMachineByIdAndAmusementParkIdExceptionIfNotFound(amusementParkId, machineId), visitorEmail);
 	}
 
-	protected Machine findMachineByIdAndAmusementParkIdExceptionIfNotFound(Long amusementParkId, Long machineId) {
+	private Machine findMachineByIdAndAmusementParkIdExceptionIfNotFound(Long amusementParkId, Long machineId) {
 		return ifNull(machineRepository.findByAmusementParkIdAndMachineId(amusementParkId, machineId),
 				NO_MACHINE_IN_PARK_WITH_ID);
 	}
 
-	protected Visitor getOnMachine(Long amusementParkId, Machine machine, String visitorEmail) {
+	private Visitor getOnMachine(Long amusementParkId, Machine machine, String visitorEmail) {
 		Visitor visitor = ifNull(visitorRepository.findByAmusementParkIdAndVisitorEmail(amusementParkId, visitorEmail),
 				NO_VISITOR_IN_PARK_WITH_ID);
 		checkIfVisitorAbleToGetOnMachine(machine, visitor);

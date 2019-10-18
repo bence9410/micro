@@ -43,7 +43,7 @@ import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.MachineRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
 import hu.beni.amusementpark.service.VisitorService;
-import hu.beni.amusementpark.service.impl.DefaultVisitorServiceImpl;
+import hu.beni.amusementpark.service.impl.VisitorServiceImpl;
 
 public class VisitorServiceUnitTests {
 
@@ -60,7 +60,7 @@ public class VisitorServiceUnitTests {
 		machineRepository = mock(MachineRepository.class);
 		visitorRepository = mock(VisitorRepository.class);
 		amusementParkKnowVisitorRepository = mock(AmusementParkKnowVisitorRepository.class);
-		visitorService = new DefaultVisitorServiceImpl(amusementParkRepository, machineRepository, visitorRepository,
+		visitorService = new VisitorServiceImpl(amusementParkRepository, machineRepository, visitorRepository,
 				amusementParkKnowVisitorRepository);
 	}
 
