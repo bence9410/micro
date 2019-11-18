@@ -53,7 +53,7 @@ public class LinkFactory {
 	}
 
 	public static Link createAmusementParkLink() {
-		return linkTo(methodOn(amusementParkControllerClass).findAllPaged(null)).withRel(AMUSEMENT_PARK);
+		return linkTo(methodOn(amusementParkControllerClass).findAllPaged(null, null)).withRel(AMUSEMENT_PARK);
 	}
 
 	public static Link createVisitorLink() {

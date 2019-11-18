@@ -7,8 +7,9 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import hu.beni.amusementpark.entity.AmusementPark;
+import hu.beni.amusementpark.repository.custom.AmusementParkRepositoryCustom;
 
-public interface AmusementParkRepository extends JpaRepository<AmusementPark, Long> {
+public interface AmusementParkRepository extends JpaRepository<AmusementPark, Long>, AmusementParkRepositoryCustom {
 
 	@Modifying
 	@Query("Update AmusementPark a set a.capital = a.capital - :ammount where a.id = :amusementParkId")

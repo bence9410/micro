@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import hu.beni.amusementpark.dto.request.AmusementParkSearchRequestDto;
+import hu.beni.amusementpark.dto.response.AmusementParkPageResponseDto;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
 import hu.beni.amusementpark.repository.VisitorRepository;
@@ -42,7 +44,7 @@ public class AmusementParkServiceImpl implements AmusementParkService {
 	}
 
 	@Override
-	public Page<AmusementPark> findAll(Pageable pageable) {
-		return amusementParkRepository.findAll(pageable);
+	public Page<AmusementParkPageResponseDto> findAll(AmusementParkSearchRequestDto dto, Pageable pageable) {
+		return amusementParkRepository.findAll(dto, pageable);
 	}
 }

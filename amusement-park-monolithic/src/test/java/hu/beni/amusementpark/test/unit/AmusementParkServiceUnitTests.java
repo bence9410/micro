@@ -20,6 +20,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
+import hu.beni.amusementpark.dto.request.AmusementParkSearchRequestDto;
+import hu.beni.amusementpark.dto.response.AmusementParkPageResponseDto;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
@@ -124,13 +126,16 @@ public class AmusementParkServiceUnitTests {
 
 	@Test
 	public void findAllPageablePositive() {
-		Page<AmusementPark> page = new PageImpl<>(
-				Arrays.asList(AmusementPark.builder().id(0L).build(), AmusementPark.builder().id(1L).build()));
+		Page<AmusementParkPageResponseDto> page = new PageImpl<>(
+				Arrays.asList(AmusementParkPageResponseDto.builder().name("Beni parkja").build(),
+						AmusementParkPageResponseDto.builder().name("Jeni parkja").build()));
 		Pageable pageable = PageRequest.of(0, 10);
+		AmusementParkSearchRequestDto dto = new AmusementParkSearchRequestDto();
+		dto.setName("");
 
-		when(amusementParkRepository.findAll(pageable)).thenReturn(page);
+		when(amusementParkRepository.findAll(dto, pageable)).thenReturn(page);
 
-		assertEquals(page, amusementParkService.findAll(pageable));
+		assertEquals(page, amusementParkService.findAll(dto, pageable));
 
 		verify(amusementParkRepository).findAll(pageable);
 	}
