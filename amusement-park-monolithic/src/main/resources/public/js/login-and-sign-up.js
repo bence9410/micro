@@ -1,3 +1,14 @@
+$(document).ready(function() {
+	$("#loginDiv").keyup(loginWithEnter);
+})
+
+function loginWithEnter(event) {
+	if (event.keyCode === 13) {
+		event.preventDefault();
+	   	$("#login").click();
+	}
+}
+
 function ajaxLogin() {
 	$.ajax({
 		url : links.login,
