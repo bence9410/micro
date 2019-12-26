@@ -15,6 +15,14 @@ function toggleSearchDiv(){
 	$("#searcheDiv").toggle()
 }
 
+function showCreateAmusementParkModal(){
+	$("#createInputName").val("")
+	$("#createInputCapital").val("")
+	$("#createInputTotalArea").val("")
+	$("#createInputEntranceFee").val("")
+	$("#createHibaUzenet").html("")
+}
+
 function save() {
 	$("#createParkSave").attr("disabled", true)
 	$.ajax({
@@ -42,7 +50,7 @@ function parkCollectData() {
 	amusementPark.name = $("#createInputName").val()
 	amusementPark.capital = $("#createInputCapital").val()
 	amusementPark.totalArea = $("#createInputTotalArea").val()
-	amusementPark.entranceFee = $("#createInputEntranceFree").val()
+	amusementPark.entranceFee = $("#createInputEntranceFee").val()
 	
 	var address = {}
 	address.zipCode = 1000
