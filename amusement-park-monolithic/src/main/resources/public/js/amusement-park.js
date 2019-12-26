@@ -8,49 +8,44 @@ $(document).ready(function() {
 
 })
 
-function toggleSaveDiv(){
-	$("#saveDiv").toggle()
-}
-function toggleSearchDiv(){
-	$("#searcheDiv").toggle()
-}
-
-function showCreateAmusementParkModal(){
-	$("#createInputName").val("")
-	$("#createInputCapital").val("")
-	$("#createInputTotalArea").val("")
-	$("#createInputEntranceFee").val("")
-	$("#createHibaUzenet").html("")
+function clearAndShowCreateAmusementParkModal(){
+	$("#createAmusementParkErrorMessage").html("")
+	$("#createAmusementParkName").val("")
+	$("#createAmusementParkCapital").val("")
+	$("#createAmusementParkTotalArea").val("")
+	$("#createAmusementParkEntranceFee").val("")
+	$("#createAmusementParkModal").modal("show")
+	
 }
 
-function save() {
-	$("#createParkSave").attr("disabled", true)
+function create() {
+	$("#createAmusementParkButton").attr("disabled", true)
 	$.ajax({
 		url : links.amusementPark,
 		method : "POST",
 		contentType : "application/json",
 		data : JSON.stringify(parkCollectData()),
 		success : function() {
-			$("#createButtonModal").modal("hide")
+			$("#createAmusementParkModal").modal("hide")
 			getAmusementParks()
 		},
 		error : function(response) {
-			var result = $("#createHibaUzenet")
+			var result = $("#createAmusementParkErrorMessage")
 			result.html("error: " + response.responseText)
 			result.addClass("text-danger")
 		},
 		complete : function() {
-			$("#createParkSave").attr("disabled", false)
+			$("#createAmusementParkButton").attr("disabled", false)
 		}
 	})
 }
 
 function parkCollectData() {
 	var amusementPark = {}
-	amusementPark.name = $("#createInputName").val()
-	amusementPark.capital = $("#createInputCapital").val()
-	amusementPark.totalArea = $("#createInputTotalArea").val()
-	amusementPark.entranceFee = $("#createInputEntranceFee").val()
+	amusementPark.name = $("#createAmusementParkName").val()
+	amusementPark.capital = $("#createAmusementParkCapital").val()
+	amusementPark.totalArea = $("#createAmusementParkTotalArea").val()
+	amusementPark.entranceFee = $("#createAmusementParkEntranceFee").val()
 	
 	var address = {}
 	address.zipCode = 1000
