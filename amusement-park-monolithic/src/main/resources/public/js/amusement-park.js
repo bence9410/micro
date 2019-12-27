@@ -20,43 +20,64 @@ function clearAndShowCreateAmusementParkModal(){
 
 function create() {
 	$("#createAmusementParkButton").attr("disabled", true)
-	$.ajax({
-		url : links.amusementPark,
-		method : "POST",
-		contentType : "application/json",
-		data : JSON.stringify(parkCollectData()),
-		success : function() {
-			$("#createAmusementParkModal").modal("hide")
-			getAmusementParks()
-		},
-		error : function(response) {
-			var result = $("#createAmusementParkErrorMessage")
-			result.html("error: " + response.responseText)
-			result.addClass("text-danger")
-		},
-		complete : function() {
-			$("#createAmusementParkButton").attr("disabled", false)
-		}
-	})
+	var amusementPark = collectAmusementPark()
+	var error=validateAmusementPark(amusementPark)
+	if (error.length == 0){
+		$.ajax({
+			url : links.amusementPark,
+			method : "POST",
+			contentType : "application/json",
+			data : JSON.stringify(amusementPark),
+			success : function() {
+				$("#createAmusementParkModal").modal("hide")
+				getAmusementParks()
+			},
+			error : function(response) {
+				$("#createAmusementParkErrorMessage").html("error: " + response.responseText)
+			},
+			complete : function() {
+				$("#createAmusementParkButton").attr("disabled", false)
+			}
+		})	
+	} else {
+		 $("#createAmusementParkErrorMessage").html(error.join("<br>"))
+		 $("#createAmusementParkButton").attr("disabled", false)
+		
+	}
 }
 
-function parkCollectData() {
+function collectAmusementPark() {
 	var amusementPark = {}
 	amusementPark.name = $("#createAmusementParkName").val()
-	amusementPark.capital = $("#createAmusementParkCapital").val()
-	amusementPark.totalArea = $("#createAmusementParkTotalArea").val()
-	amusementPark.entranceFee = $("#createAmusementParkEntranceFee").val()
+	amusementPark.capital = Number($("#createAmusementParkCapital").val())
+	amusementPark.totalArea = Number($("#createAmusementParkTotalArea").val())
+	amusementPark.entranceFee = Number($("#createAmusementParkEntranceFee").val())
 	
 	var address = {}
 	address.zipCode = 1000
-	address.country="Budapest"
+	address.country="Pest"
 	address.street="Peterdy"
-	address.city="Valami"
+	address.city="Budapest"
 	address.houseNumber="23"
 	amusementPark.address = address
 	return amusementPark
 }
-
+function validateAmusementPark(amusementPark){
+	var error = []
+	if (amusementPark.name.length < 5 || amusementPark.name.length > 20 ){
+		error.push("The length of name must be between 5 and 20.")
+	} 
+	if (amusementPark.capital < 500 || amusementPark.capital.length >50000){
+		error.push("The value of capital must be between 500 and 50000.")
+	}
+	if (amusementPark.totalArea < 50 || amusementPark.totalArea.length >2000){
+		error.push("The value of total area must be between 50 and 2000.")
+	}
+	if (amusementPark.entranceFee < 5 || amusementPark.entranceFee.length >200){
+		error.push("The value of entrance fee must be between 5 and 200.")
+	}
+	return error
+}
 
 function getAmusementParks() {
 	$.ajax({
