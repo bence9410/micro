@@ -79,6 +79,26 @@ function validateAmusementPark(amusementPark){
 	return error
 }
 
+function search(){
+	var searchAmusementPark = {}
+	searchAmusementPark.name = $("#searchName").val()
+	searchAmusementPark.capitalMin = Number($("#searchCapitalMin").val())
+	searchAmusementPark.capitalMax = Number($("#searchCapitalMax").val())
+	searchAmusementPark.totalAreaMin = Number($("#searchTotalAreaMin").val())
+	searchAmusementPark.totalAreaMax = Number($("#searchTotalAreaMax").val())
+	searchAmusementPark.entranceFeeMin = Number($("#searchEntranceFeeMin").val())
+	searchAmusementPark.entranceFeeMax = Number($("#searchEntranceFeeMax").val())
+	
+	$.ajax({
+		url : links.amusementPark+ "?input="+ JSON.stringify(searchAmusementPark),
+		success : function() {
+			$("#searchDiv").modal("hide")
+		}
+	})
+	
+	console.log(searchAmusementPark)
+}
+
 function getAmusementParks() {
 	$.ajax({
 		url : links.amusementPark,
