@@ -50,25 +50,29 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
 			AmusementParkSearchRequestDto dto) {
 		List<Predicate> predicates = new ArrayList<>();
 
-		ofNullable(dto.getName()).map(name -> cb.like(root.get(AmusementPark_.name), name)).ifPresent(predicates::add);
+		if (dto != null) {
+			ofNullable(dto.getName()).map(name -> cb.like(root.get(AmusementPark_.name), "%" + name + "%"))
+					.ifPresent(predicates::add);
 
-		ofNullable(dto.getCapitalMin()).map(capitalMin -> cb.ge(root.get(AmusementPark_.totalArea), capitalMin))
-				.ifPresent(predicates::add);
-		ofNullable(dto.getCapitalMax()).map(capitalMax -> cb.le(root.get(AmusementPark_.totalArea), capitalMax))
-				.ifPresent(predicates::add);
+			ofNullable(dto.getCapitalMin()).map(capitalMin -> cb.ge(root.get(AmusementPark_.totalArea), capitalMin))
+					.ifPresent(predicates::add);
+			ofNullable(dto.getCapitalMax()).map(capitalMax -> cb.le(root.get(AmusementPark_.totalArea), capitalMax))
+					.ifPresent(predicates::add);
 
-		ofNullable(dto.getTotalAreaMin()).map(totalAreaMin -> cb.ge(root.get(AmusementPark_.totalArea), totalAreaMin))
-				.ifPresent(predicates::add);
-		ofNullable(dto.getTotalAreaMax()).map(totalAreaMax -> cb.le(root.get(AmusementPark_.totalArea), totalAreaMax))
-				.ifPresent(predicates::add);
+			ofNullable(dto.getTotalAreaMin())
+					.map(totalAreaMin -> cb.ge(root.get(AmusementPark_.totalArea), totalAreaMin))
+					.ifPresent(predicates::add);
+			ofNullable(dto.getTotalAreaMax())
+					.map(totalAreaMax -> cb.le(root.get(AmusementPark_.totalArea), totalAreaMax))
+					.ifPresent(predicates::add);
 
-		ofNullable(dto.getEntranceFeeMin())
-				.map(entranceFeeMin -> cb.ge(root.get(AmusementPark_.totalArea), entranceFeeMin))
-				.ifPresent(predicates::add);
-		ofNullable(dto.getEntranceFeeMax())
-				.map(entranceFeeMax -> cb.le(root.get(AmusementPark_.totalArea), entranceFeeMax))
-				.ifPresent(predicates::add);
-
+			ofNullable(dto.getEntranceFeeMin())
+					.map(entranceFeeMin -> cb.ge(root.get(AmusementPark_.totalArea), entranceFeeMin))
+					.ifPresent(predicates::add);
+			ofNullable(dto.getEntranceFeeMax())
+					.map(entranceFeeMax -> cb.le(root.get(AmusementPark_.totalArea), entranceFeeMax))
+					.ifPresent(predicates::add);
+		}
 		return predicates.toArray(new Predicate[predicates.size()]);
 	}
 

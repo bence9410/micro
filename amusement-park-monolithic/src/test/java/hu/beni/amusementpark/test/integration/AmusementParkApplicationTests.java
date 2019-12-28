@@ -33,6 +33,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -55,10 +58,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import hu.beni.amusementpark.AmusementParkApplication;
 import hu.beni.amusementpark.config.ClientConfig;
 import hu.beni.amusementpark.enums.MachineType;
+import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.helper.MyAssert.ExceptionAsserter;
 import hu.beni.clientsupport.Client;
 import hu.beni.clientsupport.resource.AmusementParkResource;
@@ -75,6 +80,9 @@ public class AmusementParkApplicationTests {
 
 	@Autowired
 	private Client client;
+
+	@Autowired
+	private RestTemplate restTemplate;
 
 	@LocalServerPort
 	private int port;
@@ -150,6 +158,20 @@ public class AmusementParkApplicationTests {
 
 		page = response.getBody();
 		assertEquals(4, page.getLinks().size());
+
+		response = client.get(uri(links.get(AMUSEMENT_PARK) + "?input=" + encode("{\"name\":\"a\"}")), responseType);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+
+		page = response.getBody();
+		assertEquals(4, page.getLinks().size());
+		assertNotNull(page.getLink("last"));
+
+		response = client.get(uri(links.get(AMUSEMENT_PARK) + "?input=" + encode("{\"name\":\"x\"}")), responseType);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+
+		page = response.getBody();
+		assertEquals(1, page.getLinks().size());
+
 	}
 
 	@Test
@@ -406,5 +428,13 @@ public class AmusementParkApplicationTests {
 			assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
 			assertEquals(MACHINE_IS_TOO_EXPENSIVE, exception.getResponseBodyAsString());
 		};
+	}
+
+	private String encode(String input) {
+		try {
+			return URLEncoder.encode(input, StandardCharsets.UTF_8.toString());
+		} catch (UnsupportedEncodingException e) {
+			throw new AmusementParkException("Wrong input!", e);
+		}
 	}
 }
