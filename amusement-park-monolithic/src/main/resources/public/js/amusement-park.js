@@ -131,6 +131,9 @@ function convertAmusementParkToTableRow(amusementPark) {
 	tr.push("<td>" + amusementPark.capital + "</td>")
 	tr.push("<td>" + amusementPark.totalArea + "</td>")
 	tr.push("<td>" + amusementPark.entranceFee + "</td>")
+	tr.push("<td>" + amusementPark.numberOfGuestBookRegistries + "</td>")
+	tr.push("<td>" + amusementPark.numberOfActiveVisitors + "</td>")
+	tr.push("<td>" + amusementPark.numberOfKnownVisitors + "</td>")
 	tr.push("</tr>")
 	return tr.join("")
 }
