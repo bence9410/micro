@@ -19,6 +19,8 @@ public class AmusementParkPageResponseDto {
 
 	private Integer entranceFee;
 
+	private Long numberOfMachines;
+
 	private Long numberOfGuestBookRegistries;
 
 	private Long numberOfActiveVisitors;

@@ -24,6 +24,8 @@ import hu.beni.amusementpark.entity.AmusementParkKnowVisitor_;
 import hu.beni.amusementpark.entity.AmusementPark_;
 import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.entity.GuestBookRegistry_;
+import hu.beni.amusementpark.entity.Machine;
+import hu.beni.amusementpark.entity.Machine_;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.entity.Visitor_;
 import hu.beni.amusementpark.repository.custom.AmusementParkRepositoryCustom;
@@ -89,6 +91,11 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
 		CriteriaQuery<AmusementParkPageResponseDto> cq = cb.createQuery(AmusementParkPageResponseDto.class);
 		Root<AmusementPark> root = cq.from(AmusementPark.class);
 
+		Subquery<Long> countMachines = cq.subquery(Long.class);
+		Root<Machine> machineRoot = countMachines.from(Machine.class);
+		countMachines.where(cb.equal(root, machineRoot.get(Machine_.amusementPark)));
+		countMachines.select(cb.count(machineRoot));
+
 		Subquery<Long> countGuestBooks = cq.subquery(Long.class);
 		Root<GuestBookRegistry> guestBookRoot = countGuestBooks.from(GuestBookRegistry.class);
 		countGuestBooks.where(cb.equal(root, guestBookRoot.get(GuestBookRegistry_.amusementPark)));
@@ -105,7 +112,7 @@ public class AmusementParkRepositoryCustomImpl implements AmusementParkRepositor
 		countKnownVisitors.select(cb.count(knownRoot));
 
 		cq.multiselect(root.get(AmusementPark_.id), root.get(AmusementPark_.name), root.get(AmusementPark_.capital),
-				root.get(AmusementPark_.totalArea), root.get(AmusementPark_.entranceFee),
+				root.get(AmusementPark_.totalArea), root.get(AmusementPark_.entranceFee), countMachines.getSelection(),
 				countGuestBooks.getSelection(), countActiveVisitors.getSelection(), countKnownVisitors.getSelection())
 				.where(createPredicates(cb, root, dto));
 		return entityManager.createQuery(cq).setFirstResult((int) pageable.getOffset())

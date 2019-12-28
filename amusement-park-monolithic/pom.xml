@@ -46,10 +46,6 @@
 			<artifactId>ojdbc7</artifactId>
 			<version>12.1.0.1</version>
 		</dependency>
-		<!--dependency>
-			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-core</artifactId>
-		</dependency-->
 		<dependency>
 			<groupId>hu.beni</groupId>
 			<artifactId>client-support</artifactId>
@@ -129,9 +125,6 @@
 				<configuration>
 					<testFailureIgnore>${testFailureIgnore}</testFailureIgnore>
 					<includes>
-						<include>**/validation/**.java</include>
-						<include>**/rabbitmq/**.java</include>
-						<include>**/OracleRowNumberPartitionTests.java</include>
 						<include>**/SeleniumTests.java</include>
 					</includes>
 				</configuration>
@@ -153,9 +146,6 @@
 						<include>**/**.java</include>
 					</includes>
 					<excludes>
-						<exclude>**/validation/**.java</exclude>
-						<exclude>**/rabbitmq/**.java</exclude>
-						<exclude>**/OracleRowNumberPartitionTests.java</exclude>
 						<exclude>**/SeleniumTests.java</exclude>
 					</excludes>
 				</configuration>
