@@ -3,7 +3,6 @@ package hu.beni.clientsupport.resource;
 import java.io.Serializable;
 import java.util.Optional;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Size;
@@ -12,7 +11,6 @@ import org.hibernate.validator.constraints.Range;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
 
-import hu.beni.clientsupport.dto.AddressDTO;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -44,20 +42,15 @@ public class AmusementParkResource extends ResourceSupport implements Serializab
 	@Range(min = 5, max = 200)
 	private Integer entranceFee;
 
-	@Valid
-	@NotNull
-	private AddressDTO address;
-
 	@Builder
 	public AmusementParkResource(Long identifier, String name, Integer capital, Integer totalArea, Integer entranceFee,
-			AddressDTO address, Link[] links) {
+			Link[] links) {
 		super();
 		this.identifier = identifier;
 		this.name = name;
 		this.capital = capital;
 		this.totalArea = totalArea;
 		this.entranceFee = entranceFee;
-		this.address = address;
 		Optional.ofNullable(links).ifPresent(this::add);
 	}
 

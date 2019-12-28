@@ -10,12 +10,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import org.junit.After;
 import org.junit.Before;
@@ -24,9 +19,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 
-import hu.beni.amusementpark.archive.ArchiveSender;
+import hu.beni.amusementpark.dto.request.AmusementParkSearchRequestDto;
+import hu.beni.amusementpark.dto.response.AmusementParkPageResponseDto;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
@@ -38,7 +33,6 @@ public class AmusementParkServiceUnitTests {
 
 	private AmusementParkRepository amusementParkRepository;
 	private VisitorRepository visitorRepository;
-	private ArchiveSender archiveSender;
 
 	private AmusementParkService amusementParkService;
 
@@ -46,13 +40,12 @@ public class AmusementParkServiceUnitTests {
 	public void setUp() {
 		amusementParkRepository = mock(AmusementParkRepository.class);
 		visitorRepository = mock(VisitorRepository.class);
-		archiveSender = mock(ArchiveSender.class);
-		amusementParkService = new AmusementParkServiceImpl(amusementParkRepository, visitorRepository, archiveSender);
+		amusementParkService = new AmusementParkServiceImpl(amusementParkRepository, visitorRepository);
 	}
 
 	@After
 	public void verifyNoMoreInteractionsOnMocks() {
-		verifyNoMoreInteractions(amusementParkRepository, visitorRepository, archiveSender);
+		verifyNoMoreInteractions(amusementParkRepository, visitorRepository);
 	}
 
 	@Test
@@ -86,30 +79,6 @@ public class AmusementParkServiceUnitTests {
 		assertEquals(amusementPark, amusementParkService.findById(amusementParkId));
 
 		verify(amusementParkRepository).findById(amusementParkId);
-	}
-
-	@Test
-	public void findOneBySpecificationNegativeNoPark() {
-		Specification<AmusementPark> specification = (Root<AmusementPark> root, CriteriaQuery<?> query,
-				CriteriaBuilder cb) -> cb.equal(root.get("name"), "asd");
-
-		assertThatThrownBy(() -> amusementParkService.findOne(specification)).isInstanceOf(AmusementParkException.class)
-				.hasMessage(NO_AMUSEMENT_PARK_WITH_ID);
-
-		verify(amusementParkRepository).findOne(specification);
-	}
-
-	@Test
-	public void findOneBySpecificationPositive() {
-		AmusementPark amusementPark = AmusementPark.builder().build();
-		Specification<AmusementPark> specification = (Root<AmusementPark> root, CriteriaQuery<?> query,
-				CriteriaBuilder cb) -> cb.equal(root.get("name"), "asd");
-
-		when(amusementParkRepository.findOne(specification)).thenReturn(Optional.of(amusementPark));
-
-		assertEquals(amusementPark, amusementParkService.findOne(specification));
-
-		verify(amusementParkRepository).findOne(specification);
 	}
 
 	@Test
@@ -153,34 +122,21 @@ public class AmusementParkServiceUnitTests {
 		verify(visitorRepository).countByAmusementParkId(amusementParkId);
 		verify(amusementParkRepository).findById(amusementParkId);
 		verify(amusementParkRepository).delete(amusementPark);
-		verify(archiveSender).sendToArchive(amusementPark);
 	}
 
 	@Test
 	public void findAllPageablePositive() {
-		Page<AmusementPark> page = new PageImpl<>(
-				Arrays.asList(AmusementPark.builder().id(0L).build(), AmusementPark.builder().id(1L).build()));
+		Page<AmusementParkPageResponseDto> page = new PageImpl<>(
+				Arrays.asList(AmusementParkPageResponseDto.builder().name("Beni parkja").build(),
+						AmusementParkPageResponseDto.builder().name("Jeni parkja").build()));
 		Pageable pageable = PageRequest.of(0, 10);
+		AmusementParkSearchRequestDto dto = new AmusementParkSearchRequestDto();
+		dto.setName("");
 
-		when(amusementParkRepository.findAll(pageable)).thenReturn(page);
+		when(amusementParkRepository.findAll(dto, pageable)).thenReturn(page);
 
-		assertEquals(page, amusementParkService.findAll(pageable));
+		assertEquals(page, amusementParkService.findAll(dto, pageable));
 
-		verify(amusementParkRepository).findAll(pageable);
+		verify(amusementParkRepository).findAll(dto, pageable);
 	}
-
-	@Test
-	public void findAllBySpecificationPageable() {
-		List<AmusementPark> amusementParks = Arrays.asList(AmusementPark.builder().id(0L).build(),
-				AmusementPark.builder().id(1L).build());
-		Specification<AmusementPark> specification = (Root<AmusementPark> root, CriteriaQuery<?> query,
-				CriteriaBuilder cb) -> cb.equal(root.get("name"), "asd");
-
-		when(amusementParkRepository.findAll(specification)).thenReturn(amusementParks);
-
-		assertEquals(amusementParks, amusementParkService.findAll(specification));
-
-		verify(amusementParkRepository).findAll(specification);
-	}
-
 }

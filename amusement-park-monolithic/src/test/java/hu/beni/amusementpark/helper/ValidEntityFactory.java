@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
@@ -13,15 +12,6 @@ import hu.beni.amusementpark.enums.MachineType;
 public class ValidEntityFactory {
 
 	private static final BCryptPasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
-
-	public static Address createAddress() {
-		return Address.builder() //@formatter:off
-                .zipCode("1148")
-                .city("Budapest")
-                .country("Magyarország")
-                .street("Fogarasi út")
-                .houseNumber("80/C").build(); //@formatter:on
-	}
 
 	public static AmusementPark createAmusementPark() {
 		return AmusementPark.builder() //@formatter:off
@@ -49,13 +39,6 @@ public class ValidEntityFactory {
     			.authority("ROLE_ADMIN")
         		.dateOfBirth(LocalDate.of(1994, 10, 22))
         		.spendingMoney(1000).build(); //@formatter:on
-	}
-
-	public static AmusementPark createAmusementParkWithAddress() {
-		Address address = createAddress();
-		AmusementPark amusementPark = createAmusementPark();
-		amusementPark.setAddress(address);
-		return amusementPark;
 	}
 
 }

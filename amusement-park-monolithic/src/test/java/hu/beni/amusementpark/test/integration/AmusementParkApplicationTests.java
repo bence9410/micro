@@ -1,11 +1,10 @@
 package hu.beni.amusementpark.test.integration;
 
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.MACHINE_IS_TOO_EXPENSIVE;
-import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_ARCHIVE_SEND_TYPE;
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.validationError;
 import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
-import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.oneOfMessage;
+import static hu.beni.amusementpark.constants.ValidationMessageConstants.rangeMessage;
 import static hu.beni.amusementpark.helper.MyAssert.assertThrows;
 import static hu.beni.clientsupport.Client.uri;
 import static hu.beni.clientsupport.ResponseType.AMUSEMENT_PARK_TYPE;
@@ -25,7 +24,7 @@ import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.SIGN_UP;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.UPLOAD_MONEY;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_ENTER_PARK;
 import static hu.beni.clientsupport.constants.HATEOASLinkRelConstants.VISITOR_LEAVE_PARK;
-import static hu.beni.clientsupport.factory.ValidResourceFactory.createAmusementParkWithAddress;
+import static hu.beni.clientsupport.factory.ValidResourceFactory.createAmusementPark;
 import static hu.beni.clientsupport.factory.ValidResourceFactory.createMachine;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
@@ -34,6 +33,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -47,7 +49,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.core.env.Environment;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.mvc.TypeReferences.PagedResourcesType;
@@ -57,10 +58,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import hu.beni.amusementpark.AmusementParkApplication;
 import hu.beni.amusementpark.config.ClientConfig;
 import hu.beni.amusementpark.enums.MachineType;
+import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.helper.MyAssert.ExceptionAsserter;
 import hu.beni.clientsupport.Client;
 import hu.beni.clientsupport.resource.AmusementParkResource;
@@ -76,10 +79,10 @@ public class AmusementParkApplicationTests {
 	private static Map<String, String> links;
 
 	@Autowired
-	private Environment environment;
+	private Client client;
 
 	@Autowired
-	private Client client;
+	private RestTemplate restTemplate;
 
 	@LocalServerPort
 	private int port;
@@ -141,7 +144,7 @@ public class AmusementParkApplicationTests {
 		assertEquals(1, page.getLinks().size());
 		assertNotNull(page.getId());
 
-		IntStream.range(0, 11).forEach(i -> createAmusementPark());
+		IntStream.range(0, 11).forEach(i -> postAmusementPark());
 
 		response = client.get(uri(links.get(AMUSEMENT_PARK)), responseType);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -155,13 +158,27 @@ public class AmusementParkApplicationTests {
 
 		page = response.getBody();
 		assertEquals(4, page.getLinks().size());
+
+		response = client.get(uri(links.get(AMUSEMENT_PARK) + "?input=" + encode("{\"name\":\"a\"}")), responseType);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+
+		page = response.getBody();
+		assertEquals(4, page.getLinks().size());
+		assertNotNull(page.getLink("last"));
+
+		response = client.get(uri(links.get(AMUSEMENT_PARK) + "?input=" + encode("{\"name\":\"x\"}")), responseType);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+
+		page = response.getBody();
+		assertEquals(1, page.getLinks().size());
+
 	}
 
 	@Test
 	public void positiveTest() {
 		VisitorResource visitorResource = loginAsAdmin("admin0@gmail.com", "password");
 
-		AmusementParkResource amusementParkResource = createAmusementPark();
+		AmusementParkResource amusementParkResource = postAmusementPark();
 
 		MachineResource machineResource = addMachine(amusementParkResource.getLink(MACHINE).getHref());
 
@@ -185,13 +202,13 @@ public class AmusementParkApplicationTests {
 	public void negativeTest() {
 		loginAsAdmin("admin0@gmail.com", "password");
 
-		AmusementParkResource amusementParkResource = createAmusementParkWithAddress();
-		amusementParkResource.setAddress(null);
+		AmusementParkResource amusementParkResource = createAmusementPark();
+		amusementParkResource.setEntranceFee(0);
 
 		assertThrows(() -> client.post(uri(links.get(AMUSEMENT_PARK)), amusementParkResource, String.class),
 				HttpClientErrorException.class, teaPotStatusAndAddressNullMessage());
 
-		AmusementParkResource createdAmusementParkResource = createAmusementParkWithAddress();
+		AmusementParkResource createdAmusementParkResource = createAmusementPark();
 		createdAmusementParkResource.setCapital(500);
 
 		ResponseEntity<AmusementParkResource> response = client.post(uri(links.get(AMUSEMENT_PARK)),
@@ -268,8 +285,8 @@ public class AmusementParkApplicationTests {
 		assertTrue(loginPageResponse.getBody().length() > 450);
 	}
 
-	private AmusementParkResource createAmusementPark() {
-		AmusementParkResource amusementParkResource = createAmusementParkWithAddress();
+	private AmusementParkResource postAmusementPark() {
+		AmusementParkResource amusementParkResource = createAmusementPark();
 
 		ResponseEntity<AmusementParkResource> response = client.post(uri(links.get(AMUSEMENT_PARK)),
 				amusementParkResource, AMUSEMENT_PARK_TYPE);
@@ -287,7 +304,6 @@ public class AmusementParkApplicationTests {
 		assertNotNull(responseAmusementParkResource.getLink(VISITOR_ENTER_PARK));
 
 		amusementParkResource.setIdentifier(responseAmusementParkResource.getIdentifier());
-		amusementParkResource.getAddress().setIdentifier(responseAmusementParkResource.getAddress().getIdentifier());
 		amusementParkResource.add(responseAmusementParkResource.getLinks());
 		assertEquals(amusementParkResource, responseAmusementParkResource);
 
@@ -386,19 +402,14 @@ public class AmusementParkApplicationTests {
 	}
 
 	private void deletePark(String amusementParkUrlWithId) {
-		if (environment.getActiveProfiles().length == 0) {
-			assertThrows(() -> client.delete(uri(amusementParkUrlWithId)), HttpClientErrorException.class,
-					teaPotStatusNoArchiveSendTypeMessage());
-		} else {
-			ResponseEntity<Void> response = client.delete(uri(amusementParkUrlWithId));
-			assertEquals(HttpStatus.OK, response.getStatusCode());
-		}
+		ResponseEntity<Void> response = client.delete(uri(amusementParkUrlWithId));
+		assertEquals(HttpStatus.OK, response.getStatusCode());
 	}
 
 	private ExceptionAsserter<HttpClientErrorException> teaPotStatusAndAddressNullMessage() {
 		return exception -> {
 			assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
-			assertEquals(validationError("address", NOT_NULL_MESSAGE), exception.getResponseBodyAsString());
+			assertEquals(validationError("entranceFee", rangeMessage(5, 200)), exception.getResponseBodyAsString());
 		};
 	}
 
@@ -419,10 +430,11 @@ public class AmusementParkApplicationTests {
 		};
 	}
 
-	private ExceptionAsserter<HttpClientErrorException> teaPotStatusNoArchiveSendTypeMessage() {
-		return exception -> {
-			assertEquals(HttpStatus.I_AM_A_TEAPOT, exception.getStatusCode());
-			assertEquals(NO_ARCHIVE_SEND_TYPE, exception.getResponseBodyAsString());
-		};
+	private String encode(String input) {
+		try {
+			return URLEncoder.encode(input, StandardCharsets.UTF_8.toString());
+		} catch (UnsupportedEncodingException e) {
+			throw new AmusementParkException("Wrong input!", e);
+		}
 	}
 }
