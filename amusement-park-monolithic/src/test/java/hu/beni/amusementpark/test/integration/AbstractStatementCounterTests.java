@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.vladmihalcea.sql.SQLStatementCountValidator;
@@ -23,6 +24,7 @@ import hu.beni.amusementpark.config.DataSourceConfig;
 @SpringBootTest(webEnvironment = WebEnvironment.NONE, classes = { AmusementParkApplication.class,
 		DataSourceConfig.class })
 @DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
+@ActiveProfiles("stmtCount")
 public abstract class AbstractStatementCounterTests {
 
 	@Autowired

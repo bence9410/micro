@@ -7,10 +7,10 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import hu.beni.amusementpark.entity.Address;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
@@ -27,6 +27,7 @@ public class AmusementParkApplication {
 	}
 
 	@Bean
+	@Profile("default")
 	public ApplicationRunner applicationRunner(AmusementParkService amusementParkService, MachineService machineService,
 			VisitorService visitorService) {
 		PasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -43,12 +44,7 @@ public class AmusementParkApplication {
                 .capital(3000)
                 .totalArea(1000)
                 .entranceFee(50)
-                .address(Address.builder()
-                .zipCode("1148")
-                .city("Budapest")
-                .country("Magyarország")
-                .street("Fogarasi út")
-                .houseNumber("80/C").build()).build(); //@formatter:on
+                .build(); //@formatter:on
 
 			amusementParkService.save(amusementPark);
 
