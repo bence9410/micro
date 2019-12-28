@@ -1,1 +1,0 @@
-sh mvnSeleniumTestsNotHeadless.sh SignUpAndUploadMoneyTest.js
