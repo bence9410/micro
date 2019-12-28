@@ -46,14 +46,6 @@ function collectAmusementPark() {
 	amusementPark.capital = Number($("#createAmusementParkCapital").val())
 	amusementPark.totalArea = Number($("#createAmusementParkTotalArea").val())
 	amusementPark.entranceFee = Number($("#createAmusementParkEntranceFee").val())
-	
-	var address = {}
-	address.zipCode = 1000
-	address.country="Pest"
-	address.street="Peterdy"
-	address.city="Budapest"
-	address.houseNumber="23"
-	amusementPark.address = address
 	return amusementPark
 }
 function validateAmusementPark(amusementPark){
@@ -76,17 +68,35 @@ function validateAmusementPark(amusementPark){
 function search(){
 	var searchAmusementPark = {}
 	searchAmusementPark.name = $("#searchName").val()
-	searchAmusementPark.capitalMin = Number($("#searchCapitalMin").val())
-	searchAmusementPark.capitalMax = Number($("#searchCapitalMax").val())
-	searchAmusementPark.totalAreaMin = Number($("#searchTotalAreaMin").val())
-	searchAmusementPark.totalAreaMax = Number($("#searchTotalAreaMax").val())
-	searchAmusementPark.entranceFeeMin = Number($("#searchEntranceFeeMin").val())
-	searchAmusementPark.entranceFeeMax = Number($("#searchEntranceFeeMax").val())
-	
+	var capitalMin=$("#searchCapitalMin").val()
+	if(capitalMin !== "" && !isNaN(capitalMin)){
+			searchAmusementPark.capitalMin = Number(capitalMin)
+	}
+	var capitalMax=$("#searchCapitalMax").val()
+	if(capitalMax !== "" && !isNaN(capitalMax)){
+			searchAmusementPark.capitalMax = Number(capitalMax)
+	}
+	var totalAreaMin=$("#searchTotalAreaMin").val()
+	if(totalAreaMin !== "" && !isNaN(totalAreaMin)){
+		searchAmusementPark.totalAreaMin = Number(totalAreaMin)
+	}
+	var totalAreaMax=$("#searchTotalAreaMax").val()
+	if(totalAreaMax !== "" && !isNaN(totalAreaMax)){
+		searchAmusementPark.totalAreaMax = Number(totalAreaMax)
+	}
+	var entranceFeeMin=$("#searchEntranceFeeMin").val()
+	if(entranceFeeMin !== "" && !isNaN(entranceFeeMin)){
+		searchAmusementPark.entranceFeeMin = Number(entranceFeeMin)
+	}
+	var entranceFeeMax=$("#searchEntranceFeeMax").val()
+	if(entranceFeeMax!== "" && !isNaN(entranceFeeMax)){
+		searchAmusementPark.entranceFeeMax = Number(entranceFeeMax)
+	}
+		
 	$.ajax({
-		url : links.amusementPark+ "?input="+ JSON.stringify(searchAmusementPark),
-		success : function() {
-			$("#searchDiv").modal("hide")
+		url : links.amusementPark+ "?input="+encodeURI(JSON.stringify(searchAmusementPark)),
+		success : function(response) {
+			fillTableWithData(response)
 		}
 	})
 	
@@ -106,7 +116,7 @@ function fillTableWithData(data) {
 	var tableBody = []
 	
 	if (data._embedded !== undefined){
-		$.each(data._embedded.amusementParkResourceList, function(i, e) {
+		$.each(data._embedded.amusementParkPageResponseDtoList, function(i, e) {
 			tableBody.push(convertAmusementParkToTableRow(e))
 		})
 	}
