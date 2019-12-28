@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedResources;
 import org.springframework.hateoas.Resource;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,10 +16,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import hu.beni.amusementpark.dto.request.AmusementParkSearchRequestDto;
 import hu.beni.amusementpark.dto.response.AmusementParkPageResponseDto;
+import hu.beni.amusementpark.factory.LinkFactory;
 import hu.beni.amusementpark.mapper.AmusementParkMapper;
 import hu.beni.amusementpark.service.AmusementParkService;
 import hu.beni.clientsupport.resource.AmusementParkResource;
@@ -42,9 +45,18 @@ public class AmusementParkController {
 	}
 
 	@GetMapping
-	public PagedResources<Resource<AmusementParkPageResponseDto>> findAllPaged(AmusementParkSearchRequestDto dto,
-			@PageableDefault Pageable pageable) {
-		return pagedResourcesAssembler.toResource(amusementParkService.findAll(dto, pageable));
+	public PagedResources<Resource<AmusementParkPageResponseDto>> findAllPaged(
+			@RequestParam AmusementParkSearchRequestDto input, @PageableDefault Pageable pageable) {
+
+		PagedResources<Resource<AmusementParkPageResponseDto>> result = pagedResourcesAssembler
+				.toResource(amusementParkService.findAll(input, pageable));
+
+		result.getContent()
+				.forEach(r -> r.add(new Link[] { LinkFactory.createAmusementParkSelfLink(r.getContent().getId()),
+						LinkFactory.createMachineLink(r.getContent().getId()), LinkFactory.createVisitorSignUpLink(),
+						LinkFactory.createVisitorEnterParkLink(r.getContent().getId()) }));
+
+		return result;
 	}
 
 	@GetMapping("/{amusementParkId}")

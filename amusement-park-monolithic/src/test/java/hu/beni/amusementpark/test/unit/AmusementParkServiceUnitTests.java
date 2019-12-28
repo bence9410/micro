@@ -137,6 +137,6 @@ public class AmusementParkServiceUnitTests {
 
 		assertEquals(page, amusementParkService.findAll(dto, pageable));
 
-		verify(amusementParkRepository).findAll(pageable);
+		verify(amusementParkRepository).findAll(dto, pageable);
 	}
 }
