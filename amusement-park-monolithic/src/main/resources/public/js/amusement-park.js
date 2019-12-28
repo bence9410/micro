@@ -1,11 +1,5 @@
-$(document).ready(function() {
-
-	if (isAdmin) {
-		$("thead").children("tr").append("<th></th>")
-	}
-
+$(function() {
 	getAmusementParks()
-
 })
 
 function clearAndShowCreateAmusementParkModal(){
@@ -122,19 +116,19 @@ function fillTableWithData(data) {
 
 function convertAmusementParkToTableRow(amusementPark) {
 	var tr = []
-	tr.push("<tr>")
+	tr.push("<tr onclick='detail(\""+amusementPark._links.self.href+"\")'>")
 	tr.push("<td>" + amusementPark.name + "</td>")
 	tr.push("<td>" + amusementPark.capital + "</td>")
 	tr.push("<td>" + amusementPark.totalArea + "</td>")
 	tr.push("<td>" + amusementPark.entranceFee + "</td>")
-	tr.push("<td> <input type=\"button\" value=\"Enter\" onclick=\"enterPark('"
-			+ amusementPark._links.visitorEnterPark.href + "','" + amusementPark._links.machine.href + "')\"></td>")
-	if (isAdmin) {
-		tr.push("<td><input type=\"button\" onclick=\"deletePark('"
-				+ amusementPark._links.self.href + "')\" value=\"Delete\"></td>")
-	}
 	tr.push("</tr>")
 	return tr.join("")
+}
+
+function detail(url){
+	$("#amusementParkDetails").modal("show")
+	$("#amusementParkDetailsText").html(url)
+	
 }
 
 function enterPark(href,machineHref) {
