@@ -103,22 +103,47 @@ function search(){
 	console.log(searchAmusementPark)
 }
 
-function getAmusementParks() {
+function getAmusementParks(url) {
 	$.ajax({
-		url : links.amusementPark,
-		success : function(response) {
-			fillTableWithData(response)
-		}
+		url : url==null ? links.amusementPark:url,
+		success : fillTableWithData
 	})
 }
 
 function fillTableWithData(data) {
-	var tableBody = []
 	
+	if(data._links.first!==undefined){
+		$("#first").attr("onclick",data._links.first.href)
+	}else{
+		$("#first").attr("disabled",true)
+	}
+	
+	if(data._links.prev!==undefined){
+		$("#left").attr("onclick",data._links.prev.href)
+	}else{
+		$("#left").attr("disabled",true)
+	}
+	
+	if(data._links.next!==undefined){
+		$("#right").attr("onclick",data._links.next.href)
+	}else{
+		$("#right").attr("disabled",true)
+	}
+		
+	if(data._links.last!==undefined){
+		$("#last").attr("onclick",data._links.last.href)
+	}else{
+		$("#last").attr("disabled", true)
+	}
+	
+	$("#tableRefresh").attr("onclick",data._links.self.href)
+	
+	var tableBody = []
 	if (data._embedded !== undefined){
-		$.each(data._embedded.amusementParkPageResponseDtoList, function(i, e) {
-			tableBody.push(convertAmusementParkToTableRow(e))
-		})
+		var array=data._embedded.amusementParkPageResponseDtoList
+		for (var i =0; i < array.length; i++) {
+			tableBody.push(convertAmusementParkToTableRow(array[i]))
+		}
 	}
 
 	$("#tableBody").html(tableBody.join())
@@ -131,11 +156,12 @@ function convertAmusementParkToTableRow(amusementPark) {
 	tr.push("<td>" + amusementPark.capital + "</td>")
 	tr.push("<td>" + amusementPark.totalArea + "</td>")
 	tr.push("<td>" + amusementPark.entranceFee + "</td>")
+	tr.push("<td>" + amusementPark.numberOfMachines + "</td>")
 	tr.push("<td>" + amusementPark.numberOfGuestBookRegistries + "</td>")
 	tr.push("<td>" + amusementPark.numberOfActiveVisitors + "</td>")
 	tr.push("<td>" + amusementPark.numberOfKnownVisitors + "</td>")
 	tr.push("</tr>")
-	return tr.join("")
+	return tr.join()
 }
 
 function detail(url){
