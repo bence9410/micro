@@ -165,19 +165,33 @@ function convertAmusementParkToTableRow(amusementPark) {
 }
 
 function detail(url){
-	$("#amusementParkDetails").modal("show")
-	$("#amusementParkDetailsText").html(url)
-	
+	$.ajax({
+		url : url,
+		success : function(data){
+		$("#detailName").html(data.name)
+		$("#detailCapital").html(data.capital)
+		$("#detailTotalArea").html(data.totalArea)
+		$("#detailEntranceFee").html(data.entranceFee)
+		$("#detailMachines").html(data.numberOfMachines)
+		$("#detailActiveVisitors").html(data.numberOfActiveVisitors)
+		$("#detailKnownVisitors").html(data.numberOfKnownVisitors)
+		$("#detailGuestBookRegistries").html(data.numberOfGuestBookRegistries)
+		$("#enterPark").attr("onclick","enterPark('"+data._links.visitorEnterPark.href+"','"+data._links.machine.href+"')")
+		$("#amusementParkDetails").modal("show")
+		}
+	})	
 }
 
 function enterPark(href,machineHref) {
+	
+	
 	$.ajax({
 		url : href,
 		method : "PUT",
 		success : function(data){
-			
 			$("#spendingMoney").html(data.spendingMoney)
 			getMachinePage(data._links.leavePark.href, machineHref)
+			$(".modal-backdrop").remove()
 		}
 	})
 }
@@ -208,4 +222,5 @@ function getMachinePage(leaveParkHref, machineHref) {
 			$("#refresh").attr("onclick","getMachines('" + machineHref + "')")
 		}
 	})
+
 }
