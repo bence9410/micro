@@ -39,7 +39,7 @@ function convertMachineToTableRow(machine) {
 	tr.push("<td>" + machine.ticketPrice + "</td>")
 	tr.push("<td>" + machine.type.toLowerCase() + "</td>")
 	tr
-			.push("<td> <input type=\"button\" value=\"Get on\" "
+			.push("<td> <input class=\"btn btn-secondary btn-md border border-secondary font-weight-normal\" type=\"button\" value=\"Get on\" "
 					+ "onclick=\"getOnMachine('"
 					+ machine._links.getOnMachine.href + "','"
 					+ machine.fantasyName + "','" + machine.type + "')\"></td>")
@@ -74,4 +74,45 @@ function getOffMachine(href){
 			$("#machineModalImage").attr("src", "")
 		}
 	})
+}
+function guestBookWirte(){
+	$("#guestBookModal").modal("show")
+}
+function machineSearchButton(){
+	var machineSearch = {}
+	machineSearch.machineSearchFantasyName = $("#machineSearchFantasyName").val()
+	var machineSearchSize=$("#machineSearchSize").val()
+	if(machineSearchSize !== "" && !isNaN(machineSearchSize)){
+		 machineSearch.machineSearchSize = Number(machineSearchSize)
+	}
+	var machineSearchPrice=$("#machineSearchPrice").val()
+	if(machineSearchPrice !== "" && !isNaN(machineSearchPrice)){
+		machineSearch.machineSearchPrice = Number(machineSearchPrice)
+	}
+	var machineSearchNumberOfSeats=$("#machineSearchNumberOfSeats").val()
+	if(machineSearchNumberOfSeats !== "" && !isNaN(machineSearchNumberOfSeats)){
+		machineSearch.machineSearchNumberOfSeats = Number(machineSearchNumberOfSeats)
+	}
+	var machineSearchMinimumRequiredAge=$("#machineSearchMinimumRequiredAge").val()
+	if(machineSearchMinimumRequiredAge !== "" && !isNaN(machineSearchMinimumRequiredAge)){
+		machineSearch.machineSearchMinimumRequiredAge = Number(machineSearchMinimumRequiredAge)
+	}
+	var machineSearchTicketPrice=$("#machineSearchTicketPrice").val()
+	if(machineSearchTicketPrice !== "" && !isNaN(machineSearchTicketPrice)){
+		machineSearch.machineSearchTicketPrice = Number(machineSearchTicketPrice)
+	}
+	var machineSearchType=$("#machineSearchType").val()
+	if(machineSearchType!== "" && !isNaN(machineSearchType)){
+		machineSearch.machineSearchType = Number(machineSearchType)
+	}
+	
+	$.ajax({
+		url : links.machine+ "?input="+encodeURI(JSON.stringify(machineSearch)),
+		success : function(response) {
+			fillTableWithData(response)
+		}
+	})
+	
+	
+	console.log(machineSearch)
 }

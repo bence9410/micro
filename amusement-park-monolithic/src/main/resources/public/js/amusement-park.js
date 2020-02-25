@@ -1,5 +1,9 @@
 $(function() {
 	getAmusementParks()
+	$("#headerButton").html("<input class=\"btn bg-success my-2\" type=\"button\" value=\"Create\""+
+			"onclick=\"clearAndShowCreateAmusementParkModal()\">"+
+			"<input class=\"btn btn-secondary my-2 \" type=\"button\" value=\"Search\""+
+			"onclick=\"$('#searchDiv').toggle()\">")
 })
 
 function clearAndShowCreateAmusementParkModal(){
@@ -105,7 +109,7 @@ function search(){
 
 function getAmusementParks(url) {
 	$.ajax({
-		url : url==null ? links.amusementPark:url,
+		url : url==null ? links.amusementPark : url,
 		success : fillTableWithData
 	})
 }
@@ -182,9 +186,7 @@ function detail(url){
 	})	
 }
 
-function enterPark(href,machineHref) {
-	
-	
+function enterPark(href,machineHref) {	
 	$.ajax({
 		url : href,
 		method : "PUT",
@@ -192,7 +194,11 @@ function enterPark(href,machineHref) {
 			$("#spendingMoney").html(data.spendingMoney)
 			getMachinePage(data._links.leavePark.href, machineHref)
 			$(".modal-backdrop").remove()
+		},
+		error : function(data){
+			$("#detailsError").html(data.responseText)
 		}
+		
 	})
 }
 
@@ -217,9 +223,15 @@ function getMachinePage(leaveParkHref, machineHref) {
 		url : pages.machine,
 		success : function(data) {
 			$("#content").html(data)
-			$("#leave").attr("onclick","leavePark('" + leaveParkHref + "')")
 			getMachines(machineHref)
 			$("#refresh").attr("onclick","getMachines('" + machineHref + "')")
+			$("#headerButton").html("<input id=\"leave\" type=\"button\" class=\"btn btn-secondary my-2\""+
+	        "value=\"Leave\"> <input id=\"guestBookButton\" type=\"button\" class=\"btn btn-secondary my-2\""+
+	        "onclick=\"guestBookWirte()\" value=\"Guest Book Writing\">"+
+	        "<input class=\"btn btn-secondary my-2\" type=\"button\" value=\"Search\""+
+			"onclick=\"$('#machineSearch').toggle()\">"
+	        )
+	        $("#leave").attr("onclick","leavePark('" + leaveParkHref + "')")
 		}
 	})
 

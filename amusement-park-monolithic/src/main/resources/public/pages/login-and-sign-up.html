@@ -97,13 +97,17 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-6 text-right">
-			<input type="button" onclick="backToLogin()" value="Back">
+			<div class="col-md-6 text-right ">
+				<input id="login"
+					class="btn btn-secondary btn-md col-md-4 border border-secondary font-weight-normal"
+					type="submit" onclick="backToLogin()" value="Back">
+			</div>
+			<div class="col-md-6">
+				<input
+					class="btn btn-secondary btn-md col-md-4 border border-secondary font-weight-normal"
+					type="button" onclick="signUp()" value="Sign Up">
+			</div>
 		</div>
-		<div class="col-md-6">
-			<input id="signUp" type="button" onclick="signUp()" value="Sign up">
-		</div>
-	</div>
 	<p id="signUpError"></p>
 </div>
 <script type="text/javascript" src="/js/login-and-sign-up.js"></script>

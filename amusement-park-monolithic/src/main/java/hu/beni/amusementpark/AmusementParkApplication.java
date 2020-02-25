@@ -40,7 +40,7 @@ public class AmusementParkApplication {
 				.dateOfBirth(LocalDate.of(1995, 05, 10)).build()); // @formatter:on
 
 			AmusementPark amusementPark = AmusementPark.builder() //@formatter:off
-                .name("Beni parkja")
+                .name("Jeni parkja")
                 .capital(3000)
                 .totalArea(1000)
                 .entranceFee(50)

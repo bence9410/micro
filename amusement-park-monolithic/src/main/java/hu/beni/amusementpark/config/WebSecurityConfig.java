@@ -143,7 +143,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http //@formatter:off
             .authorizeRequests()
             	.antMatchers("/", "/webjars/**", "/index.js", "/links", "/me", "/signUp",
-            			"/pages/login-and-sign-up.html", "/js/login-and-sign-up.js")
+            			"/pages/login-and-sign-up.html", "/js/login-and-sign-up.js", "/img/**")
             	.permitAll()
                 .anyRequest()
                 .authenticated()
