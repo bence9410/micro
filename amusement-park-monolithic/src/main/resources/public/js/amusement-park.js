@@ -1,10 +1,17 @@
 $(function() {
 	getAmusementParks()
-	$("#headerButton").html("<input class=\"btn bg-success my-2\" type=\"button\" value=\"Create\""+
-			"onclick=\"clearAndShowCreateAmusementParkModal()\">"+
-			"<input class=\"btn btn-secondary my-2 \" type=\"button\" value=\"Search\""+
+	$("#headerButton").empty()
+	$("#headerButton").append("<input class=\"btn btn-secondary my-2 \" type=\"button\" value=\"Search\""+
 			"onclick=\"$('#searchDiv').toggle()\">")
+	if(isAdmin = data.authority === "ROLE_ADMIN"){
+		$("#headerButton").append("<input class=\"btn btn-secondary my-2 mr-1 \" type=\"button\" value=\"Create\""+
+				"onclick=\"clearAndShowCreateAmusementParkModal()\">")
+	}		
+	
 })
+
+
+
 
 function clearAndShowCreateAmusementParkModal(){
 	$("#createAmusementParkErrorMessage").html("")
@@ -225,8 +232,8 @@ function getMachinePage(leaveParkHref, machineHref) {
 			$("#content").html(data)
 			getMachines(machineHref)
 			$("#refresh").attr("onclick","getMachines('" + machineHref + "')")
-			$("#headerButton").html("<input id=\"leave\" type=\"button\" class=\"btn btn-secondary my-2\""+
-	        "value=\"Leave\"> <input id=\"guestBookButton\" type=\"button\" class=\"btn btn-secondary my-2\""+
+			$("#headerButton").html("<input id=\"leave\" type=\"button\" class=\"btn btn-secondary my-2 mr-1\""+
+	        "value=\"Leave\"> <input id=\"guestBookButton\" type=\"button\" class=\"btn btn-secondary my-2 mr-1\""+
 	        "onclick=\"guestBookWirte()\" value=\"Guest Book Writing\">"+
 	        "<input class=\"btn btn-secondary my-2\" type=\"button\" value=\"Search\""+
 			"onclick=\"$('#machineSearch').toggle()\">"

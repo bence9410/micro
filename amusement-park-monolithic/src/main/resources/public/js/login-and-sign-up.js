@@ -53,8 +53,9 @@ function signUp() {
 			initHeader(data)
 			getAmusementParkPage()
 		},
-		error : function (data) {
+		error : function (data) {	
 			$("#signUpError").html(data.responseText)
+			$("#signUpError").show()
 			$("#signUp").prop("disabled", false)
 		}
 	})
@@ -62,7 +63,7 @@ function signUp() {
 		
 function collectSignUpData(){
 	var user = {}
-	user.email = $("#signUpEmail").val()
+	user.email = $("#signUpLoginEmail").val()
 	user.password = $("#signUpPassword").val()
 	user.confirmPassword = $("#signUpConfirmPassword").val()
 	user.dateOfBirth = $("#dateOfBirth").val()
