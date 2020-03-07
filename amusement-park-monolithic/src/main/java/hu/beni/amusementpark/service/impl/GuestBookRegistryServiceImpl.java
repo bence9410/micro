@@ -10,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import hu.beni.amusementpark.dto.request.GuestBookRegistryRequestDto;
+import hu.beni.amusementpark.dto.response.GuestBookRegistryResponseDto;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.entity.Visitor;
@@ -43,8 +45,8 @@ public class GuestBookRegistryServiceImpl implements GuestBookRegistryService {
 	}
 
 	@Override
-	public Page<GuestBookRegistry> findAll(Pageable pageable) {
-		return guestBookRegistryRepository.findAll(pageable);
+	public Page<GuestBookRegistryResponseDto> findAll(GuestBookRegistryRequestDto dto, Pageable pageable) {
+		return guestBookRegistryRepository.findAll(dto, pageable);
 	}
 
 }

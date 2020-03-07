@@ -89,10 +89,11 @@ public class AmusementParkController {
 
 	@GetMapping("/{amusementParkId}")
 	public AmusementParkResource findOne(@PathVariable Long amusementParkId) {
-		AmusementParkResource amusementParkResource=
-			amusementParkMapper.toResource(amusementParkService.findById(amusementParkId));
-		amusementParkResource.add(linkTo(methodOn(GuestBookRegistryController.class)
-				.findAllPaged(amusementParkId, null, null, null, null,null)).withRel("guesBookRegistries"));
+		AmusementParkResource amusementParkResource = amusementParkMapper
+				.toResource(amusementParkService.findById(amusementParkId));
+		amusementParkResource
+				.add(linkTo(methodOn(GuestBookRegistryController.class).findAllPaged(amusementParkId, null, null))
+						.withRel("guesBookRegistries"));
 		return amusementParkResource;
 	}
 
