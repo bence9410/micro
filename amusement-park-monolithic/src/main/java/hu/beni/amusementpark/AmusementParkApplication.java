@@ -48,19 +48,8 @@ public class AmusementParkApplication {
                 .totalArea(1000)
                 .entranceFee(50)
                 .build(); //@formatter:on
-
 			
 			amusementParkService.save(amusementPark);
-			for (int j = 0; j < 30; j++) {
-				
-				AmusementPark amusementP= AmusementPark.builder()//@formatter:off
-						 .name("Jeni parkja")
-			                .capital(3000)
-			                .totalArea(1000)
-			                .entranceFee(50)
-			                .build(); //@formatter:on	
-				amusementParkService.save(amusementP);
-			}
 			
 			visitorService.enterPark(amusementPark.getId(), visitor.getEmail());
 			guestBookRegistryService.addRegistry(amusementPark.getId(), visitor.getEmail(), "Nagyon élveztem.");
