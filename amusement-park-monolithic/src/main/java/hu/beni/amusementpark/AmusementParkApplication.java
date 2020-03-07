@@ -16,6 +16,7 @@ import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.entity.Visitor;
 import hu.beni.amusementpark.enums.MachineType;
 import hu.beni.amusementpark.service.AmusementParkService;
+import hu.beni.amusementpark.service.GuestBookRegistryService;
 import hu.beni.amusementpark.service.MachineService;
 import hu.beni.amusementpark.service.VisitorService;
 
@@ -29,15 +30,17 @@ public class AmusementParkApplication {
 	@Bean
 	@Profile("default")
 	public ApplicationRunner applicationRunner(AmusementParkService amusementParkService, MachineService machineService,
-			VisitorService visitorService) {
+			VisitorService visitorService, GuestBookRegistryService guestBookRegistryService) {
 		PasswordEncoder encoder = new BCryptPasswordEncoder();
 		return args -> {
 
-			visitorService.signUp(Visitor.builder() // @formatter:off
-				.email("jeni@gmail.com")
-				.password(encoder.encode("password"))
-				.authority("ROLE_USER")
-				.dateOfBirth(LocalDate.of(1995, 05, 10)).build()); // @formatter:on
+			Visitor visitor=Visitor.builder() // @formatter:off
+					.email("jeni@gmail.com")
+					.password(encoder.encode("password"))
+					.authority("ROLE_USER")
+					.dateOfBirth(LocalDate.of(1995, 05, 10)).build(); // @formatter:on
+			
+			visitorService.signUp(visitor);
 
 			AmusementPark amusementPark = AmusementPark.builder() //@formatter:off
                 .name("Jeni parkja")
@@ -46,7 +49,24 @@ public class AmusementParkApplication {
                 .entranceFee(50)
                 .build(); //@formatter:on
 
+			
 			amusementParkService.save(amusementPark);
+			for (int j = 0; j < 30; j++) {
+				
+				AmusementPark amusementP= AmusementPark.builder()//@formatter:off
+						 .name("Jeni parkja")
+			                .capital(3000)
+			                .totalArea(1000)
+			                .entranceFee(50)
+			                .build(); //@formatter:on	
+				amusementParkService.save(amusementP);
+			}
+			
+			visitorService.enterPark(amusementPark.getId(), visitor.getEmail());
+			guestBookRegistryService.addRegistry(amusementPark.getId(), visitor.getEmail(), "Nagyon élveztem.");
+			guestBookRegistryService.addRegistry(amusementPark.getId(), visitor.getEmail(), "Jó volt.");
+			visitorService.leavePark(amusementPark.getId(), visitor.getEmail());
+			
 
 			machineService.addMachine(amusementPark.getId(), Machine.builder() //@formatter:off
                 .fantasyName("Nagy hajó")

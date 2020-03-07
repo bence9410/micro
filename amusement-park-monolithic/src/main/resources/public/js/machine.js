@@ -1,3 +1,57 @@
+function clearAndShowCreateMachineModal(){
+	$("#machineCreateErrorMessage").html("")
+	$("#machineCreateFantasyName").val("")
+	$("#machineCreateSize").val("")
+	$("#machineCreatePrice").val("")
+	$("#machineCreateNumberOfSeats").val("")
+	$("#machineCreateMinimumRequiredAge").val("")
+	$("#machineCreateTicketPrice").val("")
+	$("#machineCreateType").val("")
+	$("#machineCreateModal").modal("show")
+}
+function machineCreate(url){
+	$("machineCreateButton").attr("disabled", true)
+	var machine = collectMachine()
+	var error= []
+	console.log(machine)
+	if (error.length == 0){
+		$.ajax({
+			url : url,
+			method : "POST",
+			contentType : "application/json",
+			data : JSON.stringify(machine),
+			success : function() {
+				$("#machineCreateModal").modal("hide")
+				getMachines(url)
+				
+			},
+			error : function(response) {
+				$("#machineCreateErrorMessage").html("error: " + response.responseText)
+			},
+			complete : function() {
+				$("#machineCreateButton").attr("disabled", false)
+			}
+		})	
+	} else {
+		 $("#machineCreateErrorMessage").html(error.join("<br>"))
+		 $("#machineCreateButton").attr("disabled", false)
+		
+	}
+}
+
+
+function collectMachine(){
+	var machine = {}
+	machine.fantasyName = $("#machineCreateFantasyName").val()
+	machine.size = Number($("#machineCreateSize").val())
+	machine.price =  Number($("#machineCreatePrice").val())
+	machine.numberOfSeats =  Number($("#machineCreateNumberOfSeats").val())
+	machine.minimumRequiredAge =  Number($("#machineCreateMinimumRequiredAge").val())
+	machine.ticketPrice =  Number($("#machineCreateTicketPrice").val())
+	machine.type = $("#machineCreateType").val()
+	return machine
+}
+
 function leavePark(href) {
 	$.ajax({
 		url : href,
@@ -7,6 +61,65 @@ function leavePark(href) {
 		}
 	})
 }
+
+function machineSearchButton(){
+	var machineSearch = {}
+	machineSearch.name = $("#machineSearchFantasyName").val()
+	var sizeMin=$("#machineSearchSizeMin").val()
+	if(sizeMin !== "" && !isNaN(sizeMin)){
+		machineSearch.sizeMin = Number(sizeMin)
+	}
+	var sizeMax=$("#machineSearchSizeMax").val()
+	if(sizeMax !== "" && !isNaN(sizeMax)){
+		machineSearch.sizeMax = Number(sizeMax)
+	}
+	var priceMin=$("#machineSearchPriceMin").val()
+	if(priceMin !== "" && !isNaN(priceMin)){
+		machineSearch.priceMin = Number(priceMin)
+	}
+	var priceMax=$("#machineSearchPriceMax").val()
+	if(priceMax !== "" && !isNaN(priceMax)){
+		machineSearch.priceMax = Number(priceMax)
+	}
+	var numberOfSeatsMin=$("#machineSearchNumberOfSeatsMin").val()
+	if(numberOfSeatsMin !== "" && !isNaN(numberOfSeatsMin)){
+		machineSearch.numberOfSeatsMin = Number(numberOfSeatsMin)
+	}
+	var numberOfSeatsMax =$("#machineSearchNumberOfSeatsMax").val()
+	if(numberOfSeatsMax!== "" && !isNaN(numberOfSeatsMax)){
+		machineSearch.numberOfSeatsMax = Number(numberOfSeatsMax)
+	}
+	var minimumRequiredAgeMin=$("#machineSearchMinimumRequiredAgeMin").val()
+	if(minimumRequiredAgeMin!== "" && !isNaN(minimumRequiredAgeMin)){
+		machineSearch.minimumRequiredAgeMin = Number(minimumRequiredAgeMin)
+	}
+	var minimumRequiredAgeMax=$("#machineSearchMinimumRequiredAgeMax").val()
+	if(minimumRequiredAgeMax!== "" && !isNaN(minimumRequiredAgeMax)){
+		machineSearch.minimumRequiredAgeMax = Number(minimumRequiredAgeMax)
+	}
+	var ticketPriceMin =$("#machineSearchTicketPriceMin").val()
+	if(ticketPriceMin!== "" && !isNaN(ticketPriceMin)){
+		machineSearch.ticketPriceMin = Number(ticketPriceMin)
+	}
+	var ticketPriceMax=$("#machineSearchTicketPriceMax").val()
+	if(ticketPriceMax!== "" && !isNaN(ticketPriceMax)){
+		machineSearch.ticketPriceMax = Number(ticketPriceMax)
+	}
+	var type=$("#machineSearchType").val()
+	if(type!==""){
+		machineSearch.type = $("#machineSearchType").val()
+	}
+	
+
+	$.ajax({
+		url : links.machine+ "?input="+encodeURI(JSON.stringify(machineSearch)),
+		success : function(response) {
+			fillTableWithData(response)
+		}
+	})
+		
+}
+
 function getMachines(href) {
 	$.ajax({
 		url : href,
@@ -78,41 +191,5 @@ function getOffMachine(href){
 function guestBookWirte(){
 	$("#guestBookModal").modal("show")
 }
-function machineSearchButton(){
-	var machineSearch = {}
-	machineSearch.machineSearchFantasyName = $("#machineSearchFantasyName").val()
-	var machineSearchSize=$("#machineSearchSize").val()
-	if(machineSearchSize !== "" && !isNaN(machineSearchSize)){
-		 machineSearch.machineSearchSize = Number(machineSearchSize)
-	}
-	var machineSearchPrice=$("#machineSearchPrice").val()
-	if(machineSearchPrice !== "" && !isNaN(machineSearchPrice)){
-		machineSearch.machineSearchPrice = Number(machineSearchPrice)
-	}
-	var machineSearchNumberOfSeats=$("#machineSearchNumberOfSeats").val()
-	if(machineSearchNumberOfSeats !== "" && !isNaN(machineSearchNumberOfSeats)){
-		machineSearch.machineSearchNumberOfSeats = Number(machineSearchNumberOfSeats)
-	}
-	var machineSearchMinimumRequiredAge=$("#machineSearchMinimumRequiredAge").val()
-	if(machineSearchMinimumRequiredAge !== "" && !isNaN(machineSearchMinimumRequiredAge)){
-		machineSearch.machineSearchMinimumRequiredAge = Number(machineSearchMinimumRequiredAge)
-	}
-	var machineSearchTicketPrice=$("#machineSearchTicketPrice").val()
-	if(machineSearchTicketPrice !== "" && !isNaN(machineSearchTicketPrice)){
-		machineSearch.machineSearchTicketPrice = Number(machineSearchTicketPrice)
-	}
-	var machineSearchType=$("#machineSearchType").val()
-	if(machineSearchType!== "" && !isNaN(machineSearchType)){
-		machineSearch.machineSearchType = Number(machineSearchType)
-	}
+
 	
-	$.ajax({
-		url : links.machine+ "?input="+encodeURI(JSON.stringify(machineSearch)),
-		success : function(response) {
-			fillTableWithData(response)
-		}
-	})
-	
-	
-	console.log(machineSearch)
-}

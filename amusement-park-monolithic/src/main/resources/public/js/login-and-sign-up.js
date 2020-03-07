@@ -13,7 +13,7 @@ function ajaxLogin() {
 	$.ajax({
 		url : links.login,
 		method : "POST",
-		data : "email="+$("#loginEmail").val() + "&password=" + $("#password").val() + ($("#rememberMeLogin").is(":checked") ? "&remember-me=true" : ""),
+		data : "email="+$("#loginEmail").val() + "&password=" + $("#password").val() + "&remember-me=true",
 		success : function (data) {
 			$("#content").hide()
 			initHeader(data)
@@ -44,7 +44,7 @@ function backToLogin(){
 function signUp() {
 	$("#signUp").prop("disabled", true)
 	$.ajax({
-		url : links.signUp + ($("#rememberMeSignUp").is(":checked") ? "?remember-me=true" : ""),
+		url : links.signUp + "?remember-me=true",
 		method : "POST",
 		contentType : "application/json",
 		data : JSON.stringify(collectSignUpData()),

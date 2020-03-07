@@ -5,6 +5,8 @@ import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_GUEST_BOO
 import static hu.beni.amusementpark.constants.ErrorMessageConstants.NO_VISITOR_IN_PARK_WITH_ID;
 import static hu.beni.amusementpark.exception.ExceptionUtil.ifNull;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +40,11 @@ public class GuestBookRegistryServiceImpl implements GuestBookRegistryService {
 		Visitor visitor = ifNull(visitorRepository.findById(visitorEmail), NO_VISITOR_IN_PARK_WITH_ID);
 		return guestBookRegistryRepository.save(GuestBookRegistry.builder().textOfRegistry(textOfRegistry)
 				.visitor(visitor).amusementPark(amusementPark).build());
+	}
+
+	@Override
+	public Page<GuestBookRegistry> findAll(Pageable pageable) {
+		return guestBookRegistryRepository.findAll(pageable);
 	}
 
 }

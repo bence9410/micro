@@ -1,9 +1,9 @@
 $(function() {
 	getAmusementParks()
 	$("#headerButton").empty()
-	$("#headerButton").append("<input class=\"btn btn-secondary my-2 \" type=\"button\" value=\"Search\""+
+	$("#headerButton").append("<input class=\"btn btn-secondary my-2 mr-1\" type=\"button\" value=\"Search\""+
 			"onclick=\"$('#searchDiv').toggle()\">")
-	if(isAdmin = data.authority === "ROLE_ADMIN"){
+	if(isAdmin){
 		$("#headerButton").append("<input class=\"btn btn-secondary my-2 mr-1 \" type=\"button\" value=\"Create\""+
 				"onclick=\"clearAndShowCreateAmusementParkModal()\">")
 	}		
@@ -81,11 +81,11 @@ function search(){
 	searchAmusementPark.name = $("#searchName").val()
 	var capitalMin=$("#searchCapitalMin").val()
 	if(capitalMin !== "" && !isNaN(capitalMin)){
-			searchAmusementPark.capitalMin = Number(capitalMin)
+		searchAmusementPark.capitalMin = Number(capitalMin)
 	}
 	var capitalMax=$("#searchCapitalMax").val()
 	if(capitalMax !== "" && !isNaN(capitalMax)){
-			searchAmusementPark.capitalMax = Number(capitalMax)
+		searchAmusementPark.capitalMax = Number(capitalMax)
 	}
 	var totalAreaMin=$("#searchTotalAreaMin").val()
 	if(totalAreaMin !== "" && !isNaN(totalAreaMin)){
@@ -103,15 +103,11 @@ function search(){
 	if(entranceFeeMax!== "" && !isNaN(entranceFeeMax)){
 		searchAmusementPark.entranceFeeMax = Number(entranceFeeMax)
 	}
-		
-	$.ajax({
-		url : links.amusementPark+ "?input="+encodeURI(JSON.stringify(searchAmusementPark)),
-		success : function(response) {
-			fillTableWithData(response)
-		}
-	})
 	
-	console.log(searchAmusementPark)
+	getAmusementParks(links.amusementPark+ "?input="+encodeURI(JSON.stringify(searchAmusementPark)))
+	
+	
+	
 }
 
 function getAmusementParks(url) {
@@ -123,31 +119,37 @@ function getAmusementParks(url) {
 
 function fillTableWithData(data) {
 	
+	$("#numberOfPage").html(data.page.number + 1 +  "/" + data.page.totalPages)
 	if(data._links.first!==undefined){
-		$("#first").attr("onclick",data._links.first.href)
+		$("#first").attr("onclick","getAmusementParks('" + data._links.first.href + "')")
+		$("#first").attr("disabled",false)
 	}else{
 		$("#first").attr("disabled",true)
 	}
 	
 	if(data._links.prev!==undefined){
-		$("#left").attr("onclick",data._links.prev.href)
+		$("#left").attr("onclick", "getAmusementParks('" + data._links.prev.href + "')")
+		$("#left").attr("disabled",false)
 	}else{
 		$("#left").attr("disabled",true)
 	}
 	
 	if(data._links.next!==undefined){
-		$("#right").attr("onclick",data._links.next.href)
+		$("#right").attr("onclick", "getAmusementParks('" + data._links.next.href + "')")
+		$("#right").attr("disabled",false)
 	}else{
 		$("#right").attr("disabled",true)
 	}
 		
 	if(data._links.last!==undefined){
-		$("#last").attr("onclick",data._links.last.href)
+		$("#last").attr("onclick","getAmusementParks('" + data._links.last.href + "')")
+		$("#last").attr("disabled",false)
 	}else{
 		$("#last").attr("disabled", true)
 	}
 	
-	$("#tableRefresh").attr("onclick",data._links.self.href)
+	$("#tableRefresh").attr("onclick","getAmusementParks('" + data._links.self.href + "')")
+	
 	
 	var tableBody = []
 	if (data._embedded !== undefined){
@@ -179,18 +181,77 @@ function detail(url){
 	$.ajax({
 		url : url,
 		success : function(data){
-		$("#detailName").html(data.name)
-		$("#detailCapital").html(data.capital)
-		$("#detailTotalArea").html(data.totalArea)
-		$("#detailEntranceFee").html(data.entranceFee)
-		$("#detailMachines").html(data.numberOfMachines)
-		$("#detailActiveVisitors").html(data.numberOfActiveVisitors)
-		$("#detailKnownVisitors").html(data.numberOfKnownVisitors)
-		$("#detailGuestBookRegistries").html(data.numberOfGuestBookRegistries)
-		$("#enterPark").attr("onclick","enterPark('"+data._links.visitorEnterPark.href+"','"+data._links.machine.href+"')")
-		$("#amusementParkDetails").modal("show")
+			$("#detailName").html(data.name)
+			$("#detailCapital").html(data.capital)
+			$("#detailTotalArea").html(data.totalArea)
+			$("#detailEntranceFee").html(data.entranceFee)
+			$("#detailMachines").html(data.numberOfMachines)
+			$("#detailActiveVisitors").html(data.numberOfActiveVisitors)
+			$("#detailKnownVisitors").html(data.numberOfKnownVisitors)
+			$("#detailGuestBookRegistries").html(data.numberOfGuestBookRegistries)
+			$("#enterPark").attr("onclick","enterPark('"+data._links.visitorEnterPark.href+"','"+data._links.machine.href+"')")
+			
+			var guestBookRegisztryLink=data._links.guesBookRegistries.href
+			var guestBookRegistryUrl=guestBookRegisztryLink.substring(0,guestBookRegisztryLink.indexOf("{"))
+			guestBookWrite(guestBookRegistryUrl)		
+			
+			$("#amusementParkDetails").modal("show")
+			$("#detailsGuestBookRegistryRefresh").attr("onclick","guestBookWrite('"+guestBookRegistryUrl+"')")
+			$("#detailsGuestBookSearcheButton").attr("onclick","guestBookWrite('"+guestBookRegistryUrl+"')")
 		}
 	})	
+}
+
+function guestBookWrite(url){
+	
+	var timestampMin=$("#detailGuestBookTimestampMin").val()
+	var timestampMax=$("#detailGuestBookTimestampMax").val()
+	var visitor=$("#detailGuestBookVisitor").val()
+	var text=$("#detailGuestBookText").val()
+	
+	var queryParams=[]
+	
+	if(timestampMin !== ""){
+		queryParams.push("dateOfRegistryMin="+timestampMin)
+	}
+	if(timestampMax !== ""){
+		queryParams.push("dateOfRegistryMax="+timestampMax)
+	}
+	
+	if(visitor !== ""){
+		queryParams.push("visitorEmail="+visitor)
+	}
+	
+	if(text !== ""){
+		queryParams.push("textOfRegistry="+text)
+	}
+	
+	var uri=""
+	
+	if(queryParams.length !== 0){
+		uri = "?"+queryParams.join("&")
+	}
+		
+	$.ajax({
+
+		url: url + uri,
+		success: function(data){
+			
+			var tbody = []
+			for (var i = 0; i < data.length; i++) {
+				tbody.push("<tr>")
+				tbody.push("<td>" + data[i].dateOfRegistry + "</td>")
+				tbody.push("<td>" + data[i].visitorEmail + "</td>")
+				tbody.push("<td>" + data[i].textOfRegistry + "</td>")
+				tbody.push("</tr>")
+			
+				
+			}
+			$("#guestBookTable").html(tbody.join())	
+			
+		}
+
+	})		
 }
 
 function enterPark(href,machineHref) {	
@@ -199,7 +260,7 @@ function enterPark(href,machineHref) {
 		method : "PUT",
 		success : function(data){
 			$("#spendingMoney").html(data.spendingMoney)
-			getMachinePage(data._links.leavePark.href, machineHref)
+			getMachinePage(data)
 			$(".modal-backdrop").remove()
 		},
 		error : function(data){
@@ -225,20 +286,30 @@ function deletePark(href) {
 		}
 	})
 }
-function getMachinePage(leaveParkHref, machineHref) {
+function getMachinePage(enterParkData) {
 	$.ajax({
 		url : pages.machine,
 		success : function(data) {
 			$("#content").html(data)
-			getMachines(machineHref)
-			$("#refresh").attr("onclick","getMachines('" + machineHref + "')")
-			$("#headerButton").html("<input id=\"leave\" type=\"button\" class=\"btn btn-secondary my-2 mr-1\""+
-	        "value=\"Leave\"> <input id=\"guestBookButton\" type=\"button\" class=\"btn btn-secondary my-2 mr-1\""+
-	        "onclick=\"guestBookWirte()\" value=\"Guest Book Writing\">"+
-	        "<input class=\"btn btn-secondary my-2\" type=\"button\" value=\"Search\""+
-			"onclick=\"$('#machineSearch').toggle()\">"
-	        )
-	        $("#leave").attr("onclick","leavePark('" + leaveParkHref + "')")
+			getMachines(enterParkData._links.machine.href)
+			$("#refresh").attr("onclick","getMachines('" + enterParkData._links.machine.href + "')")
+			$("#headerButton").empty()
+			$("#headerButton").append("<input id=\"guestBookButton\" type=\"button\" class=\"btn btn-secondary my-2 mr-1\""+
+	        "onclick=\"guestBookWirte()\" value=\"Guest Book Writing\">")
+	        
+	        if(isAdmin){
+	    		$("#headerButton").append("<input class=\"btn btn-secondary my-2 mr-1 \" type=\"button\" value=\"Create\""+
+	    				"onclick=\"clearAndShowCreateMachineModal()\">")
+	    		$("#machineCreateButton").attr("onclick","machineCreate('" + enterParkData._links.machine.href + "')")
+	    }	
+		
+	        $("#headerButton").append("<input class=\"btn btn-secondary my-2\" type=\"button\" value=\"Search\""+
+			"onclick=\"$('#machineSearch').toggle()\">" )
+			$("#headerButton").append("<input id=\"leave\" type=\"button\" class=\"btn btn-secondary my-2 ml-1\""+
+	        "value=\"Leave\"> " )
+	        $("#leave").attr("onclick","leavePark('" + enterParkData._links.leavePark.href + "')")
+	       	
+	    
 		}
 	})
 

@@ -2,7 +2,7 @@ logging.level.org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 spring:
   jmx.enabled: false
   jpa:
-    open-in-view: false
+    open-in-view: true
     show-sql: true
     properties.hibernate.format_sql: true
         
