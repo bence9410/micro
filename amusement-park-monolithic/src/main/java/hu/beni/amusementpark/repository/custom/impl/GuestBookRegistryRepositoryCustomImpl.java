@@ -15,8 +15,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import hu.beni.amusementpark.dto.request.GuestBookRegistryRequestDto;
-import hu.beni.amusementpark.dto.response.GuestBookRegistryResponseDto;
+import hu.beni.amusementpark.dto.request.GuestBookRegistrySearchRequestDto;
+import hu.beni.amusementpark.dto.response.GuestBookRegistrySearchResponseDto;
 import hu.beni.amusementpark.entity.AmusementPark_;
 import hu.beni.amusementpark.entity.GuestBookRegistry;
 import hu.beni.amusementpark.entity.GuestBookRegistry_;
@@ -30,19 +30,19 @@ public class GuestBookRegistryRepositoryCustomImpl implements GuestBookRegistryR
 	private final EntityManager entityManager;
 
 	@Override
-	public Page<GuestBookRegistryResponseDto> findAll(GuestBookRegistryRequestDto dto, Pageable pageable) {
+	public Page<GuestBookRegistrySearchResponseDto> findAll(GuestBookRegistrySearchRequestDto dto, Pageable pageable) {
 
 		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
 
 		Long count = executeCountQuery(cb, dto);
 
-		List<GuestBookRegistryResponseDto> result = executeSearchQuery(cb, dto, pageable);
+		List<GuestBookRegistrySearchResponseDto> result = executeSearchQuery(cb, dto, pageable);
 
 		return new PageImpl<>(result, pageable, count);
 	}
 
 	private Predicate[] createPredicates(CriteriaBuilder cb, Root<GuestBookRegistry> root,
-			GuestBookRegistryRequestDto dto) {
+			GuestBookRegistrySearchRequestDto dto) {
 		List<Predicate> predicates = new ArrayList<>();
 
 		if (dto != null) {
@@ -70,7 +70,7 @@ public class GuestBookRegistryRepositoryCustomImpl implements GuestBookRegistryR
 		return predicates.toArray(new Predicate[predicates.size()]);
 	}
 
-	private Long executeCountQuery(CriteriaBuilder cb, GuestBookRegistryRequestDto dto) {
+	private Long executeCountQuery(CriteriaBuilder cb, GuestBookRegistrySearchRequestDto dto) {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<GuestBookRegistry> root = cq.from(GuestBookRegistry.class);
 		return entityManager
@@ -79,9 +79,9 @@ public class GuestBookRegistryRepositoryCustomImpl implements GuestBookRegistryR
 				.getSingleResult();
 	}
 
-	private List<GuestBookRegistryResponseDto> executeSearchQuery(CriteriaBuilder cb, GuestBookRegistryRequestDto dto,
+	private List<GuestBookRegistrySearchResponseDto> executeSearchQuery(CriteriaBuilder cb, GuestBookRegistrySearchRequestDto dto,
 			Pageable pageable) {
-		CriteriaQuery<GuestBookRegistryResponseDto> cq = cb.createQuery(GuestBookRegistryResponseDto.class);
+		CriteriaQuery<GuestBookRegistrySearchResponseDto> cq = cb.createQuery(GuestBookRegistrySearchResponseDto.class);
 		Root<GuestBookRegistry> root = cq.from(GuestBookRegistry.class);
 
 		cq.multiselect(root.get(GuestBookRegistry_.visitor).get(Visitor_.email),

@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 @Builder
 @AllArgsConstructor
-public class GuestBookRegistryResponseDto {
+public class GuestBookRegistrySearchResponseDto {
 
 	private String visitorEmail;
 

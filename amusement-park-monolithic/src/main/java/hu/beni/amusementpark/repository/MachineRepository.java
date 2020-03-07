@@ -7,8 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import hu.beni.amusementpark.entity.Machine;
+import hu.beni.amusementpark.repository.custom.MachineRepositoryCustom;
 
-public interface MachineRepository extends JpaRepository<Machine, Long> {
+public interface MachineRepository extends JpaRepository<Machine, Long>, MachineRepositoryCustom {
 
 	@Query("Select Sum(m.size) from Machine m where m.amusementPark.id = :amusementParkId")
 	Optional<Long> sumAreaByAmusementParkId(Long amusementParkId);

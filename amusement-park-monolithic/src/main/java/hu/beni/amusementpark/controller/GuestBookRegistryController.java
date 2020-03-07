@@ -23,9 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import hu.beni.amusementpark.dto.request.AmusementParkSearchRequestDto;
-import hu.beni.amusementpark.dto.request.GuestBookRegistryRequestDto;
-import hu.beni.amusementpark.dto.response.GuestBookRegistryResponseDto;
+import hu.beni.amusementpark.dto.request.GuestBookRegistrySearchRequestDto;
+import hu.beni.amusementpark.dto.response.GuestBookRegistrySearchResponseDto;
 import hu.beni.amusementpark.exception.AmusementParkException;
 import hu.beni.amusementpark.mapper.GuestBookRegistryMapper;
 import hu.beni.amusementpark.service.GuestBookRegistryService;
@@ -40,16 +39,16 @@ public class GuestBookRegistryController {
 	private final ObjectMapper objectMapper;
 	private final GuestBookRegistryService guestBookRegistryService;
 	private final GuestBookRegistryMapper guestBookRegistryMapper;
-	private final PagedResourcesAssembler<GuestBookRegistryResponseDto> pagedResourceAssembler;
+	private final PagedResourcesAssembler<GuestBookRegistrySearchResponseDto> pagedResourceAssembler;
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
-		binder.registerCustomEditor(AmusementParkSearchRequestDto.class, new PropertyEditorSupport() {
+		binder.registerCustomEditor(GuestBookRegistrySearchRequestDto.class, new PropertyEditorSupport() {
 			@Override
 			public void setAsText(String text) throws IllegalArgumentException {
 				try {
 					setValue(objectMapper.readValue(URLDecoder.decode(text, StandardCharsets.UTF_8.toString()),
-							GuestBookRegistryRequestDto.class));
+							GuestBookRegistrySearchRequestDto.class));
 				} catch (IOException e) {
 					throw new AmusementParkException("Wrong input!", e);
 				}
@@ -70,8 +69,9 @@ public class GuestBookRegistryController {
 	}
 
 	@GetMapping("/amusement-parks/{amusementParkId}/visitors/guest-book-registries")
-	public PagedResources<Resource<GuestBookRegistryResponseDto>> findAllPaged(@PathVariable Long amusementParkId,
-			@RequestParam(required = false) GuestBookRegistryRequestDto input, @PageableDefault Pageable pageable) {
+	public PagedResources<Resource<GuestBookRegistrySearchResponseDto>> findAllPaged(@PathVariable Long amusementParkId,
+			@RequestParam(required = false) GuestBookRegistrySearchRequestDto input,
+			@PageableDefault Pageable pageable) {
 		input.setAmusementParkId(amusementParkId);
 		return pagedResourceAssembler.toResource(guestBookRegistryService.findAll(input, pageable));
 	}

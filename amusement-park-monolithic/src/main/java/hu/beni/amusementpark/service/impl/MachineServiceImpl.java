@@ -11,9 +11,13 @@ import static hu.beni.amusementpark.exception.ExceptionUtil.ifNull;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import hu.beni.amusementpark.dto.request.MachineSearchRequestDto;
+import hu.beni.amusementpark.dto.response.MachineSearchResponseDto;
 import hu.beni.amusementpark.entity.AmusementPark;
 import hu.beni.amusementpark.entity.Machine;
 import hu.beni.amusementpark.repository.AmusementParkRepository;
@@ -71,6 +75,11 @@ public class MachineServiceImpl implements MachineService {
 		ifNotZero(visitorRepository.countByMachineId(machineId), VISITORS_ON_MACHINE);
 		amusementParkRepository.incrementCapitalById(machine.getPrice(), amusementParkId);
 		machineRepository.deleteById(machineId);
+	}
+
+	@Override
+	public Page<MachineSearchResponseDto> findAllPaged(MachineSearchRequestDto dto, Pageable pageable) {
+		return machineRepository.findAll(dto, pageable);
 	}
 
 }

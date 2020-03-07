@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 @Data
-public class GuestBookRegistryRequestDto {
+public class GuestBookRegistrySearchRequestDto {
 
 	@JsonIgnore
 	private Long amusementParkId;
