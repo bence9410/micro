@@ -78,6 +78,9 @@ public class MachineController {
 	@GetMapping
 	public PagedResources<Resource<MachineSearchResponseDto>> findAllPaged(@PathVariable Long amusementParkId,
 			@RequestParam(required = false) MachineSearchRequestDto input, @PageableDefault Pageable pageable) {
+		if (input == null) {
+			input = new MachineSearchRequestDto();
+		}
 		input.setAmusementParkId(amusementParkId);
 		PagedResources<Resource<MachineSearchResponseDto>> result = pagedResourceAssembler
 				.toResource(machineService.findAllPaged(input, pageable));

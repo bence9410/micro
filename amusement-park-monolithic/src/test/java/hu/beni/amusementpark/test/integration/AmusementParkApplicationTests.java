@@ -58,7 +58,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 
 import hu.beni.amusementpark.AmusementParkApplication;
 import hu.beni.amusementpark.config.ClientConfig;
@@ -81,9 +80,6 @@ public class AmusementParkApplicationTests {
 	@Autowired
 	private Client client;
 
-	@Autowired
-	private RestTemplate restTemplate;
-
 	@LocalServerPort
 	private int port;
 
@@ -101,7 +97,8 @@ public class AmusementParkApplicationTests {
 	public void signUpAndUploadMoneyTest() {
 		logout();
 
-		VisitorResource inputVisitorResource = VisitorResource.builder() //@formatter:off
+		VisitorResource inputVisitorResource = VisitorResource
+				.builder() //@formatter:off
 				.email("benike@gmail.com")
 				.password("password")
 				.confirmPassword("password")

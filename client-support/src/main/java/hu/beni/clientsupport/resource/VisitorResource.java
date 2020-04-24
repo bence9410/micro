@@ -8,7 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import javax.validation.constraints.Past;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.ResourceSupport;
@@ -32,11 +32,11 @@ public class VisitorResource extends ResourceSupport implements Serializable {
 	private String email;
 
 	@NotNull
-	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,12}$")
+	@Size(min = 5, max = 25)
 	private String password;
 
 	@NotNull
-	@Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,12}$")
+	@Size(min = 5, max = 25)
 	private String confirmPassword;
 
 	@Null

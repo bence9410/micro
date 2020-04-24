@@ -34,30 +34,32 @@ public class AmusementParkApplication {
 		PasswordEncoder encoder = new BCryptPasswordEncoder();
 		return args -> {
 
-			Visitor visitor=Visitor.builder() // @formatter:off
+			Visitor visitor = Visitor
+					.builder() // @formatter:off
 					.email("jeni@gmail.com")
 					.password(encoder.encode("password"))
 					.authority("ROLE_USER")
 					.dateOfBirth(LocalDate.of(1995, 05, 10)).build(); // @formatter:on
-			
+
 			visitorService.signUp(visitor);
 
-			AmusementPark amusementPark = AmusementPark.builder() //@formatter:off
+			AmusementPark amusementPark = AmusementPark
+					.builder() //@formatter:off
                 .name("Jeni parkja")
                 .capital(3000)
                 .totalArea(1000)
                 .entranceFee(50)
                 .build(); //@formatter:on
-			
+
 			amusementParkService.save(amusementPark);
-			
+
 			visitorService.enterPark(amusementPark.getId(), visitor.getEmail());
 			guestBookRegistryService.addRegistry(amusementPark.getId(), visitor.getEmail(), "Nagyon élveztem.");
 			guestBookRegistryService.addRegistry(amusementPark.getId(), visitor.getEmail(), "Jó volt.");
 			visitorService.leavePark(amusementPark.getId(), visitor.getEmail());
-			
 
-			machineService.addMachine(amusementPark.getId(), Machine.builder() //@formatter:off
+			machineService.addMachine(amusementPark.getId(), Machine
+					.builder() //@formatter:off
                 .fantasyName("Nagy hajó")
                 .size(100)
                 .price(250)
@@ -66,11 +68,25 @@ public class AmusementParkApplication {
                 .ticketPrice(10)
                 .type(MachineType.CAROUSEL).build()); //@formatter:on
 
-			IntStream.range(0, 5).forEach(i -> visitorService.signUp(Visitor.builder() // @formatter:off
+			IntStream.range(0, 5).forEach(i -> visitorService.signUp(Visitor
+					.builder() // @formatter:off
 				.email("admin" + i + "@gmail.com")
 				.password(encoder.encode("password"))
 				.authority("ROLE_ADMIN")
 				.dateOfBirth(LocalDate.of(1994, 10, 22)).build())); // @formatter:on
 		};
+	}
+
+	@Bean
+	@Profile("oracleDB")
+	public ApplicationRunner applicationRunnerOracle(AmusementParkService amusementParkService,
+			MachineService machineService, VisitorService visitorService,
+			GuestBookRegistryService guestBookRegistryService) {
+		PasswordEncoder encoder = new BCryptPasswordEncoder(); // @formatter:off
+		return args -> IntStream.range(0, 5).forEach(i -> visitorService.signUp(Visitor.builder() 
+						.email("admin" + i + "@gmail.com")
+						.password(encoder.encode("password"))
+						.authority("ROLE_ADMIN")
+						.dateOfBirth(LocalDate.of(1994, 10, 22)).build())); // @formatter:on
 	}
 }

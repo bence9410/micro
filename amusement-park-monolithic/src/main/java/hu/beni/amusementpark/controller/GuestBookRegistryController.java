@@ -72,6 +72,9 @@ public class GuestBookRegistryController {
 	public PagedResources<Resource<GuestBookRegistrySearchResponseDto>> findAllPaged(@PathVariable Long amusementParkId,
 			@RequestParam(required = false) GuestBookRegistrySearchRequestDto input,
 			@PageableDefault Pageable pageable) {
+		if (input == null) {
+			input = new GuestBookRegistrySearchRequestDto();
+		}
 		input.setAmusementParkId(amusementParkId);
 		return pagedResourceAssembler.toResource(guestBookRegistryService.findAll(input, pageable));
 	}
