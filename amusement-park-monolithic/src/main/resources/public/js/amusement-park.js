@@ -193,16 +193,22 @@ function detail(url){
 			
 			var guestBookRegisztryLink=data._links.guesBookRegistries.href
 			var guestBookRegistryUrl=guestBookRegisztryLink.substring(0,guestBookRegisztryLink.indexOf("{"))
-			guestBookWrite(guestBookRegistryUrl)		
+			guestBookSearch(guestBookRegistryUrl)		
 			
+			
+			$("#detailGuestBookTimestampMin").val("")
+			$("#detailGuestBookTimestampMax").val("")
+			$("#detailGuestBookVisitor").val("")
+			$("#detailGuestBookText").val("")
+			$("#detailsGuestBookRegistryRefresh").attr("onclick","guestBookSearch('"+guestBookRegistryUrl+"')")
+			$("#detailsGuestBookSearcheButton").attr("onclick","guestBookSearch('"+guestBookRegistryUrl+"')")
 			$("#amusementParkDetails").modal("show")
-			$("#detailsGuestBookRegistryRefresh").attr("onclick","guestBookWrite('"+guestBookRegistryUrl+"')")
-			$("#detailsGuestBookSearcheButton").attr("onclick","guestBookWrite('"+guestBookRegistryUrl+"')")
+			
 		}
 	})	
 }
 
-function guestBookWrite(url){
+function guestBookSearch(url){
 	
 	var timestampMin=$("#detailGuestBookTimestampMin").val()
 	var timestampMax=$("#detailGuestBookTimestampMax").val()
@@ -295,7 +301,7 @@ function getMachinePage(enterParkData) {
 			$("#refresh").attr("onclick","getMachines('" + enterParkData._links.machine.href + "')")
 			$("#headerButton").empty()
 			$("#headerButton").append("<input id=\"guestBookButton\" type=\"button\" class=\"btn btn-secondary my-2 mr-1\""+
-	        "onclick=\"guestBookWirte()\" value=\"Guest Book Writing\">")
+	        "onclick=\"machineGuestBook('"+ enterParkData._links.addRegistry.href + "')\" value=\"Guest Book Writing\">")
 	        
 	        if(isAdmin){
 	    		$("#headerButton").append("<input class=\"btn btn-secondary my-2 mr-1 \" type=\"button\" value=\"Create\""+
@@ -308,8 +314,8 @@ function getMachinePage(enterParkData) {
 			$("#headerButton").append("<input id=\"leave\" type=\"button\" class=\"btn btn-secondary my-2 ml-1\""+
 	        "value=\"Leave\"> " )
 	        $("#leave").attr("onclick","leavePark('" + enterParkData._links.leavePark.href + "')")
-	       	
-	    
+	       	$("#guestBookSave").attr("onclick","machineGuestBookWrite('" + enterParkData._links.addRegistry.href+"')")
+	       	$("#machineSearchButton").attr("onclick","machineSearchButton('" + enterParkData._links.machine.href + "')")
 		}
 	})
 

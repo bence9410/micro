@@ -2,85 +2,72 @@
 	<h1>Welcome Visitor</h1>
 </div>
 <div id="loginDiv">
-	<form id="loginForm">
-		<div class="row">
+	<form id="loginForm" class="row">
 			<div class="text-center col-md-12 text-danger">
 				<p id="loginError" style="margin-top: 8px; margin-bottom: 8px"></p>
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-4 form-group offset-md-4">
+			<div class="col-md-4 offset-md-4">
 				<label for="loginEmail">Email:</label> <input type="email"
 					class="form-control" id="loginEmail" placeholder="Email">
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-4 form-group offset-md-4">
+			<div class="col-md-4 offset-md-4 mb-2">
 				<label for="password">Password</label> <input type="password"
 					class="form-control" id="password" placeholder="Password">
 			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-6 text-right ">
+			<div class="col-md-2 offset-md-4">
 				<input id="login"
-					class="btn btn-secondary col-md-4 border border-secondary"
+					class="btn btn-secondary col-md-12"
 					type="submit" onclick="ajaxLogin()" value="Login">
-			</div>
-			<div class="col-md-6">
-				<input class="btn btn-secondary col-md-4 border border-secondary"
+			</div> 
+			<div class="col-md-2">
+				<input class="btn btn-secondary col-md-12"
 					type="button" onclick="showSignUp()" value="Sign Up">
 			</div>
-		</div>
 	</form>
 </div>
 <div id="signUpDiv" style="display: none">
 	<div id="signUpError" class="alert alert-warning alert-dismissible"
 		style="display: none;" role="alert"></div>
 	<div class="row">
-		<div class="col-md-4"></div>
-		<div class="col-md-4 form-group">
+		<div class="col-md-4 offset-md-4">
 			<label for="loginEmail">Email:</label> <input type="email"
 				class="form-control" id="signUpLoginEmail"
 				placeholder="john.smith@example.com">
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-4"></div>
-		<div class="col-md-2 form-group">
+		<div class="col-md-2 offset-md-4">
 			<label for="password">Password:</label> <input type="password"
 				class="form-control" id="signUpPassword" placeholder="Password">
 		</div>
-		<div class="col-md-2 form-group">
+		<div class="col-md-2">
 			<label for="password">Confirm password:</label> <input
 				type="password" class="form-control" id="signUpConfirmPassword"
 				placeholder="Confirm Password">
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-4"></div>
-		<div class="col-md-4">
+		<div class="col-md-4 offset-md-4">
 			<p>Use 8 - 12 between characters, and let them act between them
 				letters, numbers and symbols.</p>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-md-4"></div>
-		<div class="col-md-4 form-group">
+		<div class="col-md-4 offset-md-4 form-group">
 			<label for="dateOfBirth">Date of birth:</label> <input type="text"
 				class="form-control" id="dateOfBirth" placeholder="Date of birth">
 			<p>Datetime format YYYY-MM-DD</p>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-md-4"></div>
-		<p class="text-right" style="margin-top: 8px; margin-bottom: 8px">Photo
+	<div class="row ml-1">
+		<p class="text-right offset-md-4">Photo
 			(size: 2:3):</p>
 		<div class="col-md-6">
-			<input id="file" style="margin-top: 8px" type="file"
+			<input id="file" type="file"
 				onchange="drawImage()">
 		</div>
 	</div>
-	<div class="text-center">
+	<div class="text-center mb-2">
 		<img id="img" width="100" height="150">
 	</div>
 	<div class="row">
@@ -89,7 +76,7 @@
 				type="submit" onclick="backToLogin()" value="Back">
 		</div>
 		<div class="col-md-6">
-			<input class="btn btn-secondary btn-md col-md-4" type="button"
+			<input class="btn btn-secondary col-md-4" type="button"
 				onclick="signUp()" value="Sign Up">
 		</div>
 	</div>

@@ -40,25 +40,32 @@
 		</div>
 	</div>
 	<div class="modal fade" id="uploadMoneyModal" role="dialog">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">Upload money</h4>
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Upload money</h4>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body">
+					<div class=" row ">
+					<div  class="col-md-8">
+					<p id="moneyUploadResult"></p>
+					<label for="Money" >Money:</label>
+						<input id="money" class="form-control" type="text">
+						</div>
+						<div  class="col-md-2 mt-5">
+						<input class="btn btn-secondary" id="upload" type="button"
+						value="Upload" onclick="uploadMoney()">
+						</div>
 					</div>
-					<div class="modal-body">
-						Money: <input id="money" type="text"> <input id="upload"
-							type="button" value="Upload" onclick="uploadMoney()">
-						<p id="moneyUploadResult"></p>
-					</div>
-
-					<div class="modal-footer">
-						<input id="closeUpload" type="button" data-dismiss="modal"
-							value="Close">
-					</div>
+				</div>
+				<div class="modal-footer">
+					<input id="closeUpload" class="btn btn-secondary" type="button"
+						data-dismiss="modal" value="Close">
 				</div>
 			</div>
 		</div>
+	</div>
 	<div id="content" style="display: none"></div>
 	<script type="text/javascript" src="/index.js"></script>
 </body>

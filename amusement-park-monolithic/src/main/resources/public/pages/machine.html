@@ -23,9 +23,8 @@
 						class="form-control" id="machineCreatePrice">
 				</div>
 				<div class="col-md-8 offset-md-2 row">
-					<label for="machineCreateNumberOfSeats">Number of seats:</label>
-					<input type="text" class="form-control"
-						id="machineCreateNumberOfSeats">
+					<label for="machineCreateNumberOfSeats">Number of seats:</label> <input
+						type="text" class="form-control" id="machineCreateNumberOfSeats">
 				</div>
 				<div class="col-md-8 offset-md-2 row">
 					<label for="machineCreateMinimumRequiredAge">Minimum
@@ -37,20 +36,23 @@
 						type="text" class="form-control" id="machineCreateTicketPrice">
 				</div>
 				<div class="col-md-8 offset-md-2 row">
-					<label for="machineCreateType">Type:</label> <input type="text"
-						class="form-control" id="machineCreateType">
+				<label for="machineCreateType">Type:</label>
+					<select id="machineCreateType" class="form-control">
+						<option value="CAROUSEL">Carousel</option>
+						<option value="GOKART">Gokart</option>
+						<option value="DODGEM"> Dodgem</option>
+						<option value="SHIP">Ship</option>
+						<option value="ROLLER_COASTER">Roller Coaster</option>					
+					</select>  
 				</div>
 				<div class="row offset-md-4">
-				<input id="machineCreateButton"
-		class="btn btn-secondary col-md-6 border mt-2 "
-		type="button" value="Create">
-		</div>
+					<input id="machineCreateButton"
+						class="btn btn-secondary col-md-6 border mt-2 " type="button"
+						value="Create">
+				</div>
 			</div>
 		</div>
 	</div>
-
-	
-	
 </div>
 <div id="machineSearch" class="" style="display: none">
 	<div class="col-md-10 offset-md-1 row">
@@ -110,8 +112,8 @@
 			<label for="machineSearchType">Type:</label> <input type="text"
 				class="form-control" id="machineSearchType">
 		</div>
-		<input id="machineSearchButton" class="btn btn-secondary btn-xs mt-4"
-			type="button" value="Search" onclick="machineSearchButton()">
+		<input id="machineSearchButton" class="btn btn-secondary btn-xs mt-4 "
+			type="button" value="Search" >
 	</div>
 </div>
 <div class="row justify-content-center">
@@ -129,14 +131,39 @@
 					<th></th>
 				</tr>
 			</thead>
-			<tfoot>
-				<tr>
-					<td colspan="10"><input id="refresh" type="button"
-						class="btn btn-secondary float-center" value="Refresh"></td>
-				</tr>
-			</tfoot>
 			<tbody id="tableBody">
 			</tbody>
+			<tfoot>
+									<tr>
+										<td colspan="10">
+											<div class="row ">
+												<div class="col-md-2 offset-md-1">
+													<input id="first" class="btn btn-secondary btn-xs"
+														type="button" value="<<" onclick="fillTableWithData()">
+												</div>
+												<div class="col-md-2">
+													<input id="left" class="btn btn-secondary btn-xs"
+														type="button" value="<">
+												</div>
+												<div>
+													<p id="numberOfPage"></p>
+												</div>
+												<div class="col-md-2">
+													<input id="right" class="btn btn-secondary btn-xs"
+														type="button" value=">">
+												</div>
+												<div class="col-md-2">
+													<input id="last" class="btn btn-secondary btn-xs"
+														type="button" value=">>">
+												</div>
+												<div class="col-md-2">
+													<input id="refresh" type="button"
+						class="btn btn-secondary float-center" value="Refresh">
+												</div>
+											</div>
+										</td>
+									</tr>
+								</tfoot>
 		</table>
 	</div>
 </div>
@@ -147,9 +174,7 @@
 				<h4 class="modal-title" id="machineModalTitle"></h4>
 				<button id="machineModalExit" type="button" class="close">&times;</button>
 			</div>
-			<div class="modal-body">
-
-				<img id="machineModalImage" height="100%" width="100%">
+			<div id ="machineModalBody" class="modal-body">
 			</div>
 			<div class="modal-footer">
 				<input class="btn btn-secondary" id="machineModalGetOff"
@@ -158,7 +183,6 @@
 		</div>
 	</div>
 </div>
-
 <div class="modal fade" id="guestBookModal" role="dialog">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
@@ -167,40 +191,36 @@
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			<div class="modal-body">
-
-
 				<div class="form-group col-md-10 offset-md-1">
 					<textarea class="form-control rounded-0" id="guestBookText"
 						rows="3"></textarea>
 				</div>
 				<div id="guestBookSearche" class="col-md-10 offset-md-1 row">
 					<div class="col-md-3">
-						<div class="form-group">
-							<label for="guestBookTimestamp">Timestamp</label> <input
-								type="text" class="form-control" id="guestBookTimestamp">
-						</div>
+						<label for="machineGuestBookTimestampMin">Timestamp min:</label> <input
+							type="text" class="form-control"
+							id="machineGuestBookTimestampMin">
 					</div>
 					<div class="col-md-3">
-						<div class="form-group">
-							<label for="guestBookVisitor">Visitor</label> <input type="text"
-								class="form-control" id="guestBookVisitor">
-						</div>
+						<label for="machineGuestBookTimestampMax">Timestamp max:</label> <input
+							type="text" class="form-control"
+							id="machineGuestBookTimestampMax">
 					</div>
-
 					<div class="col-md-3">
-						<div class="form-group">
-							<label for="guestBookText">Text</label> <input type="text"
-								class="form-control" id="guestBookText">
-						</div>
+						<label for="machineGuestBookVisitor">Visitor</label> <input
+							type="text" class="form-control" id="machineGuestBookVisitor">
 					</div>
-					<div>
-						<input id="guestBookSearcheButton"
-							class="btn btn-secondary btn-xs mt-4" type="button"
-							value="Search" onclick="MachineGuestBookSearche()">
+					<div class="col-md-3">
+						<label for="machineGuestBookText">Text</label> <input type="text"
+							class="form-control" id="machineGuestBookText">
+					</div>
+					<div class="col-md-2 offset-md-10">
+						<input id="machineGuestBookSearcheButton"
+							class="btn btn-secondary mt-4" type="button" value="Search"
+							onclick="machineGuestBookSearche()">
 					</div>
 				</div>
-
-				<div class="col-md-10 offset-md-1">
+				<div class="col-md-10 offset-md-1 mt-2">
 					<table class="table table-bordered text-center table-hover ">
 						<thead class="thead-light">
 							<tr>
@@ -209,6 +229,7 @@
 								<th width="50%">Text</th>
 							</tr>
 						</thead>
+						<tbody id="machineGuestBookTable"></tbody>
 						<tfoot>
 							<tr>
 								<td colspan="10">
@@ -235,7 +256,7 @@
 												class="btn btn-secondary btn-xs" type="button" value=">>">
 										</div>
 										<div class="col-md-2 ">
-											<input id="tableRefresh" class="btn btn-secondary btn-xs"
+											<input id="machineGuestBookRefresh" class="btn btn-secondary btn-xs"
 												type="button" value="Refresh">
 										</div>
 									</div>
