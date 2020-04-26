@@ -1,54 +1,49 @@
 $(function() {
-	getAmusementParks()
+	getAmusementParks(links.amusementPark)
+	$("#amusementParkSearchButton").attr("onclick",
+			"getAmusementParksSearch('" + links.amusementPark + "')")
+
 	$("#headerButton").empty()
-	$("#headerButton").append("<input class=\"btn btn-secondary my-2 mr-1\" type=\"button\" value=\"Search\""+
-			"onclick=\"$('#searchDiv').toggle()\">")
-	if(isAdmin){
-		$("#headerButton").append("<input class=\"btn btn-secondary my-2 mr-1 \" type=\"button\" value=\"Create\""+
-				"onclick=\"clearAndShowCreateAmusementParkModal()\">")
-	}		
-	
+	$("#headerButton")
+			.append(
+					"<input id='amusementParkShowSearchButton' class='btn btn-secondary my-2 mr-1' type='button'"
+							+ " value='Search' onclick='$(\"#amusementParkSearchDiv\").toggle()'>")
+	if (isAdmin) {
+		$("#headerButton").append(
+				"<input class='btn btn-secondary my-2 mr-1 ' type='button' value='Create'"
+						+ "onclick='clearAndShowAmusementParkCreateModal()'>")
+		$("#createAmusementParkButton").attr("onclick", "amusementParkCreate('"+links.amusementPark+"')")
+	}
 })
 
-
-
-
-function clearAndShowCreateAmusementParkModal(){
+function clearAndShowAmusementParkCreateModal() {
 	$("#createAmusementParkErrorMessage").html("")
 	$("#createAmusementParkName").val("")
 	$("#createAmusementParkCapital").val("")
 	$("#createAmusementParkTotalArea").val("")
 	$("#createAmusementParkEntranceFee").val("")
 	$("#createAmusementParkModal").modal("show")
-	
 }
 
-function create() {
+function amusementParkCreate(url) {
 	$("#createAmusementParkButton").attr("disabled", true)
-	var amusementPark = collectAmusementPark()
-	var error=validateAmusementPark(amusementPark)
-	if (error.length == 0){
-		$.ajax({
-			url : links.amusementPark,
-			method : "POST",
-			contentType : "application/json",
-			data : JSON.stringify(amusementPark),
-			success : function() {
-				$("#createAmusementParkModal").modal("hide")
-				getAmusementParks()
-			},
-			error : function(response) {
-				$("#createAmusementParkErrorMessage").html("error: " + response.responseText)
-			},
-			complete : function() {
-				$("#createAmusementParkButton").attr("disabled", false)
-			}
-		})	
-	} else {
-		 $("#createAmusementParkErrorMessage").html(error.join("<br>"))
-		 $("#createAmusementParkButton").attr("disabled", false)
-		
-	}
+	$.ajax({
+		url : url,
+		method : "POST",
+		contentType : "application/json",
+		data : JSON.stringify(collectAmusementPark()),
+		success : function() {
+			$("#createAmusementParkModal").modal("hide")
+			getAmusementParks(url)
+		},
+		error : function(response) {
+			$("#createAmusementParkErrorMessage").html(
+					"error: " + response.responseText)
+		},
+		complete : function() {
+			$("#createAmusementParkButton").attr("disabled", false)
+		}
+	})
 }
 
 function collectAmusementPark() {
@@ -56,131 +51,124 @@ function collectAmusementPark() {
 	amusementPark.name = $("#createAmusementParkName").val()
 	amusementPark.capital = Number($("#createAmusementParkCapital").val())
 	amusementPark.totalArea = Number($("#createAmusementParkTotalArea").val())
-	amusementPark.entranceFee = Number($("#createAmusementParkEntranceFee").val())
+	amusementPark.entranceFee = Number($("#createAmusementParkEntranceFee")
+			.val())
 	return amusementPark
-}
-function validateAmusementPark(amusementPark){
-	var error = []
-	if (amusementPark.name.length < 5 || amusementPark.name.length > 20 ){
-		error.push("The length of name must be between 5 and 20.")
-	} 
-	if (amusementPark.capital < 500 || amusementPark.capital.length >50000){
-		error.push("The value of capital must be between 500 and 50000.")
-	}
-	if (amusementPark.totalArea < 50 || amusementPark.totalArea.length >2000){
-		error.push("The value of total area must be between 50 and 2000.")
-	}
-	if (amusementPark.entranceFee < 5 || amusementPark.entranceFee.length >200){
-		error.push("The value of entrance fee must be between 5 and 200.")
-	}
-	return error
-}
-
-function search(){
-	var searchAmusementPark = {}
-	searchAmusementPark.name = $("#searchName").val()
-	var capitalMin=$("#searchCapitalMin").val()
-	if(capitalMin !== "" && !isNaN(capitalMin)){
-		searchAmusementPark.capitalMin = Number(capitalMin)
-	}
-	var capitalMax=$("#searchCapitalMax").val()
-	if(capitalMax !== "" && !isNaN(capitalMax)){
-		searchAmusementPark.capitalMax = Number(capitalMax)
-	}
-	var totalAreaMin=$("#searchTotalAreaMin").val()
-	if(totalAreaMin !== "" && !isNaN(totalAreaMin)){
-		searchAmusementPark.totalAreaMin = Number(totalAreaMin)
-	}
-	var totalAreaMax=$("#searchTotalAreaMax").val()
-	if(totalAreaMax !== "" && !isNaN(totalAreaMax)){
-		searchAmusementPark.totalAreaMax = Number(totalAreaMax)
-	}
-	var entranceFeeMin=$("#searchEntranceFeeMin").val()
-	if(entranceFeeMin !== "" && !isNaN(entranceFeeMin)){
-		searchAmusementPark.entranceFeeMin = Number(entranceFeeMin)
-	}
-	var entranceFeeMax=$("#searchEntranceFeeMax").val()
-	if(entranceFeeMax!== "" && !isNaN(entranceFeeMax)){
-		searchAmusementPark.entranceFeeMax = Number(entranceFeeMax)
-	}
-	
-	getAmusementParks(links.amusementPark+ "?input="+encodeURI(JSON.stringify(searchAmusementPark)))
-	
-	
-	
 }
 
 function getAmusementParks(url) {
 	$.ajax({
-		url : url==null ? links.amusementPark : url,
-		success : fillTableWithData
+		url : url,
+		success : function(data) {
+			amusementParkFillTable(data)
+			amusementParkSetTableFooter(data)
+		}
 	})
 }
 
-function fillTableWithData(data) {
-	
-	$("#numberOfPage").html(data.page.number + 1 +  "/" + data.page.totalPages)
-	if(data._links.first!==undefined){
-		$("#first").attr("onclick","getAmusementParks('" + data._links.first.href + "')")
-		$("#first").attr("disabled",false)
-	}else{
-		$("#first").attr("disabled",true)
+function amusementParkFillTable(data) {
+	if (data._embedded !== undefined) {
+		var tableBody = []
+		var array = data._embedded.amusementParkPageResponseDtoList
+		for (var i = 0; i < array.length; i++) {
+			var amusementPark = array[i]
+			var tr = []
+			tr.push("<tr onclick='detail(\"" + amusementPark._links.self.href
+					+ "\")'>")
+			tr.push("<td>" + amusementPark.name + "</td>")
+			tr.push("<td>" + amusementPark.capital + "</td>")
+			tr.push("<td>" + amusementPark.totalArea + "</td>")
+			tr.push("<td>" + amusementPark.entranceFee + "</td>")
+			tr.push("<td>" + amusementPark.numberOfMachines + "</td>")
+			tr.push("<td>" + amusementPark.numberOfGuestBookRegistries
+					+ "</td>")
+			tr.push("<td>" + amusementPark.numberOfActiveVisitors + "</td>")
+			tr.push("<td>" + amusementPark.numberOfKnownVisitors + "</td>")
+			tr.push("</tr>")
+			tableBody.push(tr.join())
+		}
+		$("#tableBody").html(tableBody.join())
+		$("#numberOfPage").html(
+				data.page.number + 1 + "/" + data.page.totalPages)
+	} else {
+		$("#tableBody").empty()
+		$("#numberOfPage").html("0/0")
 	}
-	
-	if(data._links.prev!==undefined){
-		$("#left").attr("onclick", "getAmusementParks('" + data._links.prev.href + "')")
-		$("#left").attr("disabled",false)
-	}else{
-		$("#left").attr("disabled",true)
+}
+
+function amusementParkSetTableFooter(data) {
+	if (data._links.first !== undefined) {
+		$("#first").attr("onclick",
+				"getAmusementParks('" + data._links.first.href + "')")
+		$("#first").attr("disabled", false)
+	} else {
+		$("#first").attr("disabled", true)
 	}
-	
-	if(data._links.next!==undefined){
-		$("#right").attr("onclick", "getAmusementParks('" + data._links.next.href + "')")
-		$("#right").attr("disabled",false)
-	}else{
-		$("#right").attr("disabled",true)
+
+	if (data._links.prev !== undefined) {
+		$("#left").attr("onclick",
+				"getAmusementParks('" + data._links.prev.href + "')")
+		$("#left").attr("disabled", false)
+	} else {
+		$("#left").attr("disabled", true)
 	}
-		
-	if(data._links.last!==undefined){
-		$("#last").attr("onclick","getAmusementParks('" + data._links.last.href + "')")
-		$("#last").attr("disabled",false)
-	}else{
+
+	if (data._links.next !== undefined) {
+		$("#right").attr("onclick",
+				"getAmusementParks('" + data._links.next.href + "')")
+		$("#right").attr("disabled", false)
+	} else {
+		$("#right").attr("disabled", true)
+	}
+
+	if (data._links.last !== undefined) {
+		$("#last").attr("onclick",
+				"getAmusementParks('" + data._links.last.href + "')")
+		$("#last").attr("disabled", false)
+	} else {
 		$("#last").attr("disabled", true)
 	}
-	
-	$("#tableRefresh").attr("onclick","getAmusementParks('" + data._links.self.href + "')")
-	
-	
-	var tableBody = []
-	if (data._embedded !== undefined){
-		var array=data._embedded.amusementParkPageResponseDtoList
-		for (var i =0; i < array.length; i++) {
-			tableBody.push(convertAmusementParkToTableRow(array[i]))
-		}
+
+	$("#tableRefresh").attr("onclick",
+			"getAmusementParks('" + data._links.self.href + "')")
+}
+
+function getAmusementParksSearch(url) {
+	var amusementParkSearch = {}
+	amusementParkSearch.name = $("#searchName").val()
+	var capitalMin = $("#searchCapitalMin").val()
+	if (capitalMin !== "" && !isNaN(capitalMin)) {
+		amusementParkSearch.capitalMin = Number(capitalMin)
+	}
+	var capitalMax = $("#searchCapitalMax").val()
+	if (capitalMax !== "" && !isNaN(capitalMax)) {
+		amusementParkSearch.capitalMax = Number(capitalMax)
+	}
+	var totalAreaMin = $("#searchTotalAreaMin").val()
+	if (totalAreaMin !== "" && !isNaN(totalAreaMin)) {
+		amusementParkSearch.totalAreaMin = Number(totalAreaMin)
+	}
+	var totalAreaMax = $("#searchTotalAreaMax").val()
+	if (totalAreaMax !== "" && !isNaN(totalAreaMax)) {
+		amusementParkSearch.totalAreaMax = Number(totalAreaMax)
+	}
+	var entranceFeeMin = $("#searchEntranceFeeMin").val()
+	if (entranceFeeMin !== "" && !isNaN(entranceFeeMin)) {
+		amusementParkSearch.entranceFeeMin = Number(entranceFeeMin)
+	}
+	var entranceFeeMax = $("#searchEntranceFeeMax").val()
+	if (entranceFeeMax !== "" && !isNaN(entranceFeeMax)) {
+		amusementParkSearch.entranceFeeMax = Number(entranceFeeMax)
 	}
 
-	$("#tableBody").html(tableBody.join())
+	getAmusementParks(url + "?input="
+			+ encodeURI(JSON.stringify(amusementParkSearch)))
 }
 
-function convertAmusementParkToTableRow(amusementPark) {
-	var tr = []
-	tr.push("<tr onclick='detail(\""+amusementPark._links.self.href+"\")'>")
-	tr.push("<td>" + amusementPark.name + "</td>")
-	tr.push("<td>" + amusementPark.capital + "</td>")
-	tr.push("<td>" + amusementPark.totalArea + "</td>")
-	tr.push("<td>" + amusementPark.entranceFee + "</td>")
-	tr.push("<td>" + amusementPark.numberOfMachines + "</td>")
-	tr.push("<td>" + amusementPark.numberOfGuestBookRegistries + "</td>")
-	tr.push("<td>" + amusementPark.numberOfActiveVisitors + "</td>")
-	tr.push("<td>" + amusementPark.numberOfKnownVisitors + "</td>")
-	tr.push("</tr>")
-	return tr.join()
-}
-
-function detail(url){
+function detail(url) {
 	$.ajax({
 		url : url,
-		success : function(data){
+		success : function(data) {
 			$("#detailName").html(data.name)
 			$("#detailCapital").html(data.capital)
 			$("#detailTotalArea").html(data.totalArea)
@@ -188,135 +176,186 @@ function detail(url){
 			$("#detailMachines").html(data.numberOfMachines)
 			$("#detailActiveVisitors").html(data.numberOfActiveVisitors)
 			$("#detailKnownVisitors").html(data.numberOfKnownVisitors)
-			$("#detailGuestBookRegistries").html(data.numberOfGuestBookRegistries)
-			$("#enterPark").attr("onclick","enterPark('"+data._links.visitorEnterPark.href+"','"+data._links.machine.href+"')")
-			
-			var guestBookRegisztryLink=data._links.guesBookRegistries.href
-			var guestBookRegistryUrl=guestBookRegisztryLink.substring(0,guestBookRegisztryLink.indexOf("{"))
-			guestBookSearch(guestBookRegistryUrl)		
-			
-			
-			$("#detailGuestBookTimestampMin").val("")
-			$("#detailGuestBookTimestampMax").val("")
-			$("#detailGuestBookVisitor").val("")
-			$("#detailGuestBookText").val("")
-			$("#detailsGuestBookRegistryRefresh").attr("onclick","guestBookSearch('"+guestBookRegistryUrl+"')")
-			$("#detailsGuestBookSearcheButton").attr("onclick","guestBookSearch('"+guestBookRegistryUrl+"')")
+			$("#detailGuestBookRegistries").html(
+					data.numberOfGuestBookRegistries)
+			$("#enterPark").attr(
+					"onclick",
+					"enterPark('" + data._links.visitorEnterPark.href + "','"
+							+ data._links.machine.href + "')")
+
+			$("#guestBookSearchTimestampMin").val("")
+			$("#guestBookSearchTimestampMax").val("")
+			$("#guestBookSearchVisitorEmail").val("")
+			$("#guestBookSearchText").val("")
+
+			getGuestBooks(data._links.addRegistry.href)
+			$("#guestBookSearchButton").attr(
+					"onclick",
+					"getGuestBooksSearch('" + data._links.addRegistry.href
+							+ "')")
+
 			$("#amusementParkDetails").modal("show")
-			
+
 		}
-	})	
+	})
 }
 
-function guestBookSearch(url){
-	
-	var timestampMin=$("#detailGuestBookTimestampMin").val()
-	var timestampMax=$("#detailGuestBookTimestampMax").val()
-	var visitor=$("#detailGuestBookVisitor").val()
-	var text=$("#detailGuestBookText").val()
-	
-	var queryParams=[]
-	
-	if(timestampMin !== ""){
-		queryParams.push("dateOfRegistryMin="+timestampMin)
-	}
-	if(timestampMax !== ""){
-		queryParams.push("dateOfRegistryMax="+timestampMax)
-	}
-	
-	if(visitor !== ""){
-		queryParams.push("visitorEmail="+visitor)
-	}
-	
-	if(text !== ""){
-		queryParams.push("textOfRegistry="+text)
-	}
-	
-	var uri=""
-	
-	if(queryParams.length !== 0){
-		uri = "?"+queryParams.join("&")
-	}
-		
+function getGuestBooks(url) {
 	$.ajax({
-
-		url: url + uri,
-		success: function(data){
-			
-			var tbody = []
-			for (var i = 0; i < data.length; i++) {
-				tbody.push("<tr>")
-				tbody.push("<td>" + data[i].dateOfRegistry + "</td>")
-				tbody.push("<td>" + data[i].visitorEmail + "</td>")
-				tbody.push("<td>" + data[i].textOfRegistry + "</td>")
-				tbody.push("</tr>")
-			
-				
-			}
-			$("#guestBookTable").html(tbody.join())	
-			
+		url : url,
+		success : function(data) {
+			guestBookFillTable(data)
+			guestBookSetTableFooter(data)
 		}
 
-	})		
+	})
 }
 
-function enterPark(href,machineHref) {	
+function guestBookFillTable(data) {
+	if (data._embedded !== undefined) {
+		var tbody = []
+		var array = data._embedded.guestBookRegistrySearchResponseDtoList
+		for (var i = 0; i < array.length; i++) {
+			var guestBook = array[i]
+			var tr = []
+			tr.push("<tr>")
+			tr.push("<td>" + guestBook.dateOfRegistry + "</td>")
+			tr.push("<td>" + guestBook.visitorEmail + "</td>")
+			tr.push("<td>" + guestBook.textOfRegistry + "</td>")
+			tr.push("</tr>")
+			tbody.push(tr.join())
+		}
+		$("#guestBookTable").html(tbody.join())
+		$("#guestBookNumberOfPage").html(
+				data.page.number + 1 + "/" + data.page.totalPages)
+	} else {
+		$("#guestBookTable").empty()
+		$("#guestBookNumberOfPage").html("0/0")
+	}
+}
+
+function guestBookSetTableFooter(data) {
+	if (data._links.first !== undefined) {
+		$("#guestBookFirst").attr("onclick",
+				"getGuestBooks('" + data._links.first.href + "')")
+		$("#guestBookFirst").attr("disabled", false)
+	} else {
+		$("#guestBookFirst").attr("disabled", true)
+	}
+
+	if (data._links.prev !== undefined) {
+		$("#guestBookLeft").attr("onclick",
+				"getGuestBooks('" + data._links.prev.href + "')")
+		$("#guestBookLeft").attr("disabled", false)
+	} else {
+		$("#guestBookLeft").attr("disabled", true)
+	}
+
+	if (data._links.next !== undefined) {
+		$("#guestBookRight").attr("onclick",
+				"getGuestBooks('" + data._links.next.href + "')")
+		$("#guestBookRight").attr("disabled", false)
+	} else {
+		$("#guestBookRight").attr("disabled", true)
+	}
+
+	if (data._links.last !== undefined) {
+		$("#guestBookLast").attr("onclick",
+				"getGuestBooks('" + data._links.last.href + "')")
+		$("#guestBookLast").attr("disabled", false)
+	} else {
+		$("#guestBookLast").attr("disabled", true)
+	}
+
+	$("#guestBookRefresh").attr("onclick",
+			"getGuestBooks('" + data._links.self.href + "')")
+}
+
+function getGuestBooksSearch(url) {
+	var guestBookSearch = {}
+
+	guestBookSearch.visitorEmail = $("#guestBookSearchVisitorEmail").val()
+	guestBookSearch.textOfRegistry = $("#guestBookSearchText").val()
+	guestBookSearch.dateOfRegistryMin = $("#guestBookSearchTimestampMin")
+			.val()
+	guestBookSearch.dateOfRegistryMax = $("#guestBookSearchTimestampMax")
+			.val()
+
+	getGuestBooks(url + "?input=" + encodeURI(JSON.stringify(guestBookSearch)))
+}
+
+function enterPark(href, machineHref) {
 	$.ajax({
 		url : href,
 		method : "PUT",
-		success : function(data){
+		success : function(data) {
 			$("#spendingMoney").html(data.spendingMoney)
 			getMachinePage(data)
 			$(".modal-backdrop").remove()
 		},
-		error : function(data){
+		error : function(data) {
 			$("#detailsError").html(data.responseText)
 		}
-		
+
 	})
 }
 
-function deletePark(href) {
-	$.ajax({
-		url : href,
-		method : "DELETE",
-		success : function(data, textStatus, jqXHR) {
-			console.log(data)
-			console.log(textStatus)
-			console.log(jqXHR)
-		},
-		error : function(data, textStatus, jqXHR) {
-			console.log(data)
-			console.log(textStatus)
-			console.log(jqXHR)
-		}
-	})
-}
 function getMachinePage(enterParkData) {
-	$.ajax({
-		url : pages.machine,
-		success : function(data) {
-			$("#content").html(data)
-			getMachines(enterParkData._links.machine.href)
-			$("#refresh").attr("onclick","getMachines('" + enterParkData._links.machine.href + "')")
-			$("#headerButton").empty()
-			$("#headerButton").append("<input id=\"guestBookButton\" type=\"button\" class=\"btn btn-secondary my-2 mr-1\""+
-	        "onclick=\"machineGuestBook('"+ enterParkData._links.addRegistry.href + "')\" value=\"Guest Book Writing\">")
-	        
-	        if(isAdmin){
-	    		$("#headerButton").append("<input class=\"btn btn-secondary my-2 mr-1 \" type=\"button\" value=\"Create\""+
-	    				"onclick=\"clearAndShowCreateMachineModal()\">")
-	    		$("#machineCreateButton").attr("onclick","machineCreate('" + enterParkData._links.machine.href + "')")
-	    }	
-		
-	        $("#headerButton").append("<input class=\"btn btn-secondary my-2\" type=\"button\" value=\"Search\""+
-			"onclick=\"$('#machineSearch').toggle()\">" )
-			$("#headerButton").append("<input id=\"leave\" type=\"button\" class=\"btn btn-secondary my-2 ml-1\""+
-	        "value=\"Leave\"> " )
-	        $("#leave").attr("onclick","leavePark('" + enterParkData._links.leavePark.href + "')")
-	       	$("#guestBookSave").attr("onclick","machineGuestBookWrite('" + enterParkData._links.addRegistry.href+"')")
-	       	$("#machineSearchButton").attr("onclick","machineSearchButton('" + enterParkData._links.machine.href + "')")
-		}
-	})
+	$
+			.ajax({
+				url : pages.machine,
+				success : function(data) {
+					$("#content").html(data)
+					getMachines(enterParkData._links.machine.href)
+					$("#refresh").attr(
+							"onclick",
+							"getMachines('" + enterParkData._links.machine.href
+									+ "')")
+					$("#machineSearchButton").attr(
+							"onclick",
+							"machineSearchButton('"
+									+ enterParkData._links.machine.href + "')")
+
+					$("#headerButton").empty()
+					$("#headerButton").append(
+							"<input id='guestBookButton' type='button' class='btn btn-secondary my-2 mr-1'"
+									+ "onclick='showMachineGuestBook(\""
+									+ enterParkData._links.addRegistry.href
+									+ "\")' value='Guest Book Writing'>")
+
+					if (isAdmin) {
+						$("#headerButton")
+								.append(
+										"<input class='btn btn-secondary my-2 mr-1 ' type='button' value='Create'"
+												+ "onclick='clearAndShowMachineCreateModal()'>")
+						$("#machineCreateButton").attr(
+								"onclick",
+								"machineCreate('"
+										+ enterParkData._links.machine.href
+										+ "')")
+					}
+
+					$("#headerButton")
+							.append(
+									"<input class='btn btn-secondary my-2' type='button' value='Search'"
+											+ "onclick='$(\"#machineSearch\").toggle()'>")
+					$("#headerButton").append(
+							"<input id='leave' type='button' class='btn btn-secondary my-2 ml-1' "
+									+ "value='Leave' onclick='leavePark(\""
+									+ enterParkData._links.leavePark.href
+									+ "\")'>")
+					$("#guestBookSave").attr(
+							"onclick",
+							"machineGuestBookWrite('"
+									+ enterParkData._links.addRegistry.href
+									+ "')")
+					$("#guestBookSearchButton").attr(
+							"onclick",
+							"getGuestBooksSearch('"
+									+ enterParkData._links.addRegistry.href
+									+ "')")
+
+				}
+			})
 
 }

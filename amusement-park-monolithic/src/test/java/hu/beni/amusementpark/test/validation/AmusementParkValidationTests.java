@@ -72,12 +72,12 @@ public class AmusementParkValidationTests extends AbstractValidation<AmusementPa
 		amusementPark.setTotalArea(49);
 		validateAndAssertViolationsSizeIsOne(amusementPark);
 		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getTotalArea(), TOTAL_AREA,
-				rangeMessage(50, 2000));
+				rangeMessage(50, 5000));
 
-		amusementPark.setTotalArea(2001);
+		amusementPark.setTotalArea(5001);
 		validateAndAssertViolationsSizeIsOne(amusementPark);
 		assertInvalidValueAndPropertyNameAndMessageEquals(amusementPark.getTotalArea(), TOTAL_AREA,
-				rangeMessage(50, 2000));
+				rangeMessage(50, 5000));
 	}
 
 	@Test

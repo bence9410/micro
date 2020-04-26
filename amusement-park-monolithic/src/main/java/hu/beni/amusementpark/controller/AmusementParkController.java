@@ -1,8 +1,5 @@
 package hu.beni.amusementpark.controller;
 
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
-
 import java.beans.PropertyEditorSupport;
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -91,9 +88,7 @@ public class AmusementParkController {
 	public AmusementParkResource findOne(@PathVariable Long amusementParkId) {
 		AmusementParkResource amusementParkResource = amusementParkMapper
 				.toResource(amusementParkService.findById(amusementParkId));
-		amusementParkResource
-				.add(linkTo(methodOn(GuestBookRegistryController.class).findAllPaged(amusementParkId, null, null))
-						.withRel("guesBookRegistries"));
+		amusementParkResource.add(LinkFactory.createAddGuestBookRegistryLink(amusementParkId));
 		return amusementParkResource;
 	}
 

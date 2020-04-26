@@ -109,8 +109,15 @@
 				type="text" class="form-control" id="machineSearchTicketPriceMax">
 		</div>
 		<div class="col-md-2">
-			<label for="machineSearchType">Type:</label> <input type="text"
-				class="form-control" id="machineSearchType">
+			<label for="machineSearchType">Type:</label> 
+			<select id="machineSearchType" class="form-control">
+			<option value=""></option>
+						<option value="CAROUSEL">Carousel</option>
+						<option value="GOKART">Gokart</option>
+						<option value="DODGEM"> Dodgem</option>
+						<option value="SHIP">Ship</option>
+						<option value="ROLLER_COASTER">Roller Coaster</option>					
+					</select> 
 		</div>
 		<input id="machineSearchButton" class="btn btn-secondary btn-xs mt-4 "
 			type="button" value="Search" >
@@ -197,27 +204,26 @@
 				</div>
 				<div id="guestBookSearche" class="col-md-10 offset-md-1 row">
 					<div class="col-md-3">
-						<label for="machineGuestBookTimestampMin">Timestamp min:</label> <input
+						<label for="guestBookSearchTimestampMin">Timestamp min:</label> <input
 							type="text" class="form-control"
-							id="machineGuestBookTimestampMin">
+							id="guestBookSearchTimestampMin">
 					</div>
 					<div class="col-md-3">
-						<label for="machineGuestBookTimestampMax">Timestamp max:</label> <input
+						<label for="guestBookSearchTimestampMax">Timestamp max:</label> <input
 							type="text" class="form-control"
-							id="machineGuestBookTimestampMax">
+							id="guestBookSearchTimestampMax">
 					</div>
 					<div class="col-md-3">
-						<label for="machineGuestBookVisitor">Visitor</label> <input
-							type="text" class="form-control" id="machineGuestBookVisitor">
+						<label for="guestBookSearchVisitorEmail">Visitor</label> <input
+							type="text" class="form-control" id="guestBookSearchVisitorEmail">
 					</div>
 					<div class="col-md-3">
-						<label for="machineGuestBookText">Text</label> <input type="text"
-							class="form-control" id="machineGuestBookText">
+						<label for="guestBookSearchText">Text</label> <input type="text"
+							class="form-control" id="guestBookSearchText">
 					</div>
 					<div class="col-md-2 offset-md-10">
-						<input id="machineGuestBookSearcheButton"
-							class="btn btn-secondary mt-4" type="button" value="Search"
-							onclick="machineGuestBookSearche()">
+						<input id="guestBookSearchButton"
+							class="btn btn-secondary mt-4" type="button" value="Search">
 					</div>
 				</div>
 				<div class="col-md-10 offset-md-1 mt-2">
@@ -229,42 +235,40 @@
 								<th width="50%">Text</th>
 							</tr>
 						</thead>
-						<tbody id="machineGuestBookTable"></tbody>
+						<tbody id="guestBookTable"></tbody>
 						<tfoot>
 							<tr>
 								<td colspan="10">
 									<div class="row ">
 										<div class="col-md-2"></div>
 										<div class="col-md-2">
-											<input id="machineGuestBookFirst"
+											<input id="guestBookFirst"
 												class="btn btn-secondary btn-xs" type="button" value="<<"
 												onclick="">
 										</div>
 										<div class="col-md-2">
-											<input id="machineGuestBookLeft"
+											<input id="guestBookLeft"
 												class="btn btn-secondary btn-xs" type="button" value="<">
 										</div>
 										<div>
-											<p id="machineGuestBookNumberOfPage"></p>
+											<p id="guestBookNumberOfPage"></p>
 										</div>
 										<div class="col-md-2">
-											<input id="machineGuestBookRight"
+											<input id="guestBookRight"
 												class="btn btn-secondary btn-xs" type="button" value=">">
 										</div>
 										<div class="col-md-2">
-											<input id="machineGuestBookLast"
+											<input id="guestBookLast"
 												class="btn btn-secondary btn-xs" type="button" value=">>">
 										</div>
 										<div class="col-md-2 ">
-											<input id="machineGuestBookRefresh" class="btn btn-secondary btn-xs"
+											<input id="guestBookRefresh" class="btn btn-secondary btn-xs"
 												type="button" value="Refresh">
 										</div>
 									</div>
 								</td>
 							</tr>
 						</tfoot>
-						<tbody id="machineGuestBookTableBody">
-						</tbody>
 					</table>
 				</div>
 			</div>

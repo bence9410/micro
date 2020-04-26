@@ -7,6 +7,7 @@ public class StringParamConstants {
 	public static final String OPINION_ON_THE_PARK = "Amazing";
 
 	public static final String STRING_EMPTY = "";
+	public static final String STRING_WITH_1_LENGTH = "q";
 	public static final String STRING_WITH_2_LENGTH = "qw";
 	public static final String STRING_WITH_4_LENGTH = STRING_WITH_2_LENGTH + "er";
 	public static final String STRING_WITH_6_LENGTH = STRING_WITH_4_LENGTH + "tz";

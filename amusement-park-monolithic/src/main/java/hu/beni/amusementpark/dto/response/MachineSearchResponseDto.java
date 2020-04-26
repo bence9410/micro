@@ -21,7 +21,7 @@ public class MachineSearchResponseDto {
 
 	private Integer numberOfSeats;
 
-	private Integer minimumReguiredAge;
+	private Integer minimumRequiredAge;
 
 	private Integer ticketPrice;
 

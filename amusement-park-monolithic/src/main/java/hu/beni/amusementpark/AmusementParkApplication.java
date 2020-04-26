@@ -34,16 +34,18 @@ public class AmusementParkApplication {
 		PasswordEncoder encoder = new BCryptPasswordEncoder();
 		return args -> {
 
-			Visitor visitor = Visitor.builder() // @formatter:off
-					.email("jeni@gmail.com")
+			Visitor visitor = Visitor
+					.builder() // @formatter:off
+					.email("bence@gmail.com")
 					.password(encoder.encode("password"))
-					.authority("ROLE_USER")
+					.authority("ROLE_ADMIN")
 					.dateOfBirth(LocalDate.of(1995, 05, 10)).build(); // @formatter:on
 
 			visitorService.signUp(visitor);
 
-			AmusementPark amusementPark = AmusementPark.builder() //@formatter:off
-                .name("Jeni parkja")
+			AmusementPark amusementPark = AmusementPark
+					.builder() //@formatter:off
+                .name("Bence parkja")
                 .capital(30000)
                 .totalArea(2000)
                 .entranceFee(50)
@@ -56,8 +58,8 @@ public class AmusementParkApplication {
 			guestBookRegistryService.addRegistry(amusementPark.getId(), visitor.getEmail(), "Jó volt.");
 			visitorService.leavePark(amusementPark.getId(), visitor.getEmail());
 
-			
-			machineService.addMachine(amusementPark.getId(), Machine.builder() //@formatter:off
+			machineService.addMachine(amusementPark.getId(), Machine
+					.builder() //@formatter:off
 		            .fantasyName("Retro körhinta")
 		            .size(100)
 		            .price(250)
@@ -66,8 +68,8 @@ public class AmusementParkApplication {
 		            .ticketPrice(10)
 		            .type(MachineType.CAROUSEL).build()); //@formatter:on
 
-			
-			machineService.addMachine(amusementPark.getId(), Machine.builder() //@formatter:off
+			machineService.addMachine(amusementPark.getId(), Machine
+					.builder() //@formatter:off
                 .fantasyName("Mágikus dodgem")
                 .size(150)
                 .price(250)
@@ -75,8 +77,9 @@ public class AmusementParkApplication {
                 .minimumRequiredAge(12)
                 .ticketPrice(10)
                 .type(MachineType.DODGEM).build()); //@formatter:on
-			
-			machineService.addMachine(amusementPark.getId(), Machine.builder() //@formatter:off
+
+			machineService.addMachine(amusementPark.getId(), Machine
+					.builder() //@formatter:off
 	                .fantasyName("Gokart")
 	                .size(150)
 	                .price(250)
@@ -84,8 +87,9 @@ public class AmusementParkApplication {
 	                .minimumRequiredAge(12)
 	                .ticketPrice(10)
 	                .type(MachineType.GOKART).build()); //@formatter:on
-			
-			machineService.addMachine(amusementPark.getId(), Machine.builder() //@formatter:off
+
+			machineService.addMachine(amusementPark.getId(), Machine
+					.builder() //@formatter:off
 	                .fantasyName("Titanic")
 	                .size(150)
 	                .price(250)
@@ -93,8 +97,9 @@ public class AmusementParkApplication {
 	                .minimumRequiredAge(12)
 	                .ticketPrice(10)
 	                .type(MachineType.SHIP).build()); //@formatter:on
-			
-			machineService.addMachine(amusementPark.getId(), Machine.builder() //@formatter:off
+
+			machineService.addMachine(amusementPark.getId(), Machine
+					.builder() //@formatter:off
 	                .fantasyName("Hullámvasút")
 	                .size(150)
 	                .price(250)
@@ -102,12 +107,6 @@ public class AmusementParkApplication {
 	                .minimumRequiredAge(12)
 	                .ticketPrice(10)
 	                .type(MachineType.ROLLER_COASTER).build()); //@formatter:on
-
-			IntStream.range(0, 5).forEach(i -> visitorService.signUp(Visitor.builder() // @formatter:off
-				.email("admin" + i + "@gmail.com")
-				.password(encoder.encode("password"))
-				.authority("ROLE_ADMIN")
-				.dateOfBirth(LocalDate.of(1994, 10, 22)).build())); // @formatter:on
 		};
 	}
 

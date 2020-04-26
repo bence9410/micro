@@ -2,7 +2,7 @@ package hu.beni.amusementpark.test.validation;
 
 import static hu.beni.amusementpark.constants.StringParamConstants.OPINION_ON_THE_PARK;
 import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_101_LENGTH;
-import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_4_LENGTH;
+import static hu.beni.amusementpark.constants.StringParamConstants.STRING_WITH_1_LENGTH;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.NOT_NULL_MESSAGE;
 import static hu.beni.amusementpark.constants.ValidationMessageConstants.sizeMessage;
 
@@ -40,15 +40,15 @@ public class GuestBookRegistryValidationTests extends AbstractValidation<GuestBo
 		assertInvalidValueAndPropertyNameAndMessageEquals(guestBookRegistry.getTextOfRegistry(), TEXT_OF_REGISTRY,
 				NOT_NULL_MESSAGE);
 
-		guestBookRegistry.setTextOfRegistry(STRING_WITH_4_LENGTH);
+		guestBookRegistry.setTextOfRegistry(STRING_WITH_1_LENGTH);
 		validateAndAssertViolationsSizeIsOne(guestBookRegistry);
 		assertInvalidValueAndPropertyNameAndMessageEquals(guestBookRegistry.getTextOfRegistry(), TEXT_OF_REGISTRY,
-				sizeMessage(5, 100));
+				sizeMessage(2, 100));
 
 		guestBookRegistry.setTextOfRegistry(STRING_WITH_101_LENGTH);
 		validateAndAssertViolationsSizeIsOne(guestBookRegistry);
 		assertInvalidValueAndPropertyNameAndMessageEquals(guestBookRegistry.getTextOfRegistry(), TEXT_OF_REGISTRY,
-				sizeMessage(5, 100));
+				sizeMessage(2, 100));
 	}
 
 	@Test

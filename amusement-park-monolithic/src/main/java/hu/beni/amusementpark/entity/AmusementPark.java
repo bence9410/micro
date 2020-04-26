@@ -42,7 +42,7 @@ public class AmusementPark implements Serializable {
 	private Integer capital;
 
 	@NotNull
-	@Range(min = 50, max = 2000)
+	@Range(min = 50, max = 5000)
 	private Integer totalArea;
 
 	@NotNull

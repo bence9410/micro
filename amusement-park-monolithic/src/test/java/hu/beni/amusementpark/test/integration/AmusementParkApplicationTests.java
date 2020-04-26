@@ -129,7 +129,7 @@ public class AmusementParkApplicationTests {
 
 	@Test
 	public void pageTest() {
-		loginAsAdmin("admin0@gmail.com", "password");
+		loginAsAdmin("bence@gmail.com", "password");
 
 		PagedResourcesType<AmusementParkResource> responseType = getPagedType(AmusementParkResource.class);
 
@@ -173,7 +173,7 @@ public class AmusementParkApplicationTests {
 
 	@Test
 	public void positiveTest() {
-		VisitorResource visitorResource = loginAsAdmin("admin0@gmail.com", "password");
+		VisitorResource visitorResource = loginAsAdmin("bence@gmail.com", "password");
 
 		AmusementParkResource amusementParkResource = postAmusementPark();
 
@@ -197,7 +197,7 @@ public class AmusementParkApplicationTests {
 
 	@Test
 	public void negativeTest() {
-		loginAsAdmin("admin0@gmail.com", "password");
+		loginAsAdmin("bence@gmail.com", "password");
 
 		AmusementParkResource amusementParkResource = createAmusementPark();
 		amusementParkResource.setEntranceFee(0);
