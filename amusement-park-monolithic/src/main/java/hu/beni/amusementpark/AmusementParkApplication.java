@@ -111,7 +111,7 @@ public class AmusementParkApplication {
 	}
 
 	@Bean
-	@Profile("oracleDB")
+	@Profile({ "oracleDB", "postgres" })
 	public ApplicationRunner applicationRunnerOracle(AmusementParkService amusementParkService,
 			MachineService machineService, VisitorService visitorService,
 			GuestBookRegistryService guestBookRegistryService) {
