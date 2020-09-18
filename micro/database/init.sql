@@ -48,15 +48,20 @@ insert into authorities (username, authority) values ('admin' , 'ROLE_ADMIN');
 
 insert into authorities (username, authority) values ('user', 'ROLE_USER');
 
-
 create table amusementpark_message (id bigserial not null, content varchar(255), primary key (id));
 
 insert into amusementpark_message (id, content) values (0, '1. Amusement Park message');
 
+insert into amusementpark_message (id, content) values (1, '2. Amusement Park message');
+
+insert into amusementpark_message (id, content) values (2, '3. Amusement Park message');
+
 create table zoo_message (id bigserial not null, content varchar(255), primary key (id));
 
 insert into zoo_message (id, content) values (0, '1. Zoo message');
+insert into zoo_message (id, content) values (1, '2. Zoo message');
 
 create table visitor_message (id bigserial not null, content varchar(255), primary key (id));
 
 insert into visitor_message (id, content) values (0, '1. Visitor %d message');
+insert into visitor_message (id, content) values (1, '2. Visitor %d message');
