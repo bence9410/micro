@@ -2,7 +2,7 @@ server.port: 9000
 spring:
   sleuth.sampler.percentage: 1
   datasource:
-    url: jdbc:postgresql://localhost:5432/amusement_park
+    url: jdbc:postgresql://localhost:5432/
     username: postgres
     password: admin
   jpa:

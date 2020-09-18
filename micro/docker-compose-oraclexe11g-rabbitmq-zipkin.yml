@@ -6,9 +6,9 @@ services:
       - 5672:5672
       - 15672:15672
   db:
-    image: benike/database-oracle-xe-11g
+    image: micro/postgres
     ports:
-      - 1521:1521
+      - 5432:5432
   zipkin:
     image: openzipkin/zipkin
     ports:
