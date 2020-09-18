@@ -1,9 +1,0 @@
-spring.application.name: zoo-ui
-
----
-
-server.port: 80
-eureka.client.enabled: false
-spring:
-  profiles: docker
-  cloud.config.enabled: false
