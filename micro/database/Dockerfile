@@ -1,3 +1,3 @@
-FROM wnameless/oracle-xe-11g-r2
-
-ADD init.sql /docker-entrypoint-initdb.d/
+FROM postgres
+ENV POSTGRES_PASSWORD admin
+ADD init.sql /docker-entrypoint-initdb.d/init.sql
