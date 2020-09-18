@@ -1,0 +1,10 @@
+docker pull rabbitmq:management;
+docker pull openzipkin/zipkin;
+cd database; sh dockerBuild.sh; cd ..;
+cd config; mvn clean package -DskipTests; cd ..;
+cd gateway; mvn clean package -DskipTests; cd ..;
+cd oauth2; mvn clean package -DskipTests; cd ..;
+cd discovery; mvn clean package -DskipTests; cd ..;
+cd amusement-park; mvn clean package -DskipTests; cd ..;
+cd zoo; mvn clean package -DskipTests; cd ..;
+cd visitor; mvn clean package -DskipTests;

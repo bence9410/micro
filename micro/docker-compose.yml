@@ -1,20 +1,24 @@
 version: '3'
 services:
-  gateway:
-    image: benike/gateway
+  rabbit:
+    image: rabbitmq:management
     ports:
-      - 80:80
-  oauth2:
-    image: benike/oauth2
-  welcome:
-    image: benike/welcome
-  amusement-park-ui:
-    image: benike/amusement-park-ui
-  amusement-park:
-    image: benike/amusement-park
-  zoo-ui:
-    image: benike/zoo-ui
-  zoo:
-    image: benike/zoo
-  database:
-    image: benike/database-oracle-xe-11g
+      - 5672:5672
+      - 15672:15672
+  db:
+    image: micro/postgres
+    ports:
+      - 5432:5432
+  db-admin:
+    image: dpage/pgadmin4
+    ports:
+      - 8079:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=nembence1994@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+  zipkin:
+    image: openzipkin/zipkin
+    ports:
+      - 9411:9411
+    environment:
+      - RABBIT_ADDRESSES=rabbit
