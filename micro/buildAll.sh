@@ -1,5 +1,6 @@
 docker pull rabbitmq:management;
 docker pull openzipkin/zipkin;
+docker pull dpage/pgadmin4;
 cd database; sh dockerBuild.sh; cd ..;
 cd config; mvn clean package -DskipTests; cd ..;
 cd gateway; mvn clean package -DskipTests; cd ..;
