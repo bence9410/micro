@@ -1,5 +1,5 @@
 gnome-terminal --maximize \
---tab -e "bash -c docker stack deploy -c docker-compose.yml services; exec bash" \
+--tab -e "bash -c 'docker stack deploy -c docker-compose.yml services; exec bash'" \
 --tab -e "bash -c 'java -Xmx128M -jar config/target/*.jar; exec bash'";
 sleep 40;
 gnome-terminal --maximize \
