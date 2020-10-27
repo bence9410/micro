@@ -21,7 +21,7 @@
 
 - Open localhost:8080 in a browser
 - Login with admin/pass
-- Refresh and click on the Amusement Park / Zoo buttons until the messages show up, continue until u see different visitor service ports.
+- Refresh and click on the Amusement Park / Zoo buttons until the messages show up, continue until you see different visitor service ports.
 - Config service: localhost:8888/gateway/default
 - Discovery service: localhost:8761
 - Zipkin: localhost:9411
