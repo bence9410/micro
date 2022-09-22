@@ -19,7 +19,6 @@ function init() {
             $("#content").show();
             
             getSpendingMoney();
-            appSelector();
         }
     });
     
