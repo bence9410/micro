@@ -17,6 +17,11 @@
 - Discovery service 
 - Distributed Tracing Zipkin with RabbitMQ
 
+### Run:
+
+- Build the database with some sample data and the applications and pull the images with the buildAll.sh script.
+- Run the runAll.sh script or execute all commands from it.
+
 ### Usage:
 
 - Open localhost:8080 in a browser
@@ -27,3 +32,8 @@
 - Zipkin: localhost:9411
 - RabbitMQ: localhost:15672 guest/guest
 - Pgadmin4: localhost:8079 nembence1994@gmail.com/admin db:5432 postgres/admin
+
+#### Call hierarchy in Zipkin:
+
+Every service validates the OAuth token by an http call to the OAuth service, this can be seen beautifully on Zipkin.
+![call hierarchy in Zipkin](https://github.com/bence9410/micro/blob/master/zipkin.png?raw=true)
