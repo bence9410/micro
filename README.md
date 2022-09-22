@@ -35,5 +35,6 @@
 
 #### Call hierarchy in Zipkin:
 
-Every service validates the OAuth token by an http call to the OAuth service, this can be seen beautifully on Zipkin.
+Every service validates the OAuth token by an http call to the OAuth service, this can be seen beautifully in Zipkin.
+
 ![call hierarchy in Zipkin](https://github.com/bence9410/micro/blob/master/zipkin.png?raw=true)
